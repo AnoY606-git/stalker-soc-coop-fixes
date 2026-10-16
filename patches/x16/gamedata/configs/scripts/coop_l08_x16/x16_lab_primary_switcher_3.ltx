@@ -1,0 +1,24 @@
+[logic]
+active = ph_button@x16_lab_button_3_active
+
+[ph_button@x16_lab_button_3_active]
+anim = lab_primary_switcher_idle
+tooltip = st_primary_switcher_idle_off_desc
+on_info = {+X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} ph_button@x16_lab_button_3_done
+on_press = ph_button@x16_lab_button_3_deactivate %=run_cam_effector(fusker) +X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO%
+
+[ph_button@x16_lab_button_3_deactivate]
+anim = lab_primary_switcher_off
+on_timer = 500 | ph_idle@system_message_4 %=turn_off(x16_switcher_hanging_lamp_3) =turn_off(x16_primari_switcher_hanging_lamp_red_3) =turn_on(x16_primari_switcher_hanging_lamp_green_3) =play_sound(x16_switch_1)%
+
+[ph_idle@system_message_4]
+on_info = %+X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO =play_sound(system_message_4)%
+on_timer = 5000 | ph_button@x16_lab_button_3_done
+
+[ph_button@x16_lab_button_3_done]
+anim = lab_primary_switcher_off
+on_info = {-X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} ph_button@x16_lab_button_3_active
+
+; kept so saves made with the old logic (active_section = ph_idle@nil) still load
+[ph_idle@nil]
+on_info = {+X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} ph_button@x16_lab_button_3_done, {-X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} ph_button@x16_lab_button_3_active

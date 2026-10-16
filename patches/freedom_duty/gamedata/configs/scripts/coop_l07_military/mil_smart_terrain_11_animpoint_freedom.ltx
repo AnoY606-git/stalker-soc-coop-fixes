@@ -1,0 +1,159 @@
+[logic@mil_smart_terrain_11_animpoint_freedom_1]
+active 												= animpoint@mil_smart_terrain_11_animpoint_freedom_1
+prior 												= 150
+on_hit 												= hit@freedom_bad_reputation_1
+
+[animpoint@mil_smart_terrain_11_animpoint_freedom_1]
+cover_name 											= mil_smart_terrain_11_animpoint_1
+invulnerable 										= false
+meet 												= no_meet
+avail_animations 									= sit_ass
+use_camp 											= false
+on_info 											= {+MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_1
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_1]
+path_walk 											= walker_max_partner_ambush_idle_1_walk
+path_look 											= walker_max_partner_ambush_idle_1_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_MAX_TO_KOLYAN_INFO} walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_1_1
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_1_1]
+path_walk 											= walker_max_partner_ambush_idle_1_walk
+path_look 											= walker_max_partner_ambush_idle_1_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 500 | %=play_sound(mil_collect_kolyan)%
+on_signal 											= sound_end | walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_1_2 %+MIL_COLLECT_KOLYAN_INFO%
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_1_2]
+path_walk 											= walker_max_partner_ambush_idle_1_walk
+path_look 											= walker_max_partner_ambush_idle_1_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_COLLECT_KOLYAN_INFO} walker@mil_smart_terrain_11_walker_max_partner_ambush_go_1
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_go_1]
+path_walk 											= walker_max_partner_ambush_go_1_walk
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= hide_fire
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD} animpoint@mil_smart_terrain_11_animpoint_freedom_3
+
+[animpoint@mil_smart_terrain_11_animpoint_freedom_3]
+cover_name 											= mil_smart_terrain_11_animpoint_3
+invulnerable 										= true
+meet 												= no_meet
+use_camp 											= true
+
+[hit@freedom_bad_reputation_1]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================
+
+[logic@mil_smart_terrain_11_animpoint_freedom_2]
+active 												= animpoint@mil_smart_terrain_11_animpoint_freedom_2
+prior 												= 200
+on_hit 												= hit@freedom_bad_reputation_2
+
+[animpoint@mil_smart_terrain_11_animpoint_freedom_2]
+cover_name 											= mil_smart_terrain_11_animpoint_2
+invulnerable 										= false
+meet 												= no_meet
+avail_animations 									= sit_ass
+use_camp 											= false
+on_info 											= {+MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_2
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_2]
+path_walk 											= walker_max_partner_ambush_idle_2_walk
+path_look 											= walker_max_partner_ambush_idle_2_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_COLLECT_KOLYAN_INFO} walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_2_1
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_2_1]
+path_walk 											= walker_max_partner_ambush_idle_2_walk
+path_look 											= walker_max_partner_ambush_idle_2_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 500 | %=play_sound(mil_collect_laugh)%
+on_signal 											= sound_end | walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_2_2
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_idle_2_2]
+path_walk 											= walker_max_partner_ambush_idle_2_walk
+path_look 											= walker_max_partner_ambush_idle_2_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_COLLECT_KOLYAN_INFO} walker@mil_smart_terrain_11_walker_max_partner_ambush_go_2
+
+[walker@mil_smart_terrain_11_walker_max_partner_ambush_go_2]
+path_walk 											= walker_max_partner_ambush_go_2_walk
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= hide_fire
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD} animpoint@mil_smart_terrain_11_animpoint_freedom_4
+
+[animpoint@mil_smart_terrain_11_animpoint_freedom_4]
+cover_name 											= mil_smart_terrain_11_animpoint_4
+invulnerable 										= true
+meet 												= no_meet
+use_camp 											= true
+
+[hit@freedom_bad_reputation_2]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================

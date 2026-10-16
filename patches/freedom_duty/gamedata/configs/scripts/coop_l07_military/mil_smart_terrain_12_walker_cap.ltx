@@ -1,0 +1,20 @@
+[logic@mil_smart_terrain_12_walker_cap]
+suitable 											= {=check_npc_name(mil_smart_terrain_12_1_freedom_cap)} true
+active 												= walker@mil_smart_terrain_12_walker_cap
+level_spot 											= quest_npc
+prior 												= 300
+on_hit 												= hit@freedom_bad_reputation
+
+
+[walker@mil_smart_terrain_12_walker_cap]
+path_walk 											= walker_cap_walk
+path_look 											= walker_cap_look
+meet 												= meet
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+
+[hit@freedom_bad_reputation]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================

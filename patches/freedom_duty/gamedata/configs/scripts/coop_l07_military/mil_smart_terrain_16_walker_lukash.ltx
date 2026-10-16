@@ -1,0 +1,96 @@
+[logic@mil_smart_terrain_16_walker_lukash]
+suitable 											= {=check_npc_name(mil_smart_terrain_3_freedom_lukash)} true
+active 												= walker@mil_smart_terrain_16_walker_lukash
+level_spot 											= quest_npc
+prior 												= 300
+on_hit 												= hit@freedom_bad_reputation
+
+[walker@mil_smart_terrain_16_walker_lukash]
+path_walk 											= walker_lukash_walk
+path_look 											= walker_lukash_look
+meet 												= meet@hello_players_1
+def_state_standing 									= ward_short
+invulnerable 										= false
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_guard_to_max %=scenario_autosave(st_save_the_stalker_shustry)%
+;on_info2 											= {+MIL_START_TAKE_KEY_POSITIONS_QUEST_TASK_INFO} walker@mil_guard_to_max
+
+[walker@mil_guard_to_max]
+path_walk 											= walker_lukash_walk
+path_look 											= walker_lukash_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= wait_rac
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_game_timer 										= 60 | %=play_sound(mil_guard_to_max)%
+on_signal 											= sound_end | walker@mil_guard_to_max_after
+
+[walker@mil_guard_to_max_after]
+path_walk 											= walker_lukash_walk
+path_look 											= walker_lukash_look
+meet 												= meet@hello_players_2
+invulnerable 										= true
+def_state_standing 									= ward_short
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_game_timer 										= 30 | %=play_sound(mil_lukash_to_actor)%
+on_signal 											= sound_end | walker@mil_lukash_to_actor
+
+[walker@mil_lukash_to_actor]
+path_walk 											= walker_lukash_walk
+path_look 											= walker_lukash_look
+meet 												= meet@hello_players_2
+invulnerable 										= true
+def_state_standing 									= ward_short
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+
+[meet@hello_players_1]
+close_snd_hello 									= nil
+close_snd_bye   									= nil
+close_anim 											= ward_short
+close_victim 										= actor
+far_anim 											= ward_short
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false
+
+[meet@hello_players_2]
+close_snd_hello 									= nil
+close_snd_bye   									= nil
+close_anim 											= ward_short
+close_victim 										= actor
+far_anim 											= ward_short
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false
+
+[hit@freedom_bad_reputation]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================

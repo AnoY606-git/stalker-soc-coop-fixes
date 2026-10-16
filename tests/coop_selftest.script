@@ -1,0 +1,228 @@
+-- TEST ONLY (not part of the release patch).
+-- Cordon: runs in-engine checks for every fix, then auto-travels to the Sarcophagus via the guide.
+-- Sarcophagus: keeps players alive and kills nearby Monolith so corpses pile up like a real fight.
+
+local BS = "\\"
+local results = {}
+local started_at = nil
+local phase = "wait"
+local pending_items = {}
+local last_kill = 0
+local client_done = false
+local cl_t0 = nil
+local cl_stage = 0
+
+local function out(msg)
+	print_msg("[SELFTEST] " .. msg)
+	if flush then pcall(flush) end
+end
+
+local function rec(name, ok, detail)
+	table.insert(results, {name = name, ok = ok})
+	out(string.format("%s  %s  %s", ok and "PASS" or "FAIL", name, detail or ""))
+end
+
+local function first_actor()
+	if db.mp_actors == nil then return nil end
+	for id, v in pairs(db.mp_actors) do
+		if v ~= nil and v:alive() then return v, id end
+	end
+	return nil
+end
+
+local function cfg(path)
+	local ok, ini = pcall(ini_file, path)
+	if ok then return ini end
+	return nil
+end
+
+local function has_line(path, section, key)
+	local ini = cfg(path)
+	return ini ~= nil and ini:section_exist(section) and ini:line_exist(section, key)
+end
+
+local function str(path, section, key)
+	local ini = cfg(path)
+	if ini and ini:section_exist(section) and ini:line_exist(section, key) then
+		return ini:r_string(section, key)
+	end
+	return ""
+end
+
+local function give(actor, section)
+	local se = alife():create(section, actor:position(), actor:level_vertex_id(), actor:game_vertex_id(), actor:id())
+	if se then pending_items[section] = se.id end
+end
+
+local function static_checks()
+	-- 1. Bandit jacket / trench coat crash
+	for _, s in ipairs({"bandit_outfit", "black_coat_outfit"}) do
+		local hud = system_ini():r_string(s, "player_hud_section")
+		rec("bandit outfit hands: " .. s, system_ini():section_exist(hud), "player_hud_section=" .. hud)
+	end
+	-- 2. Corpse cap (FPS)
+	local rb = release_body_manager.get_release_body_manager()
+	rec("corpse cap is 30", rb.body_max_count == 30, "body_max_count=" .. tostring(rb.body_max_count))
+	-- 3. Freedom/Duty: only player hits flip relations
+	local fd = "scripts" .. BS .. "coop_l07_military" .. BS .. "mil_smart_terrain_10_walker_freedom_ordinary.ltx"
+	local v = str(fd, "hit@freedom_bad_reputation_1", "on_info")
+	rec("freedom hit needs player", string.find(v, "hit_by_actor", 1, true) ~= nil and xr_conditions.hit_by_actor ~= nil, v)
+	-- 4. Cordon door stays open for player 2
+	local door = "scripts" .. BS .. "coop_l01_escape" .. BS .. "esc_trader_door.ltx"
+	rec("sidorovich door: no on_use in open state", cfg(door) ~= nil and not has_line(door, "ph_door@open", "on_use"))
+	-- 5. X16 levers
+	for i = 1, 4 do
+		local f = "scripts" .. BS .. "coop_l08_x16" .. BS .. "x16_lab_primary_switcher_" .. i .. ".ltx"
+		rec("x16 lever " .. i .. " has done-state", has_line(f, "ph_button@x16_lab_button_" .. i .. "_done", "on_info"))
+	end
+	-- 6. Hunter shotgun spawn
+	local hs = "scripts" .. BS .. "coop_l06_rostok" .. BS .. "space_restrictors" .. BS .. "bar_start_go_to_yantar_quest_task_space_restrictor.ltx"
+	rec("hunter shotgun spawn logic", string.find(str(hs, "sr_idle@start_quest_idle", "on_info"), "wpn_toz34_m2", 1, true) ~= nil and system_ini():section_exist("wpn_toz34_m2"))
+	-- 7. Arena
+	local arny = "scripts" .. BS .. "coop_l05_bar" .. BS .. "bar_smart_terrain_6_guard_arny.ltx"
+	rec("arnie talkable (meet section)", has_line(arny, "meet", "use"))
+	local cat = "scripts" .. BS .. "coop_l05_bar" .. BS .. "space_restrictors" .. BS .. "arena_arny" .. BS .. "bar_actor_cat_scene_space_restrictor.ltx"
+	rec("arena cutscene fallback reset", has_line(cat, "sr_idle@idle_start_cat_scene_dead_mutant_idle", "on_info13"))
+	-- 8. Ending crash: breakable models present
+	for _, l in ipairs({"coop_l11_control_monolith", "coop_l11_stancia_2", "coop_l07_military"}) do
+		local p = "levels" .. BS .. l .. BS .. "meshes" .. BS .. "brkbl#13.ogf"
+		rec("breakable model exists: " .. l, getFS():exist("$game_data$", p) ~= nil, p)
+	end
+	-- 9. Artifact twin helper present
+	rec("artifact twin helper", dialogs_item.af_twin_section ~= nil)
+end
+
+local function item_checks(actor)
+	rec("artifact quest accepts af_medusa_soc", dialogs_item.if_actor_has_af_medusa(actor, actor) == true)
+	rec("artifact quest accepts af_gravi_soc", dialogs_item.if_actor_has_af_gravi(actor, actor) == true)
+	local all = true
+	for i = 1, 3 do
+		if dialogs_coop_l05_bar["if_actor_has_dev_document_" .. i .. "_x18"](actor, actor) ~= true then all = false end
+	end
+	rec("x18 barman sees all 3 documents", all)
+	for sec, id in pairs(pending_items) do
+		local se = alife():object(id)
+		if se then alife():release(se, true) end
+	end
+	pending_items = {}
+end
+
+local function cordon_server(actor)
+	local now = time_global()
+	if phase == "wait" then
+		started_at = now
+		phase = "settle"
+	elseif phase == "settle" and now - started_at > 8000 then
+		out("===== Shadow of COOP fix self-test (Cordon) =====")
+		static_checks()
+		give(actor, "af_medusa_soc"); give(actor, "af_gravi_soc")
+		give(actor, "dev_document_1_x18"); give(actor, "dev_document_2_x18"); give(actor, "dev_document_3_x18")
+		-- Cordon quest fallback: hand-in flag set, helicopter flag should follow once game time passes
+		story_flags.give_flag("ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO")
+		xr_effects.forward_game_time(actor, actor, {"1", "0"})
+		started_at = now
+		phase = "items"
+	elseif phase == "items" and now - started_at > 4000 then
+		item_checks(actor)
+		started_at = now
+		phase = "heli"
+	elseif phase == "heli" and now - started_at > 6000 then
+		rec("cordon: next main quest unlocked after flash drive", story_flags.has_flag("ESC_HELICOPTER_GO_TO_AGROPROM_INFO"))
+		local pass, fail = 0, 0
+		for _, r in ipairs(results) do if r.ok then pass = pass + 1 else fail = fail + 1 end end
+		out(string.format("===== RESULT: %d passed, %d failed =====", pass, fail))
+		out("Travelling to the Sarcophagus via Globus...")
+		story_flags.give_flag("ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_SAR_INFO")
+		started_at = now
+		phase = "vote"
+	elseif phase == "vote" and now - started_at > 2000 then
+		for id, v in pairs(db.mp_actors) do
+			if v ~= nil and v:alive() then coop_map_vote.on_yes(id) end
+		end
+		phase = "travel"
+	end
+end
+
+local sar_checked = false
+local god_on = false
+local sar_t0 = nil
+local waves = 0
+local used_smarts = {}
+local function sarcophagus_server()
+	local now = time_global()
+	local a0 = first_actor()
+	if not sar_checked and a0 ~= nil then
+		sar_checked = true
+		out("===== Shadow of COOP fix self-test (in Sarcophagus) =====")
+		static_checks()
+		local pass, fail = 0, 0
+		for _, r in ipairs(results) do if r.ok then pass = pass + 1 else fail = fail + 1 end end
+		out(string.format("===== RESULT: %d passed, %d failed =====", pass, fail))
+	end
+	if not god_on then
+		god_on = true
+		pcall(function() get_console():execute("g_god 1") end)
+		pcall(function() get_console():execute("g_god on") end)
+	end
+	for id, v in pairs(db.mp_actors) do
+		if v ~= nil and v:alive() then v.health = 1 end
+	end
+	-- RUN D: waves spread over different smart terrains near the player (max 1 extra squad per smart, avoids job overflow)
+	if sar_t0 == nil then sar_t0 = now end
+	if waves < 5 and now - sar_t0 > 15000 + waves * 20000 then
+		waves = waves + 1
+		local actor = first_actor()
+		if actor ~= nil then
+			local board = sim_board.get_sim_board()
+			local cands = {}
+			for id, v in pairs(board.smarts) do
+				local s = v.smrt
+				if string.find(s:name(), "^sar_") and not used_smarts[s:name()] then
+					local d = s.position:distance_to(actor:position())
+					if d > 20 and d < 90 then table.insert(cands, {s = s, d = d}) end
+				end
+			end
+			table.sort(cands, function(a, c) return a.d < c.d end)
+			for k = 1, math.min(2, #cands) do
+				used_smarts[cands[k].s:name()] = true
+				board:create_squad(cands[k].s, "sar_smart_terrain_1_ordinary_monolith_1_squad")
+				out(string.format("RUN D wave %d: squad at %s (%.0f m)", waves, cands[k].s:name(), cands[k].d))
+			end
+		end
+	end
+end
+
+function tick(level_tag)
+	pcall(coop_census.tick)
+	if OnServer() then
+		local actor = first_actor()
+		if actor == nil then return end
+		if level_tag == "esc" then
+			cordon_server(actor)
+		elseif level_tag == "sar" then
+			sarcophagus_server()
+		end
+	elseif db.mp_actors and LocalActor() and db.mp_actors[LocalActor()] then
+		if not client_done then
+			client_done = true
+			pcall(function() get_console():execute("rs_stats on") end)
+		end
+		if level_tag == "sar" then
+			local now = time_global()
+			if cl_t0 == nil then
+				cl_t0 = now
+				pcall(function() get_console():execute("rs_v_sync off") end)
+				pcall(function() get_console():execute("target_framerate 300") end)
+				pcall(coop_census.mark, "RUN F start: uncapped, default vision")
+			elseif cl_stage == 0 and now - cl_t0 > 90000 then
+				cl_stage = 1
+				pcall(function() get_console():execute("ai_use_old_vision 1") end)
+				pcall(coop_census.mark, "RUN F: ai_use_old_vision 1")
+			elseif cl_stage == 1 and now - cl_t0 > 180000 then
+				cl_stage = 2
+				pcall(function() get_console():execute("ai_use_old_vision 0") end)
+				pcall(coop_census.mark, "RUN F: ai_use_old_vision 0")
+			end
+		end
+	end
+end

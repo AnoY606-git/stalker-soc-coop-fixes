@@ -1,0 +1,35 @@
+[logic]
+active = ph_door@close
+
+[ph_door@locked]
+locked = true
+closed = true
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_info = {=actor_has_item(dev_flash_sidorovich)} ph_door@close, {+all_esc_smart_terrain_1_trader_sidorovich_go_to_wolf_stop_dialog} ph_door@close
+
+[ph_door@close]
+locked = false
+closed = true
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_use = ph_door@open
+on_actor_in_zone = esc_trader_door_space_restrictor | ph_door@near
+
+[ph_door@near]
+locked = false
+closed = true
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_use = ph_door@open
+
+[ph_door@open]
+locked = false
+closed = false
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_actor_not_in_zone = esc_trader_door_space_restrictor | ph_door@close

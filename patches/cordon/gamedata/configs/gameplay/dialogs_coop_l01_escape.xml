@@ -1,0 +1,1210 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+    <dialog id="esc_smart_terrain_1_stalker_guide_help">
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_1</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_1</text>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_2</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_2</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_4</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_4</text>
+                <next>6</next>
+                <next>7</next>
+                <next>8</next>
+                <next>9</next>
+                <next>10</next>
+                <next>11</next>
+                <next>12</next>
+                <next>13</next>
+                <next>14</next>
+                <next>15</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_6</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_6</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_GAR_INFO</give_flag>
+            </phrase>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_7</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_7</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_AGR_INFO</give_flag>
+            </phrase>
+            <phrase id="8">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_8</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_8</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_AGRU_INFO</give_flag>
+            </phrase>
+            <phrase id="9">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_9</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_9</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_VAL_INFO</give_flag>
+            </phrase>
+            <phrase id="10">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_10</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_10</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_X18_INFO</give_flag>
+            </phrase>
+            <phrase id="11">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_11</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_11</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_BAR_INFO</give_flag>
+            </phrase>
+            <phrase id="12">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_12</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_12</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_ROS_INFO</give_flag>
+            </phrase>
+            <phrase id="13">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_13</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_13</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_MIL_INFO</give_flag>
+            </phrase>
+            <phrase id="14">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_14</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_14</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_X16_INFO</give_flag>
+            </phrase>
+            <phrase id="15">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_15</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_15</text>
+                <action>dialogs.break_dialog</action>
+				<give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_YAN_INFO</give_flag>
+            </phrase>
+            <phrase id="16">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_16</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_16</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_RAD_INFO</give_flag>
+            </phrase>
+            <phrase id="17">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_17</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_17</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_X10_INFO</give_flag>
+            </phrase>
+            <phrase id="18">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_18</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_18</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_PRI_INFO</give_flag>
+            </phrase>
+            <phrase id="19">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_19</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_19</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_AES_1_INFO</give_flag>
+            </phrase>
+            <phrase id="20">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_20</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_20</text>
+	                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_AES_2_INFO</give_flag>
+            </phrase>
+            <phrase id="21">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_21</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_21</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_SAR_INFO</give_flag>
+            </phrase>
+            <phrase id="22">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_22</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_22</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_CON_INFO</give_flag>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_0</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_5</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_5</text>
+                <next>16</next>
+                <next>17</next>
+                <next>18</next>
+                <next>19</next>
+                <next>20</next>
+                <next>21</next>
+                <next>22</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_help_3</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_help_3</text>
+                <next>5</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_stalker_guide_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_guide_start_dialog_0</action>
+
+                <text>esc_smart_terrain_1_stalker_guide_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_3_stalker_shustry_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_3_stalker_shustry_start_dialog_0</action>
+
+                <text>esc_smart_terrain_3_stalker_shustry_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_4_stalker_petruha_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_start_dialog_0</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_5_walker_tolik_help">
+    <has_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</has_flag>
+    <dont_has_flag>ESC_SMART_TERRAIN_5_WALKER_TOLIK_HELP_STOP_DIALOG_INFO</dont_has_flag>	
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_5_walker_tolik_help_1</action>
+
+                <text>esc_smart_terrain_5_walker_tolik_help_1</text>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_5_walker_tolik_help_3</action>
+
+                <text>esc_smart_terrain_5_walker_tolik_help_3</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_5_walker_tolik_help_0</action>
+
+                <text>esc_smart_terrain_5_walker_tolik_help_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_5_walker_tolik_help_2</action>
+
+                <text>esc_smart_terrain_5_walker_tolik_help_2</text>
+			    <precondition>dialogs_item.if_actor_has_medkit</precondition>
+                <action>dialogs_item.transfer_medkit</action>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_5_WALKER_TOLIK_HELP_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_5_walker_tolik_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_5_walker_tolik_start_dialog_0</action>
+
+                <text>esc_smart_terrain_5_walker_tolik_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_6_stalker_fox_1_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_1_start_dialog_0</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_1_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_6_stalker_fox_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_start_dialog_0</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_6_stalker_fox_help_dialog">
+    <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</has_flag>
+    <dont_has_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_HELP_DIALOG_STOP_DIALOG_INFO</dont_has_flag>	
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_help_dialog_1</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_help_dialog_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_help_dialog_2</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_help_dialog_2</text>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_help_dialog_0</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_help_dialog_0</text>
+			    <precondition>dialogs_item.if_actor_has_medkit</precondition>
+                <action>dialogs_item.transfer_medkit</action>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_HELP_DIALOG_STOP_DIALOG_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_6_stalker_fox_info_military">
+    <has_flag>ESC_SMART_TERRAIN_6_M_DOG_SQUAD_DEAD</has_flag>
+    <dont_has_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO</dont_has_flag>	
+        <phrase_list>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_7</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_7</text>
+                <give_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_5</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_3</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_1</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_4</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_2</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_6</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_6</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO</give_flag>
+                <next>7</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_6_stalker_fox_info_military_0</action>
+
+                <text>esc_smart_terrain_6_stalker_fox_info_military_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_7_military_kuznetsov_go_to_fox_1">
+    <has_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</has_flag>
+    <dont_has_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</dont_has_flag>	
+        <phrase_list>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_3</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_3</text>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_1</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_0</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_2</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_2</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</give_flag>				
+                <next>3</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_7_military_kuznetsov_go_to_fox_2">
+        <precondition>dialogs_coop_l01_escape.if_actor_has_vodka_5x</precondition>
+		<has_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</has_flag>
+		<dont_has_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_2_STOP_DIALOG_INFO</dont_has_flag>	
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_1</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_0</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_0</text>
+                <action>dialogs_coop_l01_escape.transfer_vodka_5x</action>
+                <give_flag>ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_2</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_2</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_2_STOP_DIALOG_INFO</give_flag>	
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_7_military_kuznetsov_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_start_dialog_0</action>
+
+                <text>esc_smart_terrain_7_military_kuznetsov_start_dialog_0</text>
+                <dont_has_flag>all_esc_help_lost_pridurok_task_info</dont_has_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_flesh">
+        <precondition>dialogs_coop_l01_escape.if_actor_has_dev_flash_sidorovich</precondition>
+        <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_flesh_1</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_flesh_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_flesh_2</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_flesh_2</text>
+				<action>dialogs_coop_l01_escape.transfer_dev_flash_sidorovich</action>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs_money.give_money_to_actor_1000</action>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_flesh_3</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_flesh_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_flesh_4</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_flesh_4</text>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_flesh_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_flesh_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_go_to_fox">
+        <has_flag>ESC_HELICOPTER_GO_TO_AGROPROM_INFO</has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_1</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_3</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_5</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_2</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_6</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_6</text>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_4</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_start_dialog_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf">
+        <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_TALK_TO_THE_WOLF_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_1</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_3</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_2</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_4</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf_4</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_START_TALK_TO_THE_SIDOROVICH_QUEST_TASK_INFO</give_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_TALK_TO_THE_WOLF_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_stalker_wolf_help_atp_end">
+        <has_flag>ESC_START_ESCORT_THE_STALKER_SHUSTRY_QUEST_TASK_INFO</has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_1_STALKER_WOLF_HELP_ATP_END_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_end_2</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_end_2</text>
+                <action>dialogs.break_dialog</action>
+                <action>dialogs_money.give_money_to_actor_2000</action>
+				<give_flag>ESC_SMART_TERRAIN_1_STALKER_WOLF_HELP_ATP_END_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_end_1</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_end_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_end_0</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_end_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_stalker_wolf_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_start_dialog_0</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_stalker_wolf_help_atp_the">
+        <has_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD</dont_has_flag>
+        <phrase_list>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_the_2</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_the_2</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_the_1</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_the_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_the_0</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_the_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_stalker_wolf_help_atp">
+        <has_flag>ESC_START_TALK_TO_THE_SIDOROVICH_QUEST_TASK_INFO</has_flag>
+	    <dont_has_flag>ESC_SMART_TERRAIN_1_STALKER_WOLF_HELP_ATP_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_5</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_7</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_7</text>
+                <next>8</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_3</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_6</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_6</text>
+                <next>7</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_1</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_2</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_4</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="8">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_8</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_8</text>
+				<give_flag>ESC_SMART_TERRAIN_1_STALKER_WOLF_HELP_ATP_STOP_DIALOG_INFO</give_flag>
+				<give_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</give_flag>
+                <!--action>dialogs_coop_l01_escape.give_actor_starting_gear</action-->
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_stalker_wolf_help_atp_0</action>
+
+                <text>esc_smart_terrain_1_stalker_wolf_help_atp_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_4_stalker_petruha_help_atp">
+        <has_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_4_STALKER_PETRUHA_HELP_ATP_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_help_atp_4</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_help_atp_4</text>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_help_atp_1</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_help_atp_1</text>
+                <next>2</next>
+				<next>3</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_help_atp_0</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_help_atp_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_help_atp_5</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_help_atp_5</text>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_help_atp_3</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_help_atp_3</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_4_STALKER_PETRUHA_HELP_ATP_STOP_DIALOG_INFO</give_flag>
+                <next>5</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_4_stalker_petruha_help_atp_2</action>
+
+                <text>esc_smart_terrain_4_stalker_petruha_help_atp_2</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>ESC_SMART_TERRAIN_4_STALKER_PETRUHA_HELP_ATP_STOP_DIALOG_INFO</give_flag>
+                <give_flag>ESC_START_KILL_BANDITS_ON_THE_ATP_QUEST_TASK_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_3_stalker_shustry_go_to_vilage">
+        <has_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_3_STALKER_SHUSTRY_GO_TO_VILAGE_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_3_stalker_shustry_go_to_vilage_1</action>
+
+                <text>esc_smart_terrain_3_stalker_shustry_go_to_vilage_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_3_stalker_shustry_go_to_vilage_3</action>
+
+                <text>esc_smart_terrain_3_stalker_shustry_go_to_vilage_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_3_stalker_shustry_go_to_vilage_4</action>
+
+                <text>esc_smart_terrain_3_stalker_shustry_go_to_vilage_4</text>
+                <action>dialogs_coop_l01_escape.give_actor_dev_flash_sidorovich</action>
+                <give_flag>ESC_START_ESCORT_THE_STALKER_SHUSTRY_QUEST_TASK_INFO</give_flag>
+                <give_flag>ESC_SMART_TERRAIN_3_STALKER_SHUSTRY_GO_TO_VILAGE_STOP_DIALOG_INFO</give_flag>c 
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_3_stalker_shustry_go_to_vilage_2</action>
+
+                <text>esc_smart_terrain_3_stalker_shustry_go_to_vilage_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_3_stalker_shustry_go_to_vilage_0</action>
+
+                <text>esc_smart_terrain_3_stalker_shustry_go_to_vilage_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog">
+        <phrase_list>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_3</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_3</text>
+                <next>8</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_6</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_6</text>
+                <next>7</next>
+                <next>14</next>
+                <next>15</next>
+                <next>22</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_5</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_5</text>
+                <next>12</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_1</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_1</text>
+                <next>2</next>
+                <next>3</next>
+                <next>4</next>
+                <next>5</next>
+                <next>22</next>
+            </phrase>
+            <phrase id="8">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_8</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_8</text>
+                <next>9</next>
+                <next>16</next>
+                <next>17</next>
+                <next>22</next>
+            </phrase>
+            <phrase id="10">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_10</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_10</text>
+                <next>11</next>
+                <next>18</next>
+                <next>19</next>
+                <next>22</next>
+            </phrase>
+            <phrase id="12">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_12</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_12</text>
+                <next>13</next>
+                <next>20</next>
+                <next>21</next>
+                <next>22</next>
+            </phrase>
+            <phrase id="13">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_13</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_13</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="20">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_20</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_20</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="21">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_21</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_21</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="19">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_19</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_19</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="18">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_18</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_18</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="11">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_11</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_11</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="16">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_16</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_16</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="9">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_9</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_9</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="17">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_17</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_17</text>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_4</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_4</text>
+                <next>10</next>
+            </phrase>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_7</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_7</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="14">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_14</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_14</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_2</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_2</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="15">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_15</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_15</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="22">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_22</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog_22</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_1</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_1</text>
+                <next>2</next>
+                <next>3</next>
+                <next>4</next>
+                <next>5</next>
+                <next>6</next>
+                <next>7</next>
+                <next>8</next>
+                <next>9</next>
+                <next>11</next>
+                <next>10</next>
+                <next>12</next>
+                <next>13</next>
+                <next>14</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_2</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_2</text>
+				<precondition>dialogs_item.if_actor_has_af_medusa</precondition>
+                <action>dialogs_item.transfer_af_medusa</action>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_STOP_DIALOG_INFO</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_3</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_3</text>
+				<precondition>dialogs_item.if_actor_has_af_blood</precondition>
+                <action>dialogs_item.transfer_af_blood</action>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_STOP_DIALOG_INFO</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_4</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_4</text>
+				<precondition>dialogs_item.if_actor_has_af_cristall_flower</precondition>
+                <action>dialogs_item.transfer_af_cristall_flower</action>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_STOP_DIALOG_INFO</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_5</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_5</text>
+                <has_flag>ESC_SMART_TERRAIN_8_STALKER_1_SQUAD_DEAD</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_8_STALKER_1_SQUAD_DEAD</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_4_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_6</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_6</text>
+                <has_flag>ESC_SMART_TERRAIN_9_STALKER_1_SQUAD_DEAD</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_9_STALKER_1_SQUAD_DEAD</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_5_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_7</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_7</text>
+                <has_flag>ESC_SMART_TERRAIN_10_STALKER_1_SQUAD_DEAD</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_10_STALKER_1_SQUAD_DEAD</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_6_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="8">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_8</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_8</text>
+                <has_flag>ESC_SMART_TERRAIN_1_M_DOG_SQUAD_DEAD</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_M_DOG_SQUAD_DEAD</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_7_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="9">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_9</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_9</text>
+                <has_flag>ESC_SMART_TERRAIN_7_M_BOAR_SQUAD_DEAD</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_7_M_BOAR_SQUAD_DEAD</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_8_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="10">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_10</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_10</text>
+                <has_flag>ESC_SMART_TERRAIN_13_M_BOAR_SQUAD_DEAD</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_13_M_BOAR_SQUAD_DEAD</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_9_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="11">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_11</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_11</text>
+				<precondition>dialogs_item.if_actor_has_mutant_boar_part_15x</precondition>
+                <action>dialogs_item.transfer_mutant_boar_part_15x</action>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_STOP_DIALOG_INFO</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="12">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_12</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_12</text>
+				<precondition>dialogs_item.if_actor_has_mutant_dog_part_10x</precondition>
+                <action>dialogs_item.transfer_mutant_dog_part_10x</action>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_STOP_DIALOG_INFO</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="13">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_13</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_13</text>
+				<precondition>dialogs_item.if_actor_has_mutant_flesh_part_5x</precondition>
+                <action>dialogs_item.transfer_mutant_flesh_part_5x</action>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_STOP_DIALOG_INFO</has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+            <phrase id="14">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_14</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog_14</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_0</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_1</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_1</text>
+                <next>2</next>
+                <next>3</next>
+                <next>4</next>
+                <next>5</next>
+                <next>6</next>
+                <next>7</next>
+                <next>8</next>
+                <next>9</next>
+                <next>10</next>
+                <next>11</next>
+                <next>12</next>
+                <next>13</next>
+                <next>14</next>
+            </phrase>
+            <phrase id="14">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_14</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_14</text>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_2</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_2</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_FAIL_INFO</dont_has_flag>
+				<dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_3</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_3</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_4</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_4</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_5</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_5</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_FAIL_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_6</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_6</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_FAIL_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_7</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_7</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_FAIL_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="8">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_8</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_8</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_FAIL_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="9">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_9</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_9</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_FAIL_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="10">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_10</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_10</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_FAIL_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="11">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_11</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_11</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="12">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_12</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_12</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+            <phrase id="13">
+                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_13</action>
+
+                <text>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog_13</text>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_FAIL_INFO</dont_has_flag>
+                <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO</dont_has_flag>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_FAIL_INFO</give_flag>
+                <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>	
+</game_dialogs>

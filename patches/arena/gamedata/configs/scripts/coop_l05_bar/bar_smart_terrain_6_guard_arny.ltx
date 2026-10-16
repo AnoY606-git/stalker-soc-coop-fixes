@@ -1,0 +1,34 @@
+[logic@bar_smart_terrain_6_guard_arny]
+suitable 								= {=check_npc_name(bar_smart_terrain_2_stalker_arny)} true
+active 									= walker@bar_smart_terrain_6_guard_arny
+prior 									= 300
+
+[walker@bar_smart_terrain_6_guard_arny]
+path_walk 								= guard_arny_1_walk
+path_look 								= guard_arny_1_look
+def_state_standing 						= ward
+def_state_moving1 						= run
+def_state_moving2 						= run
+def_state_moving3 						= run
+invulnerable 							= true
+meet 									= meet
+allow_break 							= false
+trade_enable 							= false
+;meet_dialog 							= {+BAR_ARNY_ARENA_SMART_TERRAIN_DOG_SQUAD_DEAD_FAIL} bar_smart_terrain_2_stalker_arny_arena_pvm_1_start, {+BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_SQUAD_DEAD_FAIL} bar_smart_terrain_2_stalker_arny_arena_pvm_2_start,  {+BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_SQUAD_DEAD_FAIL} bar_smart_terrain_2_stalker_arny_arena_pvm_3_start, {+BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_SQUAD_DEAD_FAIL} bar_smart_terrain_2_stalker_arny_arena_pvm_4_start
+
+[meet]
+close_snd_hello 									= nil
+close_snd_bye 									= nil
+close_anim 										= nil
+close_victim 									= nil
+far_anim 										= nil
+far_victim 									= nil
+close_distance 									= 0
+far_distance 									= 0
+close_snd_distance 								= 3
+abuse 											= false
+use 											= {=actor_enemy} false, true
+allow_break 									= true
+meet_on_talking 								= true
+
+;================================================

@@ -1,0 +1,167 @@
+[logic@mil_smart_terrain_11_walker_max]
+suitable 											= {=check_npc_name(mil_smart_terrain_15_freedom_max)} true
+active 												= walker@mil_smart_terrain_11_walker_max
+level_spot 											= quest_npc
+prior 												= 300
+on_hit 												= hit@freedom_bad_reputation
+
+[walker@mil_smart_terrain_11_walker_max]
+path_walk 											= walker_max_walk
+path_look 											= walker_max_look
+meet 												= meet@hello_players_1
+def_state_standing 									= ward
+invulnerable 										= false
+def_state_standing 									= hide
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_guard_to_max_after
+
+[walker@mil_guard_to_max]
+path_walk 											= walker_max_walk
+path_look 											= walker_max_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= wait_rac
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_guard_to_max_after
+
+[walker@mil_guard_to_max_after]
+path_walk 											= walker_max_walk
+path_look 											= walker_max_look
+meet 												= meet@hello_players_1
+invulnerable 										= true
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO} walker@max_go_collect %=scenario_autosave(st_ambush_base_dolg)%
+
+[walker@max_go_collect]
+path_walk 											= walker_max_walk
+path_look 											= walker_max_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= wait_rac
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_game_timer 										= 60 | %=play_sound(max_go_collect)%
+on_signal 											= sound_end | walker@mil_smart_terrain_11_walker_max_ambush_1_idle
+
+[walker@mil_smart_terrain_11_walker_max_ambush_1_idle]
+path_walk 											= walker_max_ambush_idle_walk
+path_look 											= walker_max_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_moving 									= assault
+def_state_standing 									= ward_short
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_timer 											= 30000 | %=play_sound(mil_max_to_tolyan)%
+on_signal 											= sound_end | walker@mil_smart_terrain_11_walker_max_ambush_2_idle
+
+[walker@mil_smart_terrain_11_walker_max_ambush_2_idle]
+path_walk 											= walker_max_ambush_idle_walk
+path_look 											= walker_max_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_moving 									= assault
+def_state_standing 									= ward_short
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_timer 											= 500 | %=play_sound(mil_max_to_kolyan)%
+on_signal 											= sound_end | walker@mil_smart_terrain_11_walker_max_ambush_3_idle %+MIL_MAX_TO_KOLYAN_INFO%
+
+[walker@mil_smart_terrain_11_walker_max_ambush_3_idle]
+path_walk 											= walker_max_ambush_idle_walk
+path_look 											= walker_max_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_moving 									= assault
+def_state_standing 									= ward_short
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_COLLECT_KOLYAN_INFO} walker@mil_smart_terrain_11_walker_max_ambush_go
+
+[walker@mil_smart_terrain_11_walker_max_ambush_go]
+path_walk 											= walker_max_ambush_go_walk
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= hide_fire
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD} walker@mil_smart_terrain_11_walker_max_idle
+
+[walker@mil_smart_terrain_11_walker_max_idle]
+path_walk 											= walker_max_walk
+path_look 											= walker_max_look
+meet 												= meet@hello_players_2
+def_state_standing 									= ward
+invulnerable 										= true
+def_state_standing 									= hide
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+
+[meet@hello_players_1]
+close_snd_hello 									= mil_max_to_player
+close_snd_bye   									= mil_max_to_player
+close_anim 											= ward
+close_victim 										= actor
+far_anim 											= ward
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= true
+trade_enable 										= true
+meet_on_talking 									= true
+
+[meet@hello_players_2]
+close_snd_hello 									= nil
+close_snd_bye   									= nil
+close_anim 											= ward_short
+close_victim 										= actor
+far_anim 											= ward_short
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= true
+trade_enable 										= true
+meet_on_talking 									= true
+
+[hit@freedom_bad_reputation]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================

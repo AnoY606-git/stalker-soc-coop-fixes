@@ -1,0 +1,35 @@
+[logic@mil_smart_terrain_11_walker_shurup]
+suitable 											= {=check_npc_name(mil_smart_terrain_11_freedom_shurup)} true
+active 												= walker@mil_smart_terrain_11_walker_shurup
+prior 												= 300
+can_select_weapon 									= false
+level_spot 											= mechanic
+on_hit 												= hit@freedom_bad_reputation
+
+[walker@mil_smart_terrain_11_walker_shurup]
+path_walk 											= walker_shurup_walk
+path_look 											= walker_shurup_look
+meet 												= meet
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+
+[meet]
+close_snd_hello 									= nil
+close_snd_bye 										= nil
+close_anim 											= nil
+close_victim 										= nil
+far_anim 											= nil
+far_victim 											= nil
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance 									= 3
+abuse           									= false
+use 												= {=actor_enemy} false, true
+allow_break 										= true
+meet_on_talking 									= true
+
+[hit@freedom_bad_reputation]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================

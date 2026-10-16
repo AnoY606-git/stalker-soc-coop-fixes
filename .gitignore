@@ -1,0 +1,7 @@
+build/
+__pycache__/
+*.addon
+*.db0
+*.db1
+*.log
+*.zip

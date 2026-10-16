@@ -1,0 +1,90 @@
+function if_actor_has_agr_safe_container_1(first_speaker, second_speaker)
+	return first_speaker:object("agr_safe_container_1") ~= nil
+end
+
+function if_actor_hasnt_agr_safe_container_1(first_speaker, second_speaker)
+	return not if_actor_has_agr_safe_container_1(first_speaker, second_speaker)
+end
+
+function transfer_agr_safe_container_1(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "agr_safe_container_1")
+end
+
+
+
+function if_actor_has_dev_flash_agru(first_speaker, second_speaker)
+	return first_speaker:object("dev_flash_agru") ~= nil
+end
+
+function if_actor_hasnt_dev_flash_agru(first_speaker, second_speaker)
+	return not if_actor_has_dev_flash_agru(first_speaker, second_speaker)
+end
+
+function transfer_dev_flash_agru(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "dev_flash_agru")
+end
+
+
+
+-- X18 documents hand-in.
+-- The talking player is not always first_speaker (see dialogs.who_is_npc), and the three
+-- documents may be spread over several co-op players, so look the item up on the real actor
+-- first and then on every living player. Pickup order / card order does not matter here.
+local function x18_doc_holder(first_speaker, second_speaker, section)
+	local npc, actor = dialogs.who_is_npc(first_speaker, second_speaker)
+	if actor ~= nil and actor:object(section) ~= nil then
+		return actor, actor
+	end
+	if db.mp_actors ~= nil then
+		for k, v in pairs(db.mp_actors) do
+			if v:alive() and v:object(section) ~= nil then
+				return v, actor
+			end
+		end
+	end
+	return nil, actor
+end
+
+local function x18_doc_transfer(first_speaker, second_speaker, section)
+	local holder, actor = x18_doc_holder(first_speaker, second_speaker, section)
+	-- documents held by another player stay with them; only the talker's copy is handed over
+	if holder ~= nil and actor ~= nil and holder:id() == actor:id() then
+		dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, section)
+	end
+end
+
+function if_actor_has_dev_document_1_x18(first_speaker, second_speaker)
+	return x18_doc_holder(first_speaker, second_speaker, "dev_document_1_x18") ~= nil
+end
+
+function if_actor_hasnt_dev_document_1_x18(first_speaker, second_speaker)
+	return not if_actor_has_dev_document_1_x18(first_speaker, second_speaker)
+end
+
+function transfer_dev_document_1_x18(first_speaker, second_speaker)
+	x18_doc_transfer(first_speaker, second_speaker, "dev_document_1_x18")
+end
+
+function if_actor_has_dev_document_2_x18(first_speaker, second_speaker)
+	return x18_doc_holder(first_speaker, second_speaker, "dev_document_2_x18") ~= nil
+end
+
+function if_actor_hasnt_dev_document_2_x18(first_speaker, second_speaker)
+	return not if_actor_has_dev_document_2_x18(first_speaker, second_speaker)
+end
+
+function transfer_dev_document_2_x18(first_speaker, second_speaker)
+	x18_doc_transfer(first_speaker, second_speaker, "dev_document_2_x18")
+end
+
+function if_actor_has_dev_document_3_x18(first_speaker, second_speaker)
+	return x18_doc_holder(first_speaker, second_speaker, "dev_document_3_x18") ~= nil
+end
+
+function if_actor_hasnt_dev_document_3_x18(first_speaker, second_speaker)
+	return not if_actor_has_dev_document_3_x18(first_speaker, second_speaker)
+end
+
+function transfer_dev_document_3_x18(first_speaker, second_speaker)
+	x18_doc_transfer(first_speaker, second_speaker, "dev_document_3_x18")
+end

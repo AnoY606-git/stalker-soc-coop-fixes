@@ -1,0 +1,37 @@
+[logic@mil_smart_terrain_8_walker_freedom_sniper_1]
+suitable 											= {=check_npc_name(sim_default_freedom_4)} true
+active 												= walker@mil_smart_terrain_8_walker_freedom_sniper_1_idle
+prior 												= 300
+on_hit 												= hit@freedom_bad_reputation
+
+[walker@mil_smart_terrain_8_walker_freedom_sniper_1_idle]
+path_walk 											= walker_freedom_sniper_1_walk
+path_look 											= walker_freedom_sniper_1_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= threat_na
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+show_spot 											= false
+on_info 											= {+MIL_START_KILL_THE_SNIPER_ON_THE_TOWER_QUEST_TASK_INFO} walker@mil_smart_terrain_8_walker_freedom_sniper_1
+
+[walker@mil_smart_terrain_8_walker_freedom_sniper_1]
+path_walk 											= walker_freedom_sniper_1_walk
+path_look 											= walker_freedom_sniper_1_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= threat_fire
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+show_spot 											= false
+
+[hit@freedom_bad_reputation]
+on_info 											= {=hit_by_actor} %=mil_dolg_increase_goodwill%
+
+;================================================
