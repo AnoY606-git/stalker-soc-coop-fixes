@@ -44,7 +44,7 @@ To uninstall, open `coop.addon` with 7-Zip again and delete `zzz_soc_coop_fixes.
 ## Optional: Sarcophagus FPS fix (for weaker PCs)
 
 If your FPS drops hard in the Sarcophagus and CNPP Monolith fights, download
-`SoC_COOP_fixes_plus_Sarcophagus_FPS.zip` from [Releases](../../releases) instead. It is the same
+`SoC_COOP_fixes_sarc_fix.zip` from [Releases](../../releases) instead. It is the same
 patch with the FPS fix built in, so it is still one file (`zzz_soc_coop_fixes.db`). It:
 
 - keeps at most 12 corpses in the Sarcophagus (30 on other levels, instead of 300);
