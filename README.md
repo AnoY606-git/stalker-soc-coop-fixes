@@ -9,7 +9,12 @@ You need their launcher and add-on first.
 
 ## Play in three steps
 
-1. Install the xrMPE launcher and Shadow of COOP 8.0 from their official sources (see Credits).
+1. Install the [xrMPE launcher](https://github.com/M4dMurloc/xrMPE_Launcher_Release/releases)
+   (version 0.9.x) and run it once so it downloads the game. Then get
+   [Shadow of COOP 8.0](https://drive.usercontent.google.com/download?id=1Xl1hKfbzVOKQFEla3wB-5WokiL6FcpAx&export=download&authuser=0)
+   (2.2 GB, official link from the [xrMPE wiki](https://xrmpe.fandom.com/ru/wiki/S.T.A.L.K.E.R._Shadow_of_COOP)),
+   put `coop.addon` in `X-Ray Multiplayer Extension\gameddons\` and switch it on in the
+   launcher's Add-ons tab.
 2. Download `SoC_COOP_fixes.zip` from [Releases](../../releases), close the game and launcher,
    open `X-Ray Multiplayer Extension\game\addons\coop.addon` with 7-Zip and drag
    `zzz_soc_coop_fixes.db` into it. Back up `coop.addon` first.
@@ -84,8 +89,11 @@ This is one of the projects in [coop-anything](https://github.com/cranebeaker/co
 ## Credits
 
 - **Shadow of COOP** by Arcanum Team. This patch only exists because of their add-on.
+  Official pages: [VK](https://vk.com/shadowofcoop), [Discord](https://discord.gg/bE4D7G4jAK),
+  [wiki page with downloads](https://xrmpe.fandom.com/ru/wiki/S.T.A.L.K.E.R._Shadow_of_COOP).
 - **X-Ray Multiplayer Extension (xrMPE)** by the xrMPE team, launcher by M4dMurloc:
-  https://github.com/M4dMurloc/xrMPE_Launcher_Release
+  [launcher releases](https://github.com/M4dMurloc/xrMPE_Launcher_Release/releases),
+  [xrMPE wiki](https://xrmpe.fandom.com/ru/wiki/).
 - **S.T.A.L.K.E.R.: Shadow of Chernobyl** by GSC Game World.
 
 ## License
