@@ -1,0 +1,31 @@
+-- Sarcophagus FPS settings, read once from <game folder>\sarcophagus_fps.txt (host only).
+-- Lines like "corpse_limit = 30". Missing file or values = defaults below.
+local defaults = { corpse_limit = 30, sarcophagus_corpse_limit = 12, sarcophagus_wave_percent = 55 }
+local values = nil
+
+local function load()
+	values = {}
+	for k, v in pairs(defaults) do values[k] = v end
+	local from = "defaults"
+	local ok = pcall(function()
+		local path = getFS():update_path("$fs_root$", "sarcophagus_fps.txt")
+		local f = io and io.open(path, "r")
+		if f == nil then return end
+		for line in f:lines() do
+			local k, v = string.match(line, "^%s*([%w_]+)%s*=%s*(%d+)")
+			if k ~= nil and defaults[k] ~= nil then
+				values[k] = tonumber(v)
+				from = path
+			end
+		end
+		f:close()
+	end)
+	if not ok then from = "defaults (file read failed)" end
+	printf_msg("[SAR_FPS] corpse_limit=%d sarcophagus_corpse_limit=%d sarcophagus_wave_percent=%d (from %s)",
+		values.corpse_limit, values.sarcophagus_corpse_limit, values.sarcophagus_wave_percent, from)
+end
+
+function get(key)
+	if values == nil then load() end
+	return values[key]
+end

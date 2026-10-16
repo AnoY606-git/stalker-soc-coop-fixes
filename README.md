@@ -41,9 +41,21 @@ To uninstall, open `coop.addon` with 7-Zip again and delete `zzz_soc_coop_fixes.
   CNPP-2 loads, caused by breakable-object models the levels reference but never shipped. Small
   stand-in models fix this on all 18 levels.
 
-Optional: `optional/corpse_cap_30` keeps 30 corpses instead of 300 for better FPS in the big
-Monolith fights. Build with `python build.py --corpse-cap-30`. Everyone on the server must use
-the same build.
+## Optional: Sarcophagus FPS fix (for weaker PCs)
+
+If your FPS drops hard in the Sarcophagus and CNPP Monolith fights, download
+`SoC_COOP_fixes_plus_Sarcophagus_FPS.zip` from [Releases](../../releases) instead. It is the same
+patch with the FPS fix built in, so it is still one file (`zzz_soc_coop_fixes.db`). It:
+
+- keeps at most 12 corpses in the Sarcophagus (30 on other levels, instead of 300);
+- makes the Monolith waves in the Sarcophagus smaller (55% of the original squads; the Preacher
+  and the fanatics are unchanged);
+- lowers NPC sight range to 40-80 m (the add-on had 100-300 m);
+- puts the Monolith on the lighter vanilla model (same armour).
+
+The host can change the numbers in `sarcophagus_fps.txt` (in the zip) with Notepad: put it in
+`X-Ray Multiplayer Extension\game\`, edit, restart the server. Only the host needs that file;
+every player needs the same `.db`. Thanks to Прапор for testing the settings.
 
 ## Status
 
@@ -55,8 +67,10 @@ Tested automatically on the real game:
 
 ## Known issues
 
-- FPS can still drop in very large Monolith firefights. It is CPU-bound (AI vision and physics),
-  and the optional corpse cap helps only somewhat.
+- FPS can still drop in very large Monolith firefights, mostly on the server. The optional
+  Sarcophagus FPS fix helps a lot. If you host on the same PC you play on, capping the game's FPS
+  to 60-90 (NVIDIA panel or vsync) also leaves more CPU for the server. Extra mods in a loose
+  `gamedata` folder make it worse.
 
 ## How it works
 
@@ -68,8 +82,8 @@ add-on, which is why every player needs an identical copy. Each fix lives in its
 ## Building and tests
 
 ```
-python build.py                 # writes build/zzz_soc_coop_fixes.db
-python build.py --corpse-cap-30 # same, with the optional corpse cap
+python build.py                    # writes build/zzz_soc_coop_fixes.db
+python build.py --sarcophagus-fps # same, with the optional Sarcophagus FPS fix
 ```
 
 `tools/` holds the archive reader (`xdb.py`, LZHUF index + LZO1X data), `extract.py`, `pack.py`,

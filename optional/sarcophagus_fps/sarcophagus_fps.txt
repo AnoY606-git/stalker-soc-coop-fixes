@@ -1,0 +1,13 @@
+; Sarcophagus FPS settings (optional) / Настройки ФПС для Саркофага (необязательно)
+; Only the HOST needs this file, in: X-Ray Multiplayer Extension\game\  (next to fsgame.ltx)
+; Нужен только ХОСТУ, положить в: X-Ray Multiplayer Extension\game\  (рядом с fsgame.ltx)
+; Without this file the values below are used anyway. / Без файла всё равно используются эти значения.
+
+; Corpses kept on all other levels / Лимит трупов на остальных локациях
+corpse_limit = 30
+
+; Corpses kept in the Sarcophagus / Лимит трупов в Саркофаге
+sarcophagus_corpse_limit = 12
+
+; Monolith wave size in the Sarcophagus, percent (100 = original) / Размер волн Монолита в Саркофаге, %
+sarcophagus_wave_percent = 55

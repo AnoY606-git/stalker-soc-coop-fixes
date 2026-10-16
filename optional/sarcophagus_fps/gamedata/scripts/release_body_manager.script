@@ -56,6 +56,14 @@ function Crelease_body:__init()
 	end
 end
 
+-- Corpse limits come from sarcophagus_fps.txt (see sar_fps_cfg.script).
+function Crelease_body:max_count()
+	if level.name() == "coop_l11_sarcofag" then
+		return sar_fps_cfg.get("sarcophagus_corpse_limit")
+	end
+	return sar_fps_cfg.get("corpse_limit")
+end
+
 function Crelease_body:moving_dead_body(obj)
 	printf("current body name ["..obj:name().."]")
 	printf("-------table-------")
@@ -65,7 +73,7 @@ function Crelease_body:moving_dead_body(obj)
 	local object_id = obj:id()
 	if self:inspection_result(obj) then
 		printf("inspection_result return  ->  true")
-		if #self.release_objects_table <= self.body_max_count then
+		if #self.release_objects_table <= self:max_count() then
 			add_to_release_table(self.release_objects_table, object_id)
 			return
 		else
@@ -76,9 +84,9 @@ function Crelease_body:moving_dead_body(obj)
 end
 
 function Crelease_body:try_to_release()
-	printf("dead body -> ["..self.body_max_count.."]")
+	printf("dead body -> ["..self:max_count().."]")
 	local pos_in_table = nil
-	local overflow_count = #self.release_objects_table - self.body_max_count
+	local overflow_count = #self.release_objects_table - self:max_count()
 	for i = 1, overflow_count do
 		for k, v in pairs(db.mp_actors) do
 			if v ~= nil then
