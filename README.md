@@ -47,16 +47,11 @@ the same build.
 
 ## Status
 
-Proven by automated tests on the real game:
+Tested automatically on the real game:
 
 - All 18 levels boot on a dedicated server with a local client and no crash (`tools/boottest.ps1`).
 - An in-engine self-test script checks every fix from inside the running game: 20 of 20 pass
   (`tests/coop_selftest.script`).
-
-Not yet proven:
-
-- A full story run driven by scripts from start to finish.
-- Two clients tested automatically at the same time.
 
 ## Known issues
 
