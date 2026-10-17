@@ -37,6 +37,8 @@ To uninstall, open `coop.addon` with 7-Zip again and delete `zzz_soc_coop_fixes.
 - X18: Barman refusing the documents when players split them up.
 - The Hunter's family shotgun never spawning.
 - Arena: Arnie only saying "talk to the boss", and the teleport to Arnie on every Bar visit.
+- Crash near the Sea Urchin and Kolobok artifacts on the DX9 renderers ("Shader 'models\water' not
+  found in library"; their model used a shader that does not exist).
 - **True ending unlocked:** crash entering the Monolith control bunker and the server crash when
   CNPP-2 loads, caused by breakable-object models the levels reference but never shipped. Small
   stand-in models fix this on all 18 levels.
