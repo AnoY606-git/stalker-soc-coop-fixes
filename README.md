@@ -1,5 +1,7 @@
 # Shadow of COOP fixes
 
+[![Discord](https://img.shields.io/badge/Discord-chat%20and%20help-5865F2?logo=discord&logoColor=white)](https://discord.gg/EXGB49R82t)
+
 Unofficial bug-fix patch for **Shadow of COOP 8.0**, the S.T.A.L.K.E.R.: Shadow of Chernobyl
 co-op add-on for the X-Ray Multiplayer Extension (xrMPE). It fixes crashes and stuck quests and
 unlocks the true ending.
