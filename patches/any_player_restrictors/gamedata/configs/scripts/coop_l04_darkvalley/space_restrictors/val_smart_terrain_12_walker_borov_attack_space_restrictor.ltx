@@ -1,0 +1,10 @@
+[logic]
+active 									= sr_idle@val_smart_terrain_12_walker_borov_attack_idle
+
+[sr_idle@val_smart_terrain_12_walker_borov_attack_idle]
+on_any_player_inside 						= sr_idle@save %+VAL_SMART_TERRAIN_12_WALKER_BOROV_ATTACK_INFO% 
+
+[sr_idle@save]
+on_info  								= {+VAL_SMART_TERRAIN_12_BANDIT_1_SQUAD_DEAD +BAR_START_SNEAK_INTO_THE_X_18_LAB_QUEST_TASK_INFO} sr_idle@nil %=scenario_autosave(st_kill_borov)% 
+
+[sr_idle@nil]

@@ -1,0 +1,19 @@
+; Shadow of COOP co-op balance settings. Read when the server starts (scripts\coop_balance.script).
+; Everything here is a tuning knob; 1 player with the defaults below is NOT changed for ammo, and damage is only raised.
+
+[damage]
+; Extra damage that weapons of PLAYERS deal to every NPC and mutant. 1.0 = off, 1.5 = +50%, 2.0 = +100%.
+; (Maintainer request: raise by +0.5 to +1.0, tune here.) NPC against NPC and mutant against NPC fights are not affected.
+player_damage_mult = 1.5
+; Units of the script "hit amount" per unit of engine hit power. The vanilla scripts compare the amount with health*100,
+; so the amount is a percentage of full health: extra health lost = amount * (mult - 1) * hit_amount_scale. Change only if
+; the extra damage looks 100 times too weak or too strong in the log (cb.log).
+hit_amount_scale = 0.01
+log = true
+
+[ammo]
+; Trader ammo stock per extra player: every extra player adds this fraction of the trader's normal ammo stock once
+; (2 players with 1.0 = double stock, 4 players = four times). 0 = off. Fractions are rolled as a chance for one more batch.
+ammo_per_extra_player = 1.0
+; Player count is capped here (stock is never reduced when players leave).
+max_players = 4

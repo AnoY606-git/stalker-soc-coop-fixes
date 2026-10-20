@@ -1,0 +1,9 @@
+-- Appended to game_cl.script (xrMPE .dscript). Applies the player's lighting preset (lumscale_presets.script) once per
+-- client when the game starts. Client-side only: it runs console commands locally and touches no shared state.
+local lp_orig_ReadStartGameInfo = ReadStartGameInfo
+function ReadStartGameInfo(packet)
+	lp_orig_ReadStartGameInfo(packet)
+	if lumscale_presets ~= nil then
+		pcall(lumscale_presets.on_game_start)
+	end
+end

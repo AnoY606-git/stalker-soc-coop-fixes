@@ -1,0 +1,202 @@
+---------------------------------------------------------------------------------------------------
+-- Mutant corpse loot, the original Shadow of Chernobyl way: search the corpse, take the part.
+-- Patch mutant_loot (Shadow of COOP fixes). Own implementation. The idea of a "search" tip + use callback on dead
+-- mutants is the one the MSO adaptation (B4rs1k, original MSO by Salaam) shows for xrMPE; the rest is new code.
+--
+-- How it works
+--   * Server, when a mutant dies (bind_monster death callback): ONE roll with the SoC chance (configs\misc\mutant_loot.ltx,
+--     0.2 for the SoC parts). If it succeeds the corpse "carries" the part: the shared story flag MLOOT_<corpse id>_<PART>
+--     is given. Story flags are saved with the game and sent to every player, so all players see the same corpse content.
+--   * Every machine: a dead mutant that can carry a part gets the tip "Search" and a use callback (bind_monster).
+--   * Player presses Use on the corpse: a small window lists what the corpse carries (the xrMPE engine cannot open the
+--     inventory window of a mutant: monsters are no inventory owners there). Take sends "mloot_take_<id>" to the server.
+--   * Server: takes the flag away FIRST, then creates the part inside the taker's inventory. A second player (or a
+--     second click) finds no flag and gets nothing: one part per corpse, no duplication.
+---------------------------------------------------------------------------------------------------
+
+local PREFIX = "MLOOT_"
+
+-- test hooks (tests only): chance override, and a log of the rolls
+test = { chance = nil, rolls = {}, armed = {}, arm_err = {}, takes = {} }
+
+local rolled = {}      -- server: corpse ids rolled in this session
+local armed_fn = {}    -- server: corpse ids that have a game_sv function
+local cfg = nil
+
+local function get_cfg()
+	if cfg == nil then cfg = ini_file("misc\\mutant_loot.ltx") end
+	return cfg
+end
+
+function dbg(s)
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "mutant_loot.log"), "a")
+		if f then f:write(string.format("[%8.1f] %s\n", time_global() / 1000, tostring(s))); f:close() end
+	end)
+end
+
+-- the part section a mutant of this section can carry (PartSpawnName of the add-on's m_*.ltx), or nil
+function part_of(obj)
+	local ini = system_ini()
+	local s = obj:section()
+	if ini:line_exist(s, "PartSpawnName") then
+		local p = ini:r_string(s, "PartSpawnName")
+		if p ~= nil and p ~= "" then return p end
+	end
+	return nil
+end
+
+function chance_for(part)
+	if test.chance ~= nil then return test.chance end
+	local c = get_cfg()
+	if c:section_exist("chance") and c:line_exist("chance", part) then
+		return c:r_float("chance", part)
+	end
+	return 0
+end
+
+function flag_name(id, part)
+	return string.upper(PREFIX .. id .. "_" .. part)
+end
+
+-- parts the corpse <id> still carries (story flags, so the same on every machine)
+function parts_on(id)
+	local out = {}
+	local sf = story_flags.story_flags
+	if sf == nil then return out end
+	local pre = PREFIX .. id .. "_"
+	local n = string.len(pre)
+	for k, v in pairs(sf) do
+		if v == true and string.sub(k, 1, n) == pre then
+			out[#out + 1] = string.lower(string.sub(k, n + 1))
+		end
+	end
+	table.sort(out)
+	return out
+end
+
+---------------------------------------------------------------------------------------------------
+-- server side
+---------------------------------------------------------------------------------------------------
+function ensure_fn(id)
+	if armed_fn[id] then return end
+	local ok = pcall(function()
+		game_sv["mloot_take_" .. id] = function(actor_id) mutant_loot.take(actor_id, id) end
+	end)
+	if ok then armed_fn[id] = true end
+end
+
+-- called from the mutant's binder when it dies (server only)
+function on_death(obj, who)
+	if not OnServer() then return false end
+	local id = obj:id()
+	if rolled[id] then return false end
+	rolled[id] = true
+	local part = part_of(obj)
+	if part == nil then return false end
+	local ch = chance_for(part)
+	local r = math.random()
+	local win = r < ch
+	local wn = nil
+	if who ~= nil then pcall(function() wn = who:name() end) end
+	test.rolls[id] = { part = part, chance = ch, r = r, win = win, who = wn }
+	dbg(string.format("death id=%d section=%s part=%s chance=%.2f roll=%.3f -> %s", id, obj:section(), part, ch, r, tostring(win)))
+	if win then
+		story_flags.give_flag(flag_name(id, part))
+		ensure_fn(id)
+	end
+	return win
+end
+
+-- a monster object that spawns alive cannot carry anything: drop flags of an old corpse that had the same id
+function on_alive_spawn(id)
+	if not OnServer() then return end
+	rolled[id] = nil
+	local p = parts_on(id)
+	for i = 1, #p do story_flags.disable_flag(flag_name(id, p[i])) end
+end
+
+-- the actor <actor_id> takes everything the corpse <id> carries (runs on the server)
+function take(actor_id, id)
+	if not OnServer() then return 0 end
+	local se_a = alife():object(actor_id)
+	local se_c = alife():object(id)
+	if se_a == nil or se_c == nil then return 0 end
+	local c = get_cfg()
+	local maxd = 6
+	if c:section_exist("settings") and c:line_exist("settings", "take_distance") then maxd = c:r_float("settings", "take_distance") end
+	if test.take_distance ~= nil then maxd = test.take_distance end
+	-- measure with the live objects when they exist (the entity positions agree within a metre)
+	local d_se = se_a.position:distance_to(se_c.position)
+	local d = d_se
+	local o_a, o_c = db.mp_actors[actor_id], level.object_by_id(id)
+	if o_a ~= nil and o_c ~= nil then d = o_a:position():distance_to(o_c:position()) end
+	test.last_dist = { se = d_se, obj = d }
+	if o_a ~= nil and o_c ~= nil then
+		local pa, pc = o_a:position(), o_c:position()
+		dbg(string.format("take dist se=%.1f obj=%.1f actor(%.1f %.1f %.1f) corpse(%.1f %.1f %.1f) se_corpse(%.1f %.1f %.1f)", d_se, d, pa.x, pa.y, pa.z, pc.x, pc.y, pc.z, se_c.position.x, se_c.position.y, se_c.position.z))
+	else
+		dbg(string.format("take dist se=%.1f (live objects missing: actor %s corpse %s)", d_se, tostring(o_a ~= nil), tostring(o_c ~= nil)))
+	end
+	if d > maxd then
+		dbg(string.format("take refused actor=%d corpse=%d too far", actor_id, id))
+		test.takes[#test.takes + 1] = { actor = actor_id, corpse = id, n = 0, why = "far", dist = d }
+		return 0
+	end
+	local parts = parts_on(id)
+	for i = 1, #parts do
+		story_flags.disable_flag(flag_name(id, parts[i]))     -- first: nobody else can take it any more
+	end
+	for i = 1, #parts do
+		alife():create(parts[i], se_a.position, se_a.m_level_vertex_id, se_a.m_game_vertex_id, actor_id)
+		dbg(string.format("take actor=%d corpse=%d part=%s", actor_id, id, parts[i]))
+	end
+	test.takes[#test.takes + 1] = { actor = actor_id, corpse = id, n = #parts, why = (#parts > 0) and "ok" or "empty", dist = d, dist_se = d_se }
+	return #parts
+end
+
+---------------------------------------------------------------------------------------------------
+-- every machine: tip + use callback on dead mutants
+---------------------------------------------------------------------------------------------------
+function tick_dead(obj, st)
+	if st.mloot_armed then
+		if OnServer() and not st.mloot_fn and #parts_on(obj:id()) > 0 then
+			st.mloot_fn = true
+			ensure_fn(obj:id())     -- after a load the game_sv function is gone: bring it back
+		end
+		return
+	end
+	if obj:alive() then return end
+	if part_of(obj) == nil then return end
+	st.mloot_armed = true
+	local ok, err = pcall(function()
+		obj:set_callback(callback.use_object, mutant_loot.on_use)
+		obj:set_tip_text("st_mutant_loot_tip")
+	end)
+	if ok then test.armed[obj:id()] = true else test.arm_err[obj:id()] = tostring(err) end
+end
+
+-- use callback (runs on the machine of the player who pressed Use)
+function on_use(obj, who)
+	if who ~= nil and LocalActor() ~= nil and who:id() ~= LocalActor() then return end
+	dbg("use corpse " .. tostring(obj:id()))
+	ui_mutant_loot.open(obj:id())
+end
+
+function request_take(id)
+	game_cl.executeFunctionOnServer("mloot_take_" .. id)
+end
+
+-- client binder for machines that are not the server (the full binder runs on the server only)
+class "mloot_client_binder" (object_binder)
+function mloot_client_binder:__init(obj) super(obj)
+	self.mloot_armed = false
+end
+function mloot_client_binder:update(delta)
+	object_binder.update(self, delta)
+	mutant_loot.tick_dead(self.object, self)
+end
+
+function client_binder(obj)
+	return mloot_client_binder(obj)
+end

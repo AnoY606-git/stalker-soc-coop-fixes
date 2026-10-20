@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_start_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_5_dialog">
+                <dont_has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_5_DIALOG_STOP_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_5_dialog_1</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_5_dialog_1</text>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_5_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_5_dialog_0</text>
+                <give_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_5_DIALOG_STOP_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_4_dialog">
+                <dont_has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_4_DIALOG_STOP_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_4_dialog_1</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_4_dialog_1</text>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_4_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_4_dialog_0</text>
+                <give_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_4_DIALOG_STOP_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_3_dialog">
+                <dont_has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_3_DIALOG_STOP_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_3_dialog_1</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_3_dialog_1</text>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_3_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_3_dialog_0</text>
+                <give_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_3_DIALOG_STOP_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_2_dialog">
+                <dont_has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_2_DIALOG_STOP_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_2_dialog_1</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_2_dialog_1</text>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_2_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_2_dialog_0</text>
+                <give_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_2_DIALOG_STOP_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_1_dialog">
+                <dont_has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_1_DIALOG_STOP_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_1_dialog_1</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_1_dialog_1</text>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_1_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_1_dialog_0</text>
+                <give_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_1_DIALOG_STOP_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="con_smart_terrain_13_ecolog_representative_awareness_6_dialog">
+                <has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_1_DIALOG_STOP_INFO</has_flag>
+                <has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_2_DIALOG_STOP_INFO</has_flag>
+                <has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_3_DIALOG_STOP_INFO</has_flag>
+                <has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_4_DIALOG_STOP_INFO</has_flag>
+                <has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_5_DIALOG_STOP_INFO</has_flag>
+                <dont_has_flag>CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_6_DIALOG_STOP_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_6_dialog_0</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_6_dialog_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_6_dialog_1</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_6_dialog_1</text>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_scn_monolith.oso_refuse</action>
+
+                <text>con_smart_terrain_13_ecolog_representative_awareness_6_dialog_2</text>
+            </phrase>
+            <phrase id="3">
+                <action>coop_scn_monolith.oso_join</action>
+
+                <text>scn_monolith_join_phrase</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+</game_dialogs>

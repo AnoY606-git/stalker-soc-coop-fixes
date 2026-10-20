@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_dev_flash_sidorovich_name_short">
+		<text>Flash drive</text>
+	</string>
+	<string id="st_dev_flash_sidorovich_descr">
+		<text>Sidorovich really needs this flash drive. I wonder what could be so important on it?</text>
+	</string>
+	<string id="st_dev_flash_sidorovich_name">
+		<text>Nimble's flash drive</text>
+	</string>
+	<string id="st_agr_safe_container_1_name_short">
+		<text>Blue case</text>
+	</string>
+	<string id="st_agr_safe_container_1_descr">
+		<text>A blue metal case. The inscription on the lid is almost completely worn off.</text>
+	</string>
+	<string id="st_agr_safe_container_1_name">
+		<text>Blue case</text>
+	</string>	
+	<string id="st_dev_flash_agru_name_short">
+		<text>Flash drive</text>
+	</string>
+	<string id="st_dev_flash_agru_descr">
+		<text>An ordinary looking flash drive. I wonder what could be so important on it?</text>
+	</string>
+	<string id="st_dev_flash_agru_name">
+		<text>Flash drive</text>
+	</string>
+	<string id="st_dev_card_1_name_short">
+		<text>Access card</text>
+	</string>
+	<string id="st_dev_card_1_descr">
+		<text>Access card of a certain "Tikhonov Nikolai Petrovich".</text>
+	</string>
+	<string id="st_dev_card_1_name">
+		<text>Access card #1902</text>
+	</string>
+	<string id="st_dev_card_2_name_short">
+		<text>Access card</text>
+	</string>
+	<string id="st_dev_card_2_descr">
+		<text>Access card of a certain "Ivanov Peter Sergeyevich".</text>
+	</string>
+	<string id="st_dev_card_2_name">
+		<text>Access card #1918</text>
+	</string>
+	<string id="st_dev_key_name_short">
+		<text>Key</text>
+	</string>
+	<string id="st_dev_key_descr">
+		<text>Old rusty key to the bandit warehouse.</text>
+	</string>
+	<string id="st_dev_key_name">
+		<text>Key to bandit warehouse</text>
+	</string>
+	<string id="st_dev_document_1_x18_name_short">
+		<text>Documents #1</text>
+	</string>
+	<string id="st_dev_document_1_x18_descr">
+		<text>A thick stack of scientific papers. Solid terms, formulas, and diagrams. The number 3826 is written on the cover.</text>
+	</string>
+	<string id="st_dev_document_1_x18_name">
+		<text>Folder with documents #1</text>
+	</string>
+	<string id="st_dev_document_2_x18_name_short">
+		<text>Documents #2</text>
+	</string>
+	<string id="st_dev_document_2_x18_descr">
+		<text>A thick stack of scientific papers. Solid terms, formulas, and diagrams. The number 4238 is written on the cover.</text>
+	</string>
+	<string id="st_dev_document_2_x18_name">
+		<text>Folder with documents #2</text>
+	</string>	
+	<string id="st_dev_document_3_x18_name_short">
+		<text>Documents #3</text>
+	</string>
+	<string id="st_dev_document_3_x18_descr">
+		<text>A thick stack of scientific papers. Solid terms, formulas, and diagrams.</text>
+	</string>
+	<string id="st_dev_document_3_x18_name">
+		<text>Folder with documents #3</text>
+	</string>	
+	<string id="st_dev_psi_protection_helmet_name_short">
+		<text>Tuned psi-helmet</text>
+	</string>
+	<string id="st_dev_psi_protection_helmet_descr">
+		<text>A tuned prototype developed by Sakharov for protection against PSI-emissions.</text>
+	</string>
+	<string id="st_dev_psi_protection_helmet_name">
+		<text>Psi-helmet</text>
+	</string>
+	<string id="st_yan_psi_detector_name_short">
+		<text>Scientific device</text>
+	</string>
+	<string id="st_yan_psi_detector_descr">
+		<text>A device for measuring psi-activity. A solitary on/off button and frequency regulator are located on its front panel. The device looks worn and unreliable, but you can feel it was created with love.</text>
+	</string>
+	<string id="st_yan_psi_detector_name">
+		<text>Sakharov's PKS</text>
+	</string>	
+	<string id="st_bun_doc_1_name_short">
+		<text>Notebook sheet</text>
+	</string>
+	<string id="st_bun_doc_1_descr">
+		<text>A notebook sheet with the single entry "29018".</text>
+	</string>
+	<string id="st_bun_doc_1_name">
+		<text>Notebook sheet</text>
+	</string>
+	<string id="st_bun_doc_2_name_short">
+		<text>Notebook sheet</text>
+	</string>
+	<string id="st_bun_doc_2_descr">
+		<text>A notebook sheet with the single entry "20115".</text>
+	</string>
+	<string id="st_bun_doc_2_name">
+		<text>Notebook sheet</text>
+	</string>
+	<string id="st_dev_decoder_name_short">
+		<text>Decoder</text>
+	</string>
+	<string id="st_dev_decoder_descr">
+		<text>Something like a powerful electronic lockpick. It looks like it was created to hack a specific electronic lock. Oddly enough, the design does not imply universality - it was created for a specific lock and is not capable of cracking any other codes.</text>
+	</string>
+	<string id="st_dev_decoder_name">
+		<text>Decoder</text>
+	</string>
+
+
+	
+	<string id="st_mutant_chimera_part_name_short">
+		<text>Claw</text>
+	</string>
+	<string id="st_mutant_chimera_part_descr">
+		<text>Despite the fact that this creature's claw can easily cut through several sheets of Kevlar, they often wear out due to extreme conditions of use, and, just like its teeth, simply fall out, being replaced by new ones, which makes them not a very expensive commodity.</text>
+	</string>
+	<string id="st_mutant_chimera_part_name">
+		<text>Chimera Claw</text>
+	</string>
+	<string id="st_mutant_controller_part_name_short">
+		<text>Hand</text>
+	</string>
+	<string id="st_mutant_controller_part_descr">
+		<text>It is believed that the controller's hands, along with its brain, endow this creature with such abilities as, for example, directed mental attacks.</text>
+	</string>
+	<string id="st_mutant_controller_part_name">
+		<text>Controller's Hand</text>
+	</string>
+	<string id="st_mutant_gigant_part_name_short">
+		<text>Hand</text>
+	</string>
+	<string id="st_mutant_gigant_part_descr">
+		<text>A huge, muscular hand of a pseudogiant, which, nevertheless, is one of the smallest parts of this creature's body. It is of no use, but is highly valued by collectors for its rarity.</text>
+	</string>
+	<string id="st_mutant_gigant_part_name">
+		<text>Pseudogiant's Hand</text>
+	</string>
+	<string id="st_mutant_tushkano_part_name_short">
+		<text>Head</text>
+	</string>
+	<string id="st_mutant_tushkano_part_descr">
+		<text>Eyes, ears, mouth and nose of a tushkano in a tiny package. Not very useful, not very valuable.</text>
+	</string>
+	<string id="st_mutant_tushkano_part_name">
+		<text>Tushkano Head</text>
+	</string>
+	<string id="st_mutant_boar_part_name_short">
+		<text>Hoof</text>
+	</string>
+	<string id="st_mutant_boar_part_descr">
+		<text>The boar's hoof is used by scientists to manufacture a number of drugs, the most common of which is anti-radiation serum.</text>
+	</string>
+	<string id="st_mutant_boar_part_name">
+		<text>Boar Hoof</text>
+	</string>
+	<string id="st_mutant_dog_part_name_short">
+		<text>Tail</text>
+	</string>
+	<string id="st_mutant_dog_part_descr">
+		<text>The resistance of mutated dog skin to chemical and electrical effects has long attracted the attention of scientists. Due to the lack of fatty deposits, dog tails are most suitable for laboratory research.</text>
+	</string>
+	<string id="st_mutant_dog_part_name">
+		<text>Dog Tail</text>
+	</string>	
+	<string id="st_mutant_flesh_part_name_short">
+		<text>Eye</text>
+	</string>
+	<string id="st_mutant_flesh_part_descr">
+		<text>After mutation, the enlarged eye of the Flesh acquired a number of properties, the most useful of which is the ability to regenerate the lens. The details of this mechanism are not exactly known, but this discovery promises a revolution in medicine. You can make your contribution to science by selling a Flesh eye to scientists for research.</text>
+	</string>
+	<string id="st_mutant_flesh_part_name">
+		<text>Flesh Eye</text>
+	</string>
+	<string id="st_mutant_krovosos_part_name_short">
+		<text>Tentacles</text>
+	</string>
+	<string id="st_mutant_krovosos_part_descr">
+		<text>Bloodsucker tentacles contain a special gland: it secretes an enzyme that dissolves the victim's skin and simultaneously prevents blood clotting. If scientists manage to determine the structure of the enzyme, this will help achieve a breakthrough in medicine.</text>
+	</string>
+	<string id="st_mutant_krovosos_part_name">
+		<text>Bloodsucker Tentacles</text>
+	</string>
+	<string id="st_mutant_psevdodog_part_name_short">
+		<text>Tail</text>
+	</string>
+	<string id="st_mutant_psevdodog_part_descr">
+		<text>The resistance of mutated dog skin to chemical and electrical effects has long attracted the attention of scientists. Due to the lack of fatty deposits, dog tails are most suitable for laboratory research.</text>
+	</string>
+	<string id="st_mutant_psevdodog_part_name">
+		<text>Pseudodog Tail</text>
+	</string>	
+	<string id="st_mutant_snork_part_name_short">
+		<text>Foot</text>
+	</string>
+	<string id="st_mutant_snork_part_descr">
+		<text>A snork's foot, unlike a human's, contains a larger number of tendons possessing amazing elasticity. This explains the ability of snorks to make incredible jumps.</text>
+	</string>
+	<string id="st_mutant_snork_part_name">
+		<text>Snork Foot</text>
+	</string>	
+	<string id="st_mutant_burer_part_name_short">
+		<text>Hand</text>
+	</string>
+	<string id="st_mutant_burer_part_descr">
+		<text>Burer hands are definitely connected to their abilities to move objects, create protective fields, and attack opponents with mental waves. They represent great value for scientists.</text>
+	</string>
+	<string id="st_mutant_burer_part_name">
+		<text>Burer Hand</text>
+	</string>	
+	<string id="st_mutant_zombie_part_name_short">
+		<text>Hand</text>
+	</string>
+	<string id="st_mutant_zombie_part_descr">
+		<text>The dirty and vile hand of a zombie. Having lost everything except primitive instincts, the zombified use them as weapons.</text>
+	</string>
+	<string id="st_mutant_zombie_part_name">
+		<text>Zombie Hand</text>
+	</string>	
+	<string id="jup_b200_tech_materials_acetone">
+		<text>Can of Rosin</text>
+	</string>
+	<string id="jup_b200_tech_materials_acetone_descr">
+		<text>A can of rosin used for soldering. A rare thing in the Zone: usually, fragments of broken items here are connected using electrical tape.</text>
+	</string>
+	<string id="jup_b200_tech_materials_capacitor">
+		<text>Pack of capacitors</text>
+	</string>
+	<string id="jup_b200_tech_materials_capacitor_descr">
+		<text>A pack of capacitors, which in themselves are not that rare in the Zone. But the capacity claimed on these parts is so high that it is difficult to imagine their purpose.</text>
+	</string>
+	<string id="jup_b200_tech_materials_textolite">
+		<text>Textolite base</text>
+	</string>
+	<string id="jup_b200_tech_materials_textolite_descr">
+		<text>Textolite - the base of a printed circuit board. What a radio amateur feels at the sight of an untouched textolite plate is comparable perhaps only to the feelings of a writer over a clean sheet.</text>
+	</string>
+	<string id="jup_b200_tech_materials_transistor">
+		<text>Box of transistors</text>
+	</string>
+	<string id="jup_b200_tech_materials_transistor_descr">
+		<text>A box of high-quality transistors - semiconductor parts capable of generating, converting, and amplifying electrical oscillations. The limit of dreams for a radio technician, if such a person miraculously ended up in the Zone.</text>
+	</string>
+	<string id="jup_b200_tech_materials_wire">
+		<text>Coil of copper wire</text>
+	</string>
+	<string id="jup_b200_tech_materials_wire_descr">
+		<text>Copper is an excellent conductor - and, concurrently, a valuable non-ferrous metal. In view of this fact, such wire is a great rarity: all available reserves of copper in the Zone were found and handed over for scrap back in the mid-1990s.</text>
+	</string>
+	<string id="st_crazy_flash_name"><text>Madman's flash drive</text></string>
+	<string id="st_crazy_flash_descr"><text>A flash drive is a handy device for carrying information.</text></string>
+</string_table>

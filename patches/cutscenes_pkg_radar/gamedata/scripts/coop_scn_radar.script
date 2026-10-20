@@ -1,0 +1,86 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "radar": Brain Scorcher shutdown + the Strelok "sarcophagus" dream (original SoC tutorial radar_dream).
+-- Registers the scene with the Scene Director (coop_scenes). Runs on every machine at load time.
+--
+-- Original SoC logic (bun_deactivate_radar.ltx:5-20, xr_effects.script:1958-1964):
+--   +bar_deactivate_radar_done -> sound affects\psy_blackout (stereo pair, 16.4 s) + radar_stop.anm
+--   10.5 s: disable_ui, +bun_actor_fall, agr_u_fade.ppe
+--   sound end: start_radar_dream (movie radar_dream) +sar_monolith_call +bun_antenna_off
+--   end_radar_dream (+bun_patrol_start): prison_1.anm + sound monolith_call_1; sound end: enable_ui
+-- Mod equivalent: the Brain Scorcher of the mod (psy antenna restrictors, antenna particles, helicopter) turns
+-- off when X10_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO and X10_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO are both
+-- set (rad_psi_radiotion_*, rad_antenna_particle_* ltx). That is the moment the dream starts. The antenna-off
+-- effect itself is the mod's own flag logic, so it is applied once by those flags; this scene only adds the
+-- original cut-scene on top and never gives or removes a flag.
+-------------------------------------------------------------------------------------------------------
+
+local ID = "radar_stop"
+local SND_CALL = "characters_voice\\scenario\\coop_l11_sarcofag\\monolith_call_1"   -- the add-on's copy of SoC sarcofag\monolith_call_1
+
+local function ex_anim(p) return getFS():exist("$game_anims$", p) end
+local function ex_snd(p) return getFS():exist("$game_sounds$", p .. ".ogg") end
+
+local function pp_pick(list)
+	for _, n in ipairs(list) do
+		if ex_anim(n .. ".ppe") then return n end
+	end
+	return nil
+end
+
+local function build(var, env, use_movie)
+	local st = {}
+	local function add(t) st[#st + 1] = t end
+
+	-- t = 0: affects\psy_blackout (l/r pair; CoP lacks it, then tinnitus3a stands in) + radar_stop.anm
+	if ex_snd("affects\\psy_blackout_l") then
+		add { ["do"] = "snd2d", path = "affects\\psy_blackout_l" }
+		add { ["do"] = "snd2d", path = "affects\\psy_blackout_r" }
+	else
+		add { ["do"] = "snd2d", path = "affects\\tinnitus3a" }
+	end
+	add { ["do"] = "cam", anm = "radar_stop", id = 9021 }
+
+	-- t = 10.5 s: disable_ui + agr_u_fade
+	add { ["do"] = "ui_off", at = 10500 }
+	local fade = pp_pick({ "agr_u_fade", "black_screen" })
+	if fade then add { ["do"] = "pp", name = fade, id = 9022 } end
+
+	-- t = 16.5 s (end of the psy_blackout sound): the dream
+	if use_movie then
+		add { ["do"] = "tutorial", name = "soc_dream_sarcofag", wait = true, cap_ms = 60000, at = 16500 }
+	else
+		add { ["do"] = "tutorial", name = "scn_radar_card", wait = false, at = 16500 }
+		add { ["do"] = "wait", ms = 14000 }
+		add { ["do"] = "tutorial_stop" }
+	end
+
+	-- end_radar_dream: prison_1.anm + monolith_call_1; enable_ui when the call ends
+	add { ["do"] = "pp_stop", id = 9022 }
+	add { ["do"] = "cam", anm = "prison_1", id = 9023 }
+	add { ["do"] = "snd2d", path = SND_CALL, wait = true, cap_ms = 15000 }
+	add { ["do"] = "ui_on" }
+	return st
+end
+
+coop_scenes.register {
+	id        = ID,
+	kind      = "sequence",
+	level     = "coop_l09_x10",
+	once      = true,
+	skip      = "majority",                 -- contains a movie
+	-- 16.5 s + ~40 s movie + ~10.5 s call
+	length_ms = 68000,
+	grace_ms  = 20000,
+
+	-- SERVER: both X10 levers pulled, i.e. the moment the mod switches the Brain Scorcher off
+	trigger = function(ctx)
+		return ctx.flag("X10_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO") and ctx.flag("X10_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO")
+	end,
+
+	need = {
+		tex = { "intro\\dream_sarcofag.ogm" },
+		snd = { "characters_voice\\scenario\\video\\dream_sarcofag_l.ogg", "characters_voice\\scenario\\video\\dream_sarcofag_r.ogg" },
+	},
+	steps    = function(var, env) return build(var, env, true) end,
+	fallback = function(var, env) return build(var, env, false) end,
+}

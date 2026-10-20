@@ -1,0 +1,51 @@
+-- Generated: hand-in helpers for the find-item jobs (same pattern as dialogs_item.script).
+
+function has_rq_detector_simple(first_speaker, second_speaker)
+	local actor = db.mp_actors[LocalActor()]
+	if actor == nil then return false end
+	return actor:object("detector_simple") ~= nil
+end
+
+function take_rq_detector_simple(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "detector_simple", 1)
+end
+
+function has_rq_vodka(first_speaker, second_speaker)
+	local actor = db.mp_actors[LocalActor()]
+	if actor == nil then return false end
+	return actor:object("vodka") ~= nil
+end
+
+function take_rq_vodka(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "vodka", 1)
+end
+
+function has_rq_wpn_ak74u(first_speaker, second_speaker)
+	local actor = db.mp_actors[LocalActor()]
+	if actor == nil then return false end
+	return actor:object("wpn_ak74u") ~= nil
+end
+
+function take_rq_wpn_ak74u(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "wpn_ak74u", 1)
+end
+
+function has_rq_wpn_desert_eagle(first_speaker, second_speaker)
+	local actor = db.mp_actors[LocalActor()]
+	if actor == nil then return false end
+	return actor:object("wpn_desert_eagle") ~= nil
+end
+
+function take_rq_wpn_desert_eagle(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "wpn_desert_eagle", 1)
+end
+
+function has_rq_wpn_fort(first_speaker, second_speaker)
+	local actor = db.mp_actors[LocalActor()]
+	if actor == nil then return false end
+	return actor:object("wpn_fort") ~= nil
+end
+
+function take_rq_wpn_fort(first_speaker, second_speaker)
+	dialogs.relocate_item_section_from_actor(first_speaker, second_speaker, "wpn_fort", 1)
+end

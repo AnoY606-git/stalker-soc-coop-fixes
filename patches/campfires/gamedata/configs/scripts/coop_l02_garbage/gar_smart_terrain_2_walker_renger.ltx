@@ -1,0 +1,176 @@
+[logic@gar_smart_terrain_2_walker_renger_1]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_2_walker_renger_1_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_2_walker_renger_1_idle]
+path_walk 											= walker_renger_1_walk
+path_look 											= walker_renger_1_look
+def_state_standing 									= hide
+def_state_moving 									= walk
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_info 											= {+GAR_AMBUSH_2_END_INFO} walker@gar_smart_terrain_2_walker_renger_1_ambush
+
+[walker@gar_smart_terrain_2_walker_renger_1_ambush]
+path_walk 											= walker_renger_1_ambush_walk
+path_look 											= walker_renger_1_ambush_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_info  											= {+GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD} kamp@gar_smart_terrain_2_animpoint_2
+
+[kamp@gar_smart_terrain_2_animpoint_2]
+center_pos = -60.90, -2.30, -217.87
+radius = 2.1
+use_camp = false
+def_state_moving = walk
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= meet@gar_smart_terrain_2_animpoint_2
+
+[meet@gar_smart_terrain_2_animpoint_2]
+close_snd_hello 									= nil
+close_snd_bye 										= nil
+close_anim 											= nil
+close_victim 										= nil
+far_anim 											= nil
+far_victim 											= nil
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance									= 5
+abuse           									= false
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+meet_on_talking 									= false
+
+;================================================
+
+[logic@gar_smart_terrain_2_walker_renger_2]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_2_walker_renger_2_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_2_walker_renger_2_idle]
+path_walk 											= walker_renger_2_walk
+path_look 											= walker_renger_2_look
+def_state_standing 									= binocular
+def_state_moving 									= walk
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_info 											= {+GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_STOP_DIALOG_INFO} walker@gar_smart_terrain_2_walker_renger_2_ambush_1
+
+[walker@gar_smart_terrain_2_walker_renger_2_ambush_1]
+path_walk 											= walker_renger_2_ambush_1_walk
+path_look 											= walker_renger_2_ambush_1_look
+def_state_standing 									= threat
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_timer 											= 10000 |  %=play_sound(junkyard_1)%
+on_signal 											= sound_end | walker@gar_smart_terrain_2_walker_renger_2_ambush_1_1	%+GAR_AMBUSH_2_INFO%
+
+[walker@gar_smart_terrain_2_walker_renger_2_ambush_1_1]
+path_walk 											= walker_renger_2_ambush_1_walk
+path_look 											= walker_renger_2_ambush_1_look
+def_state_standing 									= threat
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_info 											= {+GAR_AMBUSH_2_END_INFO} walker@gar_smart_terrain_2_walker_renger_2_ambush_2
+
+[walker@gar_smart_terrain_2_walker_renger_2_ambush_2]
+path_walk 											= walker_renger_2_ambush_2_walk
+path_look 											= walker_renger_2_ambush_2_look
+def_state_standing 									= threat
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_info  											= {+GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD} kamp@gar_smart_terrain_2_animpoint_3
+
+[kamp@gar_smart_terrain_2_animpoint_3]
+center_pos = -60.90, -2.30, -217.87
+radius = 2.1
+use_camp = false
+def_state_moving = walk
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= meet@gar_smart_terrain_2_animpoint_3
+
+[meet@gar_smart_terrain_2_animpoint_3]
+close_snd_hello 									= nil
+close_snd_bye 										= nil
+close_anim 											= nil
+close_victim 										= nil
+far_anim 											= nil
+far_victim 											= nil
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance									= 5
+abuse           									= false
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+meet_on_talking 									= false
+
+;================================================
+
+[logic@gar_smart_terrain_2_walker_renger_3]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_2_walker_renger_3_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_2_walker_renger_3_idle]
+path_walk 											= walker_renger_3_walk
+path_look 											= walker_renger_3_look
+def_state_standing 									= hide
+def_state_moving 									= walk
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_info  											= {+GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD} kamp@gar_smart_terrain_2_animpoint_4
+
+[kamp@gar_smart_terrain_2_animpoint_4]
+center_pos = -60.90, -2.30, -217.87
+radius = 2.1
+use_camp = false
+def_state_moving = walk
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= meet@gar_smart_terrain_2_animpoint_4
+
+[meet@gar_smart_terrain_2_animpoint_4]
+close_snd_hello 									= nil
+close_snd_bye 										= nil
+close_anim 											= nil
+close_victim 										= nil
+far_anim 											= nil
+far_victim 											= nil
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance									= 5
+abuse           									= false
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+meet_on_talking 									= false
+
+;================================================

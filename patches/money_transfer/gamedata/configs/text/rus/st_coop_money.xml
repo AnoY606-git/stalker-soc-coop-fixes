@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="st_coop_money_caption"><text>Передача денег</text></string>
+	<string id="st_coop_money_title"><text>Передать деньги напарнику</text></string>
+	<string id="st_coop_money_balance"><text>У вас</text></string>
+	<string id="st_coop_money_to"><text>Кому:</text></string>
+	<string id="st_coop_money_next"><text>Другой игрок</text></string>
+	<string id="st_coop_money_all"><text>Всё</text></string>
+	<string id="st_coop_money_close"><text>Закрыть</text></string>
+	<string id="st_coop_money_hint"><text>Посмотрите на напарника и нажмите «Использовать», чтобы передать ему деньги. Если в прицеле никого нет, присядьте и нажмите «Использовать».</text></string>
+	<string id="st_coop_money_msg_sent"><text>Вы передали игроку %s: %s руб.</text></string>
+	<string id="st_coop_money_msg_got"><text>%s передал вам %s руб.</text></string>
+	<string id="st_coop_money_msg_nofunds"><text>Недостаточно денег, чтобы передать %s руб.</text></string>
+	<string id="st_coop_money_msg_busy"><text>Подождите немного перед следующей передачей.</text></string>
+	<string id="st_coop_money_msg_badtarget"><text>Не удалось передать: игрок недоступен.</text></string>
+</string_table>

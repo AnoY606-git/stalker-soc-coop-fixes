@@ -52,8 +52,8 @@ If your FPS drops hard in the Sarcophagus and CNPP Monolith fights, download
 patch with the FPS fix built in, so it is still one file (`zzz_soc_coop_fixes.db`). It:
 
 - keeps at most 12 corpses in the Sarcophagus (30 on other levels, instead of 300);
-- makes the Monolith waves in the Sarcophagus smaller (55% of the original squads; the Preacher
-  and the fanatics are unchanged);
+- can trim the Monolith waves in the Sarcophagus (`sarcophagus_wave_percent`, now 100 = off by default,
+  because the patch sarcophagus_count already cut the Monolith to about original SoC numbers);
 - lowers NPC sight range to 40-80 m (the add-on had 100-300 m);
 - puts the Monolith on the lighter vanilla model (same armour).
 

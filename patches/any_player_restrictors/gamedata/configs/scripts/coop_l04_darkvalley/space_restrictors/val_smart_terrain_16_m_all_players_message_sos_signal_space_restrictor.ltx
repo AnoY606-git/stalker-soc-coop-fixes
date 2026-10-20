@@ -1,0 +1,16 @@
+[logic]
+active 									= sr_idle@all_players_message_sos_signal_idle
+
+[sr_idle@all_players_message_sos_signal_idle]
+on_any_player_inside 						= sr_idle@all_players_message_sos_signal_start_timer %=all_players_message_sos_signal =give_task(val_start_go_to_the_sos_signal_1_quest_task)%
+on_info  								= {+VAL_SMART_TERRAIN_16_STALKER_LUCKY_HELP_INFO}	sr_idle@nil
+
+[sr_idle@all_players_message_sos_signal_start_timer]
+on_timer 								= 25000 | sr_idle@all_players_message_sos_signal_start
+on_info  								= {+VAL_SMART_TERRAIN_16_STALKER_LUCKY_HELP_INFO}	sr_idle@nil
+
+[sr_idle@all_players_message_sos_signal_start]
+on_timer 								= 1000 	| sr_idle@all_players_message_sos_signal_start_timer %=all_players_message_sos_signal%
+on_info  								= {+VAL_SMART_TERRAIN_16_STALKER_LUCKY_HELP_INFO}	sr_idle@nil
+
+[sr_idle@nil]

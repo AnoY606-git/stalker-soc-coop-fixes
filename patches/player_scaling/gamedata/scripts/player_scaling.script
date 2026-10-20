@@ -1,0 +1,660 @@
+-- Player-count enemy scaling for Shadow of COOP (server only). Settings: configs\player_scaling.ltx
+--
+-- 1 player = the original balance. Every extra player adds
+--   (a) members to hostile squads when they are created (and later, to squads that are offline, when players join),
+--   (b) at most `max_extra_squads_per_smart` reinforcement squad per hostile smart terrain (a "_ps" copy of one of
+--       its squads, without story_id/on_death, from squad_descr_pscale.ltx).
+-- Only hostile factions are touched; squads with named (story_id) members and friendly squads are never changed.
+-- Extra NPCs are only ever added while the smart terrain has free job slots. If a smart terrain still runs out of jobs,
+-- smart_terrain.script calls on_no_job() and the extra NPC is removed instead of the server aborting.
+
+local ver = "1.0"
+local board_squads = {}            -- squad id -> info (squads created through sim_board:create_squad that we may rescale)
+local extras = {}                  -- npc id -> squad id (members we added)
+local pending_release = {}         -- npc id -> time_global() when it may be released
+local reinf_last = {}              -- smart id -> time_global() of the last reinforcement activity
+local reinf_squads = {}            -- squad id -> smart id
+local installed = false
+local next_t = 0
+local last_players = nil
+local last_change_t = 0
+local rebalance_dirty = true
+local rebalance_keys = nil
+local rebalance_pos = 1
+local last_reinf_t = 0
+local last_snap_t = 0
+local cfg_cache = nil
+local named_cache = {}
+
+test_count = nil                   -- test hook: force the player count (nil in the shipped game)
+
+-----------------------------------------------------------------------------------------------------------------
+-- config
+-----------------------------------------------------------------------------------------------------------------
+local defaults = {
+	enabled = true,
+	human_extra_per_player = 0.5,
+	mutant_extra_per_player = 0.5,
+	max_factor = 2.5,
+	max_extra_members = 6,
+	extra_squads_per_player = 0.34,
+	max_extra_squads_per_smart = 1,
+	reinforce_cooldown_s = 300,
+	reinforce_first_delay_s = 30,
+	reinforce_min_distance = 120,
+	slot_fraction = 0.6,
+	slot_margin = 1,
+	hostile_factions = "monster,monster_predatory_day,monster_predatory_night,monster_vegetarian,monster_zombied_day,monster_zombied_night,monster_special,bandit,killer,monolith,zombied",
+	skip_levels = "coop_l11_sarcofag",
+	skip_smarts = "",
+	log = true,
+}
+
+local function to_set(s)
+	local t = {}
+	for w in string.gmatch(s or "", "[^,%s]+") do t[w] = true end
+	return t
+end
+
+function cfg()
+	if cfg_cache ~= nil then return cfg_cache end
+	local c = {}
+	for k, v in pairs(defaults) do c[k] = v end
+	local ok = pcall(function()
+		local ini = ini_file("player_scaling.ltx")
+		if ini == nil or not ini:section_exist("scaling") then return end
+		for k, v in pairs(defaults) do
+			if ini:line_exist("scaling", k) then
+				if type(v) == "boolean" then c[k] = ini:r_bool("scaling", k)
+				elseif type(v) == "number" then c[k] = ini:r_float("scaling", k)
+				else c[k] = ini:r_string("scaling", k) end
+			end
+		end
+	end)
+	c.hostile = to_set(c.hostile_factions)
+	c.skip_level_set = to_set(c.skip_levels)
+	c.skip_smart_set = to_set(c.skip_smarts)
+	cfg_cache = c
+	plog("player_scaling %s config: enabled=%s human=%.2f mutant=%.2f max_factor=%.2f max_extra_members=%d squads/player=%.2f max_extra_squads=%d slot_fraction=%.2f (ltx %s)",
+		ver, tostring(c.enabled), c.human_extra_per_player, c.mutant_extra_per_player, c.max_factor, c.max_extra_members,
+		c.extra_squads_per_player, c.max_extra_squads_per_smart, c.slot_fraction, ok and "read" or "missing, defaults")
+	return c
+end
+
+function plog(fmt, ...)
+	local s = string.format(fmt, ...)
+	pcall(function() printf_msg("[PSCALE] %s", s) end)
+	if cfg_cache ~= nil and cfg_cache.log == false then return end
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "pscale.log"), "a")
+		if f then
+			f:write(string.format("[%8.1f] %s\n", time_global() / 1000, s))
+			f:close()
+		end
+	end)
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- helpers
+-----------------------------------------------------------------------------------------------------------------
+function player_count()
+	if test_count ~= nil then return test_count end
+	local n = 0
+	if db.mp_actors ~= nil then
+		for _, a in pairs(db.mp_actors) do
+			local ok, alive = pcall(function() return a:alive() end)
+			if ok and alive then n = n + 1 end
+		end
+	end
+	-- after a save load db.mp_actors can still hold the actors of the previous session: never count more than the server's players
+	local ok, g = pcall(function() return get_players_count() end)
+	if ok and g ~= nil then
+		if IsDedicatedServer() then g = g - 1 end   -- the dedicated server itself is a slot
+		if g >= 0 and n > g then n = g end
+	end
+	return n
+end
+
+local function frac_hash(id, salt)
+	return ((id * 2654435761 + (salt or 0) * 40503) % 1000) / 1000
+end
+
+-- floor(x) plus 1 with probability frac(x), decided by the object id so the answer is stable between recomputations
+local function stable_round(x, id, salt)
+	local fl = math.floor(x)
+	if frac_hash(id, salt) < (x - fl) then fl = fl + 1 end
+	return fl
+end
+
+function factor(is_monster, n)
+	local c = cfg()
+	local per = is_monster and c.mutant_extra_per_player or c.human_extra_per_player
+	local f = 1 + per * (math.max(n, 1) - 1)
+	if f > c.max_factor then f = c.max_factor end
+	return f
+end
+
+local function is_named_section(sect)
+	if named_cache[sect] == nil then
+		named_cache[sect] = system_ini():line_exist(sect, "story_id") and true or false
+	end
+	return named_cache[sect]
+end
+
+-- generic member sections of a squad description, or nil if the squad has a named member
+local function squad_pool(settings_id)
+	local ini = sim_board.squad_ltx
+	local pool = {}
+	for _, key in ipairs({ "npc", "npc_random" }) do
+		if ini:line_exist(settings_id, key) then
+			for _, s in ipairs(utils.parse_names(ini:r_string(settings_id, key))) do
+				if is_named_section(s) then return nil end
+				table.insert(pool, s)
+			end
+		end
+	end
+	if #pool == 0 then return nil end
+	return pool
+end
+
+-- Number of job slots of a smart terrain that NPCs of this kind can ever use (time-of-day conditions ignored)
+local function count_leaves(jobs, kind)
+	local n = 0
+	for _, v in pairs(jobs) do
+		if type(v) == "table" then
+			local pm = v._precondition_is_monster
+			if pm == nil or pm == kind then
+				if v.jobs ~= nil then
+					n = n + count_leaves(v.jobs, kind)
+				elseif v.job_id ~= nil then
+					n = n + 1
+				end
+			end
+		end
+	end
+	return n
+end
+
+function slot_capacity(smart, is_monster)
+	if smart == nil or smart.jobs == nil then return 0 end
+	local total = count_leaves(smart.jobs, is_monster and true or false)
+	return math.floor(total * cfg().slot_fraction)
+end
+
+-- how many more NPCs of this kind the smart terrain can take (pending = members that are not registered yet)
+function free_slots(smart, is_monster, pending)
+	local free = slot_capacity(smart, is_monster) - (smart.population or 0) - (pending or 0) - cfg().slot_margin
+	if free < 0 then free = 0 end
+	return free
+end
+
+local function is_monster_faction(faction)
+	return faction ~= nil and string.find(faction, "^monster") ~= nil
+end
+
+local function is_clone_section(s)
+	return string.sub(s, -3) == "_ps"
+end
+
+local function eligible(squad)
+	local c = cfg()
+	if not c.enabled then return nil end
+	local sect = squad.settings_id
+	if sect == nil or is_clone_section(sect) then return nil end
+	if not c.hostile[squad.player_id or ""] then return nil end
+	if c.skip_level_set[level.name()] then return nil end
+	return squad_pool(sect)
+end
+
+local function alive_extras(info)
+	local list = {}
+	for _, id in ipairs(info.ids) do
+		local o = alife():object(id)
+		if o ~= nil then table.insert(list, id) end
+	end
+	info.ids = list
+	return list
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- persistence: one server-side story flag per scaled squad (saved with the game by game_sv.save), so squads created before
+-- a load are recognised again: PSC_<squad id>_<check>_<base size>[_<extra npc id>...]
+-----------------------------------------------------------------------------------------------------------------
+local function check_of(settings_id)
+	local sum = 0
+	for i = 1, string.len(settings_id) do sum = sum + string.byte(settings_id, i) * i end
+	return sum % 997
+end
+
+local function flag_name(info)
+	local s = string.format("PSC_%d_%d_%d", info.squad.id, check_of(info.squad.settings_id), info.base)
+	for _, id in ipairs(info.ids) do s = s .. "_" .. tostring(id) end
+	return s
+end
+
+-- Every true story flag goes into ONE reliable packet that game_sv.SendStoryFlags sends to each joining client (u16 id + name + 0),
+-- so the PSC_ flags are budgeted: squads over the budget are simply not persisted (they keep their size after a load).
+local MAX_FLAG_BYTES = 10000
+local flag_bytes = 0
+
+local function flag_cost(name)
+	return string.len(name) + 3
+end
+
+local function save_info(info)
+	local name = flag_name(info)
+	if info.flag == name then return end
+	if info.flag ~= nil then
+		story_flags.set_flag(info.flag, nil)
+		flag_bytes = flag_bytes - flag_cost(info.flag)
+		info.flag = nil
+	end
+	if flag_bytes + flag_cost(name) > MAX_FLAG_BYTES then return end
+	story_flags.set_flag(name, true)   -- local to the server (no network message); written by story_flags.save_flags
+	flag_bytes = flag_bytes + flag_cost(name)
+	info.flag = name
+end
+
+local function drop_info(id)
+	local info = board_squads[id]
+	if info ~= nil and info.flag ~= nil then
+		story_flags.set_flag(info.flag, nil)
+		flag_bytes = flag_bytes - flag_cost(info.flag)
+	end
+	board_squads[id] = nil
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- adding / removing members
+-----------------------------------------------------------------------------------------------------------------
+local function add_members(info, k, late)
+	local squad = info.squad
+	local first_id
+	for m in squad:squad_members() do first_id = m.id break end
+	local first = first_id and alife():object(first_id) or nil
+	if first == nil then return 0 end
+	local smart = (squad.smart_id ~= nil) and alife():object(squad.smart_id) or nil
+	local added = 0
+	for i = 1, k do
+		local sect = info.pool[math.random(1, #info.pool)]
+		local id = squad:add_squad_member(sect, first.position, first.m_level_vertex_id, first.m_game_vertex_id, i)
+		table.insert(info.ids, id)
+		extras[id] = squad.id
+		added = added + 1
+		if late then
+			local o = alife():object(id)
+			if smart ~= nil then squad:assign_squad_member_to_smart(id, smart, nil) end
+			if o ~= nil then pcall(function() squad.board:setup_squad_and_group(o) end) end
+		end
+	end
+	if late and added > 0 then pcall(function() squad:set_squad_relation() end) end
+	return added
+end
+
+local function release_member(id)
+	extras[id] = nil
+	local se = alife():object(id)
+	if se == nil then return end
+	local squad = alife():object(se.group_id)
+	if squad ~= nil and squad.unregister_member ~= nil then
+		pcall(function()
+			squad.sound_manager:unregister_npc(id)
+			squad:unregister_member(id)
+			sim_squad_scripted_cl_manager.get_squad_manager():remove_member(squad.id, id)
+		end)
+	end
+	alife():release(se, true)
+	if squad ~= nil and squad.npc_count ~= nil and squad:npc_count() == 0 then
+		pcall(function() squad.board:remove_squad(squad) end)
+	end
+end
+
+local function schedule_release(id)
+	if pending_release[id] == nil then
+		pending_release[id] = time_global() + 1500   -- never release in the frame the object was created
+	end
+end
+
+-- Called by smart_terrain.script instead of abort("Insufficient smart_terrain jobs") when an NPC finds no job.
+-- Returns true when handled (the caller must just return).
+function on_no_job(smart, npc_info)
+	local id = npc_info.se_obj.id
+	if extras[id] ~= nil then
+		schedule_release(id)
+		plog("no job in %s for extra npc %d: removing it", smart:name(), id)
+		return true
+	end
+	for oid, _ in pairs(smart.npc_info) do
+		if extras[oid] ~= nil then
+			schedule_release(oid)
+			plog("no job in %s for npc %d: removing extra npc %d to free a job", smart:name(), id, oid)
+			return true
+		end
+	end
+	return false
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- hook from sim_board:create_squad (squad exists and has its base members, not assigned to the smart yet)
+-----------------------------------------------------------------------------------------------------------------
+function on_squad_created(squad, smart)
+	if OnClient() then return end
+	local ok, err = pcall(function()
+		install()
+		local pool = eligible(squad)
+		if pool == nil then return end
+		local c = cfg()
+		local base = squad:npc_count()
+		local monster = is_monster_faction(squad.player_id)
+		local info = { squad = squad, base = base, pool = pool, ids = {}, monster = monster }
+		board_squads[squad.id] = info
+		save_info(info)
+		local n = player_count()
+		local want = stable_round(base * (factor(monster, n) - 1), squad.id, 1)
+		if want > c.max_extra_members then want = c.max_extra_members end
+		if want <= 0 then return end
+		local free = free_slots(smart, monster, base)
+		local k = math.min(want, free)
+		if k > 0 then k = add_members(info, k, false) end
+		save_info(info)
+		plog("squad %s (%s) in %s: base %d, players %d, wanted +%d, free slots %d, added +%d",
+			tostring(squad.id), squad.settings_id, smart:name(), base, n, want, free, k)
+	end)
+	if not ok then plog("on_squad_created error: %s", tostring(err)) end
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- periodic work
+-----------------------------------------------------------------------------------------------------------------
+local function rebalance_squad(info, n)
+	local squad = info.squad
+	if alife():object(squad.id) == nil then return true end   -- gone
+	if squad.online then return false end                      -- only offline squads are changed
+	local c = cfg()
+	local want = stable_round(info.base * (factor(info.monster, n) - 1), squad.id, 1)
+	if want > c.max_extra_members then want = c.max_extra_members end
+	local have = #alive_extras(info)
+	if have == want then return true end
+	if have < want then
+		local smart = squad.smart_id and alife():object(squad.smart_id) or nil
+		local free = smart and free_slots(smart, info.monster, 0) or 0
+		local k = math.min(want - have, free)
+		if k > 0 then
+			add_members(info, k, true)
+			save_info(info)
+			plog("rebalance squad %s (%s): players %d, extras %d -> %d", tostring(squad.id), squad.settings_id, n, have, have + k)
+		end
+	else
+		for i = 1, have - want do
+			local id = info.ids[#info.ids]
+			table.remove(info.ids)
+			release_member(id)
+		end
+		save_info(info)
+		plog("rebalance squad %s (%s): players %d, extras %d -> %d", tostring(squad.id), squad.settings_id, n, have, want)
+	end
+	return true
+end
+
+local function do_rebalance(n)
+	if rebalance_keys == nil then
+		rebalance_keys = {}
+		for id, _ in pairs(board_squads) do table.insert(rebalance_keys, id) end
+		rebalance_pos = 1
+	end
+	local budget = 4
+	while budget > 0 and rebalance_pos <= #rebalance_keys do
+		local id = rebalance_keys[rebalance_pos]
+		rebalance_pos = rebalance_pos + 1
+		local info = board_squads[id]
+		if info ~= nil then
+			budget = budget - 1
+			local done = rebalance_squad(info, n)
+			if done and alife():object(id) == nil then drop_info(id) end
+		end
+	end
+	if rebalance_pos > #rebalance_keys then
+		rebalance_keys = nil
+		rebalance_dirty = false
+	end
+end
+
+local function nearest_player_dist(pos)
+	local best = 1e9
+	if db.mp_actors ~= nil then
+		for _, a in pairs(db.mp_actors) do
+			local d = a:position():distance_to(pos)
+			if d < best then best = d end
+		end
+	end
+	return best
+end
+
+local function reinforce(n)
+	local c = cfg()
+	if not c.enabled or c.max_extra_squads_per_smart <= 0 then return end
+	local board = sim_board.get_sim_board()
+	local now = time_global()
+	local spawned = 0
+	for smart_id, entry in pairs(board.smarts) do
+		local smart = entry.smrt
+		if smart ~= nil and smart.position ~= nil and not c.skip_smart_set[smart:name()] then
+			local templates, existing = {}, {}
+			for _, sq in pairs(entry.squads) do
+				local s = sq.settings_id
+				if s ~= nil then
+					if is_clone_section(s) then
+						table.insert(existing, sq)
+					elseif c.hostile[sq.player_id or ""] and not c.skip_level_set[level.name()]
+						and sim_board.squad_ltx:section_exist(s .. "_ps") and squad_pool(s) ~= nil then
+						table.insert(templates, sq)
+					end
+				end
+			end
+			local want = 0
+			if #templates > 0 and n > 1 then
+				want = stable_round(c.extra_squads_per_player * (n - 1), smart.id, 2)
+				if want > c.max_extra_squads_per_smart then want = c.max_extra_squads_per_smart end
+			end
+			if #existing > 0 then reinf_last[smart_id] = now end
+			if #existing > want then
+				for i = 1, #existing - want do
+					local sq = existing[i]
+					if not sq.online and (reinf_squads[sq.id] == nil or now - reinf_squads[sq.id] > 5000) then
+						plog("reinforcement %s in %s removed (players %d)", tostring(sq.id), smart:name(), n)
+						reinf_squads[sq.id] = nil
+						pcall(function() board:remove_squad(sq) end)
+					end
+				end
+			elseif #existing < want and spawned < 1 then
+				local ready = (now - last_change_t) >= c.reinforce_first_delay_s * 1000
+					and (reinf_last[smart_id] == nil or (now - reinf_last[smart_id]) >= c.reinforce_cooldown_s * 1000)
+				if ready and nearest_player_dist(smart.position) >= c.reinforce_min_distance then
+					local tpl = templates[math.random(1, #templates)]
+					local monster = is_monster_faction(tpl.player_id)
+					local size = tpl:npc_count()
+					local free = free_slots(smart, monster, 0)
+					if free >= size then
+						local sect = tpl.settings_id .. "_ps"
+						local ok, err = pcall(function()
+							local squad = board:create_squad(smart, sect)
+							board:enter_smart(squad, smart.id)
+							for k in squad:squad_members() do board:setup_squad_and_group(k.object) end
+							squad:update()
+							reinf_squads[squad.id] = now
+							reinf_last[smart_id] = now
+							plog("reinforcement %s (%s) created in %s: size %d, free slots %d, players %d", tostring(squad.id), sect, smart:name(), size, free, n)
+						end)
+						if not ok then plog("reinforcement error in %s: %s", smart:name(), tostring(err)) end
+						spawned = spawned + 1
+					end
+				end
+			end
+		end
+	end
+end
+
+-- After a load: rebuild the tracking from the saved flags
+local restored = false
+local install_t = nil
+local function restore()
+	restored = true
+	local found = {}
+	local sf = story_flags.story_flags
+	if sf == nil then return end
+	for name, v in pairs(sf) do
+		if v == true and string.sub(name, 1, 4) == "PSC_" then table.insert(found, name) end
+	end
+	local nres, ndrop, nex = 0, 0, 0
+	flag_bytes = 0
+	for _, name in ipairs(found) do flag_bytes = flag_bytes + flag_cost(name) end
+	for _, name in ipairs(found) do
+		local parts = {}
+		table.insert(parts, 0)   -- parts[1] is the "PSC" prefix
+		for w in string.gmatch(string.sub(name, 5), "%d+") do table.insert(parts, tonumber(w)) end
+		local sid, chk, base = parts[2], parts[3], parts[4]
+		local sq = sid and alife():object(sid) or nil
+		local pool = nil
+		if sq ~= nil and sq.settings_id ~= nil and sq.npc_count ~= nil and check_of(sq.settings_id) == chk and board_squads[sid] == nil then
+			pool = eligible(sq)
+		end
+		if board_squads[sid] ~= nil then
+			-- created in this session (fresh game): already tracked, keep the flag
+		elseif pool == nil then
+			story_flags.set_flag(name, nil)
+			flag_bytes = flag_bytes - flag_cost(name)
+			ndrop = ndrop + 1
+		else
+			local info = { squad = sq, base = base, pool = pool, ids = {}, monster = is_monster_faction(sq.player_id), flag = name }
+			for i = 5, #parts do
+				local o = alife():object(parts[i])
+				if o ~= nil then
+					table.insert(info.ids, parts[i])
+					extras[parts[i]] = sid
+					nex = nex + 1
+				end
+			end
+			board_squads[sid] = info
+			save_info(info)
+			nres = nres + 1
+		end
+	end
+	rebalance_dirty = true
+	rebalance_keys = nil
+	plog("restored %d scaled squads (%d extra members alive) from the save, dropped %d stale flags", nres, nex, ndrop)
+end
+
+-- tests: tracked squads and their live extra members
+function scaled_squads()
+	local list = {}
+	for id, info in pairs(board_squads) do
+		if alife():object(id) ~= nil then table.insert(list, { squad = info.squad, ids = alive_extras(info), base = info.base, monster = info.monster }) end
+	end
+	return list
+end
+
+function snapshot(tag)
+	local nsq, nex, nre = 0, 0, 0
+	for id, info in pairs(board_squads) do
+		if alife():object(id) ~= nil then nsq = nsq + 1; nex = nex + #alive_extras(info) end
+	end
+	for id, _ in pairs(reinf_squads) do if alife():object(id) ~= nil then nre = nre + 1 end end
+	local a, g = 0, -1
+	if db.mp_actors ~= nil then for _ in pairs(db.mp_actors) do a = a + 1 end end
+	pcall(function() g = get_players_count() end)
+	plog("%s level=%s players=%d (mp_actors=%d get_players_count=%d) hostile squads tracked=%d extra members alive=%d reinforcement squads=%d",
+		tag or "snapshot", level.name(), player_count(), a, g, nsq, nex, nre)
+end
+
+local function step(now)
+	if alife() == nil then return end
+	local c = cfg()
+	local n = player_count()
+	if n ~= last_players then
+		plog("player count %s -> %d", tostring(last_players), n)
+		last_players = n
+		last_change_t = now
+		rebalance_dirty = true
+		rebalance_keys = nil
+	end
+	for id, t in pairs(pending_release) do
+		if now >= t then
+			pending_release[id] = nil
+			release_member(id)
+		end
+	end
+	if not restored and install_t ~= nil and now - install_t >= 15000 and next(sim_board.get_sim_board().squads) ~= nil then restore() end
+	if n == 0 or not c.enabled then return end
+	if rebalance_dirty then do_rebalance(n) end
+	if now - last_reinf_t >= 10000 then
+		last_reinf_t = now
+		reinforce(n)
+	end
+	if now - last_snap_t >= 30000 then
+		last_snap_t = now
+		for id, info in pairs(board_squads) do
+			if alife():object(id) == nil then drop_info(id) else save_info(info) end
+		end
+		snapshot("snapshot")
+	end
+end
+
+local function tick()
+	local now = time_global()
+	if now < next_t then return false end
+	next_t = now + 1000
+	local ok, err = pcall(step, now)
+	if not ok then plog("tick error: %s", tostring(err)) end
+	return false
+end
+
+function ensure_installed()
+	if installed then return end
+	pcall(install)
+end
+
+function install()
+	if installed then return end
+	installed = true
+	install_t = time_global()
+	cfg()
+	level.add_call(tick, function() end)
+	plog("installed (level %s)", level.name())
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- census (tests / tuning): one line per smart terrain with hostile squads
+-----------------------------------------------------------------------------------------------------------------
+function census(tag)
+	local board = sim_board.get_sim_board()
+	local lines = {}
+	local tot_h, tot_m, tot_x = 0, 0, 0
+	for smart_id, entry in pairs(board.smarts) do
+		local smart = entry.smrt
+		local desc = {}
+		local hostile_members = 0
+		for _, sq in pairs(entry.squads) do
+			local s = sq.settings_id or "?"
+			local isc = is_clone_section(s)
+			local hostile = cfg().hostile[sq.player_id or ""] and true or false
+			local nc = sq:npc_count()
+			if hostile then
+				hostile_members = hostile_members + nc
+				if is_monster_faction(sq.player_id) then tot_m = tot_m + nc else tot_h = tot_h + nc end
+				if isc then tot_x = tot_x + nc end
+				local info = board_squads[sq.id]
+				table.insert(desc, string.format("%s%s=%d%s", s, isc and "(REINF)" or "", nc, info and ("(+" .. #alive_extras(info) .. ")") or ""))
+			end
+		end
+		if hostile_members > 0 then
+			table.insert(lines, string.format("  smart %-28s maxpop=%s pop=%d slotsH=%d slotsM=%d hostile_members=%d  %s",
+				smart:name(), tostring(smart.max_population), smart.population or 0, slot_capacity(smart, false), slot_capacity(smart, true),
+				hostile_members, table.concat(desc, " ")))
+		end
+	end
+	table.sort(lines)
+	plog("CENSUS %s level=%s players=%d hostile_members: humans=%d mutants=%d (of which reinforcement=%d)",
+		tag or "", level.name(), player_count(), tot_h, tot_m, tot_x)
+	for _, l in ipairs(lines) do plog("%s", l) end
+	return tot_h + tot_m, tot_x
+end

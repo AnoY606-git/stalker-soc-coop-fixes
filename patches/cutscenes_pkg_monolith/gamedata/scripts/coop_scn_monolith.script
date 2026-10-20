@@ -1,0 +1,205 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "monolith" (WP4): Control Monolith generators destroyed, C-Consciousness arrival
+-- camera, and the join / refuse choice (join = ending "mov_join_osoznanie" + credits).
+-- Original SoC logic: sar_monolith_gen_main.ltx (monolith_off.ppe + alarm + teleport_osoznanie voice),
+-- mon_space_restrictor (7 s later teleport_actor(oso_actor_walk) + sr_cutscene oso_cam),
+-- dialogs_aes.osoznanie_agree / osoznanie_decline.
+-- Scene flow:  all 6 generators dead -> monolith_off -> oso_arrival -> (dialog) -> oso_choice
+--              oso_choice(join) -> end_join (movie) -> credits;  oso_choice(refuse) -> dialog flag, story goes on.
+-- Choice rule: the player who answers in the C-Consciousness dialog decides for the whole party; the
+-- first answer that reaches the server wins and everybody gets the same scene variant (see NOTES.md).
+-------------------------------------------------------------------------------------------------------
+
+local LEVEL = "coop_l11_control_monolith"
+local STOP_FLAG = "CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_6_DIALOG_STOP_INFO"
+local ALARM = "characters_voice\\scenario\\coop_l11_control_monolith\\monolith_alarm"
+local VOICE = "characters_voice\\scenario\\osoznanie\\teleport_osoznanie"
+local VOICE_FB = "characters_voice\\scenario\\coop_l11_control_monolith\\o_soznanie_call"
+
+-- SoC way_l12u_control_monolith: oso_actor_walk / oso_actor_look (same coordinates in the mod level)
+local OSO_POS = { x = 17.8031311035156, y = -43.6672286987305, z = 31.2826137542725 }
+local OSO_LOOK = { x = 17.454776763916, y = -41.4733619689941, z = 25.9469795227051 }
+
+local chosen = nil   -- server only: { kind=, id= } first answer of the dialog
+
+local function log(s)
+	local line = "SCENE monolith " .. tostring(s)
+	pcall(printf_msg, "%s", line)
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, line) end
+end
+
+-- client step helpers ---------------------------------------------------------------------------
+local function fn_pp(name, id)
+	return { ["do"] = "fn", fn = function(env)
+		if getFS():exist("$game_anims$", name .. ".ppe") then
+			local ok, err = pcall(level.add_pp_effector, name .. ".ppe", id, false)
+			if not ok then log("PPERR " .. tostring(err)) end
+		else
+			log("NOPPE " .. name)
+		end
+	end }
+end
+
+local function fn_teleport(pos, look)
+	return { ["do"] = "fn", fn = function(env)
+		local a = env.actor
+		if a == nil then return end
+		a:set_actor_position(vector():set(pos.x, pos.y, pos.z))
+		a:set_actor_direction(math.atan2(look.x - pos.x, look.z - pos.z))
+	end }
+end
+
+-- server side of the dialog ------------------------------------------------------------------------
+local function accept(kind, initiator_id)
+	if not OnServer() then return end
+	if level.name() ~= LEVEL then return end
+	if chosen ~= nil or coop_scenes.played("oso_choice") or coop_scenes.is_active("oso_choice") then
+		log("CHOICE_IGNORED kind=" .. kind .. " actor=" .. tostring(initiator_id))
+		return
+	end
+	chosen = { kind = kind, id = initiator_id }
+	log("CHOICE kind=" .. kind .. " actor=" .. tostring(initiator_id))
+	if not coop_scenes.request("oso_choice", kind) then
+		chosen = nil
+		log("CHOICE_REQUEST_FAILED")
+	end
+end
+
+function on_join(initiator_id) accept("join", initiator_id) end
+function on_refuse(initiator_id) accept("refuse", initiator_id) end
+
+local function inject()
+	pcall(function()
+		game_sv.coop_oso_join = function(i) coop_scn_monolith.on_join(i) end
+		game_sv.coop_oso_refuse = function(i) coop_scn_monolith.on_refuse(i) end
+	end)
+end
+inject()
+
+-- 1. generators destroyed -----------------------------------------------------------------------
+local function off_steps(have_voice)
+	return {
+		fn_pp("monolith_off", 9201),
+		{ ["do"] = "snd2d", path = ALARM, wait = true },
+		{ ["do"] = "snd2d", path = have_voice and VOICE or VOICE_FB, wait = true },
+		{ ["do"] = "wait", ms = 1000 },
+	}
+end
+
+coop_scenes.register{
+	id = "monolith_off", kind = "sequence", level = LEVEL, once = true,
+	length_ms = 40000, grace_ms = 20000, skip = "any",
+	trigger = function(ctx)
+		for i = 1, 6 do
+			if not ctx.flag("CON_MONOLITH_GENERATOR_" .. i .. "_INFO") then return false end
+		end
+		return true
+	end,
+	need = { snd = { VOICE .. ".ogg" } },
+	steps = function(var, env) return off_steps(true) end,
+	fallback = function(var, env) return off_steps(false) end,
+	on_end = function(ctx, var, reason)
+		coop_scenes.request("oso_arrival")
+	end,
+}
+
+-- 2. C-Consciousness arrival camera ---------------------------------------------------------------
+coop_scenes.register{
+	id = "oso_arrival", kind = "camera", level = LEVEL, once = true,
+	length_ms = 20000, grace_ms = 20000, skip = "any",
+	steps = function(var, env)
+		return {
+			{ ["do"] = "ui_off" },
+			fn_teleport(OSO_POS, OSO_LOOK),
+			{ ["do"] = "cam", anm = "oso_cam", id = 9202, global = true, wait = true, cap_ms = 20000 },
+			{ ["do"] = "ui_on" },
+		}
+	end,
+}
+
+-- 3. the choice (manual request from the dialog RPC, variant = join | refuse) -----------------------
+local function notice(var)
+	local a = getLocalActor()
+	if a == nil then return end
+	local id = (var == "join") and "scn_monolith_choice_join" or "scn_monolith_choice_refuse"
+	local ok, err = pcall(function()
+		a:give_game_news(game.translate_string("scn_monolith_choice_caption"), game.translate_string(id),
+			"ui_iconsTotal_grouping", 0, 6000, 0)
+	end)
+	if not ok then log("NEWSERR " .. tostring(err)) end
+	log("CHOICE_SEEN var=" .. tostring(var) .. " actor=" .. tostring(LocalActor()))
+end
+
+coop_scenes.register{
+	id = "oso_choice", kind = "sequence", level = LEVEL, once = true,
+	length_ms = 2500, grace_ms = 10000, skip = "none",
+	-- never fires; the poll only re-asserts the RPC functions (game_sv may load after this script)
+	trigger = function(ctx) inject(); return false end,
+	steps = function(var, env)
+		return { { ["do"] = "fn", fn = function(e) notice(var) end }, { ["do"] = "wait", ms = 1500 } }
+	end,
+	on_end = function(ctx, var, reason)
+		if var == "join" then
+			coop_scenes.request("end_join")
+		else
+			-- refuse: the dialog no longer gives the flag itself (it would leak past a "join" answer);
+			-- the server gives it now, which teleports the party on and starts the kill-the-representatives task
+			story_flags.give_flag(STOP_FLAG)
+			log("REFUSE applied")
+		end
+	end,
+}
+
+-- 4. ending "join the C-Consciousness" -------------------------------------------------------------
+coop_scenes.register{
+	id = "end_join", kind = "movie", level = LEVEL, once = true,
+	tutorial = "scn_monolith_join",
+	length_ms = 62000, grace_ms = 25000, skip = "none",
+	need = { tex = { "intro\\dream_doctor_2.ogm" }, snd = { "characters_voice\\scenario\\video\\dream_doctor_2_l.ogg" } },
+	fallback = {
+		{ ["do"] = "ui_off" },
+		{ ["do"] = "tutorial", name = "scn_monolith_join_card", wait = true, cap_ms = 16000 },
+		{ ["do"] = "ui_on" },
+	},
+	on_end = function(ctx, var, reason)
+		if coop_scenes.defs.credits ~= nil then
+			coop_scenes.request("credits")
+		else
+			coop_scenes.request("mono_credits_fb")
+		end
+	end,
+}
+
+-- credits fallback, used only when the endings package does not register a "credits" scene
+coop_scenes.register{
+	id = "mono_credits_fb", kind = "sequence", level = LEVEL, once = true,
+	length_ms = 500000, grace_ms = 20000, skip = "majority",
+	steps = {
+		{ ["do"] = "ui_off" },
+		{ ["do"] = "tutorial", name = "credits_seq", wait = true, cap_ms = 500000 },
+		{ ["do"] = "main_menu" },
+	},
+}
+
+-- client side of the dialog: phrase actions (first_speaker / second_speaker are actor and NPC) -------------
+local function end_talk(a, b)
+	pcall(function() a:stop_talk() end)
+	pcall(function() b:stop_talk() end)
+end
+
+function oso_refuse(first_speaker, second_speaker)
+	pcall(coop_pda_phrases.say__con_smart_terrain_13_ecolog_representative_awareness_6_dialog_2, first_speaker, second_speaker)
+	end_talk(first_speaker, second_speaker)
+	game_cl.executeFunctionOnServer("coop_oso_refuse")
+end
+
+function oso_join(first_speaker, second_speaker)
+	end_talk(first_speaker, second_speaker)
+	game_cl.executeFunctionOnServer("coop_oso_join")
+end
+
+-- test helper: the server-side answer without a dialog (used by the test hook)
+function _test_answer(kind, id)
+	accept(kind, id or 0)
+end

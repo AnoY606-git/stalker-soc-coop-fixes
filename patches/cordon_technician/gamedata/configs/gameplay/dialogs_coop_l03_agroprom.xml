@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+    <dialog id="agr_smart_terrain_7_stalker_mole_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__agr_smart_terrain_7_stalker_mole_start_dialog_0</action>
+
+                <text>agr_smart_terrain_7_stalker_mole_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole">
+        <dont_has_flag>AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_1</action>
+
+                <text>agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_3</action>
+
+                <text>agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_2</action>
+
+                <text>agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_0</action>
+
+                <text>agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_4</action>
+
+                <text>agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_4</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_rookie_technician_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text>esc_rookie_technician_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_rookie_technician_what_can_you_do">
+        <phrase_list>
+            <phrase id="0">
+                <text>esc_rookie_technician_what_can_you_do_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <text>esc_rookie_technician_what_can_you_do_1</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+</game_dialogs>

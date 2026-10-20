@@ -1,0 +1,150 @@
+-- Inventory carry-over across level changes (patch inventory_carry).
+-- Observed: after a map change the HOST player (the listen-server player) starts again with only the default items, so a worn armor
+-- and helmet (and everything else) are lost. The server keeps a small record of every living player's inventory in a file; when a
+-- player spawns on a new level with fewer of an item than the record says, the missing items are created in his inventory
+-- (an outfit and a helmet put into an empty slot are worn at once). Players the engine already restores lose nothing, because
+-- only the missing count is created. A player who dies loses his record (death is not a level change).
+-- Loaded by the scene director's package discovery (coop_scn_*); acts on the server only.
+
+local FILE = "coop_inventory_carry.txt"
+local TRACK_EVERY_MS = 3000
+local SETTLE_MS = 6000           -- a new actor must exist this long before the record is applied
+local players = {}                -- per player name: { since, applied, last }
+local records = nil               -- name -> { {section, count, cond, worn} ... }
+
+local function say(m) printf("[inventory_carry] %s", tostring(m)) end
+
+local function fpath() return getFS():update_path("$app_data_root$", FILE) end
+
+local function load_records()
+	records = {}
+	pcall(function()
+		local f = io.open(fpath(), "r")
+		if not f then return end
+		for line in f:lines() do
+			local name, sect, count, cond, worn = string.match(line, "^([^|]+)|([^|]+)|(%d+)|([%d%.]+)|(%d)$")
+			if name then
+				records[name] = records[name] or {}
+				table.insert(records[name], { sect = sect, count = tonumber(count), cond = tonumber(cond), worn = worn == "1" })
+			end
+		end
+		f:close()
+	end)
+end
+
+local function save_records()
+	pcall(function()
+		local f = io.open(fpath(), "w")
+		if not f then return end
+		for name, items in pairs(records) do
+			for _, it in ipairs(items) do
+				f:write(string.format("%s|%s|%d|%.3f|%d", name, it.sect, it.count, it.cond, it.worn and 1 or 0), string.char(10))
+			end
+		end
+		f:close()
+	end)
+end
+
+-- section -> {count, cond (min), worn}
+local function snapshot(p)
+	local by = {}
+	local order = {}
+	local worn_id = nil
+	local w = p:get_current_outfit()
+	if w then worn_id = w:id() end
+	local helm = p:item_in_slot(12)
+	local helm_id = helm and helm:id() or nil
+	p:iterate_inventory(function(_, it)
+		local s = it:section()
+		local e = by[s]
+		if not e then
+			e = { sect = s, count = 0, cond = 1.0, worn = false }
+			by[s] = e
+			order[#order + 1] = e
+		end
+		e.count = e.count + 1
+		local ok, c = pcall(function() return it:condition() end)
+		if ok and c and c < e.cond then e.cond = c end
+		if it:id() == worn_id or it:id() == helm_id then e.worn = true end
+	end, p)
+	return order
+end
+
+local function counts(p)
+	local c = {}
+	p:iterate_inventory(function(_, it) local s = it:section() c[s] = (c[s] or 0) + 1 end, p)
+	return c
+end
+
+local function apply(p, rec)
+	local have = counts(p)
+	-- worn pieces first so they land in the empty outfit / helmet slots
+	table.sort(rec, function(a, b) return (a.worn and 1 or 0) > (b.worn and 1 or 0) end)
+	local made = 0
+	for _, it in ipairs(rec) do
+		local missing = it.count - (have[it.sect] or 0)
+		if missing > 0 and system_ini():section_exist(it.sect) then
+			for i = 1, missing do
+				alife():create(it.sect, p:position(), p:level_vertex_id(), p:game_vertex_id(), p:id())
+				made = made + 1
+			end
+		end
+	end
+	say(string.format("%s: restored %d item(s)", p:name(), made))
+end
+
+local function tick()
+	if not OnServer() or type(db.mp_actors) ~= "table" then return false end
+	if records == nil then load_records() end
+	local now = time_global()
+	local dirty = false
+	for id, p in pairs(db.mp_actors) do
+		local ok, err = pcall(function()
+			local name = p:name()
+			local st = players[name]
+			if st == nil or st.id ~= id then
+				st = { id = id, since = now, applied = false, last = 0 }
+				players[name] = st
+			end
+			if not p:alive() then
+				if records[name] then records[name] = nil dirty = true end
+				st.applied = true
+				return
+			end
+			if not st.applied then
+				if now - st.since >= SETTLE_MS then
+					st.applied = true
+					if records[name] then apply(p, records[name]) end
+					st.last = now
+				end
+				return
+			end
+			if now - st.last >= TRACK_EVERY_MS then
+				st.last = now
+				records[name] = snapshot(p)
+				dirty = true
+			end
+		end)
+		if not ok then say("tick error: " .. tostring(err)) end
+	end
+	if dirty then save_records() end
+	return false
+end
+
+-- Own 500 ms loop (the director does not poll while players stand in the lobby, which is where a new level starts).
+-- This file is only LOADED by the scene director's package discovery (patches/cutscenes_core).
+do
+	local next_at = 0
+	local ok, err = pcall(function()
+		level.add_call(function()
+			local now = time_global()
+			if now >= next_at then
+				next_at = now + 500
+				local ok2, err2 = pcall(tick)
+				if not ok2 then say("loop error: " .. tostring(err2)) end
+			end
+			return false
+		end, function() end)
+	end)
+	if not ok then say("could not start: " .. tostring(err)) end
+end

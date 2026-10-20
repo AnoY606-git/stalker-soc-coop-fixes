@@ -1,0 +1,32 @@
+#include "spawn_sections_general.ltx"
+#include "spawn_sections_coop_l01_escape.ltx"
+#include "spawn_sections_coop_l02_garbage.ltx"
+#include "spawn_sections_coop_l03_agroprom.ltx"
+#include "spawn_sections_coop_l04_darkvalley.ltx"
+#include "spawn_sections_coop_l05_bar.ltx"
+#include "spawn_sections_coop_l06_rostok.ltx"
+#include "spawn_sections_coop_l07_military.ltx"
+#include "spawn_sections_coop_l08_yantar.ltx"
+#include "spawn_sections_coop_l10_pripyat.ltx"
+#include "spawn_sections_coop_l11_sarcofag.ltx"
+#include "spawn_sections_coop_l11_control_monolith.ltx"
+
+;-----------------------------------------------------------------
+;	 actors
+;-----------------------------------------------------------------
+[actor_the_main_character]:mp_actor
+$spawn                     = "actors\actor_the_main_character"
+character_profile          = actor_the_main_character
+visual                     = actors\stalker_mp\stalker_marked_one.ogf
+story_id 				   = actor_the_main_character
+
+[actor_partner]:mp_actor
+$spawn                = "actors\actor_partner"
+character_profile     = actor_partner
+visual                = actors\stalker_hero\stalker_hero_1.ogf
+story_id 			  = actor_partner
+
+[actor_partner_regular]:mp_actor
+$spawn                = "actors\actor_partner_regular"
+character_profile     = actor_partner
+visual                = actors\stalker_hero\stalker_hero_1.ogf

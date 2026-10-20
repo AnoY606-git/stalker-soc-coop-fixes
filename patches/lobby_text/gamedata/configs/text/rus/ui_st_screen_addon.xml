@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="character_revive">
+		<text>Поднять ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b12_conteiner_full_locked">
+		<text>Контейнер закрыт - необходимы два ключа</text>
+	</string>
+	<string id="zat_b12_conteiner_has_one_key">
+		<text>Использовать ключ ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b12_conteiner_has_two_key">
+		<text>Использовать ключи ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b12_conteiner_locked">
+		<text>Контейнер закрыт - необходим второй ключ</text>
+	</string>
+	<string id="zat_b12_conteiner_open">
+		<text>Открыть контейнер ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b14_door_locked_hint">
+		<text>Дверной механизм заблокирован изнутри</text>
+	</string>
+	<string id="zat_b57_balon_use_hint">
+		<text>Подключить газовый баллон ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b57_gas_warning">
+		<text>Осторожно! Химическая опасность!</text>
+	</string>
+	<string id="zat_b57_vintil_press">
+		<text>Повернуть вентиль ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b33_car_searching_tip">
+		<text>Обыскать «Запорожец» ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b10_ufo_searching_tips">
+		<text>Обыскать летательный аппарат ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b1_bar_door">
+		<text>Дверь заклинило</text>
+	</string>
+	<string id="jup_b1_door_is_closed">
+		<text>Дверь закрыта изнутри</text>
+	</string>
+	<string id="jup_b202_treasures_closed">
+		<text>Сейф закрыт</text>
+	</string>
+	<string id="jup_b205_tip_door_closed">
+		<text>Необходим код</text>
+	</string>
+	<string id="jup_b205_tip_door_decode">
+		<text>Ввести код ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b206_use_plant">
+		<text>Сорвать растение ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b209_scanner_place_tips">
+		<text>Установить сканер ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b209_scanner_remove_tips">
+		<text>Забрать сканер ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_jup_b41_door_locked">
+		<text>Необходимо дождаться герметизации шлюза</text>
+	</string>
+	<string id="pas_b400_tip_switcher">
+		<text>Включить рубильник ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_a18_use_idol">
+		<text>Осмотреть конструкцию ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_a25_blow_up_enter_door">
+		<text>Установить взрывчатку ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_a28_talk_with_stupid_medic">
+		<text>Привести в чувство ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_b306_elevator_door_locked_used">
+		<text>Лифт обесточен</text>
+	</string>
+	<string id="pri_b306_generator_use">
+		<text>Запустить генератор ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_pri_b306_go_down">
+		<text>Спуститься на лифте ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_lx8_button_press_true">
+		<text>Доступ разрешён</text>
+	</string>
+	<string id="st_lx8_lift_button">
+		<text>Подняться на лифте ($$ACTION_USE$$)</text>
+	</string>
+	<string id="lx8_raduga">
+		<text>Подавитель агрессии «Радуга»\nмакет внешнего излучательного комплекса\nмасштаб 1:20</text>
+	</string>
+
+	<string id="st_resupply_ready">
+		<text>Перед операцией можно пополнить запас медикаментов и боеприпасов у лейтенантов Роговца и Кириллова.</text>
+	</string>
+	<string id="st_freeplay_text_ok">
+		<text>Вы не успели добраться к вертолётам. Группа эвакуации покинула Зону без Вас.</text>
+	</string>
+	<string id="st_freeplay_text_yes_no">
+		<text>Готовы ли Вы покинуть Зону? Обратного пути не будет.</text>
+	</string>
+	<string id="st_test_text_yes_no">
+		<text>Готовы ли Вы отправиться в Центр Зоны? Обратного пути не будет.</text>
+	</string>
+	<string id="st_question_space_restrictor_text_yes_no">
+		<text>Готовы ли Вы отправиться дальше?</text>
+	</string>
+	<string id="sar_bad_final_monolith_use">
+		<text>ЗАГАДАТЬ ЖЕЛАНИЕ ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_gameover_sub">
+		<text>ОДИН ИЗ ПЕРСОНАЖЕЙ ПОГИБ</text>
+	</string>
+	<string id="st_gameover_load_after">
+		<text>ЗАГРУЗКА ПОСЛЕДНЕГО СОХРАНЕНИЯ ЧЕРЕЗ:</text>
+	</string>
+	<string id="st_game_over_uppercase">
+		<text>ИГРА ОКОНЧЕНА</text>
+	</string>
+	<string id="st_zat_b57_gas_timer">
+		<text>ОКОНЧАНИЕ ДЕЙСТВИЯ ГАЗА</text>
+	</string>
+	<string id="st_pri_a28_helis_leave_timer">
+		<text>ОТЛЁТ ВЕРТОЛЕТОВ</text>
+	</string>
+	
+	<string id="st_ach_balance_advocate">
+		<text>Получено достижение «Сторонник равновесия».</text>
+	</string>
+	<string id="st_ach_battle_systems_master">
+		<text>Получено достижение «Мастер боевых систем».</text>
+	</string>
+	<string id="st_ach_detective">
+		<text>Получено достижение «Сыщик».</text>
+	</string>
+	<string id="st_ach_diplomat">
+		<text>Получено достижение «Дипломат».</text>
+	</string>
+	<string id="st_ach_friend_of_duty">
+		<text>Получено достижение «Друг «Долга».</text>
+	</string>
+	<string id="st_ach_friend_of_freedom">
+		<text>Получено достижение «Друг «Свободы».</text>
+	</string>
+	<string id="st_ach_friend_of_stalkers">
+		<text>Получено достижение «Друг сталкеров».</text>
+	</string>
+	<string id="st_ach_herald_of_justice">
+		<text>Получено достижение «Гонец правосудия».</text>
+	</string>
+	<string id="st_ach_high_tech_master">
+		<text>Получено достижение «Мастер высоких технологий».</text>
+	</string>
+	<string id="st_ach_information_dealer">
+		<text>Получено достижение «Торговец информацией».</text>
+	</string>
+	<string id="st_ach_keeper_of_secrets">
+		<text>Получено достижение «Хранитель тайн».</text>
+	</string>
+	<string id="st_ach_kingpin">
+		<text>Получено достижение «Авторитет».</text>
+	</string>
+	<string id="st_ach_leader">
+		<text>Получено достижение «Лидер».</text>
+	</string>
+	<string id="st_ach_mutant_hunter">
+		<text>Получено достижение «Охотник на мутантов».</text>
+	</string>
+	<string id="st_ach_one_of_the_lads">
+		<text>Получено достижение «Свой парень».</text>
+	</string>
+	<string id="st_ach_pioneer">
+		<text>Получено достижение «Первооткрыватель».</text>
+	</string>
+	<string id="st_ach_research_man">
+		<text>Получено достижение «Научный сотрудник».</text>
+	</string>
+	<string id="st_ach_seeker">
+		<text>Получено достижение «Искатель».</text>
+	</string>
+	<string id="st_ach_skilled_stalker">
+		<text>Получено достижение «Опытный сталкер».</text>
+	</string>
+	<string id="st_ach_wealthy">
+		<text>Получено достижение «Состоятельный клиент».</text>
+	</string>
+	<string id="st_ach_wheel_litter_sisyphus">
+		<text>Получено достижение «Сизифов труд».</text>
+	</string>
+	<string id="st_coop_desc">
+		<text>«S.T.A.L.K.E.R. Shadow of COOP» - аддон для мультиплеерной модификации «X-Ray Multiplayer Extension», позволяющий пройти переработанный сюжет игры Shadow Of Chernobyl в кооперативе, рассчитанный от 2 до 4 игроков.
+		\n-Инвентарь сохраняется перед переходом на следующую локацию.
+		\n-Выбор карты вручную: F5, затем голосование за карту, на которой вы остановились.</text>
+	</string>
+	<string id="st_coop_name">
+		<text>S.T.A.L.K.E.R. Shadow of COOP</text>
+	</string>
+	<string id="st_primary_switcher_idle_off_desc">
+		<text>Выключить установку ($$ACTION_USE$$)</text>
+	</string>	
+	<string id="st_door_trader_locked_desc">
+		<text>Дверь заблокирована</text>
+	</string>
+	<string id="st_door_trader_unlock_desc">
+		<text>Дверь разблокирована</text>
+	</string>
+	<string id="st_during_the_time_arena">
+		<text>Убить мутантов</text>
+	</string>	
+</string_table>

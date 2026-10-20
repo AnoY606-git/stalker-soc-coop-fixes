@@ -1,0 +1,89 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "x18": the Strelok dream in the X18 lab (original SoC tutorial x18_dream).
+-- Registers the scene with the Scene Director (coop_scenes). Runs on every machine at load time,
+-- so nothing here may touch level/actor state outside the hooks.
+--
+-- Original SoC logic (all.spawn labx18 restrictor, ixray-1.0-stsoc / alife_l04u_labx18.ltx:10146-10168):
+--   poltergeist of the command center dies (dar_door3_free) -> x18_gluk (blink.ppe, tinnitus, psy_blackout,
+--   earthquake.anm) + radar_stop.anm -> 9 s: disable_ui + agr_u_fade.ppe -> 3 s: stop earthquake, movie x18_dream
+--   -> on stop prison_1.anm -> 3 s enable_ui -> 4.5 s play_snd(patrol_prikaz)
+-- Mod equivalent of dar_door3_closed / dar_door3_free: story flags X18_CODEDOOR_3_LOCKED_POLTERGEIST_FLAME_INFO
+-- (given when the party enters the poltergeist room) and X18_CODEDOOR_3_OPEN_INFO (given on_death of the
+-- poltergeist squad, squad_descr_coop_l04_x18.ltx:39).
+-------------------------------------------------------------------------------------------------------
+
+local ID = "x18_dream"
+local SND_PRIKAZ = "characters_voice\\scenario\\coop_l04_darkvalley\\patrol_prikaz"   -- the add-on's copy of SoC val\patrol_prikaz
+
+local function ex_anim(p) return getFS():exist("$game_anims$", p) end
+local function ex_snd(p) return getFS():exist("$game_sounds$", p .. ".ogg") end
+
+-- first existing postprocess of the list (an absent one would be a fatal engine error), or nil
+local function pp_pick(list)
+	for _, n in ipairs(list) do
+		if ex_anim(n .. ".ppe") then return n end
+	end
+	return nil
+end
+
+local function build(var, env, use_movie)
+	local st = {}
+	local function add(t) st[#st + 1] = t end
+
+	-- t = 0: x18_gluk (blink.ppe, tinnitus3a, psy_blackout l/r, earthquake.anm id 1974) + radar_stop.anm
+	local blink = pp_pick({ "blink" })
+	if blink then add { ["do"] = "pp", name = blink, id = 9011 } end
+	add { ["do"] = "snd2d", path = "affects\\tinnitus3a" }
+	add { ["do"] = "snd2d", path = "affects\\psy_blackout_l" }
+	add { ["do"] = "snd2d", path = "affects\\psy_blackout_r" }
+	add { ["do"] = "cam", anm = "earthquake", id = 9012 }
+	add { ["do"] = "cam", anm = "radar_stop", id = 9013 }
+
+	-- t = 9 s: disable_ui, +x18_actor_fall, agr_u_fade
+	add { ["do"] = "ui_off", at = 9000 }
+	local fade = pp_pick({ "agr_u_fade", "black_screen" })
+	if fade then add { ["do"] = "pp", name = fade, id = 9014 } end
+
+	-- t = 12 s: stop the earthquake, start the dream
+	add { ["do"] = "cam_stop", id = 9012, at = 12000 }
+	if use_movie then
+		add { ["do"] = "tutorial", name = "soc_dream_rats", wait = true, cap_ms = 60000 }
+	else
+		add { ["do"] = "tutorial", name = "scn_x18_card", wait = false }
+		add { ["do"] = "wait", ms = 14000 }
+		add { ["do"] = "tutorial_stop" }
+	end
+
+	-- end_x18_dream: prison_1.anm (waking up), 3 s later enable_ui, 4.5 s later the patrol order voice
+	add { ["do"] = "pp_stop", id = 9014 }
+	add { ["do"] = "cam", anm = "prison_1", id = 9015 }
+	add { ["do"] = "wait", ms = 3000 }
+	add { ["do"] = "ui_on" }
+	add { ["do"] = "wait", ms = 4500 }
+	add { ["do"] = "snd2d", path = SND_PRIKAZ, wait = true, cap_ms = 15000 }
+	return st
+end
+
+coop_scenes.register {
+	id        = ID,
+	kind      = "sequence",
+	level     = "coop_l04_x18",
+	once      = true,
+	skip      = "majority",                 -- contains a movie
+	-- 12 s fall + ~34 s movie + 3 s + 4.5 s + ~13 s voice
+	length_ms = 68000,
+	grace_ms  = 20000,
+
+	-- SERVER: poltergeist room entered (door held) and the command center poltergeist dead (door free)
+	trigger = function(ctx)
+		return ctx.flag("X18_CODEDOOR_3_LOCKED_POLTERGEIST_FLAME_INFO") and ctx.flag("X18_CODEDOOR_3_OPEN_INFO")
+	end,
+
+	-- CLIENT: media from the owner's SoC install (see NOTES.md); without them the text card runs
+	need = {
+		tex = { "intro\\dream_rats.ogm" },
+		snd = { "characters_voice\\scenario\\video\\dream_rats_l.ogg", "characters_voice\\scenario\\video\\dream_rats_r.ogg" },
+	},
+	steps    = function(var, env) return build(var, env, true) end,
+	fallback = function(var, env) return build(var, env, false) end,
+}

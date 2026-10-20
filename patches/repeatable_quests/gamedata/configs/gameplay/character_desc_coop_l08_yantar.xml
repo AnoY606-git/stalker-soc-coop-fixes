@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding="windows-1251"?>
+<xml>
+<specific_character id="yan_smart_terrain_1_ecolog_saharov" team_default = "1">
+    <name>yan_smart_terrain_1_ecolog_saharov_name</name>
+    <icon>ui_inGame2_saharov</icon>
+    <map_icon x="0" y="6"></map_icon>
+    <bio>none</bio>
+    <class>yan_smart_terrain_1_ecolog_saharov</class>
+    <community>ecolog</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="1000000" max="2000000" infinitive="1"></money>
+    <rank>2071</rank>
+    <reputation>603</reputation>
+    <visual>actors\stalker_ecolog\stalker_ucheniy_1</visual>
+    <snd_config>characters_voice\human_03\csky\</snd_config>
+    <crouch_type>1</crouch_type>
+    <supplies>
+        [spawn] \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs_3.xml"
+#include "gameplay\character_drugs_sci.xml"
+#include "gameplay\character_drugs_mil.xml"
+    </supplies>
+	<start_dialog>yan_smart_terrain_1_ecolog_saharov_start_dialog</start_dialog>
+	<actor_dialog>rq_sak_dialog</actor_dialog>
+	<actor_dialog>rq_sak_handin</actor_dialog>	
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog</actor_dialog>	
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_secondary_quests_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_secondary_quests_idle_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_secondary_quests_fail_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_saharov_break_dialog</actor_dialog>
+    </specific_character>
+	
+<specific_character id="yan_smart_terrain_1_ecolog_kruglov" team_default = "1">
+    <name>ros_smart_terrain_4_ecolog_kruglov_name</name>
+    <icon>ui_inGame2_kruglov</icon>
+    <map_icon x="0" y="6"></map_icon>
+    <bio>none</bio>
+    <class>yan_smart_terrain_1_ecolog_kruglov</class>
+    <community>ecolog</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="2000" max="5000" infinitive="0"></money>
+    <rank>2071</rank>
+    <reputation>-603</reputation>
+    <visual>actors\stalker_ecolog\stalker_ecolog_1</visual>
+    <snd_config>characters_voice\human_03\csky\</snd_config>
+    <crouch_type>1</crouch_type>
+    <supplies>
+        [spawn] \n
+        wpn_walther \n
+        ammo_9x19_fmj \n
+		hand_radio = 1 \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs_3.xml"
+#include "gameplay\character_drugs_sci.xml"
+#include "gameplay\character_drugs_mil.xml"
+    </supplies>
+	<start_dialog>yan_smart_terrain_1_ecolog_kruglov_start_dialog</start_dialog>	
+	<actor_dialog>yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog</actor_dialog>
+	<actor_dialog>yan_smart_terrain_1_ecolog_kruglov_secondary_quests_dialog</actor_dialog>
+	<!--actor_dialog>yan_smart_terrain_1_ecolog_kruglov_secondary_quests_idle_dialog</actor_dialog-->
+	<actor_dialog>yan_smart_terrain_1_ecolog_kruglov_secondary_quests_fail_dialog</actor_dialog>	
+	<actor_dialog>yan_smart_terrain_1_ecolog_kruglov_break_dialog</actor_dialog>
+    </specific_character>
+  </xml>
+  

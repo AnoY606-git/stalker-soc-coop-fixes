@@ -1,0 +1,107 @@
+-------------------------------------------------------------------------------------------------------
+-- Dark Valley: the X18 entrance as in the original SoC (server side, no scene).
+-- This file is auto-loaded by the Scene Director (patches/cutscenes_core loads every coop_scn_*.script), it
+-- registers no scene, it only installs a 1 s server tick.
+--
+--  * val_door_trader = SoC val_door_underground: the metal door in front of the lab entrance (the level changer
+--    val_x18_level_changer sits 3.5 m behind it). The maintainers want it gone, players had to shoot it open.
+--  * val_equipment_box_01_case_0005 = SoC level_prefix_inventory_box_0032 (story_id 2025), the stash box of the
+--    bandit base at the lab entrance. In the mod its [spawn] section is empty; the SoC contents came from the
+--    respawn object val_respawn_inventory_box_0000 (parent = 2025, item_spawn = true, idle_spawn = -1, once):
+--    ammo_5.45x39_ap,2  ammo_12x76_zhekan,3  medkit,2  ammo_vog-25,1
+-------------------------------------------------------------------------------------------------------
+
+local LEVEL    = "coop_l04_darkvalley"
+local DOOR     = "val_door_trader"
+local BOX      = "val_equipment_box_01_case_0005"
+local FLAG     = "VAL_X18_ENTRANCE_BOX_FILLED"
+local LOOT     = { { "ammo_5.45x39_ap", 2 }, { "ammo_12x76_zhekan", 3 }, { "medkit", 2 }, { "ammo_vog-25", 1 } }
+
+-- X18 poltergeist guard: silent dedicated-server crash reports (poltergeist keeps attacking a downed / just revived player).
+-- The downed state is engine side and not visible to scripts, so a low health reading counts as downed; poltergeists ignore
+-- every player until all players have been above the threshold for REVIVE_GRACE ms. UNTESTED in game.
+local X18 = "coop_l04_x18"
+local DOWN_HEALTH, REVIVE_GRACE = 0.3, 6000
+local G = { unsafe_until = 0, ignoring = nil, last_scan = 0 }
+
+local function set_polter_ignore(flag)
+	for id = 0, 65534 do
+		local o = level.object_by_id(id)
+		if o ~= nil and o:clsid() == clsid.poltergeist_s then
+			pcall(function() o:poltergeist_set_actor_ignore(flag) end)
+		end
+	end
+end
+
+local function polter_guard(now)
+	if type(db.mp_actors) ~= "table" then return end
+	for _, a in pairs(db.mp_actors) do
+		local ok, h = pcall(function() return a.health end)
+		if ok and h ~= nil and h < DOWN_HEALTH then G.unsafe_until = now + REVIVE_GRACE end
+	end
+	local want = now < G.unsafe_until
+	if want ~= G.ignoring or (want and now - G.last_scan > 5000) then
+		G.ignoring = want
+		G.last_scan = now
+		set_polter_ignore(want)
+	end
+end
+
+local R = { gen = 0, last = 0, door_found = false, door_removed = false, box_filled = false, ticks = 0, err = nil }
+
+local function fix()
+	local sim = alife()
+	if sim == nil then return end
+	local box = sim:object(BOX)
+	if box == nil then return end                       -- level not populated yet
+
+	local door = sim:object(DOOR)
+	if door ~= nil then
+		R.door_found = true
+		sim:release(door, true)
+		R.door_removed = true
+	elseif not R.door_removed then
+		R.door_removed = true                           -- already gone (saved game)
+	end
+
+	if not R.box_filled then
+		if story_flags.has_flag(FLAG) then
+			R.box_filled = true
+		else
+			for _, it in ipairs(LOOT) do
+				for _ = 1, it[2] do
+					sim:create(it[1], box.position, box.m_level_vertex_id, box.m_game_vertex_id, box.id)
+				end
+			end
+			story_flags.give_flag(FLAG)
+			R.box_filled = true
+		end
+	end
+end
+
+local function install()
+	R.gen = R.gen + 1
+	local gen = R.gen
+	pcall(function()
+		level.add_call(function()
+			if gen ~= R.gen then return true end
+			local now = time_global()
+			if now - R.last < 1000 then return false end
+			R.last = now
+			if OnServer() and level.name() == X18 then pcall(polter_guard, now) return false end
+			if R.door_removed and R.box_filled then return false end
+			R.ticks = R.ticks + 1
+			if OnServer() and level.name() == LEVEL then
+				local ok, e = pcall(fix)
+				if not ok then R.err = tostring(e) end
+			end
+			return false
+		end, function() end)
+	end)
+end
+
+function status()
+	return string.format("door_found=%s door_removed=%s box_filled=%s ticks=%d err=%s", tostring(R.door_found), tostring(R.door_removed), tostring(R.box_filled), R.ticks, tostring(R.err))
+end
+
+install()

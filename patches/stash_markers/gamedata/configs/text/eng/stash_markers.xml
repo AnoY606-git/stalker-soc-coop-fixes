@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="stash_hint_esc_secret_bridge_vagon">
+		<text>%c[255,238,155,23]Railcar Over the Bridge\n%c[default]Hid ammo in a railcar during the regroup. Don't forget.</text>
+	</string>
+	<string id="stash_hint_esc_secret_anomaly_dead">
+		<text>%c[255,238,155,23]Anomaly Victim's Gear\n%c[default]Saw some stalker die in an anomaly in the forest near the railway tunnel, his gear looked decent.</text>
+	</string>
+	<string id="stash_hint_esc_secret_bandit_cross">
+		<text>%c[255,238,155,23]Cross by the Bandit Camp\n%c[default]Hid my loot under the cross near the bandit camp.</text>
+	</string>
+	<string id="stash_hint_esc_secret_bandit_supply">
+		<text>%c[255,238,155,23]Bandit Stockpile\n%c[default]A crate intercepted by bandits was found in the attic of the central house. Need to get a squad ready and take it back.</text>
+	</string>
+	<string id="stash_hint_esc_secret_under_cross">
+		<text>%c[255,238,155,23]Under the Cross\n%c[default]When me and the boys were fighting off the dogs in uniform, I buried some goods under the cross. Let it lie.</text>
+	</string>
+	<string id="stash_hint_esc_secret_refuge">
+		<text>%c[255,238,155,23]Attic Hideout\n%c[default]Shoved the backpack in the attic. I'll come back later, no chance for now.</text>
+	</string>
+	<string id="stash_hint_esc_secret_safe_farm">
+		<text>%c[255,238,155,23]Farm Safe\n%c[default]Found a half-buried safe on the farm, will keep my goods there for now.</text>
+	</string>
+	<string id="stash_hint_esc_secret_vagon_container">
+		<text>%c[255,238,155,23]Railcar Container\n%c[default]The boys whispered that someone is hiding something in a railcar on the bridge, should check on the way back. Wish I knew who.</text>
+	</string>
+	<string id="stash_hint_esc_secret_stalker_things">
+		<text>%c[255,238,155,23]Stalker's Goods\n%c[default]Hid the goods right under the roof, in the little house near the bridge.</text>
+	</string>
+	<string id="stash_hint_esc_secret_box_bridge">
+		<text>%c[255,238,155,23]Gear by the Bridge\n%c[default]Hid my gear in one of the crates not far from the bridge. That's it, I'm done. Leaving the Zone, goodbye, boys! Won't forget my mother.</text>
+	</string>
+	<string id="stash_hint_esc_secret_village_rucksack">
+		<text>%c[255,238,155,23]Backpack by the Village\n%c[default]Some stalker died near the rookie camp, should check out his stuff.</text>
+	</string>
+	<string id="stash_hint_esc_secret_village_roof">
+		<text>%c[255,238,155,23]Village Attic\n%c[default]Stash in the attic, got it from Likhoy. He ran his mouth too much, so we took him out.</text>
+	</string>
+	<string id="stash_hint_esc_secret_nice_place">
+		<text>%c[255,238,155,23]Handy Spot\n%c[default]Found a great stash in the attic, will wait until someone puts something in it.</text>
+	</string>
+	<string id="stash_hint_esc_secret_vorpal">
+		<text>%c[255,238,155,23]Vorpal's Stash\n%c[default]Stash in the attic, got it from Vorpal. Our guys were scouting the area. We'll check it.</text>
+	</string>
+	<string id="stash_hint_esc_secret_commander_goods">
+		<text>%c[255,238,155,23]Commander's Valuables\n%c[default]They say the commander has a tricky crate in his office, and it's packed with valuables.</text>
+	</string>
+	<string id="stash_hint_esc_secret_road">
+		<text>%c[255,238,155,23]By the Country Road\n%c[default]Some stalker died near the rookie camp, should see what he was carrying. Who even lets them through here?</text>
+	</string>
+	<string id="stash_hint_esc_secret_thief">
+		<text>%c[255,238,155,23]Thieves' Attic\n%c[default]Hid my loot in the bandits' attic while they were away. Now to find a moment to grab it.</text>
+	</string>
+	<string id="stash_hint_esc_secret_gas_pipe">
+		<text>%c[255,238,155,23]Gas Pipe\n%c[default]Found gear in a pipe not far from the farm. Once the guardhouse time is over I'll definitely come back.</text>
+	</string>
+	<string id="stash_hint_esc_secret_truck_goods">
+		<text>%c[255,238,155,23]Hidden Gear\n%c[default]Dropped my backpack near the post, need to grab it fast before the commander moves us to another location.</text>
+	</string>
+	<string id="stash_hint_esc_secret_kpp_tower">
+		<text>%c[255,238,155,23]Checkpoint Tower\n%c[default]Left a crate on the watchtower for now. Will pick it up when I can.</text>
+	</string>
+	<string id="stash_hint_gar_secret_bandit_hiding">
+		<text>%c[255,238,155,23]Bandit Stash\n%c[default]Saw a bandit hide his goods in a crate in the hangar. How to snatch it quietly?</text>
+	</string>
+	<string id="stash_hint_gar_secret_old_kran">
+		<text>%c[255,238,155,23]Old Crane\n%c[default]Me and Vasya went to see what's what, and a cop's bullet got Vasya. I had nothing to do with it. Bullets are stupid. Stashed my stuff on the crane, in a pipe.</text>
+	</string>
+	<string id="stash_hint_gar_secret_grizly">
+		<text>%c[255,238,155,23]Grizzly's Gear\n%c[default]In the Garbage, in the railway tunnel behind the diesel, Grizzly died with all his junk. Shame about the guy.</text>
+	</string>
+	<string id="stash_hint_gar_secret_north_tube">
+		<text>%c[255,238,155,23]Pipe on the North Heap\n%c[default]Stashed the loot in a pipe in the Garbage.</text>
+	</string>
+	<string id="stash_hint_gar_secret_metal_hiding">
+		<text>%c[255,238,155,23]Scrap Metal Stash\n%c[default]The stuff is lying in the Garbage, in a pipe. If you don't know exactly where, you'll never find it.</text>
+	</string>
+	<string id="stash_hint_gar_secret_cistern_pipe">
+		<text>%c[255,238,155,23]Cast-Iron Pipe by the Tanks\n%c[default]Hid my junk in a metal pipe near two tanks. Should pick it up, but no time.</text>
+	</string>
+	<string id="stash_hint_gar_secret_east_tube">
+		<text>%c[255,238,155,23]Pipe on the East Heap\n%c[default]Among the radioactive trash, where few ever go, some useful things are hidden.</text>
+	</string>
+	<string id="stash_hint_gar_secret_rucksack_noones">
+		<text>%c[255,238,155,23]Nobody's Backpack\n%c[default]Someone's backpack lies in a hollow, anomalies all around. How to reach it?</text>
+	</string>
+	<string id="stash_hint_gar_secret_murdered">
+		<text>%c[255,238,155,23]Dead Man's Gear\n%c[default]We whacked a snitch in the swamp and buried him there. His loot we left under the cross, no time for that.</text>
+	</string>
+	<string id="stash_hint_gar_secret_rotted_stump">
+		<text>%c[255,238,155,23]Rotten Stump\n%c[default]Stash in a stump, good spot.</text>
+	</string>
+	<string id="stash_hint_gar_secret_forest_log">
+		<text>%c[255,238,155,23]Log in the Forest\n%c[default]There's a log in the forest with a hole inside. A treasure's in it, time to pick it up.</text>
+	</string>
+	<string id="stash_hint_gar_secret_shooters_supply">
+		<text>%c[255,238,155,23]Strelok Group's Cache\n%c[default]Petrenko passed on info about the Strelok group's stash in the Garbage. There should be a hatch on the plain, in a hollow, he told me the trick to open it. When things calm down, we should go there.</text>
+	</string>
+	<string id="stash_hint_gar_secret_car_hiding">
+		<text>%c[255,238,155,23]Stash in the Car\n%c[default]Stashed it in a car, Lanky said it's a good spot.</text>
+	</string>
+	<string id="stash_hint_gar_secret_bus_rucksack">
+		<text>%c[255,238,155,23]Stalker's Backpack in the Bus\n%c[default]Put my backpack in the bus, looks unnoticeable.</text>
+	</string>
+	<string id="stash_hint_gar_secret_toilet">
+		<text>%c[255,238,155,23]Outhouse Supplies\n%c[default]Put my supplies in a crate, in a strange little house around the corner. Still don't get what that building is for.</text>
+	</string>
+	<string id="stash_hint_gar_secret_south_safe">
+		<text>%c[255,238,155,23]Safe on the South Heap\n%c[default]Half-buried safe on a trash heap, it's all in there. Just don't forget what.</text>
+	</string>
+	<string id="stash_hint_gar_secret_metal_hiding2">
+		<text>%c[255,238,155,23]Scrap Metal Cache\n%c[default]Put the loot in a pipe on a trash heap.</text>
+	</string>
+	<string id="stash_hint_gar_secret_box_supply">
+		<text>%c[255,238,155,23]Crate Supplies\n%c[default]The boss radioed to pull back. I came across a crate, dumped the extra weight in it and left light.</text>
+	</string>
+	<string id="stash_hint_gar_secret_bus_tube">
+		<text>%c[255,238,155,23]Pipe by the Bus\n%c[default]Shoved the loot in a pipe in the Garbage. It won't lie there long.</text>
+	</string>
+	<string id="stash_hint_gar_secret_rucksack_ruins">
+		<text>%c[255,238,155,23]Backpack in the Ruins\n%c[default]Hid the backpack well in the ruins. Hope it's easy to get, if bandits don't get in the way.</text>
+	</string>
+	<string id="stash_hint_gar_secret_box_blockpost">
+		<text>%c[255,238,155,23]Crate at the Roadblock\n%c[default]While Duty were shooting it out, I stashed my loot in a trailer. Need to get in somehow and grab it. And thank Duty.</text>
+	</string>
+	<string id="stash_hint_gar_secret_deadman">
+		<text>%c[255,238,155,23]Weakling's Backpack\n%c[default]They say Weakling kicked it in the Garbage, should go check his loot. Before a crowd of others shows up.</text>
+	</string>
+	<string id="stash_hint_gar_secret_avoska">
+		<text>%c[255,238,155,23]String Bag in the Hatch\n%c[default]Will hide my goods in the hatch for now, maybe they won't find it.</text>
+	</string>
+	<string id="stash_hint_gar_secret_escavator">
+		<text>%c[255,238,155,23]Under the Bucket\n%c[default]Someone died in an anomaly by the excavator, the backpack is visible, but hard to get.</text>
+	</string>
+	<string id="stash_hint_gar_secret_concrete_blocks">
+		<text>%c[255,238,155,23]Stash Under the Concrete Blocks\n%c[default]Barely squeezed under the beams, but hid the backpack well, nobody will come here.</text>
+	</string>
+	<string id="stash_hint_agr_secret_gray">
+		<text>%c[255,238,155,23]Grey's Stash\n%c[default]Our stash is in the tunnel for now, all the goods are in the pipe. It's a good spot, few know about it, and the anomalies put people off climbing in.</text>
+	</string>
+	<string id="stash_hint_agr_secret_stump">
+		<text>%c[255,238,155,23]Hollow Stump\n%c[default]Hid it in a stump near the tunnel. Handy hole there.</text>
+	</string>
+	<string id="stash_hint_agr_secret_cross">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]Buried a bit of loot under the cross, by the bush.</text>
+	</string>
+	<string id="stash_hint_agr_secret_tree_rucksack">
+		<text>%c[255,238,155,23]Backpack Under the Tree\n%c[default]Dropped my backpack under a fallen tree.</text>
+	</string>
+	<string id="stash_hint_agr_secret_pipe_rucksack">
+		<text>%c[255,238,155,23]Chimney Sweep's Backpack\n%c[default]Shoved the backpack into a pipe near the factory. Nobody will find it.</text>
+	</string>
+	<string id="stash_hint_agr_secret_roof_box">
+		<text>%c[255,238,155,23]Rooftop Crate\n%c[default]Stashed a crate on the factory roof, nobody will see it there. It'll rust in the rain, though.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rucksack_blue">
+		<text>%c[255,238,155,23]Drunk's Backpack\n%c[default]They opened fire, had to ditch the backpack under a railcar, behind the wheel. But I got away. I'll come back for it later.</text>
+	</string>
+	<string id="stash_hint_agr_secret_cisterne">
+		<text>%c[255,238,155,23]By the Three Tanks\n%c[default]Hid it under a cross, behind the tanks. Dig a little, just don't get carried away.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rucksack_window">
+		<text>%c[255,238,155,23]Backpack in the Porthole\n%c[default]Put a backpack up high in the factory, so it can't be seen from below. Can't remember what's in it, though.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_radiation">
+		<text>%c[255,238,155,23]Radioactive Crate\n%c[default]Inside the factory, hid some stuff in a crate.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_stairs">
+		<text>%c[255,238,155,23]Crate in the Gap\n%c[default]Stash in a crate under the stairs.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_factory">
+		<text>%c[255,238,155,23]Factory Crate\n%c[default]Hid it in a little crate, nobody checks those anyway.</text>
+	</string>
+	<string id="stash_hint_agr_secret_bag_stand">
+		<text>%c[255,238,155,23]Bag on the Pylon\n%c[default]Dropped a bag outside the window, I'll pick it up later.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_trash">
+		<text>%c[255,238,155,23]Trash Crate\n%c[default]Me and Kolyan did well in Agroprom, hauled in all kinds of junk, but had to stash some of it. Put a crate in the trash container.</text>
+	</string>
+	<string id="stash_hint_agr_secret_safe_tree">
+		<text>%c[255,238,155,23]Safe Under the Tree\n%c[default]Found a safe under a fallen tree, going to keep everything here for now.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rucksack_laketube">
+		<text>%c[255,238,155,23]Stuff in the Pipe\n%c[default]Threw my stuff in the pipe, will pick it up later. Had to, or I'd have taken it with me, of course. Just hope it doesn't get wet.</text>
+	</string>
+	<string id="stash_hint_agr_secret_tube_radiactive">
+		<text>%c[255,238,155,23]Radioactive Pipe\n%c[default]The goods are in an old pipe, should tell the boys. I'm not going in there.</text>
+	</string>
+	<string id="stash_hint_agr_secret_pipe_breakdown">
+		<text>%c[255,238,155,23]Rubble\n%c[default]Ran from the base, to hell with getting shot at by stalkers. Hid my gear in a pipe, in the rubble. I'll wait it out until they fly off, then come back for it.</text>
+	</string>
+	<string id="stash_hint_agr_secret_safe_bush">
+		<text>%c[255,238,155,23]Safe Under the Bush\n%c[default]Half-buried safe under a bush, I hide everything here.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_archive">
+		<text>%c[255,238,155,23]Archive Box\n%c[default]Found a crate under a pylon, somebody dragged it all the way from the NII. We'll wait for the helicopter, then take it.</text>
+	</string>
+	<string id="stash_hint_agr_secret_sewers">
+		<text>%c[255,238,155,23]Under the Hatch\n%c[default]Hid my stuff in an iron box.</text>
+	</string>
+	<string id="stash_hint_agr_secret_safe_wall">
+		<text>%c[255,238,155,23]Bush by the Wall\n%c[default]Half-buried safe under a bush, I hide everything there.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_institute">
+		<text>%c[255,238,155,23]Institute Crate\n%c[default]Handy crate for dumping extra junk.</text>
+	</string>
+	<string id="stash_hint_agr_secret_agrosafe">
+		<text>%c[255,238,155,23]Agro Safe\n%c[default]Hid it in a safe, then the military showed up. Can't get to the goods now.</text>
+	</string>
+	<string id="stash_hint_agr_secret_truck">
+		<text>%c[255,238,155,23]Truck Bed\n%c[default]Threw my gear in the pipe, will pick it up later.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rotted_log">
+		<text>%c[255,238,155,23]Rotten Log\n%c[default]Pick up the stuff from the rotten log.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_zavhoz">
+		<text>%c[255,238,155,23]Caretaker's Crate\n%c[default]Handy crate for dumping extra junk. It used to hold the Institute's maintenance supplies.</text>
+	</string>
+	<string id="stash_hint_agr_secret_inventory_schlosser">
+		<text>%c[255,238,155,23]Locksmith's Tools\n%c[default]Handy crate for small things, I used to keep my locksmith tools in one like it at home.</text>
+	</string>
+	<string id="stash_hint_agru_secret_bandit_obschak">
+		<text>%c[255,238,155,23]Bandit Stash\n%c[default]Bandits are hiding something under the pipe, worth a visit. From what I overheard, it's their supplies.</text>
+	</string>
+	<string id="stash_hint_agru_secret_rucksack_corner">
+		<text>%c[255,238,155,23]Backpack in the Nook\n%c[default]Hid my backpack behind chunks of concrete, going light. Better hungry than dead.</text>
+	</string>
+	<string id="stash_hint_agru_secret_box_bloodsucker">
+		<text>%c[255,238,155,23]Bloodsucker's Crate\n%c[default]Crate behind a rusty "barrel" in the underground, everything is there. I'm not going back, no way! I still don't remember how I managed to take down that bloodsucker.</text>
+	</string>
+	<string id="stash_hint_agru_secret_box_habar">
+		<text>%c[255,238,155,23]Stalker's Loot\n%c[default]The loot is behind the wall. I swear!</text>
+	</string>
+	<string id="stash_hint_agru_secret_mole_cave">
+		<text>%c[255,238,155,23]Mole's Burrow\n%c[default]Dug up some valuables here. Tricky spot for my stash. On a yellow barrel, you'll never find it.</text>
+	</string>
+	<string id="stash_hint_val_secret_0000">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]Under a cross, near the mountain, buried a bit of loot.</text>
+	</string>
+	<string id="stash_hint_val_secret_0001">
+		<text>%c[255,238,155,23]Log Stash\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_val_secret_0002">
+		<text>%c[255,238,155,23]Backpack Under the Bridge\n%c[default]Shoved the backpack under the bridge, let it lie for now.</text>
+	</string>
+	<string id="stash_hint_val_secret_0003">
+		<text>%c[255,238,155,23]Stash Car\n%c[default]Put a crate in the car near the swamp.</text>
+	</string>
+	<string id="stash_hint_val_secret_0004">
+		<text>%c[255,238,155,23]Stump Stash\n%c[default]Stash in a stump, good spot.</text>
+	</string>
+	<string id="stash_hint_val_secret_0005">
+		<text>%c[255,238,155,23]Supply Crate\n%c[default]Found a great crate on the farm, will keep my supplies there for now.</text>
+	</string>
+	<string id="stash_hint_val_secret_0006">
+		<text>%c[255,238,155,23]Pipe Stash\n%c[default]Threw my gear in the pipe, will pick it up later.</text>
+	</string>
+	<string id="stash_hint_val_secret_0007">
+		<text>%c[255,238,155,23]Stash Under the Fir\n%c[default]Hid the backpack under a fir tree.</text>
+	</string>
+	<string id="stash_hint_val_secret_0008">
+		<text>%c[255,238,155,23]Government Crate\n%c[default]The rookie finally swiped a crate from the bandits and put it in the overturned Niva. Says it looks like a government crate. Need to gear up some boys and get it.</text>
+	</string>
+	<string id="stash_hint_val_secret_0009">
+		<text>%c[255,238,155,23]Crate\n%c[default]Thieves all around, they steal from their own now, but they won't find my little crate.</text>
+	</string>
+	<string id="stash_hint_val_secret_0010">
+		<text>%c[255,238,155,23]Hatch Stash\n%c[default]Stashed my things in a hatch, they'll come in handy someday.</text>
+	</string>
+	<string id="stash_hint_val_secret_0011">
+		<text>%c[255,238,155,23]Stalker's Backpack\n%c[default]Dropped the backpack under a tree, otherwise I wouldn't have gotten away from the bandits.</text>
+	</string>
+	<string id="stash_hint_val_secret_0012">
+		<text>%c[255,238,155,23]Stash\n%c[default]Put my junk in the pipe, will pick it up later.</text>
+	</string>
+	<string id="stash_hint_val_secret_0013">
+		<text>%c[255,238,155,23]Hidden Safe\n%c[default]Everything I swiped from Boar, I hid in the safe under the fir tree. Now to lie low while they're all on edge.</text>
+	</string>
+	<string id="stash_hint_val_secret_0014">
+		<text>%c[255,238,155,23]Trailer Storage\n%c[default]Temporary HQ in a trailer, the supply crate is in there too.</text>
+	</string>
+	<string id="stash_hint_val_secret_0015">
+		<text>%c[255,238,155,23]Hideout in the Pipe\n%c[default]Barely squeezed into the pipe under the road, now I've got a place to hide my backpack.</text>
+	</string>
+	<string id="stash_hint_val_secret_0016">
+		<text>%c[255,238,155,23]Crate of Goods\n%c[default]Tossed my goods in a crate, we'll pick them up later.</text>
+	</string>
+	<string id="stash_hint_val_secret_0017">
+		<text>%c[255,238,155,23]Stash Behind the Pipe\n%c[default]Hiding my loot behind the pipe. Hard to reach, but it won't get swiped.</text>
+	</string>
+	<string id="stash_hint_val_secret_0018">
+		<text>%c[255,238,155,23]Electrical Panel Stash\n%c[default]Stashed ammo in the electrical panel.</text>
+	</string>
+	<string id="stash_hint_val_secret_0019">
+		<text>%c[255,238,155,23]Stash Crate\n%c[default]Everything we found, we left in a crate, we'll pick it up on the way back.</text>
+	</string>
+	<string id="stash_hint_val_secret_0020">
+		<text>%c[255,238,155,23]Hidden Backpack\n%c[default]Stashed the rookie's backpack, he never found it.</text>
+	</string>
+	<string id="stash_hint_val_secret_0021">
+		<text>%c[255,238,155,23]Forgotten Crate\n%c[default]A crate was left in the van, need to pick it up.</text>
+	</string>
+	<string id="stash_hint_val_secret_0022">
+		<text>%c[255,238,155,23]Gas Station Safe\n%c[default]Found a safe at the gas station, hid my goods there, seems like few come around here.</text>
+	</string>
+	<string id="stash_hint_val_secret_0023">
+		<text>%c[255,238,155,23]Crate\n%c[default]Dragged a crate onto the tank.</text>
+	</string>
+	<string id="stash_hint_val_secret_0024">
+		<text>%c[255,238,155,23]Gas Station Safe\n%c[default]Hid my supplies in the gas station safe.</text>
+	</string>
+	<string id="stash_hint_val_secret_0025">
+		<text>%c[255,238,155,23]Crate in the Car\n%c[default]In the bandit camp, there's some crate in a car. Need to sneak in unnoticed, I smell something worth grabbing.</text>
+	</string>
+	<string id="stash_hint_val_secret_0026">
+		<text>%c[255,238,155,23]Crate in the Stash\n%c[default]Put the crate in a stash, reliable spot.</text>
+	</string>
+	<string id="stash_hint_val_secret_0027">
+		<text>%c[255,238,155,23]Abandoned Backpack\n%c[default]Left the backpack in an abandoned building, good thing nobody is around.</text>
+	</string>
+	<string id="stash_hint_val_secret_0028">
+		<text>%c[255,238,155,23]Boar's Stash\n%c[default]We'll keep the goods in a safe, in an unnoticeable spot. Any day now the military will come and light a fire under everyone here, but they won't search for long, so the most valuable stuff stays with me.</text>
+	</string>
+	<string id="stash_hint_val_secret_0029">
+		<text>%c[255,238,155,23]Backpack in a Hidden Spot\n%c[default]Stashed the backpack near the building.</text>
+	</string>
+	<string id="stash_hint_val_secret_0030">
+		<text>%c[255,238,155,23]Unnoticeable Crate\n%c[default]Shoved the loot in an unnoticeable crate, will pick it up later.</text>
+	</string>
+	<string id="stash_hint_val_secret_0031">
+		<text>%c[255,238,155,23]Hidden Backpack\n%c[default]Hid the backpack under a car, nobody will poke around there.</text>
+	</string>
+	<string id="stash_hint_val_secret_0032">
+		<text>%c[255,238,155,23]Car Stash\n%c[default]Hid the loot in a car right under the bandits' noses, no time to find anything better.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0000">
+		<text>%c[255,238,155,23]Log Stash\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0001">
+		<text>%c[255,238,155,23]Stove Stash\n%c[default]Hid my junk in the stove.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0002">
+		<text>%c[255,238,155,23]KAMAZ Stash\n%c[default]Hid my junk in the cab of a KAMAZ.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0003">
+		<text>%c[255,238,155,23]Treasure Under the Cross\n%c[default]Under a cross near the village, buried a bit of loot.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0004">
+		<text>%c[255,238,155,23]Pipe Stash\n%c[default]Threw my gear in the pipe, will pick it up later.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0005">
+		<text>%c[255,238,155,23]Tower Treasure\n%c[default]Stash in the water tower, in a crate.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0006">
+		<text>%c[255,238,155,23]Stove Stash\n%c[default]Shoved the backpack in the stove, it'll come in handy later.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0007">
+		<text>%c[255,238,155,23]Car Stash\n%c[default]Hid the loot in a car, in the abandoned village.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0008">
+		<text>%c[255,238,155,23]Dangerous Secret\n%c[default]Left a backpack in the ruins with radiation. They'll be afraid to go in.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0009">
+		<text>%c[255,238,155,23]Stalker's Cache\n%c[default]Buried loot under a cross, in a hidden spot.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0010">
+		<text>%c[255,238,155,23]Backpack With Gear\n%c[default]Hid a little backpack with gear in a hidden spot.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0011">
+		<text>%c[255,238,155,23]Hilltop Stash\n%c[default]Hid my gear on the hill, in a car.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0012">
+		<text>%c[255,238,155,23]Helicopter Crate\n%c[default]A helicopter went down near the abandoned military base, a crate lies close by, right under the helicopter. One problem, anomalies and radiation all around.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0013">
+		<text>%c[255,238,155,23]Secret in the Grave\n%c[default]Buried loot on the hill under a cross.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0014">
+		<text>%c[255,238,155,23]Secret Stump\n%c[default]Stash in a stump, good spot.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0015">
+		<text>%c[255,238,155,23]Steeplejack's Stash\n%c[default]Left my backpack in the crane cab, will pick it up later.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0016">
+		<text>%c[255,238,155,23]Agreed Stash\n%c[default]Put everything in a crate, in a railcar not far from the base. Just as agreed, now all that's left is to wait.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0017">
+		<text>%c[255,238,155,23]Treasure in the Log\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0018">
+		<text>%c[255,238,155,23]Loot Pipe\n%c[default]Shoved the loot in a pipe on the lake shore.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0019">
+		<text>%c[255,238,155,23]Stalker's Stash\n%c[default]Hid my stuff in an iron box.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0020">
+		<text>%c[255,238,155,23]Loot in the Log\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0021">
+		<text>%c[255,238,155,23]Handy Stash\n%c[default]Handy crate for dumping extra junk.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0022">
+		<text>%c[255,238,155,23]Backpack in the Tunnel\n%c[default]Hid a backpack of loot in the tunnel.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0023">
+		<text>%c[255,238,155,23]Crate of Goods\n%c[default]Handy crate for dumping extra junk.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0024">
+		<text>%c[255,238,155,23]Log Stash\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0025">
+		<text>%c[255,238,155,23]Temporary Stash\n%c[default]Tossed my goods in a crate, will pick them up later.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0026">
+		<text>%c[255,238,155,23]Steel Stash\n%c[default]Stashed my things in a hatch, they'll come in handy someday.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0027">
+		<text>%c[255,238,155,23]Loot Crate\n%c[default]Tossed my goods in a crate, will pick them up later.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0028">
+		<text>%c[255,238,155,23]Car Stash\n%c[default]Hid the loot in a car right under Freedom's nose, no time to find anything better.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0000">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]A cross on the hill, and a stash under it.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0001">
+		<text>%c[255,238,155,23]Old Safe\n%c[default]They say there's a half-buried safe on a little island in the swamp. Worth a visit.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0002">
+		<text>%c[255,238,155,23]Pipe With Goods\n%c[default]Shoved my goods in a pipe near the camp.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0003">
+		<text>%c[255,238,155,23]Backpack Behind the Garages\n%c[default]Stashed the loot behind the garages.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0004">
+		<text>%c[255,238,155,23]Backpack With Loot\n%c[default]Hid the backpack in a booth, right behind the iron thingy.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0005">
+		<text>%c[255,238,155,23]Bus Stash\n%c[default]Put a little crate in the bus, looks unnoticeable.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0006">
+		<text>%c[255,238,155,23]Loot in the Car\n%c[default]The loot is hidden in a car, not far from the territory. Radiation isn't too strong.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0007">
+		<text>%c[255,238,155,23]Old Backpack\n%c[default]They say someone's loot is here, but you can't get through the radiation.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0008">
+		<text>%c[255,238,155,23]Faction Stash\n%c[default]They say a faction's stash is here, how did they even get through the radiation?</text>
+	</string>
+	<string id="stash_hint_yan_secret_0009">
+		<text>%c[255,238,155,23]Tester's Backpack\n%c[default]Another volunteer stalker is gone, another prototype failed to protect against radiation. He made it only to the middle of the territory and stayed there. Sakharov wants more precise measurements, but I'm not going, or I'll stay there too, not far from the territory.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0010">
+		<text>%c[255,238,155,23]Old Stash\n%c[default]They say someone's loot is here, but you can't get through the radiation.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0011">
+		<text>%c[255,238,155,23]Scientist's Stash\n%c[default]Gotta bail. Sakharov and Kruglov are total nutcases, they want me to go with some stalker to the center of the radiation. To hell with them, as soon as I gather all my supplies in the hatch, I'm gone.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0012">
+		<text>%c[255,238,155,23]Treasure in the Log\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0013">
+		<text>%c[255,238,155,23]Crate of Goods\n%c[default]They say someone's stash is here, but you can't get through the radiation.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0000">
+		<text>%c[255,238,155,23]Gloomy's Treasure\n%c[default]A cross on the road to the Brain Scorcher, he went no further and hid everything under it.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0001">
+		<text>%c[255,238,155,23]Dead Stalker's Loot\n%c[default]Some stalker died here, his loot is still lying around, nobody can pick it up.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0002">
+		<text>%c[255,238,155,23]Loot in the Safe\n%c[default]They say there's a half-buried safe in the forest, packed with loot.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0003">
+		<text>%c[255,238,155,23]Package for Duty\n%c[default]Told them not to fly over the Brain Scorcher, and look what happened. They came down in the middle of the forest, hardly anyone survived. What they sent us is lying somewhere there.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0004">
+		<text>%c[255,238,155,23]Desperate Group's Supplies\n%c[default]They say a supply stash is left there by a group that fought its way to the center of the Zone, right under the Brain Scorcher's radiation. None of them came back, and the stash is still waiting for whoever picks it up.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0005">
+		<text>%c[255,238,155,23]Faction Leader's Loot\n%c[default]They say the leader of some former faction died here, and he had rich loot on him.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0000">
+		<text>%c[255,238,155,23]Dead Stalker's Gear\n%c[default]They say some famous stalker died here, and nobody has picked up his stuff yet.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0001">
+		<text>%c[255,238,155,23]Garage Treasure\n%c[default]They say there's a crate in the garage, and it's packed with loot, holy cow.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0002">
+		<text>%c[255,238,155,23]Old Stash\n%c[default]They say there's a crate in the kindergarten, and it's packed with loot, holy cow.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0003">
+		<text>%c[255,238,155,23]Fang's Loot\n%c[default]Buried Fang in Pripyat, under the monument. Left all his loot there too, it's not right to take from the dead.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0004">
+		<text>%c[255,238,155,23]Freedom Leader's Supplies\n%c[default]The last thing known about him is that he was the only one to survive the Emission. He left his supplies in some former department store and moved on. Everything went wrong, and he was the best Freedom leader in our whole history.</text>
+	</string>
+	<string id="stash_hint_x18_secret_0000">
+		<text>%c[255,238,155,23]Smokey's Stash\n%c[default]In the underground lab, Smokey put everything in a safe. Not a bad spot, nobody has keys to the lab. One problem, rocks suddenly fly through the air out of nowhere, they say somebody got crushed.</text>
+	</string>
+	<string id="stash_hint_x18_secret_0001">
+		<text>%c[255,238,155,23]Dropped Backpack\n%c[default]Had to drop the backpack.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0000">
+		<text>%c[255,238,155,23]Hidden Backpack\n%c[default]Hid my backpack near the Duty base. Will pick it up later.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0001">
+		<text>%c[255,238,155,23]Abandoned Backpack\n%c[default]A big pack of dogs chased me, if I hadn't dropped the backpack I wouldn't have made it to the outpost.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0002">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]Whatever was left, we buried under the cross.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0003">
+		<text>%c[255,238,155,23]Backpack\n%c[default]Dropped my backpack here, easier this way.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0004">
+		<text>%c[255,238,155,23]Bunker Storage\n%c[default]Duty outpost gear, kept in the bunker, but nobody watches the crate.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0005">
+		<text>%c[255,238,155,23]Stash\n%c[default]Saw a Duty guy stuff something in a pipe near the outpost.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0006">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]It all belonged to him, let it lie here for now.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0007">
+		<text>%c[255,238,155,23]Backpack\n%c[default]Heading to the Bar, left my backpack in the hangar.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0008">
+		<text>%c[255,238,155,23]Stash in the Electrical Panel\n%c[default]They say there's something valuable in an electrical panel on Duty territory.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0009">
+		<text>%c[255,238,155,23]Tower Stash\n%c[default]Wedged a little box at the top of the tower near Duty where nobody will notice.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0010">
+		<text>%c[255,238,155,23]Stash\n%c[default]Hid it in a pipe under the stairs.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0011">
+		<text>%c[255,238,155,23]Arni's Stash\n%c[default]Stashed the goods not far from the Bar, behind the anomalies, nobody can get near. And they don't know how to open it either, it's simple, you just pry the door and it opens.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0012">
+		<text>%c[255,238,155,23]Stash\n%c[default]Stashed the goods not far from the Bar.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0013">
+		<text>%c[255,238,155,23]Crate\n%c[default]In a crate near the Bar.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0014">
+		<text>%c[255,238,155,23]Little Box\n%c[default]Stashed a little box in a back alley near the Bar.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0015">
+		<text>%c[255,238,155,23]Stash\n%c[default]Buried under the cross, behind the fir trees.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0016">
+		<text>%c[255,238,155,23]Stash\n%c[default]Under a cross, not far from the passage to the Wild Territory.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0017">
+		<text>%c[255,238,155,23]Little Box\n%c[default]Stashed a little box with anti-rad in a pipe near the Arena.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0018">
+		<text>%c[255,238,155,23]Stash\n%c[default]Hid my gear in a pipe under the tower.</text>
+	</string>
+	<string id="stash_hint_bar_secret_0019">
+		<text>%c[255,238,155,23]Stash\n%c[default]Stash under the cross.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0000">
+		<text>%c[255,238,155,23]Hidden Backpack\n%c[default]Hid my backpack behind a sheet of iron.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0001">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]Stashed the goods under the cross.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0002">
+		<text>%c[255,238,155,23]Crate Under the House\n%c[default]Hid something in a crate under the little house. Don't forget.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0003">
+		<text>%c[255,238,155,23]Stalker's Backpack\n%c[default]Shoved the backpack under the steps, and then those bastards showed up. Damn, how to get it out.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0004">
+		<text>%c[255,238,155,23]Stash Behind the Tree\n%c[default]In the corner here, behind the tree, there's a half-buried safe, my junk will stay there.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0005">
+		<text>%c[255,238,155,23]Garage Stash\n%c[default]Everything we grabbed during the raid, we hid in a crate in the garage.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0006">
+		<text>%c[255,238,155,23]Hidden Crate\n%c[default]Hid my things in a crate behind the booth.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0007">
+		<text>%c[255,238,155,23]Backpack in the Stash\n%c[default]Shoved the backpack in a hole, doesn't look noticeable from above.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0008">
+		<text>%c[255,238,155,23]Crate in a Hidden Spot\n%c[default]Hid a little crate in a hidden spot.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0009">
+		<text>%c[255,238,155,23]Stalker's Stash\n%c[default]My backpack is under the roof. For a rainy day.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0010">
+		<text>%c[255,238,155,23]Safe in the House\n%c[default]They say there's a safe in this little house, with something hidden in it.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0011">
+		<text>%c[255,238,155,23]Pipe Stash\n%c[default]Hid it in the little house, in a pipe. Careful, it's all hot with radiation there.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0012">
+		<text>%c[255,238,155,23]Hidden Little Crate\n%c[default]What we agreed on, you'll take from the little crate, nobody usually looks in there.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0013">
+		<text>%c[255,238,155,23]Stash Under the Cross\n%c[default]Hid it under the cross, in a back alley.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0014">
+		<text>%c[255,238,155,23]Stash Under the Concrete\n%c[default]Hid the spare supplies at the construction site, under the concrete.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0015">
+		<text>%c[255,238,155,23]Lucky's Stash\n%c[default]We'll keep the loot in a crate at the construction site, in case we need to run.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0016">
+		<text>%c[255,238,155,23]Stash\n%c[default]Hid it at the construction site, in a back alley.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0017">
+		<text>%c[255,238,155,23]Pipe Stash\n%c[default]Shoved everything in some pipe, we'll pick it up later.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0018">
+		<text>%c[255,238,155,23]Medkit Crate\n%c[default]Hid the meds in a crate not far from the construction site.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0019">
+		<text>%c[255,238,155,23]Crate on the Crane\n%c[default]Dragged a crate into the crane cab.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0020">
+		<text>%c[255,238,155,23]Hatch Stash\n%c[default]In the corner, behind the railway, locked my goods in a hatch.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0021">
+		<text>%c[255,238,155,23]Dropped Backpack\n%c[default]Went for an artifact and got caught in an anomaly, barely walking. Dropped the backpack in the corner, behind the railway.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0022">
+		<text>%c[255,238,155,23]Crate Under the Roof\n%c[default]Up top, under the roof near the tower, shoved a little crate so nobody notices.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0023">
+		<text>%c[255,238,155,23]Pipe Stash\n%c[default]What we found, we hid in a pipe, not far from the construction site.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0024">
+		<text>%c[255,238,155,23]Stash\n%c[default]Shoved my goods in a log, they won't find it, I think.</text>
+	</string>
+	<string id="stash_hint_ros_secret_0025">
+		<text>%c[255,238,155,23]Backpack\n%c[default]Stashed the backpack near the crane.</text>
+	</string>
+</string_table>

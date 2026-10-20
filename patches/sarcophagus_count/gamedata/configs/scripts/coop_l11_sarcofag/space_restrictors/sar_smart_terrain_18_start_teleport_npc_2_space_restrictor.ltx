@@ -1,0 +1,14 @@
+[logic]
+active 												= sr_idle@monolith_teleport_idle
+
+[sr_idle@monolith_teleport_idle]
+on_info 											= {+SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_1_SQUAD_DEAD} sr_particle@monolith_teleport_start
+
+[sr_particle@monolith_teleport_start]
+name 												= anomaly2\teleport_out_00
+path 												= sar_smart_terrain_18_particle_point_2
+mode 												= 2
+looped 												= false
+on_game_timer 										= 20 | sr_idle@nil
+
+[sr_idle@nil]

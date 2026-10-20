@@ -1,0 +1,9 @@
+-- Appended to client_tasks.script (xrMPE .dscript). The server actor binder calls update_delayed_tasks() every
+-- update; piggyback on it to drive the repeatable side quests (coop_repeat_quests.script).
+local rq_orig_update_delayed_tasks = update_delayed_tasks
+function update_delayed_tasks()
+	rq_orig_update_delayed_tasks()
+	if coop_repeat_quests ~= nil then
+		coop_repeat_quests.update()
+	end
+end

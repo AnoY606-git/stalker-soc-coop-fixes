@@ -1,0 +1,61 @@
+[logic]
+active 												= sr_idle@determine_cl_sv
+type 												= no_save
+
+[sr_idle@determine_cl_sv]
+on_info 											= {=isServer} sr_idle@sv_control
+on_info2 											= {=isClient} sr_idle@cl_control
+
+;server logic
+[sr_idle@sv_control]
+on_info   											= {+BAR_ARNY_ARENA_SMART_TERRAIN_DOG_DURING_THE_TIME_ARENA_INFO}  			sr_idle@sv_start_arena_dog			%+BAR_ARNY_ARENA_SMART_TERRAIN_START_CAT_SCENE_INFO%
+on_info2  											= {+BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO}  	sr_idle@sv_start_arena_pseudodog	%+BAR_ARNY_ARENA_SMART_TERRAIN_START_CAT_SCENE_INFO%
+on_info3  											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_DURING_THE_TIME_ARENA_INFO} 			sr_idle@sv_start_arena_boar			%+BAR_ARNY_ARENA_SMART_TERRAIN_START_CAT_SCENE_INFO%
+on_info4  											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO}  	sr_idle@sv_start_arena_bloodsucker	%+BAR_ARNY_ARENA_SMART_TERRAIN_START_CAT_SCENE_INFO%
+;on_info5  											= {+BAR_ARNY_ARENA_SMART_TERRAIN_NON_DURING_THE_TIME_ARENA_ARENA_INFO} 		sr_idle@sv_start_arena_non			%+BAR_ARNY_ARENA_SMART_TERRAIN_START_CAT_SCENE_INFO%
+
+[sr_idle@sv_start_arena_dog]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_DOG_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_DOG_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_DOG_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@sv_control %=xrmpe_teleport_actors(bar_smart_terrain_6_arena_spawn_players_1_walk:bar_smart_terrain_6_arena_spawn_players_1_look) =forward_game_time(4)%
+
+[sr_idle@sv_start_arena_pseudodog]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@sv_control %=xrmpe_teleport_actors(bar_smart_terrain_6_arena_spawn_players_1_walk:bar_smart_terrain_6_arena_spawn_players_1_look) =forward_game_time(4)%
+
+[sr_idle@sv_start_arena_boar]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_BOAR_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@sv_control %=xrmpe_teleport_actors(bar_smart_terrain_6_arena_spawn_players_1_walk:bar_smart_terrain_6_arena_spawn_players_1_look) =forward_game_time(4)%
+
+[sr_idle@sv_start_arena_bloodsucker]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@sv_control %=xrmpe_teleport_actors(bar_smart_terrain_6_arena_spawn_players_1_walk:bar_smart_terrain_6_arena_spawn_players_1_look) =forward_game_time(4)%
+
+[sr_idle@sv_start_arena_non]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_NON_DURING_THE_TIME_ARENA_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_NON_DURING_THE_TIME_ARENA_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_NON_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@sv_control %=xrmpe_teleport_actors(bar_smart_terrain_6_arena_spawn_players_1_walk:bar_smart_terrain_6_arena_spawn_players_1_look) =forward_game_time(4)%
+
+
+
+;client logic
+[sr_idle@cl_control]
+on_info  											= {+BAR_ARNY_ARENA_SMART_TERRAIN_DOG_DURING_THE_TIME_ARENA_INFO}  			sr_idle@cl_start_arena_dog
+on_info2 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO}  	sr_idle@cl_start_arena_pseudodog
+on_info3 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_DURING_THE_TIME_ARENA_INFO} 			sr_idle@cl_start_arena_boar
+on_info4 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO}  	sr_idle@cl_start_arena_bloodsucker
+;on_info5 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_NON_DURING_THE_TIME_ARENA_ARENA_INFO} 		sr_idle@cl_start_arena_non
+
+[sr_idle@cl_start_arena_dog]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_DOG_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_DOG_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_DOG_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@cl_control
+
+[sr_idle@cl_start_arena_pseudodog]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_PSEUDODOG_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@cl_control
+
+[sr_idle@cl_start_arena_boar]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_BOAR_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_BOAR_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@cl_control
+
+[sr_idle@cl_start_arena_bloodsucker]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO +BAR_ARNY_ARENA_SMART_TERRAIN_SPAWN_BLOODSUCKER_DURING_THE_TIME_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@cl_control

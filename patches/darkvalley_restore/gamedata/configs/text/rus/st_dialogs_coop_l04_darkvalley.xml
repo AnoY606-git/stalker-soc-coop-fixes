@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="val_smart_terrain_15_stalker_scammer_fake_gauss_fail_dialog_0">
+        <text>Да не, не надо. С деньгами сейчас напряг.</text>
+    </string>
+    <string id="val_smart_terrain_15_stalker_scammer_fake_gauss_good_dialog_0">
+        <text>Держи, мы подождем.</text>
+    </string>
+    <string id="val_smart_terrain_15_stalker_scammer_start_dialog_0">
+        <text>Слушайте, классная пушка нужна? Я возле Янтаря нашел кой-что...тайник там был, одним словом. Среди всякого там гауссовка лежала. Отличная, тебе скажу штука - за сто метров любого наповал. Могу уступить, если интересуетесь. За восемьсот всего, за две минуты вынесу!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_1_start_dialog_0">
+        <text>Помоги, скорее...Они скоро вернуться...</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_2_start_dialog_0">
+        <text>Спасибо, что спасли меня. Без вас я бы сгинул!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_0">
+        <text>Ты как? Живой?</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_1">
+        <text>Живой, дай аптечку срочно!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_2">
+        <text>Держи!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_3">
+        <text>Ща найдем, погоди!</text>
+    </string>
+	<string id="st_val_monolith_trader_pda1">
+		<text>Меченый! Базу бандитов атаковали военные. Они перекрыли выход на Свалку. Но есть старая дорога на юг. Попробуй выбраться по ней, но будь осторожен. Удачи.</text>
+	</string>
+	<string id="st_esc_return_dv">
+		<text>Здорово, Меченый, рад что ты жив, да еще и заглянул к нам на огонек. Заскочи, поболтаем. Очередное дельце наклевывается.</text>
+	</string>
+	<string id="esc_smart_terrain_1_trader_sidorovich_x18_documents_0">
+		<text>Был в Х18. Вот они, документы.</text>
+	</string>
+	<string id="esc_smart_terrain_1_trader_sidorovich_x18_documents_1">
+		<text>Та-ак... ага... А вот это очень даже интересно! Расскажу - не поверят. Хм-м... угу... о как! Ты смотри! Даже и не предполагал такого... как всё запущено-то... Ну, ладно. Держи обратно. Это всё нужно отдать Бармену, а тебе за труды причитается!</text>
+	</string>
+</string_table>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="scn_endings_text_to_monolith"><text>Концовка: Монолит</text></string>
+	<string id="scn_endings_text_gold"><text>Концовка: Золото</text></string>
+	<string id="scn_endings_text_blind"><text>Концовка: Доброй воли</text></string>
+	<string id="scn_endings_text_apocal"><text>Концовка: Апокалипсис</text></string>
+	<string id="scn_endings_text_immortal"><text>Концовка: Бессмертие</text></string>
+	<string id="scn_endings_text_peace"><text>Концовка: Мир</text></string>
+</string_table>

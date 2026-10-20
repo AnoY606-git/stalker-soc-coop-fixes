@@ -1,0 +1,11 @@
+; Original SoC: the bunker doors are never closed against the player (door_trader.ltx "unlocked"
+; state: locked = true, closed = false). The mod locked this door until Sakharov was asked for the room.
+[logic]
+active 												= ph_door@open
+
+[ph_door@open]
+locked 												= true
+closed 												= false
+snd_open_start 										= metal_small_open
+snd_close_start 									= metal_small_close_start
+snd_close_stop 										= metal_small_close_stop

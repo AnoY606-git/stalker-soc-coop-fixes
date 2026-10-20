@@ -1,0 +1,91 @@
+<!-- coop_scn_endings: fallback cards of scene package "endings" (shown only when an ending movie file is missing). -->
+
+	<scn_endings_card_to_monolith>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="8" x="112" y="340" width="800" height="90" alignment="c" stretch="1"><text font="graffiti22" r="225" g="225" b="250" a="255" align="c">scn_endings_text_to_monolith</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>8</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_endings_card_to_monolith>
+
+	<scn_endings_card_gold>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="8" x="112" y="340" width="800" height="90" alignment="c" stretch="1"><text font="graffiti22" r="225" g="225" b="250" a="255" align="c">scn_endings_text_gold</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>8</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_endings_card_gold>
+
+	<scn_endings_card_blind>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="8" x="112" y="340" width="800" height="90" alignment="c" stretch="1"><text font="graffiti22" r="225" g="225" b="250" a="255" align="c">scn_endings_text_blind</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>8</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_endings_card_blind>
+
+	<scn_endings_card_apocal>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="8" x="112" y="340" width="800" height="90" alignment="c" stretch="1"><text font="graffiti22" r="225" g="225" b="250" a="255" align="c">scn_endings_text_apocal</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>8</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_endings_card_apocal>
+
+	<scn_endings_card_immortal>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="8" x="112" y="340" width="800" height="90" alignment="c" stretch="1"><text font="graffiti22" r="225" g="225" b="250" a="255" align="c">scn_endings_text_immortal</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>8</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_endings_card_immortal>
+
+	<scn_endings_card_peace>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="8" x="112" y="340" width="800" height="90" alignment="c" stretch="1"><text font="graffiti22" r="225" g="225" b="250" a="255" align="c">scn_endings_text_peace</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>8</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_endings_card_peace>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+  <dialog id="rq_sid_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>11</next><next>12</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_sid_camp_offer</text><dont_has_flag>RQG_RQ_SID_CAMP_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_sid_camp_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_sid_camp_accept</text><dont_has_flag>RQG_RQ_SID_CAMP_ACC</dont_has_flag><give_flag>RQG_RQ_SID_CAMP_ACC</give_flag></phrase>
+      <phrase id="11"><text>rq_sid_kill_offer</text><dont_has_flag>RQG_RQ_SID_KILL_ACC</dont_has_flag><next>31</next></phrase>
+      <phrase id="31"><text>rq_sid_kill_npc</text><next>51</next><next>99</next></phrase>
+      <phrase id="51"><text>rq_sid_kill_accept</text><dont_has_flag>RQG_RQ_SID_KILL_ACC</dont_has_flag><give_flag>RQG_RQ_SID_KILL_ACC</give_flag></phrase>
+      <phrase id="12"><text>rq_sid_defend_offer</text><dont_has_flag>RQG_RQ_SID_DEFEND_ACC</dont_has_flag><next>32</next></phrase>
+      <phrase id="32"><text>rq_sid_defend_npc</text><next>52</next><next>99</next></phrase>
+      <phrase id="52"><text>rq_sid_defend_accept</text><dont_has_flag>RQG_RQ_SID_DEFEND_ACC</dont_has_flag><give_flag>RQG_RQ_SID_DEFEND_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_wolf_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>11</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_wolf_camp1_offer</text><dont_has_flag>RQG_RQ_WOLF_CAMP1_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_wolf_camp1_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_wolf_camp1_accept</text><dont_has_flag>RQG_RQ_WOLF_CAMP1_ACC</dont_has_flag><give_flag>RQG_RQ_WOLF_CAMP1_ACC</give_flag></phrase>
+      <phrase id="11"><text>rq_wolf_camp2_offer</text><dont_has_flag>RQG_RQ_WOLF_CAMP2_ACC</dont_has_flag><next>31</next></phrase>
+      <phrase id="31"><text>rq_wolf_camp2_npc</text><next>51</next><next>99</next></phrase>
+      <phrase id="51"><text>rq_wolf_camp2_accept</text><dont_has_flag>RQG_RQ_WOLF_CAMP2_ACC</dont_has_flag><give_flag>RQG_RQ_WOLF_CAMP2_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_shu_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_shu_find_offer</text><dont_has_flag>RQG_RQ_SHU_FIND_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_shu_find_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_shu_find_accept</text><dont_has_flag>RQG_RQ_SHU_FIND_ACC</dont_has_flag><give_flag>RQG_RQ_SHU_FIND_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_shu_handin">
+    <phrase_list>
+      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_handin_rq_shu_find</text><precondition>coop_rq_dialogs.has_rq_wpn_fort</precondition><has_flag>RQG_RQ_SHU_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_SHU_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_SHU_FIND_FAIL</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_wpn_fort</action><give_flag>RQG_RQ_SHU_FIND_DONE</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_bar_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>11</next><next>12</next><next>13</next><next>14</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_bar_kill1_offer</text><dont_has_flag>RQG_RQ_BAR_KILL1_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_bar_kill1_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_bar_kill1_accept</text><dont_has_flag>RQG_RQ_BAR_KILL1_ACC</dont_has_flag><give_flag>RQG_RQ_BAR_KILL1_ACC</give_flag></phrase>
+      <phrase id="11"><text>rq_bar_kill2_offer</text><dont_has_flag>RQG_RQ_BAR_KILL2_ACC</dont_has_flag><next>31</next></phrase>
+      <phrase id="31"><text>rq_bar_kill2_npc</text><next>51</next><next>99</next></phrase>
+      <phrase id="51"><text>rq_bar_kill2_accept</text><dont_has_flag>RQG_RQ_BAR_KILL2_ACC</dont_has_flag><give_flag>RQG_RQ_BAR_KILL2_ACC</give_flag></phrase>
+      <phrase id="12"><text>rq_bar_camp1_offer</text><dont_has_flag>RQG_RQ_BAR_CAMP1_ACC</dont_has_flag><next>32</next></phrase>
+      <phrase id="32"><text>rq_bar_camp1_npc</text><next>52</next><next>99</next></phrase>
+      <phrase id="52"><text>rq_bar_camp1_accept</text><dont_has_flag>RQG_RQ_BAR_CAMP1_ACC</dont_has_flag><give_flag>RQG_RQ_BAR_CAMP1_ACC</give_flag></phrase>
+      <phrase id="13"><text>rq_bar_camp2_offer</text><dont_has_flag>RQG_RQ_BAR_CAMP2_ACC</dont_has_flag><next>33</next></phrase>
+      <phrase id="33"><text>rq_bar_camp2_npc</text><next>53</next><next>99</next></phrase>
+      <phrase id="53"><text>rq_bar_camp2_accept</text><dont_has_flag>RQG_RQ_BAR_CAMP2_ACC</dont_has_flag><give_flag>RQG_RQ_BAR_CAMP2_ACC</give_flag></phrase>
+      <phrase id="14"><text>rq_bar_defend_offer</text><dont_has_flag>RQG_RQ_BAR_DEFEND_ACC</dont_has_flag><next>34</next></phrase>
+      <phrase id="34"><text>rq_bar_defend_npc</text><next>54</next><next>99</next></phrase>
+      <phrase id="54"><text>rq_bar_defend_accept</text><dont_has_flag>RQG_RQ_BAR_DEFEND_ACC</dont_has_flag><give_flag>RQG_RQ_BAR_DEFEND_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_vor_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>11</next><next>12</next><next>13</next><next>14</next><next>15</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_vor_camp1_offer</text><dont_has_flag>RQG_RQ_VOR_CAMP1_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_vor_camp1_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_vor_camp1_accept</text><dont_has_flag>RQG_RQ_VOR_CAMP1_ACC</dont_has_flag><give_flag>RQG_RQ_VOR_CAMP1_ACC</give_flag></phrase>
+      <phrase id="11"><text>rq_vor_camp2_offer</text><dont_has_flag>RQG_RQ_VOR_CAMP2_ACC</dont_has_flag><next>31</next></phrase>
+      <phrase id="31"><text>rq_vor_camp2_npc</text><next>51</next><next>99</next></phrase>
+      <phrase id="51"><text>rq_vor_camp2_accept</text><dont_has_flag>RQG_RQ_VOR_CAMP2_ACC</dont_has_flag><give_flag>RQG_RQ_VOR_CAMP2_ACC</give_flag></phrase>
+      <phrase id="12"><text>rq_vor_kill_offer</text><dont_has_flag>RQG_RQ_VOR_KILL_ACC</dont_has_flag><next>32</next></phrase>
+      <phrase id="32"><text>rq_vor_kill_npc</text><next>52</next><next>99</next></phrase>
+      <phrase id="52"><text>rq_vor_kill_accept</text><dont_has_flag>RQG_RQ_VOR_KILL_ACC</dont_has_flag><give_flag>RQG_RQ_VOR_KILL_ACC</give_flag></phrase>
+      <phrase id="13"><text>rq_vor_defend_offer</text><dont_has_flag>RQG_RQ_VOR_DEFEND_ACC</dont_has_flag><next>33</next></phrase>
+      <phrase id="33"><text>rq_vor_defend_npc</text><next>53</next><next>99</next></phrase>
+      <phrase id="53"><text>rq_vor_defend_accept</text><dont_has_flag>RQG_RQ_VOR_DEFEND_ACC</dont_has_flag><give_flag>RQG_RQ_VOR_DEFEND_ACC</give_flag></phrase>
+      <phrase id="14"><text>rq_vor_find_offer</text><dont_has_flag>RQG_RQ_VOR_FIND_ACC</dont_has_flag><next>34</next></phrase>
+      <phrase id="34"><text>rq_vor_find_npc</text><next>54</next><next>99</next></phrase>
+      <phrase id="54"><text>rq_vor_find_accept</text><dont_has_flag>RQG_RQ_VOR_FIND_ACC</dont_has_flag><give_flag>RQG_RQ_VOR_FIND_ACC</give_flag></phrase>
+      <phrase id="15"><text>rq_vor_camp3_offer</text><dont_has_flag>RQG_RQ_VOR_CAMP3_ACC</dont_has_flag><next>35</next></phrase>
+      <phrase id="35"><text>rq_vor_camp3_npc</text><next>55</next><next>99</next></phrase>
+      <phrase id="55"><text>rq_vor_camp3_accept</text><dont_has_flag>RQG_RQ_VOR_CAMP3_ACC</dont_has_flag><give_flag>RQG_RQ_VOR_CAMP3_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_vor_handin">
+    <phrase_list>
+      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_handin_rq_vor_find</text><precondition>coop_rq_dialogs.has_rq_wpn_ak74u</precondition><has_flag>RQG_RQ_VOR_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_VOR_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_VOR_FIND_FAIL</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_wpn_ak74u</action><give_flag>RQG_RQ_VOR_FIND_DONE</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_pet_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_pet_kill_offer</text><dont_has_flag>RQG_RQ_PET_KILL_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_pet_kill_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_pet_kill_accept</text><dont_has_flag>RQG_RQ_PET_KILL_ACC</dont_has_flag><give_flag>RQG_RQ_PET_KILL_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_hun_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_hun_camp_offer</text><dont_has_flag>RQG_RQ_HUN_CAMP_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_hun_camp_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_hun_camp_accept</text><dont_has_flag>RQG_RQ_HUN_CAMP_ACC</dont_has_flag><give_flag>RQG_RQ_HUN_CAMP_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_inf_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>11</next><next>12</next><next>13</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_inf_kill_offer</text><dont_has_flag>RQG_RQ_INF_KILL_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_inf_kill_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_inf_kill_accept</text><dont_has_flag>RQG_RQ_INF_KILL_ACC</dont_has_flag><give_flag>RQG_RQ_INF_KILL_ACC</give_flag></phrase>
+      <phrase id="11"><text>rq_inf_find_offer</text><dont_has_flag>RQG_RQ_INF_FIND_ACC</dont_has_flag><next>31</next></phrase>
+      <phrase id="31"><text>rq_inf_find_npc</text><next>51</next><next>99</next></phrase>
+      <phrase id="51"><text>rq_inf_find_accept</text><dont_has_flag>RQG_RQ_INF_FIND_ACC</dont_has_flag><give_flag>RQG_RQ_INF_FIND_ACC</give_flag></phrase>
+      <phrase id="12"><text>rq_inf_camp_offer</text><dont_has_flag>RQG_RQ_INF_CAMP_ACC</dont_has_flag><next>32</next></phrase>
+      <phrase id="32"><text>rq_inf_camp_npc</text><next>52</next><next>99</next></phrase>
+      <phrase id="52"><text>rq_inf_camp_accept</text><dont_has_flag>RQG_RQ_INF_CAMP_ACC</dont_has_flag><give_flag>RQG_RQ_INF_CAMP_ACC</give_flag></phrase>
+      <phrase id="13"><text>rq_inf_defend_offer</text><dont_has_flag>RQG_RQ_INF_DEFEND_ACC</dont_has_flag><next>33</next></phrase>
+      <phrase id="33"><text>rq_inf_defend_npc</text><next>53</next><next>99</next></phrase>
+      <phrase id="53"><text>rq_inf_defend_accept</text><dont_has_flag>RQG_RQ_INF_DEFEND_ACC</dont_has_flag><give_flag>RQG_RQ_INF_DEFEND_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_inf_handin">
+    <phrase_list>
+      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_handin_rq_inf_find</text><precondition>coop_rq_dialogs.has_rq_wpn_desert_eagle</precondition><has_flag>RQG_RQ_INF_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_INF_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_INF_FIND_FAIL</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_wpn_desert_eagle</action><give_flag>RQG_RQ_INF_FIND_DONE</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_zho_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_zho_find_offer</text><dont_has_flag>RQG_RQ_ZHO_FIND_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_zho_find_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_zho_find_accept</text><dont_has_flag>RQG_RQ_ZHO_FIND_ACC</dont_has_flag><give_flag>RQG_RQ_ZHO_FIND_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_zho_handin">
+    <phrase_list>
+      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_handin_rq_zho_find</text><precondition>coop_rq_dialogs.has_rq_vodka</precondition><has_flag>RQG_RQ_ZHO_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_ZHO_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_ZHO_FIND_FAIL</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_vodka</action><give_flag>RQG_RQ_ZHO_FIND_DONE</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_ska_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_ska_kill_offer</text><dont_has_flag>RQG_RQ_SKA_KILL_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_ska_kill_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_ska_kill_accept</text><dont_has_flag>RQG_RQ_SKA_KILL_ACC</dont_has_flag><give_flag>RQG_RQ_SKA_KILL_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_sak_dialog">
+    <phrase_list>
+      <phrase id="0"><text>rq_ask_work</text><next>1</next></phrase>
+      <phrase id="1"><text>rq_npc_work</text><next>10</next><next>11</next><next>12</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_sak_camp1_offer</text><dont_has_flag>RQG_RQ_SAK_CAMP1_ACC</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_sak_camp1_npc</text><next>50</next><next>99</next></phrase>
+      <phrase id="50"><text>rq_sak_camp1_accept</text><dont_has_flag>RQG_RQ_SAK_CAMP1_ACC</dont_has_flag><give_flag>RQG_RQ_SAK_CAMP1_ACC</give_flag></phrase>
+      <phrase id="11"><text>rq_sak_camp2_offer</text><dont_has_flag>RQG_RQ_SAK_CAMP2_ACC</dont_has_flag><next>31</next></phrase>
+      <phrase id="31"><text>rq_sak_camp2_npc</text><next>51</next><next>99</next></phrase>
+      <phrase id="51"><text>rq_sak_camp2_accept</text><dont_has_flag>RQG_RQ_SAK_CAMP2_ACC</dont_has_flag><give_flag>RQG_RQ_SAK_CAMP2_ACC</give_flag></phrase>
+      <phrase id="12"><text>rq_sak_find_offer</text><dont_has_flag>RQG_RQ_SAK_FIND_ACC</dont_has_flag><next>32</next></phrase>
+      <phrase id="32"><text>rq_sak_find_npc</text><next>52</next><next>99</next></phrase>
+      <phrase id="52"><text>rq_sak_find_accept</text><dont_has_flag>RQG_RQ_SAK_FIND_ACC</dont_has_flag><give_flag>RQG_RQ_SAK_FIND_ACC</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+  <dialog id="rq_sak_handin">
+    <phrase_list>
+      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="10"><text>rq_handin_rq_sak_find</text><precondition>coop_rq_dialogs.has_rq_detector_simple</precondition><has_flag>RQG_RQ_SAK_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_SAK_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_SAK_FIND_FAIL</dont_has_flag><next>30</next></phrase>
+      <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_detector_simple</action><give_flag>RQG_RQ_SAK_FIND_DONE</give_flag></phrase>
+      <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
+    </phrase_list>
+  </dialog>
+</game_dialogs>

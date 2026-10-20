@@ -1,0 +1,14 @@
+[logic]
+active 												= sr_idle@monolith_final_idle
+
+[sr_idle@monolith_final_idle]
+on_player_inside  									= sr_idle@monolith_final_1_start %=run_tutorial(bad_final_monolith)%
+
+[sr_idle@monolith_final_1_start]
+on_info 											= {+SAR_BAD_FINAL_MONOLITH_INFO} sr_idle@monolith_final_2_start
+
+[sr_idle@monolith_final_2_start]
+on_info    											= sr_idle@nil %=scene_request(end_wish)%
+on_player_outside  									= sr_idle@monolith_final_idle %=stop_tutorial(bad_final_monolith)%
+
+[sr_idle@nil]

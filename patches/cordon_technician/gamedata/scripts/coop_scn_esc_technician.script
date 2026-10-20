@@ -1,0 +1,211 @@
+-------------------------------------------------------------------------------------------------------
+-- Cordon rookie technician (patches/cordon_technician).
+-- Puts one mechanic NPC (profile esc_rookie_technician, CoP style repair/upgrades) into the rookie village.
+-- No all.spawn edit: the server creates him once with alife():create. His spawn section has a story_id, and the
+-- story object registry is part of the save, so after a load he is found again and never created twice.
+-- Loaded by the scene director's package discovery (scripts coop_scn_*), runs on every machine, acts on the server only.
+-- The director polls `trigger` every 500 ms on the server once a player is in the level; this one never requests a scene.
+--
+-- Changes against the first version (untested, see NOTES.md "Crash review"):
+--  * waits until a player actor is really online (db.mp_actors) before creating him;
+--  * the game vertex is the nearest game-graph vertex of this level to the spot (the first version paired the level
+--    vertex of the house with the game vertex of the smart terrain, 35 m away);
+--  * no write to se.angle after the create (a property write on a registered, already broadcast entity);
+--  * db.spawned_vertex_by_id gets the level vertex, as sim_squad_scripted:add_squad_member does for squad members;
+--  * the full duplicate scan (65534 object lookups) runs only when the story registry has lost him, not every 5 s;
+--  * if the engine did not run his logic (spawn_ini empty), it is started from the logic file by script.
+-------------------------------------------------------------------------------------------------------
+
+LEVEL      = "coop_l01_escape"
+SECTION    = "esc_rookie_technician"
+STORY_ID   = "esc_rookie_technician"
+LOGIC_FILE = "scripts\\coop_l01_escape\\esc_rookie_technician.ltx"
+
+-- inside the workshop house of the village (x, y, z of the floor)
+SPOT = { x = -219.0, y = -19.5, z = -166.0 }
+
+local checked_at = 0
+local created_n = 0
+local gv_cache = nil
+local idle_seen = {}   -- entity id -> number of ticks the online NPC had no active logic scheme
+
+local function say(msg)
+	pcall(function() printf_msg("[esc_technician] " .. tostring(msg)) end)
+end
+
+-- number of player actors that are online on the server
+local function actors_online()
+	local n = 0
+	if db.mp_actors ~= nil then
+		for _ in pairs(db.mp_actors) do n = n + 1 end
+	end
+	return n
+end
+
+-- id of the live technician entity or nil. Drops a stale registry entry.
+function find()
+	local sim = alife()
+	if sim == nil then return nil end
+	local id = get_story_object_id(STORY_ID)
+	if id ~= nil then
+		if sim:object(id) ~= nil then return id end
+		unregister_story_id(STORY_ID)
+	end
+	return nil
+end
+
+-- every entity of the technician section (duplicate check by section, independent of the registry)
+function count_all()
+	local sim = alife()
+	local n, ids = 0, {}
+	if sim == nil then return 0, ids end
+	for i = 1, 65534 do
+		local o = sim:object(i)
+		if o ~= nil and o:section_name() == SECTION then
+			n = n + 1
+			ids[#ids + 1] = i
+		end
+	end
+	return n, ids
+end
+
+-- nearest valid AI node to the wanted point (an invalid id comes back as a huge/negative number). Returns position, node id.
+function valid_node(v)
+	return v ~= nil and v >= 0 and v < 4000000000
+end
+
+function find_node(x, y, z)
+	local pos = vector():set(x, y, z)
+	local lv = level.vertex_id(pos)
+	if valid_node(lv) then return level.vertex_position(lv), lv end
+	for r = 0.5, 4.0, 0.5 do
+		for k = 0, 11 do
+			local a = k * math.pi / 6
+			local p = vector():set(x + math.cos(a) * r, y, z + math.sin(a) * r)
+			lv = level.vertex_id(p)
+			if valid_node(lv) then return level.vertex_position(lv), lv end
+		end
+	end
+	return pos, nil
+end
+
+-- Game vertex that belongs to the spot: the nearest game-graph vertex of this level (by its level position).
+-- Falls back to the game vertex of esc_smart_terrain_1.
+local function game_vertex(pos)
+	if gv_cache ~= nil then return gv_cache end
+	local smart_gv
+	pcall(function()
+		local smart = sim_board.get_sim_board():get_smart_by_name("esc_smart_terrain_1")
+		if smart then smart_gv = smart.m_game_vertex_id end
+	end)
+	if smart_gv == nil then
+		pcall(function() smart_gv = patrol("esc_smart_terrain_1_walker_wolf_walk"):game_vertex_id(0) end)
+	end
+	local best
+	pcall(function()
+		local gg = game_graph()
+		local lid = gg:vertex(smart_gv):level_id()
+		local best_d
+		for i = 0, 8191 do
+			if gg:valid_vertex_id(i) then
+				local v = gg:vertex(i)
+				if v:level_id() == lid then
+					local d = pos:distance_to(v:level_point())
+					if best_d == nil or d < best_d then
+						best, best_d = i, d
+					end
+				end
+			end
+		end
+	end)
+	gv_cache = best or smart_gv
+	return gv_cache
+end
+
+-- Creates him if he does not exist. Returns the entity id (new or old) or nil.
+function ensure()
+	if not OnServer() then return nil end
+	if level.name() ~= LEVEL then return nil end
+	local id = find()
+	if id ~= nil then return id end
+	if actors_online() == 0 then return nil end
+	local n, ids = count_all()
+	if n > 0 then
+		-- exists but the registry lost him (should not happen): re-register, do not create another
+		pcall(function() add_story_object(ids[1], STORY_ID) end)
+		say("re-registered existing entity " .. tostring(ids[1]))
+		return ids[1]
+	end
+	local pos, lv = find_node(SPOT.x, SPOT.y, SPOT.z)
+	if not valid_node(lv) then
+		say("no level vertex, cannot create")
+		return nil
+	end
+	local gv = game_vertex(pos)
+	if gv == nil then
+		say("no game vertex, cannot create")
+		return nil
+	end
+	local se = alife():create(SECTION, pos, lv, gv)
+	if se == nil then
+		say("alife():create failed")
+		return nil
+	end
+	pcall(function() db.spawned_vertex_by_id[se.id] = lv end)
+	created_n = created_n + 1
+	say(string.format("created id=%d lvid=%d gvid=%d at %.1f %.1f %.1f", se.id, lv, gv, pos.x, pos.y, pos.z))
+	return se.id
+end
+
+-- The logic normally starts by itself: the section line `custom_data` gives him the file as spawn_ini and
+-- xr_logic.initialize_obj runs in the binder's net_spawn. If the engine did not read that line he stands without logic
+-- (active_scheme nil). After two idle ticks in a row start the same file by script, the way initialize_obj would.
+local function ensure_logic(id)
+	local st = db.storage[id]
+	if st == nil or st.object == nil then
+		idle_seen[id] = nil
+		return
+	end
+	if st.active_scheme ~= nil then
+		idle_seen[id] = nil
+		return
+	end
+	idle_seen[id] = (idle_seen[id] or 0) + 1
+	if idle_seen[id] < 2 then return end
+	idle_seen[id] = nil
+	local npc = st.object
+	local ini = ini_file(LOGIC_FILE)
+	ini = xr_logic.configure_schemes(npc, ini, LOGIC_FILE, modules.stype_stalker, "logic", "")
+	local sect = xr_logic.determine_section_to_activate(npc, ini, "logic", db.actor)
+	xr_logic.activate_by_section(npc, ini, sect, "", false)
+	say("logic started by script, section " .. tostring(sect))
+end
+
+local function tick(ctx)
+	local now = time_global()
+	if now - checked_at < 5000 then return false end
+	checked_at = now
+	local ok, res = pcall(ensure)
+	if not ok then
+		say("ensure error: " .. tostring(res))
+	elseif res ~= nil then
+		local ok2, err2 = pcall(ensure_logic, res)
+		if not ok2 then say("logic error: " .. tostring(err2)) end
+	end
+	return false
+end
+
+-- register with the scene director (never requested: trigger always returns false)
+do
+	local ok, err = pcall(function()
+		coop_scenes.register{
+			id = "esc_technician_spawn",
+			level = LEVEL,
+			kind = "sequence",
+			once = false,
+			settle_ms = 3000,
+			trigger = tick,
+		}
+	end)
+	if not ok then say("director not available: " .. tostring(err)) end
+end

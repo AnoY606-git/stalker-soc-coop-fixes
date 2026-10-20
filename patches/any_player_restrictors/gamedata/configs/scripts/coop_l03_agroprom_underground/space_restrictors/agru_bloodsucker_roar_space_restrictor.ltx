@@ -1,0 +1,7 @@
+[logic]
+active 									= sr_idle@bloodsucker_script_attack
+
+[sr_idle@bloodsucker_script_attack]
+on_any_player_inside 						= sr_idle@nil %=play_sound(bloodsucker_script_attack) =create_squad(agru_smart_terrain_1_m_bloodsucker_1_squad:agru_smart_terrain_1_m) =create_squad(agru_smart_terrain_1_m_bloodsucker_2_squad:agru_smart_terrain_1_m) =scenario_autosave(st_bloodsucker_script_attack)%
+
+[sr_idle@nil]

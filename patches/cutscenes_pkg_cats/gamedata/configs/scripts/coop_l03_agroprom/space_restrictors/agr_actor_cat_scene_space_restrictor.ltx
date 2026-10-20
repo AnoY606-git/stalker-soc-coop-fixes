@@ -1,0 +1,17 @@
+[logic]
+active 												= sr_idle@idle_start_cat_scene
+
+[sr_idle@idle_start_cat_scene]
+on_player_inside 									= {+AGR_STALKER_HELP_1_INFO !scene_played(cats_agroprom)} sr_idle@idle_start_cat_scene_idle %=disable_ui =run_postprocess(blink)%
+on_info 											= {+AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO =isClient} sr_idle@nil
+on_info2 											= {=scene_played(cats_agroprom)} sr_idle@nil
+
+[sr_idle@idle_start_cat_scene_idle]
+on_info  											= {+AGR_STALKER_HELP_1_INFO} sr_idle@cat_scene_wait %+AGR_THE_ORDER_TO_KILL_STALKER_SPACE_RESTRICTOR_INFO%  
+
+; The camera flight itself is now played by the Scene Director (scene cats_agroprom, patches/cutscenes_pkg_cats):
+; server decides, every client plays the same .anm from the same walk point, skip by anyone.
+[sr_idle@cat_scene_wait]
+on_info 											= {=scene_played(cats_agroprom)} sr_idle@nil %=enable_ui =run_postprocess(blink) +AGR_INVULNERABLE_OFF_INFO%
+
+[sr_idle@nil]

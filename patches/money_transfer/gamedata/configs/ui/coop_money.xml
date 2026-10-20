@@ -1,0 +1,115 @@
+<window>
+	<coop_money_wnd anchor="mid-center" x="0" y="0" width="1014" height="560" stretch="1">
+		<bg x="0" y="0" width="1014" height="560" stretch="1">
+			<texture>ui_inGame2_message_box</texture>
+		</bg>
+		<title x="75" y="30" width="864" height="40">
+			<text align="c" vert_align="c" font="din_next23_bold" color="yellow_mpe" outline="1"/>
+		</title>
+		<balance x="75" y="84" width="864" height="30">
+			<text align="c" vert_align="c" font="din_next17_bold" outline="1"/>
+		</balance>
+		<target x="75" y="124" width="500" height="30">
+			<text align="l" vert_align="c" font="din_next17_bold" color="yellow_mpe" outline="1"/>
+		</target>
+		<btn_next x="620" y="120" width="320" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_next>
+		<btn_amt_1 x="75" y="190" width="264" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_amt_1>
+		<btn_amt_2 x="355" y="190" width="264" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_amt_2>
+		<btn_amt_3 x="635" y="190" width="264" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_amt_3>
+		<btn_amt_4 x="75" y="250" width="264" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_amt_4>
+		<btn_amt_5 x="355" y="250" width="264" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_amt_5>
+		<btn_amt_0 x="635" y="250" width="264" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_amt_0>
+		<hint x="75" y="318" width="864" height="90">
+			<text align="c" vert_align="c" font="din_next17" complex_mode="1"/>
+		</hint>
+		<btn_close x="407" y="440" width="200" height="42">
+			<texture>ui_ingame_default_button</texture>
+			<text font="din_next17_bold" align="c"/>
+			<text_color>
+				<e color="ui_white"/>
+				<t color="ui_white"/>
+				<d color="dark_mpe"/>
+				<h color="ui_white"/>
+			</text_color>
+			<sound_h>interface\selector_button</sound_h>
+			<sound_t>interface\select_button</sound_t>
+		</btn_close>
+	</coop_money_wnd>
+</window>

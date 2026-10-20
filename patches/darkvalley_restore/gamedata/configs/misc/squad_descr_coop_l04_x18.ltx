@@ -1,0 +1,64 @@
+======ДЕЙСТВУЮЩИЕ ЛИЦА===================================================
+;СТАТИСТЫ ВОЕННЫЕ(ШТУРМ-ГРУППА 1):
+[x18_smart_terrain_1_military_1_squad]:online_offline_group
+faction = army
+npc = sim_default_military_4, sim_default_military_4, sim_default_military_4, sim_default_military_4
+target_smart = x18_smart_terrain_1
+story_id = x18_smart_terrain_1_military_1_squad
+
+;МУТАНТЫ - ПОЛТЕРГЕЙСТ ТЕЛЕПАТ
+[x18_smart_terrain_1_m_poltergeist_tele_1_squad]:online_offline_group
+faction = monster
+npc = m_poltergeist_normal_tele
+target_smart = x18_smart_terrain_1_m
+story_id = x18_smart_terrain_1_m_poltergeist_tele_1_squad
+
+[x18_smart_terrain_2_m_poltergeist_tele_1_squad]:online_offline_group
+faction = monster
+npc = m_poltergeist_normal_tele
+target_smart = x18_smart_terrain_2_m
+story_id = x18_smart_terrain_2_m_poltergeist_tele_1_squad
+
+[x18_smart_terrain_3_m_poltergeist_tele_1_squad]:online_offline_group
+faction = monster
+npc = m_poltergeist_normal_tele
+target_smart = x18_smart_terrain_3_m
+story_id = x18_smart_terrain_3_m_poltergeist_tele_1_squad
+
+[x18_smart_terrain_4_m_snork_1_squad]:online_offline_group
+faction = monster
+npc = snork_indoor_normal, snork_indoor_weak
+target_smart = x18_smart_terrain_4_m
+story_id = x18_smart_terrain_4_m_snork_1_squad
+
+;МУТАНТЫ - ПОЛТЕРГЕЙСТ ТЕЛЕПАТ(КВЕСТОВЫЙ)
+[x18_smart_terrain_5_m_poltergeist_tele_1_squad]:online_offline_group
+faction = monster
+npc = m_poltergeist_normal_tele
+target_smart = x18_smart_terrain_5_m
+on_death = %+X18_SMART_TERRAIN_5_M_POLTERGEIST_TELE_1_SQUAD_DEAD +X18_CODEDOOR_3_OPEN_INFO%
+spawn_point = x18_smart_terrain_5_m_poltergeist_1_spawn_point
+story_id = x18_smart_terrain_5_m_poltergeist_tele_1_squad
+
+[x18_smart_terrain_5_m_poltergeist_tele_2_squad]:online_offline_group
+faction = monster
+npc = m_poltergeist_normal_tele
+target_smart = x18_smart_terrain_5_m
+on_death = %+X18_SMART_TERRAIN_5_M_POLTERGEIST_TELE_2_SQUAD_DEAD%
+spawn_point = x18_smart_terrain_5_m_poltergeist_2_spawn_point
+story_id = x18_smart_terrain_5_m_poltergeist_tele_2_squad
+
+[x18_smart_terrain_5_m_poltergeist_tele_3_squad]:online_offline_group
+faction = monster
+npc = m_poltergeist_normal_tele
+target_smart = x18_smart_terrain_5_m
+on_death = %+X18_SMART_TERRAIN_5_M_POLTERGEIST_TELE_3_SQUAD_DEAD%
+spawn_point = x18_smart_terrain_5_m_poltergeist_3_spawn_point
+story_id = x18_smart_terrain_5_m_poltergeist_tele_3_squad
+
+;МУТАНТЫ - ПСЕВДОГИГАНТ
+[x18_smart_terrain_6_m_gigant_normal_1_squad]:online_offline_group
+faction = monster
+npc = gigant_normal
+target_smart = x18_smart_terrain_6_m
+story_id = x18_smart_terrain_6_m_gigant_normal_1_squad

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_dev_flash_sidorovich_name_short">
+		<text>Флешка</text>
+	</string>
+	<string id="st_dev_flash_sidorovich_descr">
+		<text>Очень уж Сидоровичу нужна эта флешка. Интересно, что такого важного на ней может быть?</text>
+	</string>
+	<string id="st_dev_flash_sidorovich_name">
+		<text>Флешка Шустрого</text>
+	</string>
+	<string id="st_agr_safe_container_1_name_short">
+		<text>Синий кейс</text>
+	</string>
+	<string id="st_agr_safe_container_1_descr">
+		<text>Синий металлический кейс. Надпись на крышке практически стёрта</text>
+	</string>
+	<string id="st_agr_safe_container_1_name">
+		<text>Синий кейс</text>
+	</string>	
+	<string id="st_dev_flash_agru_name_short">
+		<text>Флешка</text>
+	</string>
+	<string id="st_dev_flash_agru_descr">
+		<text>Обычная с виду флешка. Интересно, что такого важного на ней может быть?</text>
+	</string>
+	<string id="st_dev_flash_agru_name">
+		<text>Флешка</text>
+	</string>
+	<string id="st_dev_card_1_name_short">
+		<text>Карта доступа</text>
+	</string>
+	<string id="st_dev_card_1_descr">
+		<text>Карта доступа некого "Тихонова Николая Петровича".</text>
+	</string>
+	<string id="st_dev_card_1_name">
+		<text>Карта доступа №1902</text>
+	</string>
+	<string id="st_dev_card_2_name_short">
+		<text>Карта доступа</text>
+	</string>
+	<string id="st_dev_card_2_descr">
+		<text>Карта доступа некого "Иванова Петра Сергеевич".</text>
+	</string>
+	<string id="st_dev_card_2_name">
+		<text>Карта доступа №1918</text>
+	</string>
+	<string id="st_dev_key_name_short">
+		<text>Ключ</text>
+	</string>
+	<string id="st_dev_key_descr">
+		<text>Старый ржавый ключ от склада бандитов.</text>
+	</string>
+	<string id="st_dev_key_name">
+		<text>Ключ от склада бандитов</text>
+	</string>
+	<string id="st_dev_document_1_x18_name_short">
+		<text>Документы №1</text>
+	</string>
+	<string id="st_dev_document_1_x18_descr">
+		<text>Толстая стопка научных бумаг. Сплошные термины, формулы и диаграммы. На обложке написаны цифры 3826</text>
+	</string>
+	<string id="st_dev_document_1_x18_name">
+		<text>Папка с документами №1</text>
+	</string>
+	<string id="st_dev_document_2_x18_name_short">
+		<text>Документы №2</text>
+	</string>
+	<string id="st_dev_document_2_x18_descr">
+		<text>Толстая стопка научных бумаг. Сплошные термины, формулы и диаграммы.  На обложке написаны цифры 4238</text>
+	</string>
+	<string id="st_dev_document_2_x18_name">
+		<text>Папка с документами №2</text>
+	</string>	
+	<string id="st_dev_document_3_x18_name_short">
+		<text>Документы №3</text>
+	</string>
+	<string id="st_dev_document_3_x18_descr">
+		<text>Толстая стопка научных бумаг. Сплошные термины, формулы и диаграммы.</text>
+	</string>
+	<string id="st_dev_document_3_x18_name">
+		<text>Папка с документами №3</text>
+	</string>	
+	<string id="st_dev_psi_protection_helmet_name_short">
+		<text>Настроенный пси-шлем</text>
+	</string>
+	<string id="st_dev_psi_protection_helmet_descr">
+		<text>Настроенный прототип, разработанный Сахаровым для защиты от ПСИ-излучения.</text>
+	</string>
+	<string id="st_dev_psi_protection_helmet_name">
+		<text>Пси-шлем</text>
+	</string>
+	<string id="st_yan_psi_detector_name_short">
+		<text>Научный прибор</text>
+	</string>
+	<string id="st_yan_psi_detector_descr">
+		<text>Устройство для замеров пси-активности. Одинокая кнопка вкл/выкл и регулятор частот расположены на его лицевой панели. Устройство выглядит потрёпанным и ненадёжным, но чувствуется, что создавалось оно с любовью.</text>
+	</string>
+	<string id="st_yan_psi_detector_name">
+		<text>ПКС Сахарова</text>
+	</string>	
+	<string id="st_bun_doc_1_name_short">
+		<text>Тетрадный лист</text>
+	</string>
+	<string id="st_bun_doc_1_descr">
+		<text>Тетрадный лист с единственной записью "29018".</text>
+	</string>
+	<string id="st_bun_doc_1_name">
+		<text>Тетрадный лист</text>
+	</string>
+	<string id="st_bun_doc_2_name_short">
+		<text>Тетрадный лист</text>
+	</string>
+	<string id="st_bun_doc_2_descr">
+		<text>Тетрадный лист с единственной записью "20115".</text>
+	</string>
+	<string id="st_bun_doc_2_name">
+		<text>Тетрадный лист</text>
+	</string>
+	<string id="st_dev_decoder_name_short">
+		<text>Декодер</text>
+	</string>
+	<string id="st_dev_decoder_descr">
+		<text>Нечто вроде мощной электронной отмычки. Похоже, что она создавалась с целью взломать какой-то специфический электронный замок. Как ни странно конструкция не подразумевает универсальности - оно создавалось для конкретного замка и не способно взламывать какие-либо другие коды.</text>
+	</string>
+	<string id="st_dev_decoder_name">
+		<text>Декодер</text>
+	</string>
+
+
+	
+	<string id="st_mutant_chimera_part_name_short">
+		<text>Коготь</text>
+	</string>
+	<string id="st_mutant_chimera_part_descr">
+		<text>Несмотря на то, что коготь этого существа может без труда разрезать несколько листов кевлара, они часто изнашиваются из-за экстремальных условий применения, и, так же как и ее зубы, попросту отпадают, заменяясь новыми, что делает их не очень дорогим товаром.</text>
+	</string>
+	<string id="st_mutant_chimera_part_name">
+		<text>Коготь Химеры</text>
+	</string>
+	<string id="st_mutant_controller_part_name_short">
+		<text>Рука</text>
+	</string>
+	<string id="st_mutant_controller_part_descr">
+		<text>Считается, что руки контролера, наряду с его мозгом, наделяют это существо такими способностями, как, например,  направленные ментальные атаки.</text>
+	</string>
+	<string id="st_mutant_controller_part_name">
+		<text>Рука контролера</text>
+	</string>
+	<string id="st_mutant_gigant_part_name_short">
+		<text>Рука</text>
+	</string>
+	<string id="st_mutant_gigant_part_descr">
+		<text>Огромная, мускулистая рука псевдогиганта, которая, тем не менее, является одной из наименьших частей тела этого существа. Пользы не представляет, однако весьма ценится коллекционерами за свою редкость.</text>
+	</string>
+	<string id="st_mutant_gigant_part_name">
+		<text>Рука Псевдогиганта</text>
+	</string>
+	<string id="st_mutant_tushkano_part_name_short">
+		<text>Голова</text>
+	</string>
+	<string id="st_mutant_tushkano_part_descr">
+		<text>Глаза, уши, пасть и нос тушкана в крошечной упаковке. Не очень полезные, не очень ценные.</text>
+	</string>
+	<string id="st_mutant_tushkano_part_name">
+		<text>Голова тушкана</text>
+	</string>
+	<string id="st_mutant_boar_part_name_short">
+		<text>Копыто</text>
+	</string>
+	<string id="st_mutant_boar_part_descr">
+		<text>Копыто кабана используется учёными для изготовления ряда лекарств, самым распространённым из которых является противорадиационная сыворотка.</text>
+	</string>
+	<string id="st_mutant_boar_part_name">
+		<text>Копыто кабана</text>
+	</string>
+	<string id="st_mutant_dog_part_name_short">
+		<text>Хвост</text>
+	</string>
+	<string id="st_mutant_dog_part_descr">
+		<text>Устойчивость кожи мутировавших собак к химическому и электрическому воздействию давно обратила на себя внимание учёных. Из-за отсутствия жировых отложений хвосты собак наиболее подходят для лабораторных исследований.</text>
+	</string>
+	<string id="st_mutant_dog_part_name">
+		<text>Хвост собаки</text>
+	</string>	
+	<string id="st_mutant_flesh_part_name_short">
+		<text>Глаз</text>
+	</string>
+	<string id="st_mutant_flesh_part_descr">
+		<text>После мутации увеличенный глаз плоти приобрёл ряд свойств, самым полезным из которых является способность к регенерации хрусталика. Детали этого механизма точно неизвестны, но это открытие обещает революцию в медицине. Вы можете внести свой вклад в науку, продав глаз плоти учёным для исследований.</text>
+	</string>
+	<string id="st_mutant_flesh_part_name">
+		<text>Глаз плоти</text>
+	</string>
+	<string id="st_mutant_krovosos_part_name_short">
+		<text>Шупальца</text>
+	</string>
+	<string id="st_mutant_krovosos_part_descr">
+		<text>Щупальца кровососа содержат особую железу: она выделяет фермент, растворяющий кожу жертвы и одновременно препятствующий сворачиванию крови. Если учёным удастся определить структуру фермента, это поможет осуществить прорыв в медицине.</text>
+	</string>
+	<string id="st_mutant_krovosos_part_name">
+		<text>Щупальца кровососа</text>
+	</string>
+	<string id="st_mutant_psevdodog_part_name_short">
+		<text>Хвост</text>
+	</string>
+	<string id="st_mutant_psevdodog_part_descr">
+		<text>Устойчивость кожи мутировавших собак к химическому и электрическому воздействию давно обратила на себя внимание учёных. Из-за отсутствия жировых отложений хвосты собак наиболее подходят для лабораторных исследований.</text>
+	</string>
+	<string id="st_mutant_psevdodog_part_name">
+		<text>Хвост псевдособаки</text>
+	</string>	
+	<string id="st_mutant_snork_part_name_short">
+		<text>Нога</text>
+	</string>
+	<string id="st_mutant_snork_part_descr">
+		<text>Стопа снорка, в отличие от человеческой, содержит большее количество сухожилий, обладающих потрясающей эластичностью. Этим объясняется способность снорков совершать невероятные прыжки.</text>
+	</string>
+	<string id="st_mutant_snork_part_name">
+		<text>Стопа снорка</text>
+	</string>	
+	<string id="st_mutant_burer_part_name_short">
+		<text>Рука</text>
+	</string>
+	<string id="st_mutant_burer_part_descr">
+		<text>Руки бюреров определенно связаны с их способностями двигать объекты, создавать защитные поля и атаковать противников ментальными волнами. Представляют большую ценность для учёных.</text>
+	</string>
+	<string id="st_mutant_burer_part_name">
+		<text>Рука бюрера</text>
+	</string>	
+	<string id="st_mutant_zombie_part_name_short">
+		<text>Рука</text>
+	</string>
+	<string id="st_mutant_zombie_part_descr">
+		<text>Грязная и мерзкая рука зомби. Потеряв всё, кроме первобытных инстинктов, зомбированные используют их в качестве оружия.</text>
+	</string>
+	<string id="st_mutant_zombie_part_name">
+		<text>Рука зомби</text>
+	</string>	
+	<string id="jup_b200_tech_materials_acetone">
+		<text>Банка канифоли</text>
+	</string>
+	<string id="jup_b200_tech_materials_acetone_descr">
+		<text>Банка канифоли, используемой при пайке. Редкая вещь в Зоне: как правило, фрагменты сломавшихся предметов здесь соединяют при помощи изоленты.</text>
+	</string>
+	<string id="jup_b200_tech_materials_capacitor">
+		<text>Упаковка конденсаторов</text>
+	</string>
+	<string id="jup_b200_tech_materials_capacitor_descr">
+		<text>Упаковка конденсаторов, которые сами по себе не так уж редки в Зоне. Но заявленная на данных деталях ёмкость настолько высока, что трудно представить их предназначение.</text>
+	</string>
+	<string id="jup_b200_tech_materials_textolite">
+		<text>Текстолитовая основа</text>
+	</string>
+	<string id="jup_b200_tech_materials_textolite_descr">
+		<text>Текстолит - основа печатной платы. То, что испытывает радиотехник-любитель при виде нетронутой текстолитовой плиты, сравнимо разве что с ощущениями писателя над чистым листом.</text>
+	</string>
+	<string id="jup_b200_tech_materials_transistor">
+		<text>Коробка транзисторов</text>
+	</string>
+	<string id="jup_b200_tech_materials_transistor_descr">
+		<text>Коробка качественных транзисторов - полупроводниковых деталей, способных генерировать, преобразовать и усиливать электрические колебания. Предел мечтаний радиотехника, если такого чудом занесёт в Зону.</text>
+	</string>
+	<string id="jup_b200_tech_materials_wire">
+		<text>Моток медной проволоки</text>
+	</string>
+	<string id="jup_b200_tech_materials_wire_descr">
+		<text>Медь является отличным проводником - и, по совместительству, ценным цветным металлом. Ввиду данного факта такая проволока представляет собой большую редкость: все имевшиеся запасы меди в Зоне были найдены и сданы во вторсырьё ещё в середине 1990-х.</text>
+	</string>
+	<string id="st_crazy_flash_name"><text>Флешка сумасшедшего</text></string>
+	<string id="st_crazy_flash_descr"><text>Флеш-диск - удобное устройство для переноса информации.</text></string>
+</string_table>

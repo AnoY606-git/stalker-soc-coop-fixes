@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="rq_ask_work">
+		<text>Do you have any work for me?</text>
+	</string>
+	<string id="rq_npc_work">
+		<text>Let's see what needs doing.</text>
+	</string>
+	<string id="rq_not_now">
+		<text>Not right now.</text>
+	</string>
+	<string id="rq_handin">
+		<text>I found what you asked for.</text>
+	</string>
+	<string id="rq_handin_ok">
+		<text>Good. Here is your pay.</text>
+	</string>
+	<string id="rq_sid_camp_name">
+		<text>Clear the bandit camp</text>
+	</string>
+	<string id="rq_sid_camp_descr">
+		<text>A bandit gang set up a camp and robs my customers. Wipe it out. The target is marked on your map. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_sid_camp_offer">
+		<text>Eliminate a camp: Clear the bandit camp</text>
+	</string>
+	<string id="rq_sid_camp_npc">
+		<text>A bandit gang set up a camp and robs my customers. Wipe it out.</text>
+	</string>
+	<string id="rq_sid_camp_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_sid_camp">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_sid_camp">
+		<text>I found it: Clear the bandit camp</text>
+	</string>
+	<string id="rq_sid_kill_name">
+		<text>Hunt down a bandit patrol</text>
+	</string>
+	<string id="rq_sid_kill_descr">
+		<text>A bandit patrol is cutting the road to my bunker. Find them and kill them all. The target is marked on your map. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_sid_kill_offer">
+		<text>Kill job: Hunt down a bandit patrol</text>
+	</string>
+	<string id="rq_sid_kill_npc">
+		<text>A bandit patrol is cutting the road to my bunker. Find them and kill them all.</text>
+	</string>
+	<string id="rq_sid_kill_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_sid_kill">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_sid_kill">
+		<text>I found it: Hunt down a bandit patrol</text>
+	</string>
+	<string id="rq_sid_defend_name">
+		<text>Repel a bandit raid</text>
+	</string>
+	<string id="rq_sid_defend_descr">
+		<text>Bandits are about to hit the village. Hold the camp and kill every one of them. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_sid_defend_offer">
+		<text>Defend job: Repel a bandit raid</text>
+	</string>
+	<string id="rq_sid_defend_npc">
+		<text>Bandits are about to hit the village. Hold the camp and kill every one of them.</text>
+	</string>
+	<string id="rq_sid_defend_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_sid_defend">
+		<text>Camp under attack</text>
+	</string>
+	<string id="rq_handin_rq_sid_defend">
+		<text>I found it: Repel a bandit raid</text>
+	</string>
+	<string id="rq_wolf_camp1_name">
+		<text>Clear the bandit hideout</text>
+	</string>
+	<string id="rq_wolf_camp1_descr">
+		<text>A hideout full of bandits is too close to our people. Clear it out. The target is marked on your map. Reward: 1000 RU.</text>
+	</string>
+	<string id="rq_wolf_camp1_offer">
+		<text>Eliminate a camp: Clear the bandit hideout</text>
+	</string>
+	<string id="rq_wolf_camp1_npc">
+		<text>A hideout full of bandits is too close to our people. Clear it out.</text>
+	</string>
+	<string id="rq_wolf_camp1_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_wolf_camp1">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_wolf_camp1">
+		<text>I found it: Clear the bandit hideout</text>
+	</string>
+	<string id="rq_wolf_camp2_name">
+		<text>Clear the dog lair</text>
+	</string>
+	<string id="rq_wolf_camp2_descr">
+		<text>Mutant dogs have a lair nearby. Kill every pack you find there. The target is marked on your map. Reward: 1000 RU.</text>
+	</string>
+	<string id="rq_wolf_camp2_offer">
+		<text>Eliminate a camp: Clear the dog lair</text>
+	</string>
+	<string id="rq_wolf_camp2_npc">
+		<text>Mutant dogs have a lair nearby. Kill every pack you find there.</text>
+	</string>
+	<string id="rq_wolf_camp2_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_wolf_camp2">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_wolf_camp2">
+		<text>I found it: Clear the dog lair</text>
+	</string>
+	<string id="rq_shu_find_name">
+		<text>Find a lost pistol</text>
+	</string>
+	<string id="rq_shu_find_descr">
+		<text>Somebody dropped a Fort pistol at the marked spot. Bring it to me, I will pay you well. The target is marked on your map. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_shu_find_offer">
+		<text>Find job: Find a lost pistol</text>
+	</string>
+	<string id="rq_shu_find_npc">
+		<text>Somebody dropped a Fort pistol at the marked spot. Bring it to me, I will pay you well.</text>
+	</string>
+	<string id="rq_shu_find_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_shu_find">
+		<text>Item</text>
+	</string>
+	<string id="rq_handin_rq_shu_find">
+		<text>I found it: Find a lost pistol</text>
+	</string>
+	<string id="rq_bar_kill1_name">
+		<text>Kill the mercenaries</text>
+	</string>
+	<string id="rq_bar_kill1_descr">
+		<text>A mercenary squad is hanging around the Bar and my customers are scared. Take them out. The target is marked on your map. Reward: 2000 RU.</text>
+	</string>
+	<string id="rq_bar_kill1_offer">
+		<text>Kill job: Kill the mercenaries</text>
+	</string>
+	<string id="rq_bar_kill1_npc">
+		<text>A mercenary squad is hanging around the Bar and my customers are scared. Take them out.</text>
+	</string>
+	<string id="rq_bar_kill1_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_bar_kill1">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_bar_kill1">
+		<text>I found it: Kill the mercenaries</text>
+	</string>
+	<string id="rq_bar_kill2_name">
+		<text>Kill the bandit gang</text>
+	</string>
+	<string id="rq_bar_kill2_descr">
+		<text>Bandits have been seen near the Bar. Find them and kill them all. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_bar_kill2_offer">
+		<text>Kill job: Kill the bandit gang</text>
+	</string>
+	<string id="rq_bar_kill2_npc">
+		<text>Bandits have been seen near the Bar. Find them and kill them all.</text>
+	</string>
+	<string id="rq_bar_kill2_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_bar_kill2">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_bar_kill2">
+		<text>I found it: Kill the bandit gang</text>
+	</string>
+	<string id="rq_bar_camp1_name">
+		<text>Clear the dog nest</text>
+	</string>
+	<string id="rq_bar_camp1_descr">
+		<text>Dogs keep attacking the people who come here. Clear their nest. The target is marked on your map. Reward: 2000 RU.</text>
+	</string>
+	<string id="rq_bar_camp1_offer">
+		<text>Eliminate a camp: Clear the dog nest</text>
+	</string>
+	<string id="rq_bar_camp1_npc">
+		<text>Dogs keep attacking the people who come here. Clear their nest.</text>
+	</string>
+	<string id="rq_bar_camp1_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_bar_camp1">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_bar_camp1">
+		<text>I found it: Clear the dog nest</text>
+	</string>
+	<string id="rq_bar_camp2_name">
+		<text>Clear the mutant lair</text>
+	</string>
+	<string id="rq_bar_camp2_descr">
+		<text>A boar and flesh lair is too close to the Bar. Kill them. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_bar_camp2_offer">
+		<text>Eliminate a camp: Clear the mutant lair</text>
+	</string>
+	<string id="rq_bar_camp2_npc">
+		<text>A boar and flesh lair is too close to the Bar. Kill them.</text>
+	</string>
+	<string id="rq_bar_camp2_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_bar_camp2">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_bar_camp2">
+		<text>I found it: Clear the mutant lair</text>
+	</string>
+	<string id="rq_bar_defend_name">
+		<text>Defend the stalker camp</text>
+	</string>
+	<string id="rq_bar_defend_descr">
+		<text>Bandits are going to raid a stalker camp near the Bar. Defend it and kill the raiders. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_bar_defend_offer">
+		<text>Defend job: Defend the stalker camp</text>
+	</string>
+	<string id="rq_bar_defend_npc">
+		<text>Bandits are going to raid a stalker camp near the Bar. Defend it and kill the raiders.</text>
+	</string>
+	<string id="rq_bar_defend_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_bar_defend">
+		<text>Camp under attack</text>
+	</string>
+	<string id="rq_handin_rq_bar_defend">
+		<text>I found it: Defend the stalker camp</text>
+	</string>
+	<string id="rq_vor_camp1_name">
+		<text>Eliminate the bandit camp</text>
+	</string>
+	<string id="rq_vor_camp1_descr">
+		<text>Duty does not tolerate bandits near the Bar. Eliminate the camp. The target is marked on your map. Reward: 3000 RU.</text>
+	</string>
+	<string id="rq_vor_camp1_offer">
+		<text>Eliminate a camp: Eliminate the bandit camp</text>
+	</string>
+	<string id="rq_vor_camp1_npc">
+		<text>Duty does not tolerate bandits near the Bar. Eliminate the camp.</text>
+	</string>
+	<string id="rq_vor_camp1_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_vor_camp1">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_vor_camp1">
+		<text>I found it: Eliminate the bandit camp</text>
+	</string>
+	<string id="rq_vor_camp2_name">
+		<text>Eliminate the Freedom outpost</text>
+	</string>
+	<string id="rq_vor_camp2_descr">
+		<text>A Freedom outpost has appeared near our territory. Eliminate it. The target is marked on your map. Reward: 3000 RU.</text>
+	</string>
+	<string id="rq_vor_camp2_offer">
+		<text>Eliminate a camp: Eliminate the Freedom outpost</text>
+	</string>
+	<string id="rq_vor_camp2_npc">
+		<text>A Freedom outpost has appeared near our territory. Eliminate it.</text>
+	</string>
+	<string id="rq_vor_camp2_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_vor_camp2">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_vor_camp2">
+		<text>I found it: Eliminate the Freedom outpost</text>
+	</string>
+	<string id="rq_vor_kill_name">
+		<text>Kill the Freedom scouts</text>
+	</string>
+	<string id="rq_vor_kill_descr">
+		<text>Freedom scouts are probing our defences. Find them and kill them. The target is marked on your map. Reward: 2000 RU.</text>
+	</string>
+	<string id="rq_vor_kill_offer">
+		<text>Kill job: Kill the Freedom scouts</text>
+	</string>
+	<string id="rq_vor_kill_npc">
+		<text>Freedom scouts are probing our defences. Find them and kill them.</text>
+	</string>
+	<string id="rq_vor_kill_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_vor_kill">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_vor_kill">
+		<text>I found it: Kill the Freedom scouts</text>
+	</string>
+	<string id="rq_vor_defend_name">
+		<text>Defend the Duty post</text>
+	</string>
+	<string id="rq_vor_defend_descr">
+		<text>Bandits plan to attack our post. Hold the line and kill them all. The target is marked on your map. Reward: 3500 RU.</text>
+	</string>
+	<string id="rq_vor_defend_offer">
+		<text>Defend job: Defend the Duty post</text>
+	</string>
+	<string id="rq_vor_defend_npc">
+		<text>Bandits plan to attack our post. Hold the line and kill them all.</text>
+	</string>
+	<string id="rq_vor_defend_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_vor_defend">
+		<text>Camp under attack</text>
+	</string>
+	<string id="rq_handin_rq_vor_defend">
+		<text>I found it: Defend the Duty post</text>
+	</string>
+	<string id="rq_vor_find_name">
+		<text>Recover the lost weapon</text>
+	</string>
+	<string id="rq_vor_find_descr">
+		<text>A Duty soldier lost his AKSU. Recover it from the marked place and bring it to me. The target is marked on your map. Reward: 2000 RU.</text>
+	</string>
+	<string id="rq_vor_find_offer">
+		<text>Find job: Recover the lost weapon</text>
+	</string>
+	<string id="rq_vor_find_npc">
+		<text>A Duty soldier lost his AKSU. Recover it from the marked place and bring it to me.</text>
+	</string>
+	<string id="rq_vor_find_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_vor_find">
+		<text>Item</text>
+	</string>
+	<string id="rq_handin_rq_vor_find">
+		<text>I found it: Recover the lost weapon</text>
+	</string>
+	<string id="rq_vor_camp3_name">
+		<text>Clear the mercenary camp</text>
+	</string>
+	<string id="rq_vor_camp3_descr">
+		<text>Mercenaries set up a camp on the army road. Clear it. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_vor_camp3_offer">
+		<text>Eliminate a camp: Clear the mercenary camp</text>
+	</string>
+	<string id="rq_vor_camp3_npc">
+		<text>Mercenaries set up a camp on the army road. Clear it.</text>
+	</string>
+	<string id="rq_vor_camp3_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_vor_camp3">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_vor_camp3">
+		<text>I found it: Clear the mercenary camp</text>
+	</string>
+	<string id="rq_pet_kill_name">
+		<text>Hunt the mercenaries</text>
+	</string>
+	<string id="rq_pet_kill_descr">
+		<text>A squad of mercenaries is working in the area. Find and destroy them. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_pet_kill_offer">
+		<text>Kill job: Hunt the mercenaries</text>
+	</string>
+	<string id="rq_pet_kill_npc">
+		<text>A squad of mercenaries is working in the area. Find and destroy them.</text>
+	</string>
+	<string id="rq_pet_kill_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_pet_kill">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_pet_kill">
+		<text>I found it: Hunt the mercenaries</text>
+	</string>
+	<string id="rq_hun_camp_name">
+		<text>Hunt the mutants</text>
+	</string>
+	<string id="rq_hun_camp_descr">
+		<text>I need a mutant lair cleared so my hunting grounds are safe again. The target is marked on your map. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_hun_camp_offer">
+		<text>Eliminate a camp: Hunt the mutants</text>
+	</string>
+	<string id="rq_hun_camp_npc">
+		<text>I need a mutant lair cleared so my hunting grounds are safe again.</text>
+	</string>
+	<string id="rq_hun_camp_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_hun_camp">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_hun_camp">
+		<text>I found it: Hunt the mutants</text>
+	</string>
+	<string id="rq_inf_kill_name">
+		<text>Silence a renegade group</text>
+	</string>
+	<string id="rq_inf_kill_descr">
+		<text>A renegade stalker group has been selling my clients out. Kill them. The target is marked on your map. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_inf_kill_offer">
+		<text>Kill job: Silence a renegade group</text>
+	</string>
+	<string id="rq_inf_kill_npc">
+		<text>A renegade stalker group has been selling my clients out. Kill them.</text>
+	</string>
+	<string id="rq_inf_kill_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_inf_kill">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_inf_kill">
+		<text>I found it: Silence a renegade group</text>
+	</string>
+	<string id="rq_inf_find_name">
+		<text>Retrieve a lost weapon</text>
+	</string>
+	<string id="rq_inf_find_descr">
+		<text>A customer lost a Desert Eagle at the marked place. Bring it back to me. The target is marked on your map. Reward: 2000 RU.</text>
+	</string>
+	<string id="rq_inf_find_offer">
+		<text>Find job: Retrieve a lost weapon</text>
+	</string>
+	<string id="rq_inf_find_npc">
+		<text>A customer lost a Desert Eagle at the marked place. Bring it back to me.</text>
+	</string>
+	<string id="rq_inf_find_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_inf_find">
+		<text>Item</text>
+	</string>
+	<string id="rq_handin_rq_inf_find">
+		<text>I found it: Retrieve a lost weapon</text>
+	</string>
+	<string id="rq_inf_camp_name">
+		<text>Eliminate the Duty outpost</text>
+	</string>
+	<string id="rq_inf_camp_descr">
+		<text>A Duty outpost is blocking the freedom of movement here. Eliminate it. The target is marked on your map. Reward: 3000 RU.</text>
+	</string>
+	<string id="rq_inf_camp_offer">
+		<text>Eliminate a camp: Eliminate the Duty outpost</text>
+	</string>
+	<string id="rq_inf_camp_npc">
+		<text>A Duty outpost is blocking the freedom of movement here. Eliminate it.</text>
+	</string>
+	<string id="rq_inf_camp_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_inf_camp">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_inf_camp">
+		<text>I found it: Eliminate the Duty outpost</text>
+	</string>
+	<string id="rq_inf_defend_name">
+		<text>Defend the Freedom camp</text>
+	</string>
+	<string id="rq_inf_defend_descr">
+		<text>Duty is about to attack a friendly camp. Defend it and kill the attackers. The target is marked on your map. Reward: 3000 RU.</text>
+	</string>
+	<string id="rq_inf_defend_offer">
+		<text>Defend job: Defend the Freedom camp</text>
+	</string>
+	<string id="rq_inf_defend_npc">
+		<text>Duty is about to attack a friendly camp. Defend it and kill the attackers.</text>
+	</string>
+	<string id="rq_inf_defend_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_inf_defend">
+		<text>Camp under attack</text>
+	</string>
+	<string id="rq_handin_rq_inf_defend">
+		<text>I found it: Defend the Freedom camp</text>
+	</string>
+	<string id="rq_zho_find_name">
+		<text>Find my bottle</text>
+	</string>
+	<string id="rq_zho_find_descr">
+		<text>I lost a bottle of vodka somewhere near the marked place. Bring it back, friend. The target is marked on your map. Reward: 1000 RU.</text>
+	</string>
+	<string id="rq_zho_find_offer">
+		<text>Find job: Find my bottle</text>
+	</string>
+	<string id="rq_zho_find_npc">
+		<text>I lost a bottle of vodka somewhere near the marked place. Bring it back, friend.</text>
+	</string>
+	<string id="rq_zho_find_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_zho_find">
+		<text>Item</text>
+	</string>
+	<string id="rq_handin_rq_zho_find">
+		<text>I found it: Find my bottle</text>
+	</string>
+	<string id="rq_ska_kill_name">
+		<text>Kill the bandits</text>
+	</string>
+	<string id="rq_ska_kill_descr">
+		<text>Some bandits crossed me. Find them and put them down. The target is marked on your map. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_ska_kill_offer">
+		<text>Kill job: Kill the bandits</text>
+	</string>
+	<string id="rq_ska_kill_npc">
+		<text>Some bandits crossed me. Find them and put them down.</text>
+	</string>
+	<string id="rq_ska_kill_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_ska_kill">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_ska_kill">
+		<text>I found it: Kill the bandits</text>
+	</string>
+	<string id="rq_sak_camp1_name">
+		<text>Eliminate the snork nest</text>
+	</string>
+	<string id="rq_sak_camp1_descr">
+		<text>Snorks threaten our research team. Eliminate the nest. The target is marked on your map. Reward: 3000 RU.</text>
+	</string>
+	<string id="rq_sak_camp1_offer">
+		<text>Eliminate a camp: Eliminate the snork nest</text>
+	</string>
+	<string id="rq_sak_camp1_npc">
+		<text>Snorks threaten our research team. Eliminate the nest.</text>
+	</string>
+	<string id="rq_sak_camp1_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_sak_camp1">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_sak_camp1">
+		<text>I found it: Eliminate the snork nest</text>
+	</string>
+	<string id="rq_sak_camp2_name">
+		<text>Eliminate the bloodsucker lair</text>
+	</string>
+	<string id="rq_sak_camp2_descr">
+		<text>A bloodsucker lair near the lab must be destroyed. The target is marked on your map. Reward: 3500 RU.</text>
+	</string>
+	<string id="rq_sak_camp2_offer">
+		<text>Eliminate a camp: Eliminate the bloodsucker lair</text>
+	</string>
+	<string id="rq_sak_camp2_npc">
+		<text>A bloodsucker lair near the lab must be destroyed.</text>
+	</string>
+	<string id="rq_sak_camp2_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_sak_camp2">
+		<text>Targets</text>
+	</string>
+	<string id="rq_handin_rq_sak_camp2">
+		<text>I found it: Eliminate the bloodsucker lair</text>
+	</string>
+	<string id="rq_sak_find_name">
+		<text>Recover a lost detector</text>
+	</string>
+	<string id="rq_sak_find_descr">
+		<text>One of our detectors was lost in the marked area. Recover it and bring it to me. The target is marked on your map. Reward: 2500 RU.</text>
+	</string>
+	<string id="rq_sak_find_offer">
+		<text>Find job: Recover a lost detector</text>
+	</string>
+	<string id="rq_sak_find_npc">
+		<text>One of our detectors was lost in the marked area. Recover it and bring it to me.</text>
+	</string>
+	<string id="rq_sak_find_accept">
+		<text>I will take it.</text>
+	</string>
+	<string id="rq_spot_rq_sak_find">
+		<text>Item</text>
+	</string>
+	<string id="rq_handin_rq_sak_find">
+		<text>I found it: Recover a lost detector</text>
+	</string>
+</string_table>

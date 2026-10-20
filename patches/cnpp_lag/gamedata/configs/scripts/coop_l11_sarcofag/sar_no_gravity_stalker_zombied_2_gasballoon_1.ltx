@@ -1,0 +1,10 @@
+[logic]
+active 												= sr_idle@no_gravity_dead_stalker_1
+
+[sr_idle@no_gravity_dead_stalker_1]
+on_timer 											=   60 | sr_idle@no_gravity_dead_stalker_2 %=hit_obj(sar_no_gravity_stalker_zombied_2_gasballoon_1:bip01_head:3:3000:way_jmur_3_1)%
+
+[sr_idle@no_gravity_dead_stalker_2]
+on_timer 											=   60 | sr_idle@no_gravity_dead_stalker_1 %=hit_obj(sar_no_gravity_stalker_zombied_2_gasballoon_1:bip01_head:3:3000:way_jmur_3_2)%
+
+[sr_idle@nil]

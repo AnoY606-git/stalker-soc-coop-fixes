@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_mini_dialog_start_dialog_0">
+        <text>Отлично, как у вас дела?</text>
+    </string>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_mini_dialog_start_dialog_1">
+        <text>Живем потихоньку, заходи к нам и будь как дома брат! И вы тоже мужики!</text>
+    </string>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_mini_dialog_start_dialog_2">
+        <text>Благодарю, ну, будь здоров!</text>
+    </string>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_start_dialog_0">
+        <text>Ну привет. как оно?</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_0">
+        <text>Здорова, что случилось?</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_1">
+        <text>Вовремя вы! Мы от придурков монолитовских отбиваемся, сейчас будет очередная волна идти! У нас, прикинь, последнего снайпера сняли! Можете помочь? А после боя сочтёмся, не пожалеете!</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_2">
+        <text>Конечно поможем</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_3">
+        <text>Отлично! Дуй тогда один на вышку! Бей их сверху, вниз не спускаться, а то случайно сами угостим. Остальные по укрытиям. Задача понятна?</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_4">
+        <text>Да</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_start_dialog_0">
+        <text>Здорова, сталкеры!</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_0">
+        <text>Какой план действий?</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_1">
+        <text>Ща соберем народ и завалим придурков. И много их там?</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_2">
+        <text>Человек девять-восемь. Неплохо экипированы.</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_3">
+        <text>Погнали с нами?</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_4">
+        <text>Пошли!</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_start_dialog_0">
+        <text>Ну здорова мэн, как оно?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_start_dialog_0">
+        <text>Чего надо?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_0">
+        <text>Вопрос на засыпку - где можно разжиться оружием и снаряжением?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_1">
+        <text>У меня конечно! За деньги. Или вон в деревню на халяву, но там больше риска.</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_2">
+        <text>В деревне?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_3">
+        <text>В деревне. Там аномалий дохера и больше и всякие сталкера частенько пропадают.</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_4">
+        <text>Ясно</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_0">
+        <text>Не против</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_1">
+        <text>Отлично. Тут за холмом, главный рассадник этих подонков - "свободных", который мы с ребятами собираемся сейчас хорошенько разворошить. Есть, правда, небольшая проблема. Вход на базу один и хорошо охраняется снайперами. Снимите их, а остальное за нами - всё, что есть на базе ваше.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_2">
+        <text>Мы попробуем</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_start_dialog_0">
+        <text>Здорова мужики. Я из "Долга", выполняю задание на этой территории. Не желаете к нам присоединиться?</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_0">
+        <text>Всё готово, снайпер уничтожен.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_1">
+        <text>Спасибо за помощь, ребят. Вот, держите свой гонорар.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_2">
+        <text>Спасибо.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_3">
+        <text>Сейчас мы взорвём забор и начнём веселье. Вы, вижу, парни жесткие - так, может, займётесь Лукашом и снайперами? Кто-нибудь с нами пускай идет снайперов гасить, другие Лукаша.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_4">
+        <text>В другой раз.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_5">
+        <text>Добро.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_6">
+        <text>Ну, смотри. Неволить не буду.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_7">
+        <text>Вот и отлично.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_0">
+        <text>Мы видели отряд "Долга" на хуторе, неподалеку от вашей базы. Человек девять, хорошо вооружены.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_1">
+        <text>Блин, никак эти козлы не угомоняться! Ладно, придеться их наказать...Ну че, если поможете нам - будем благодарны. Идите к Максу - он у нас главный вояка. Соберете народ и выкорчуете этих сохатых.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_2">
+        <text>Хорошо</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_3">
+        <text>Ну удачи!</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_0">
+        <text>Да ничего, вообщем-то.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_1">
+        <text>Тогда разбежались, ага? Время - деньги!</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_start_dialog_0">
+        <text>Привет, сталкеры. Что нужно?</text>
+    </string>
+    <string id="mil_max_flash_d_opener">
+        <text>Макс, для меня есть работа?</text>
+    </string>
+    <string id="mil_max_flash_d_offer">
+        <text>Ты, гляжу, парень не промах! Не сделаешь ли для меня одну работёнку? Сделаешь - я тебе моего Черного Ястреба отдам. Отличный ствол, мощный!..</text>
+    </string>
+    <string id="mil_max_flash_d_what">
+        <text>А что сделать-то надо?</text>
+    </string>
+    <string id="mil_max_flash_d_task">
+        <text>Тут на болоте засел один парень. Ребята видели, как он мчался из деревни, не разбирая дороги. Явно что-то увидел такое, что крышу сорвало - теперь обстреливает всех, кого видит. Нужно узнать, что он там такого надыбал, а то наши боятся в деревню ходить.</text>
+    </string>
+    <string id="mil_max_flash_d_accept">
+        <text>Попробую.</text>
+    </string>
+    <string id="mil_max_flash_d_luck">
+        <text>Тогда удачи. Держи в голове - там старое минное поле, но с помощью старых верных болтиков мины можно обойти.</text>
+    </string>
+    <string id="mil_max_flash_d_decline">
+        <text>Нет, не в этот раз.</text>
+    </string>
+    <string id="mil_max_flash_d_decline_r">
+        <text>Ну, как хочешь.</text>
+    </string>
+    <string id="mil_max_flash_r_opener">
+        <text>Макс, насчёт той работы...</text>
+    </string>
+    <string id="mil_max_flash_r_asked">
+        <text>Ну что, узнал? Что ж там такого нашёл этот психованный?</text>
+    </string>
+    <string id="mil_max_flash_r_give">
+        <text>Вот флешка - нашёл её у съехавшего парня.</text>
+    </string>
+    <string id="mil_max_flash_r_thanks">
+        <text>Вот спасибо, сталкер! Держи ствол - заработал.</text>
+    </string>
+    <string id="mil_max_flash_r_ammo">
+        <text>А патроны к нему?</text>
+    </string>
+    <string id="mil_max_flash_r_noammo">
+        <text>Только те, что в обойме. Прости, больше просто нет. Сходи к Скряге - у него, может быть, найдутся.</text>
+    </string>
+    <string id="mil_max_flash_w_opener">
+        <text>Макс, насчёт той работы...</text>
+    </string>
+    <string id="mil_max_flash_w_already">
+        <text>Что, уже?</text>
+    </string>
+</string_table>

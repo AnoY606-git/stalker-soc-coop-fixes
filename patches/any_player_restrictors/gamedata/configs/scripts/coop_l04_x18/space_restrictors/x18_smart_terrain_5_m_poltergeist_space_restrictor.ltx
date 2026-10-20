@@ -1,0 +1,7 @@
+[logic]
+active = sr_idle@poltergeist_flame_spawn
+
+[sr_idle@poltergeist_flame_spawn]
+on_any_player_inside = sr_idle@nil %=create_squad(x18_smart_terrain_5_m_poltergeist_tele_1_squad:x18_smart_terrain_5_m) =create_squad(x18_smart_terrain_5_m_poltergeist_tele_2_squad:x18_smart_terrain_5_m) =create_squad(x18_smart_terrain_5_m_poltergeist_tele_3_squad:x18_smart_terrain_5_m) =give_task(x18_start_kill_the_flame_poltergeist_quest_task) +X18_CODEDOOR_3_LOCKED_POLTERGEIST_FLAME_INFO%
+
+[sr_idle@nil]

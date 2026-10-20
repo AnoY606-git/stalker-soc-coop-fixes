@@ -1,0 +1,10 @@
+[logic]
+active 									= sr_idle@start_quest
+
+[sr_idle@start_quest]
+on_any_player_inside 						= sr_idle@help_yurik %+GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO =give_task(gar_start_save_the_stalker_yurik_from_bandits_quest_task) =scenario_autosave(st_arrival_at_garbage)%
+
+[sr_idle@help_yurik]
+on_game_timer 							= 200 | sr_idle@nil %+GAR_THE_ORDER_TO_KILL_YURIK_INFO%
+
+[sr_idle@nil]

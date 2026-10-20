@@ -1,0 +1,69 @@
+; A-Life roaming for Shadow of COOP. Read by scripts\alife_roaming.script (server side).
+; Squads listed here walk to another smart terrain from time to time (and back), like the camp dwellers of
+; original SoC. Nothing is spawned or removed. Edit, repack, restart the server. Times are real seconds.
+
+[roaming]
+enabled                 = true
+; first move of a squad happens start_delay s (+ a random part) after the level starts
+start_delay             = 90
+; a squad stays in a smart terrain stay_min..stay_max s before it may move again
+stay_min                = 240
+stay_max                = 720
+; how often one squad is looked at
+check_period            = 5
+; give up a move that has not finished after this many s (squad blocked / dead)
+move_timeout            = 900
+; squads that walk at the same time on the level
+max_moving              = 4
+; squads with more members than this never roam
+max_squad_size          = 4
+; job safety: members (all squads) allowed in one smart terrain, counting squads that are on their way there.
+; The generic camp has 20 point jobs for stalkers and 20 den jobs for mutants (smart_terrain.script job_data crash
+; when a smart gets more people than jobs), so keep this well below 20.
+max_npc_per_smart       = 10
+max_squads_per_smart    = 3
+max_mutant_squads_per_smart = 2
+; chance (percent) that a squad that is away goes home instead of to a new place
+go_home_chance          = 35
+; never walk into a smart terrain that holds or awaits a squad of a hostile faction (keeps big fights away)
+avoid_enemies           = true
+; do not pick a destination with a player closer than this many metres (0 = off)
+min_players_dist        = 60
+; roam while players watch (true) or only while the squad is offline (false)
+allow_online_move       = true
+; factions that may roam (squads with named characters, on_death flags or *_dead_* squads never do)
+communities             = stalker bandit army dolg freedom
+mutants                 = true
+; writes "[alife_roaming] ..." lines to the engine log
+log                     = false
+
+; ------------------------------------------------------------------------------------------------------------
+; Per level: group_<name> = list of smart terrains (the places a group walks between),
+;            use_<faction or mutant_<species>> = group name, exclude_squads / exclude_dest = never.
+; ------------------------------------------------------------------------------------------------------------
+
+; Cordon. SoC: stalker camps (esc_lager, esc_stalker_camp), dogs/boars/flesh in their dens. The south checkpoint
+; (smart 2) keeps its guards, the bandits and the military with story flags stay put.
+[level@coop_l01_escape]
+group_stalker           = esc_smart_terrain_1 esc_smart_terrain_4 esc_smart_terrain_5 esc_smart_terrain_6
+group_dog               = esc_smart_terrain_3_m esc_smart_terrain_5_m esc_smart_terrain_8_m esc_smart_terrain_10_m esc_smart_terrain_11_m esc_smart_terrain_14_m esc_smart_terrain_15_m esc_smart_terrain_16_m esc_smart_terrain_18_m
+group_boar              = esc_smart_terrain_2_m esc_smart_terrain_9_m esc_smart_terrain_17_m
+group_flesh             = esc_smart_terrain_2_m esc_smart_terrain_9_m esc_smart_terrain_12_m
+use_stalker             = stalker
+use_mutant_dog          = dog
+use_mutant_boar         = boar
+use_mutant_flesh        = flesh
+exclude_squads          =
+exclude_dest            =
+
+; Garbage. SoC: bandit gulags (gar_bandit_post, gar_seryi_bandits, gar_bandit_stroyka, gar_bandit_agr) are
+; interchangeable for bandits; dog/boar/flesh nests. Duty keeps its checkpoint.
+[level@coop_l02_garbage]
+group_bandit            = gar_smart_terrain_4 gar_smart_terrain_5 gar_smart_terrain_6 gar_smart_terrain_8
+group_dog               = gar_smart_terrain_4_m gar_smart_terrain_5_m
+group_boar              = gar_smart_terrain_1_m gar_smart_terrain_6_m
+use_bandit              = bandit
+use_mutant_dog          = dog
+use_mutant_boar         = boar
+exclude_squads          =
+exclude_dest            =

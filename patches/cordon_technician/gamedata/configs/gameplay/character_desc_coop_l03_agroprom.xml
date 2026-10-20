@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding="windows-1251"?>
+<xml>
+<specific_character id="agr_smart_terrain_7_stalker_mole" team_default = "1">
+    <name>agr_smart_terrain_7_stalker_mole_name</name>
+    <icon>ui_inGame2_mole</icon>
+    <map_icon x="1" y="0"></map_icon>
+    <bio>agr_mole_bio</bio>
+
+    <class>agr_smart_terrain_7_stalker_mole</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <snd_config>characters_voice\human_03\stalker\</snd_config>
+
+    <rank>30</rank>
+	<money min="1000" max="2000" infinitive="0"/>
+    <reputation>0</reputation>
+
+    <visual>actors\stalker_neutral\stalker_neutral_mole</visual>
+    <supplies>	
+			[spawn] \n      
+			wpn_l85 \n
+			ammo_5.56x45_ss190  = 1 \n
+			wpn_walther_m1 \n
+			ammo_9x18_pmm = 1 \n
+			grenade_rgd5 = 1 \n
+
+	  
+#include "gameplay\character_items.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+	<start_dialog>agr_smart_terrain_7_stalker_mole_start_dialog</start_dialog>	
+	<actor_dialog>agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole</actor_dialog>
+</specific_character>
+<specific_character id="esc_rookie_technician" team_default = "1">
+    <name>esc_rookie_technician_name</name>
+    <icon>ui_inGame2_neutral_0_3</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>esc_rookie_technician_bio</bio>
+    <class>esc_rookie_technician</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <mechanic_mode>1</mechanic_mode>
+    <money min="6000000" max="12000000" infinitive="1"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_2_unique_3</visual>
+    <snd_config>characters_voice\human_02\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+    <start_dialog>esc_rookie_technician_start_dialog</start_dialog>
+    <actor_dialog>esc_rookie_technician_what_can_you_do</actor_dialog>
+    <actor_dialog>actor_break_dialog</actor_dialog>
+</specific_character>
+  </xml>

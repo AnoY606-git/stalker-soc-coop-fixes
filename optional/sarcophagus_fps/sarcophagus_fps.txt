@@ -9,5 +9,6 @@ corpse_limit = 30
 ; Corpses kept in the Sarcophagus / Лимит трупов в Саркофаге
 sarcophagus_corpse_limit = 12
 
+; NOTE: patch sarcophagus_count already cut the Monolith to about SoC numbers (squads of 1-2), so 100 is right; lower values only matter for squads of 3+.
 ; Monolith wave size in the Sarcophagus, percent (100 = original) / Размер волн Монолита в Саркофаге, %
-sarcophagus_wave_percent = 55
+sarcophagus_wave_percent = 100

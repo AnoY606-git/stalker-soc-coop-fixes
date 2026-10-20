@@ -1,0 +1,60 @@
+
+[logic@esc_smart_terrain_9_animpoint_stalker_1]
+suitable 											= {=check_npc_name(esc_smart_terrain_9_stalker_idiot)} true
+prior 												= 300
+active 												= kamp@esc_smart_terrain_9_animpoint_stalker_1
+
+[kamp@esc_smart_terrain_9_animpoint_stalker_1]
+center_pos = 312.66, 3.45, 118.45
+radius = 2.2
+use_camp = false
+def_state_moving = walk
+on_info 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO} kamp@esc_smart_terrain_9_animpoint_stalker_1_1 %=actor_enemy%
+
+[kamp@esc_smart_terrain_9_animpoint_stalker_1_1]
+center_pos = 312.66, 3.45, 118.45
+radius = 2.2
+use_camp = false
+def_state_moving = walk
+
+;================================================
+
+[logic@esc_smart_terrain_9_animpoint_stalker_2]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+prior 												= 300
+active 												= kamp@esc_smart_terrain_9_animpoint_stalker_2
+
+[kamp@esc_smart_terrain_9_animpoint_stalker_2]
+center_pos = 312.66, 3.45, 118.45
+radius = 2.2
+use_camp = true
+def_state_moving = walk
+on_info 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO} kamp@esc_smart_terrain_9_animpoint_stalker_2_1 %=actor_enemy%
+
+[kamp@esc_smart_terrain_9_animpoint_stalker_2_1]
+center_pos = 312.66, 3.45, 118.45
+radius = 2.2
+use_camp = true
+def_state_moving = walk
+
+;================================================
+
+[logic@esc_smart_terrain_9_animpoint_stalker_3]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+prior 												= 300
+active 												= kamp@esc_smart_terrain_9_animpoint_stalker_3
+
+[kamp@esc_smart_terrain_9_animpoint_stalker_3]
+center_pos = 312.66, 3.45, 118.45
+radius = 2.2
+use_camp = true
+def_state_moving = walk
+on_info 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO} kamp@esc_smart_terrain_9_animpoint_stalker_3_1 %=actor_enemy%
+
+[kamp@esc_smart_terrain_9_animpoint_stalker_3_1]
+center_pos = 312.66, 3.45, 118.45
+radius = 2.2
+use_camp = true
+def_state_moving = walk
+
+;================================================

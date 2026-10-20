@@ -1,0 +1,8 @@
+[logic]
+active 												= sr_idle@start_quest
+
+[sr_idle@start_quest]
+on_any_player_inside 									= sr_idle@nil %+GAR_THE_ORDER_TO_KILL_GRAY_INFO%
+on_info 											= {+AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO} sr_idle@nil
+
+[sr_idle@nil]

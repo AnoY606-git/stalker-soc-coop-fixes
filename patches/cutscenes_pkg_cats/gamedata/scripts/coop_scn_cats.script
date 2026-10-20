@@ -1,0 +1,172 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "cats" (WP6): the three camera cut-scenes the mod already has, now played by the
+-- Scene Director so every player sees them together.
+--
+--   cats_agroprom   Agroprom factory flyover      restrictor agr_actor_cat_scene_space_restrictor
+--   cats_bar_arena  Bar arena camera (Arnie)      restrictor bar_actor_cat_scene_space_restrictor
+--   cats_rostok     Rostok sniper/Kruglov camera  restrictor ros_actor_cat_scene_space_restrictor
+--
+-- What the original did (sr_cutscene@fly in the restrictor ltx, xrmpe_patch sr_cutscene.script):
+--   zone_enter:  move the local actor to `point` (<name>_1_walk), disable_ui, start the .anm as a global
+--                camera effector (add_cam_effector2, fov = actor fov * 0.75)
+--   on camera end: enable_ui, face `look`, signal cameff_end (the ltx then gives flags / blink / autosave)
+-- Each client ran that on its own copy of the logic: no wait for the others, a skip by one player stopped
+-- the camera for everybody, players that were not in the zone saw nothing.
+--
+-- Now: the restrictor ltx (shipped by this package) still decides WHEN the party is "in the scene" for the
+-- local player (disable_ui + blink on entering, same conditions as before), but the flight is a director
+-- scene. The SERVER trigger below mirrors the ltx conditions (same flags, "a player is inside the zone"),
+-- holds the party for a few seconds so the others can arrive, then GO: every client is placed at the walk
+-- point, plays the same .anm, the barrier waits for all (timeout = length + grace), a skip by anyone ends it
+-- for everybody, and on END the server gives the flags the old on_signal gave. The ltx leaves its wait
+-- section when the scene is over (scene_played, or START_ARENA_GO for the repeatable arena).
+-------------------------------------------------------------------------------------------------------
+
+-- is any / which share of the alive players inside the restrictor object `zname` (db.zone_by_name)
+local function inside_counts(ctx, zname)
+	local z = db.zone_by_name and db.zone_by_name[zname]
+	local total, inside = 0, 0
+	if z == nil then return 0, 0 end
+	for _, a in ipairs(ctx.players()) do
+		total = total + 1
+		local ok, res = pcall(function() return z:inside(a:position()) end)
+		if ok and res then inside = inside + 1 end
+	end
+	return inside, total
+end
+
+-- party hold: once somebody is inside, wait until everybody is inside, or `hold_ms` has passed
+local hold = {}
+local function hold_ready(id, inside, total, hold_ms, now)
+	if inside == 0 or total == 0 then
+		hold[id] = nil
+		return false
+	end
+	if inside >= total then return true end
+	if hold[id] == nil then hold[id] = now end
+	return now - hold[id] >= hold_ms
+end
+
+local function patrol_ok(name)
+	local ok, res = pcall(function() return level.patrol_path_exists(name) end)
+	return ok and res
+end
+
+-- sr_cutscene:zone_enter -> move the local actor to the walk point
+local function place(env, walk)
+	local a = env.actor
+	if a == nil or not patrol_ok(walk) then return end
+	a:set_actor_position(patrol(walk):point(0))
+end
+
+-- sr_cutscene:cutscene_callback -> face the look point (same formula as the original)
+local function face(env, walk, look)
+	if env.cats_faced then return end
+	env.cats_faced = true
+	local a = env.actor
+	if a == nil or not patrol_ok(walk) or not patrol_ok(look) then return end
+	a:set_actor_direction(-patrol(look):point(0):sub(patrol(walk):point(0)):getH())
+end
+
+local function make_steps(anm, cam_id, walk, look)
+	return function(var, env)
+		return {
+			{ ["do"] = "ui_off" },
+			{ ["do"] = "fn", fn = function(e) place(e, walk) end },
+			{ ["do"] = "cam", anm = anm, id = cam_id, global = true, wait = true },
+			{ ["do"] = "fn", fn = function(e) face(e, walk, look) end },
+			{ ["do"] = "ui_on" },
+		}
+	end
+end
+
+local function make_end(walk, look)
+	-- skip / watchdog / stopped by END: the original also ended with the look direction
+	return function(env, reason)
+		face(env, walk, look)
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- Agroprom: AGR_STALKER_HELP_1_INFO and a player inside the restrictor (unless the mole dialog is done,
+-- which sent the original logic to sr_idle@nil on clients)
+-------------------------------------------------------------------------------------------------------
+local AGR = {
+	zone = "agr_actor_cat_scene_space_restrictor",
+	walk = "agr_actor_cat_scene_1_walk", look = "agr_actor_cat_scene_1_look",
+	anm = "scenario_cam\\coop_l03_agroprom\\agr_actor_cat_scene",
+}
+coop_scenes.register{
+	id = "cats_agroprom", kind = "camera", level = "coop_l03_agroprom", once = true,
+	length_ms = 30000, grace_ms = 20000, skip = "any",
+	cam = { anm = AGR.anm, id = 9101, global = true },
+	trigger = function(ctx)
+		local ok, res = pcall(function()
+			if not ctx.flag("AGR_STALKER_HELP_1_INFO") then return false end
+			if ctx.flag("AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO") then return false end
+			local inside, total = inside_counts(ctx, AGR.zone)
+			return hold_ready("cats_agroprom", inside, total, 15000, ctx.now)
+		end)
+		return ok and res or false
+	end,
+	steps = make_steps(AGR.anm, 9101, AGR.walk, AGR.look),
+	on_client_end = make_end(AGR.walk, AGR.look),
+	on_end = function(ctx, var, reason)
+		story_flags.give_flag("AGR_INVULNERABLE_OFF_INFO")
+	end,
+}
+
+-------------------------------------------------------------------------------------------------------
+-- Bar arena: START_CAT_SCENE_INFO (given by the arena logic) while the arena has not started, a player
+-- inside the arena spawn sphere. Repeatable: the arena logic clears START_CAT_SCENE_INFO and
+-- START_ARENA_GO when the fight is over, which re-arms the trigger.
+-------------------------------------------------------------------------------------------------------
+local BAR = {
+	zone = "bar_actor_cat_scene_space_restrictor",
+	walk = "bar_smart_terrain_6_arena_spawn_players_1_walk", look = "bar_smart_terrain_6_arena_spawn_players_1_look",
+	anm = "scenario_cam\\coop\\arena",
+}
+coop_scenes.register{
+	id = "cats_bar_arena", kind = "camera", level = "coop_l05_bar", once = false,
+	length_ms = 30000, grace_ms = 20000, skip = "any",
+	cam = { anm = BAR.anm, id = 9102, global = true },
+	trigger = function(ctx)
+		local ok, res = pcall(function()
+			if not ctx.flag("BAR_ARNY_ARENA_SMART_TERRAIN_START_CAT_SCENE_INFO") then return false end
+			if ctx.flag("BAR_ARNY_ARENA_SMART_TERRAIN_START_ARENA_GO") then return false end
+			local inside, total = inside_counts(ctx, BAR.zone)
+			return hold_ready("cats_bar_arena", inside, total, 5000, ctx.now)
+		end)
+		return ok and res or false
+	end,
+	steps = make_steps(BAR.anm, 9102, BAR.walk, BAR.look),
+	on_client_end = make_end(BAR.walk, BAR.look),
+	on_end = function(ctx, var, reason)
+		story_flags.give_flag("BAR_ARNY_ARENA_SMART_TERRAIN_START_ARENA_GO")
+	end,
+}
+
+-------------------------------------------------------------------------------------------------------
+-- Rostok: ROS_SNIPER_SPACE_RESTRICTOR_INFO and a player inside (unless the Yantar task already started)
+-------------------------------------------------------------------------------------------------------
+local ROS = {
+	zone = "ros_actor_cat_scene_space_restrictor",
+	walk = "ros_actor_cat_scene_1_walk", look = "ros_actor_cat_scene_1_look",
+	anm = "scenario_cam\\coop\\rostok_camera",
+}
+coop_scenes.register{
+	id = "cats_rostok", kind = "camera", level = "coop_l06_rostok", once = true,
+	length_ms = 30000, grace_ms = 20000, skip = "any",
+	cam = { anm = ROS.anm, id = 9103, global = true },
+	trigger = function(ctx)
+		local ok, res = pcall(function()
+			if not ctx.flag("ROS_SNIPER_SPACE_RESTRICTOR_INFO") then return false end
+			if ctx.flag("ROS_START_GO_TO_YANTAR_QUEST_TASK_INFO") then return false end
+			local inside, total = inside_counts(ctx, ROS.zone)
+			return hold_ready("cats_rostok", inside, total, 15000, ctx.now)
+		end)
+		return ok and res or false
+	end,
+	steps = make_steps(ROS.anm, 9103, ROS.walk, ROS.look),
+	on_client_end = make_end(ROS.walk, ROS.look),
+}

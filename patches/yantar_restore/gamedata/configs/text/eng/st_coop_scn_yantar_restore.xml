@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<string_table>
+	<string id="scn_yantar_restore_ghost_name">
+		<text>Ghost</text>
+	</string>
+	<string id="scn_yantar_restore_docs_name">
+		<text>Laboratory X16 documents</text>
+	</string>
+	<string id="scn_yantar_restore_docs_descr">
+		<text>A folder of papers from the X16 laboratory, carried by a stalker who did not make it out.</text>
+	</string>
+	<string id="scn_yantar_restore_saharov_msg_3">
+		<text>Excellent, Marked One! The radiation is off and you are alive. We have called a couple of military helicopters to clear the zombies from the area, so stay away from there for now to avoid getting shot. By the way, when you are nearby, drop in at our bunker.</text>
+	</string>
+	<string id="scn_yantar_restore_ghost_tip">
+		<text>Ghost's audio recording.</text>
+	</string>
+</string_table>

@@ -1,0 +1,34 @@
+[yan_smart_terrain_1_ecolog_saharov]:stalker
+$spawn						= "respawn\yan_smart_terrain_1_ecolog_saharov"
+character_profile			= yan_smart_terrain_1_ecolog_saharov
+spec_rank					= master
+community					= ecolog
+story_id					= yan_smart_terrain_1_ecolog_saharov
+
+[yan_smart_terrain_1_ecolog_kruglov]:stalker
+$spawn						= "respawn\yan_smart_terrain_1_ecolog_kruglov"
+character_profile			= yan_smart_terrain_1_ecolog_kruglov
+spec_rank					= master
+community					= ecolog
+story_id					= yan_smart_terrain_1_ecolog_kruglov
+
+;--- yantar_restore: original SoC Yantar/X16 content that the mod lacked -----------------------------------
+; Ghost corpse in the X16 lab area (scripts: coop_scn_yantar_restore.script)
+[x16_stalker_ghost]:stalker
+character_profile			= sim_default_stalker_3
+spec_rank					= veteran
+community					= stalker
+story_id					= x16_stalker_ghost
+
+; Lab documents carried by the Ghost (SoC lab_x16_documents); same model and icon as the mod's X16 info case
+[lab_x16_documents]:quest_item_base
+$spawn 				= "quest_items\lab_x16_documents"
+visual				= dynamics\equipments\quest\notes_document_case_3.ogf
+inv_weight			= 0.05
+description			= scn_yantar_restore_docs_descr
+inv_name			= scn_yantar_restore_docs_name
+inv_name_short		= scn_yantar_restore_docs_name
+inv_grid_width		= 2
+inv_grid_height		= 1
+inv_grid_x			= 18
+inv_grid_y			= 20

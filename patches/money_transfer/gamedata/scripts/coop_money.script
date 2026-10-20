@@ -1,0 +1,424 @@
+-------------------------------------------------------------------------------------------------------
+-- coop_money: give money to another player (Shadow of COOP 8.x on xrMPE 0.9).
+--
+-- UX:     look at a teammate (within 4 m) and press the Use key  ->  small window: amount presets
+--         (100 / 500 / 1 000 / 5 000 / 10 000 / All).  With nobody in the crosshair, Crouch + Use opens
+--         the same window and "Next player" picks the target (2-4 players).
+-- Server: the SERVER moves the money.  A client only asks, by name, through game_cl.executeFunctionOnServer:
+--             coop_mt_<targetId>_<j>      j = 1..#PRESETS (fixed amount) or 0 (the whole balance)
+--         (executeFunctionOnServer carries no arguments, so target and amount are in the function name; the
+--         server registers one function per alive player id and preset).  The server checks sender and target
+--         are alive players, sender != target, balance >= amount, a 300 ms per-sender cooldown, then takes the
+--         amount from the sender and gives it to the target in ONE step, and rolls back if either half failed.
+-- Result: the server publishes a short-lived story flag  MTX_<t>_<seq>_<from>_<to>_<amount>_<CODE>  (CODE = OK,
+--         NOFUNDS, BADTARGET, BUSY).  Flags are synced to every client and to late joiners; every client shows a
+--         PDA toast when it is the sender or the receiver, and the server deletes the flag after 20 s so
+--         nothing piles up in saves.
+-- Loaded by bind_stalker.dscript (appended to bind_stalker.script) through coop_money.ensure().
+-- Original design; no code from other add-ons (see NOTES.md for the MSO reference check).
+-------------------------------------------------------------------------------------------------------
+
+PRESETS = { 100, 500, 1000, 5000, 10000 }
+MAX_TARGET_ID = 65535
+USE_RANGE = 4.0
+COOLDOWN_MS = 300
+FLAG_TTL_MS = 20000
+PREFIX = "MTX_"
+
+local I = { gen = 0, installed = false, last_tick = 0 }
+local SRV = { seq = 0, registered = {}, last_req = {}, live = {}, t_scan = 0 }
+local CLI = { seen = {}, baseline = false, key_down = false, ui = nil, t_scan = 0, hinted = false, born = nil }
+
+local function slog(msg)
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "coop_money.log"), "a")
+		if f then f:write(string.format("[%d] %s\n", time_global(), msg)); f:close() end
+	end)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- money primitives (the only place that touches game_object money)
+-------------------------------------------------------------------------------------------------------
+local function money_of(o)
+	local ok, m = pcall(function() return o:money() end)
+	if ok and type(m) == "number" then return math.floor(m) end
+	return nil
+end
+
+local function money_add(o, n)
+	return pcall(function() o:give_money(n) end)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- server
+-------------------------------------------------------------------------------------------------------
+local function emit(from, to, amount, code)
+	SRV.seq = SRV.seq + 1
+	local name = string.format("%s%d_%d_%d_%d_%d_%s", PREFIX, math.floor(time_global() / 1000), SRV.seq, from, to, amount, code)
+	name = string.upper(name)
+	story_flags.give_flag(name)
+	SRV.live[#SRV.live + 1] = { name = name, at = time_global() }
+	slog("EMIT " .. name)
+end
+
+function server_transfer(from_id, to_id, j)
+	local now = time_global()
+	local last = SRV.last_req[from_id]
+	if last ~= nil and now - last < COOLDOWN_MS then
+		slog(string.format("DROP busy from=%s", tostring(from_id)))
+		return false, "BUSY"
+	end
+	SRV.last_req[from_id] = now
+
+	local a = db.mp_actors[from_id]
+	local b = db.mp_actors[to_id]
+	if a == nil or b == nil or from_id == to_id or not a:alive() or not b:alive() then
+		emit(from_id, to_id, 0, "BADTARGET")
+		return false, "BADTARGET"
+	end
+	local have = money_of(a)
+	if have == nil then
+		emit(from_id, to_id, 0, "BADTARGET")
+		return false, "BADTARGET"
+	end
+	local amount
+	if j == 0 then amount = have else amount = PRESETS[j] end
+	if amount == nil or amount < 1 or have < amount then
+		emit(from_id, to_id, amount or 0, "NOFUNDS")
+		return false, "NOFUNDS"
+	end
+
+	local before_b = money_of(b)
+	local ok1 = money_add(a, -amount)
+	local ok2 = ok1 and money_add(b, amount)
+	if not (ok1 and ok2) then
+		-- roll back whatever half happened (never leave money created or destroyed)
+		if ok1 then money_add(a, amount) end
+		slog(string.format("ROLLBACK from=%s to=%s amount=%s ok1=%s ok2=%s", tostring(from_id), tostring(to_id), tostring(amount), tostring(ok1), tostring(ok2)))
+		emit(from_id, to_id, amount, "BADTARGET")
+		return false, "BADTARGET"
+	end
+	slog(string.format("XFER from=%s to=%s amount=%d a:%s->%s b:%s->%s", tostring(from_id), tostring(to_id), amount, tostring(have), tostring(money_of(a)), tostring(before_b), tostring(money_of(b))))
+	emit(from_id, to_id, amount, "OK")
+	return true, "OK"
+end
+
+local function make_rpc(from_hint, to_id, j)
+	return function(initiator_id)
+		local from = initiator_id
+		local ok, err = pcall(server_transfer, from, to_id, j)
+		if not ok then slog("RPCERR " .. tostring(err)) end
+	end
+end
+
+local function register_player(id)
+	if SRV.registered[id] then return end
+	SRV.registered[id] = true
+	for j = 0, #PRESETS do
+		game_sv["coop_mt_" .. id .. "_" .. j] = make_rpc(nil, id, j)
+	end
+	slog("REGISTER target=" .. id)
+end
+
+local function server_tick(now)
+	if type(db.mp_actors) ~= "table" then return end
+	for id, a in pairs(db.mp_actors) do
+		if a ~= nil then register_player(id) end
+	end
+	-- expire old result flags; purge strays left in a loaded save
+	local live = {}
+	local keep = {}
+	for i = 1, #SRV.live do
+		local e = SRV.live[i]
+		if now - e.at >= FLAG_TTL_MS then
+			story_flags.disable_flag(e.name)
+		else
+			live[#live + 1] = e
+			keep[e.name] = true
+		end
+	end
+	SRV.live = live
+	if now - SRV.t_scan >= 5000 then
+		SRV.t_scan = now
+		local stale = {}
+		for k, v in pairs(story_flags.story_flags) do
+			if v == true and string.sub(k, 1, #PREFIX) == PREFIX and not keep[k] then stale[#stale + 1] = k end
+		end
+		for _, k in ipairs(stale) do story_flags.disable_flag(k) end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- client: toasts
+-------------------------------------------------------------------------------------------------------
+local function tr(id) return game.translate_string(id) end
+
+local function player_name(id)
+	local o = db.mp_actors and db.mp_actors[id]
+	if o ~= nil then
+		local ok, n = pcall(function() return o:name() end)
+		if ok and n ~= nil then return tostring(n) end
+	end
+	return "#" .. tostring(id)
+end
+
+local function thousands(n)
+	local s = tostring(math.floor(n))
+	local r = s:reverse():gsub("(%d%d%d)", "%1 "):reverse()
+	return (r:gsub("^ ", ""))
+end
+
+local function toast(text)
+	local me = getLocalActor()
+	if me == nil then return end
+	slog("TOAST " .. text)
+	pcall(function() me:give_game_news(tr("st_coop_money_caption"), text, "ui_iconsTotal_grouping", 0, 7000, 0) end)
+	CLI.last_toast = text
+end
+
+local function on_event(from, to, amount, code)
+	local me = LocalActor()
+	if from == me then
+		if code == "OK" then
+			toast(string.format(tr("st_coop_money_msg_sent"), player_name(to), thousands(amount)))
+		elseif code == "NOFUNDS" then
+			toast(string.format(tr("st_coop_money_msg_nofunds"), thousands(amount)))
+		elseif code == "BUSY" then
+			toast(tr("st_coop_money_msg_busy"))
+		else
+			toast(tr("st_coop_money_msg_badtarget"))
+		end
+	elseif to == me and code == "OK" then
+		toast(string.format(tr("st_coop_money_msg_got"), player_name(from), thousands(amount)))
+	end
+end
+
+local function client_scan(now)
+	local sf = story_flags.story_flags
+	for k, v in pairs(sf) do
+		if v == true and string.sub(k, 1, #PREFIX) == PREFIX and not CLI.seen[k] then
+			CLI.seen[k] = true
+			if CLI.baseline then
+				local t, s, f, to, amt, code = string.match(k, "^MTX_(%d+)_(%d+)_(%d+)_(%d+)_(%d+)_(%u+)$")
+				if f then
+					local ok, e = pcall(on_event, tonumber(f), tonumber(to), tonumber(amt), code)
+					if not ok then slog("EVENTERR " .. tostring(e)) end
+				end
+			end
+		end
+	end
+	CLI.baseline = true
+end
+
+-------------------------------------------------------------------------------------------------------
+-- client: request + window
+-------------------------------------------------------------------------------------------------------
+function request(target_id, j)
+	if target_id == nil or j == nil then return end
+	local fn = "coop_mt_" .. tostring(target_id) .. "_" .. tostring(j)
+	slog("REQUEST " .. fn)
+	game_cl.executeFunctionOnServer(fn)
+end
+
+local function other_players()
+	local list = {}
+	local me = LocalActor()
+	if type(db.mp_actors) ~= "table" then return list end
+	for id, o in pairs(db.mp_actors) do
+		if id ~= me and o ~= nil then
+			local ok, alive = pcall(function() return o:alive() end)
+			if ok and alive then list[#list + 1] = id end
+		end
+	end
+	table.sort(list)
+	return list
+end
+
+class "coop_money_wnd" (CUIScriptWnd)
+
+function coop_money_wnd:__init() super()
+	self.targets = {}
+	self.ti = 1
+	self:SetWndRect(Frect():set(0, 0, device().width, device().height))
+	local xml = CScriptXmlInit()
+	xml:ParseFile("coop_money.xml")
+	xml:InitWindow("coop_money_wnd", 0, self)
+	self.bg = xml:InitStatic("coop_money_wnd:bg", self)
+	self.title = xml:InitTextWnd("coop_money_wnd:title", self)
+	self.balance = xml:InitTextWnd("coop_money_wnd:balance", self)
+	self.target = xml:InitTextWnd("coop_money_wnd:target", self)
+	self.hint = xml:InitTextWnd("coop_money_wnd:hint", self)
+	self.btn = {}
+	for j = 0, #PRESETS do
+		local b = xml:Init3tButton("coop_money_wnd:btn_amt_" .. j, self)
+		self:Register(b, "btn_amt_" .. j)
+		self.btn[j] = b
+		local jj = j
+		self:AddCallback("btn_amt_" .. j, ui_events.BUTTON_CLICKED, function() self:OnAmount(jj) end, self)
+		if j == 0 then b:TextControl():SetText(tr("st_coop_money_all")) else b:TextControl():SetText(thousands(PRESETS[j])) end
+	end
+	self.btn_next = xml:Init3tButton("coop_money_wnd:btn_next", self)
+	self:Register(self.btn_next, "btn_next")
+	self:AddCallback("btn_next", ui_events.BUTTON_CLICKED, function() self:OnNext() end, self)
+	self.btn_next:TextControl():SetText(tr("st_coop_money_next"))
+	self.btn_close = xml:Init3tButton("coop_money_wnd:btn_close", self)
+	self:Register(self.btn_close, "btn_close")
+	self:AddCallback("btn_close", ui_events.BUTTON_CLICKED, function() self:Close() end, self)
+	self.btn_close:TextControl():SetText(tr("st_coop_money_close"))
+	self.title:SetText(tr("st_coop_money_title"))
+	self.hint:SetText(tr("st_coop_money_hint"))
+end
+
+function coop_money_wnd:Open(preselect)
+	self.targets = other_players()
+	if #self.targets == 0 then return false end
+	self.ti = 1
+	for i = 1, #self.targets do
+		if self.targets[i] == preselect then self.ti = i end
+	end
+	self:Refresh()
+	self:ShowDialog(true)
+	CLI.ui_open = true
+	return true
+end
+
+function coop_money_wnd:Refresh()
+	local me = getLocalActor()
+	local have = me and money_of(me) or 0
+	self.balance:SetText(string.format("%s: %s RU", tr("st_coop_money_balance"), thousands(have or 0)))
+	local tid = self.targets[self.ti]
+	self.target:SetText(string.format("%s %s", tr("st_coop_money_to"), tid and player_name(tid) or "-"))
+	self.btn_next:Show(#self.targets > 1)
+end
+
+function coop_money_wnd:OnNext()
+	if #self.targets == 0 then return end
+	self.ti = self.ti % #self.targets + 1
+	self:Refresh()
+end
+
+function coop_money_wnd:OnAmount(j)
+	local tid = self.targets[self.ti]
+	if tid ~= nil then request(tid, j) end
+	self:Close()
+end
+
+function coop_money_wnd:Close()
+	CLI.ui_open = false
+	self:HideDialog()
+end
+
+function coop_money_wnd:OnKeyboard(dik, keyboard_action)
+	local res = CUIScriptWnd.OnKeyboard(self, dik, keyboard_action)
+	if res == false then
+		if keyboard_action == ui_events.WINDOW_KEY_PRESSED and dik == DIK_keys.DIK_ESCAPE then
+			self:Close()
+		end
+	end
+	return true
+end
+
+function open_window(preselect)
+	if CLI.ui_open then return end
+	local ok, err = pcall(function()
+		if CLI.ui == nil then CLI.ui = coop_money_wnd() end
+		if not CLI.ui:Open(preselect) then slog("OPEN no teammates") end
+	end)
+	if not ok then
+		CLI.ui = nil
+		CLI.ui_open = false
+		slog("OPENERR " .. tostring(err))
+	end
+end
+
+local function looked_teammate()
+	local ok, o = pcall(function() return level.get_target_obj() end)
+	if not ok or o == nil then return nil, false end
+	local id = o:id()
+	local me = LocalActor()
+	if id ~= me and db.mp_actors and db.mp_actors[id] ~= nil then
+		local lo = getLocalActor()
+		if lo ~= nil and o:alive() and o:position():distance_to(lo:position()) <= USE_RANGE then return id, true end
+		return nil, true
+	end
+	return nil, true
+end
+
+local function client_tick(now)
+	local me = getLocalActor()
+	if me == nil then CLI.born = nil; return end
+	if CLI.born == nil then CLI.born = now end
+	if now - CLI.t_scan >= 250 then
+		CLI.t_scan = now
+		client_scan(now)
+	end
+	if not CLI.hinted and now - CLI.born > 20000 and #other_players() > 0 then
+		CLI.hinted = true
+		pcall(function() me:give_game_news(tr("st_coop_money_caption"), tr("st_coop_money_hint"), "ui_iconsTotal_grouping", 0, 9000, 0) end)
+	end
+	local down = false
+	pcall(function() down = is_action_pressed(key_bindings.kUSE) end)
+	if down and not CLI.key_down and not CLI.ui_open then
+		local tid, something = looked_teammate()
+		if tid ~= nil then
+			open_window(tid)
+		elseif not something then
+			local crouch = false
+			pcall(function() crouch = is_action_pressed(key_bindings.kCROUCH) end)
+			if crouch then open_window(nil) end
+		end
+	end
+	CLI.key_down = down
+end
+
+-------------------------------------------------------------------------------------------------------
+-- test/inspection helpers
+-------------------------------------------------------------------------------------------------------
+function get_last_toast() return CLI.last_toast end
+function get_ui() return CLI.ui end
+function clear_last_toast() CLI.last_toast = nil end
+
+-------------------------------------------------------------------------------------------------------
+-- install (idempotent; called every frame-ish by bind_stalker.dscript)
+-------------------------------------------------------------------------------------------------------
+function ensure()
+	local now = time_global()
+	if I.installed and now >= I.last_tick and now - I.last_tick < 4000 then return end
+	install()
+end
+
+function install()
+	I.gen = I.gen + 1
+	local gen = I.gen
+	I.installed = true
+	I.last_tick = time_global()
+	local t_srv, t_cli = 0, 0
+	local ok, err = pcall(function()
+		level.add_call(function()
+			if gen ~= I.gen then return true end
+			local now = time_global()
+			I.last_tick = now
+			if now - t_srv >= 500 then
+				t_srv = now
+				if OnServer() then
+					local ok2, e2 = pcall(server_tick, now)
+					if not ok2 then slog("TICKERR server " .. tostring(e2)) end
+				end
+			end
+			if now - t_cli >= 50 then
+				t_cli = now
+				if not IsDedicatedServer() then
+					local ok2, e2 = pcall(client_tick, now)
+					if not ok2 then slog("TICKERR client " .. tostring(e2)) end
+				end
+			end
+			return false
+		end, function() end)
+	end)
+	if not ok then
+		I.installed = false
+		slog("INSTALLERR " .. tostring(err))
+		return
+	end
+	slog("INSTALL gen=" .. gen .. " dedicated=" .. tostring(IsDedicatedServer()) .. " server=" .. tostring(OnServer()))
+end

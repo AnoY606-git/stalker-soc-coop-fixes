@@ -1,0 +1,9 @@
+-- Appended to bind_stalker.script (xrMPE .dscript). Drives the money transfer between players (coop_money.script):
+-- the actor binder updates on the server for every player and on each client for its own player.
+local cm_orig_mp_actor_update = mp_actor_binder.update
+function mp_actor_binder:update(delta)
+	cm_orig_mp_actor_update(self, delta)
+	if coop_money ~= nil then
+		coop_money.ensure()
+	end
+end

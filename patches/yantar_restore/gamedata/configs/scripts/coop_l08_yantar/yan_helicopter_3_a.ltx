@@ -1,0 +1,41 @@
+; Original SoC: after the X16 installation is switched off Sakharov calls military helicopters that sweep Yantar.
+; Parked at heli_stay_3 until YAN_RESTORE_HELI_DONE, then they fly heli_move_3 (looking at heli_look_3), leave over
+; heli_move_end_2 and are removed.
+[logic]
+active = heli_move@idle
+
+[heli_move@idle]
+path_move = heli_stay_3
+max_velocity = 30
+engine_sound = false
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+invulnerable = true
+on_info = {+YAN_RESTORE_HELI_DONE} heli_move@sweep
+
+[heli_move@sweep]
+path_move = heli_move_3
+path_look = heli_look_3
+max_velocity = 60
+engine_sound = true
+upd_vis = 3
+use_mgun = true
+use_rocket = false
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+invulnerable = true
+on_timer = 24000 | heli_move@leave
+
+[heli_move@leave]
+path_move = heli_move_end_2
+max_velocity = 80
+engine_sound = true
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+invulnerable = true
+on_timer = 20000 | heli_move@gone
+
+[heli_move@gone]
+path_move = heli_move_end_2
+max_velocity = 80
+engine_sound = false

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+    <dialog id="val_smart_terrain_16_stalker_lucky_1_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__val_smart_terrain_16_stalker_lucky_1_start_dialog_0</action>
+
+                <text>val_smart_terrain_16_stalker_lucky_1_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="val_smart_terrain_16_stalker_lucky_2_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__val_smart_terrain_16_stalker_lucky_2_start_dialog_0</action>
+
+                <text>val_smart_terrain_16_stalker_lucky_2_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="val_smart_terrain_16_stalker_lucky_help">
+        <dont_has_flag>all_val_smart_terrain_16_stalker_lucky_help_info</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__val_smart_terrain_16_stalker_lucky_help_1</action>
+
+                <text>val_smart_terrain_16_stalker_lucky_help_1</text>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__val_smart_terrain_16_stalker_lucky_help_3</action>
+
+                <text>val_smart_terrain_16_stalker_lucky_help_3</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__val_smart_terrain_16_stalker_lucky_help_0</action>
+
+                <text>val_smart_terrain_16_stalker_lucky_help_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__val_smart_terrain_16_stalker_lucky_help_2</action>
+
+                <text>val_smart_terrain_16_stalker_lucky_help_2</text>
+			    <precondition>dialogs_item.if_actor_has_medkit</precondition>
+                <action>dialogs_item.transfer_medkit</action>
+                <action>dialogs.break_dialog</action>
+                <give_flag>VAL_SMART_TERRAIN_16_STALKER_LUCKY_HELP_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="val_smart_terrain_15_stalker_scammer_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__val_smart_terrain_15_stalker_scammer_start_dialog_0</action>
+
+                <text>val_smart_terrain_15_stalker_scammer_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="val_smart_terrain_15_stalker_scammer_fake_gauss_fail_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__val_smart_terrain_15_stalker_scammer_fake_gauss_fail_dialog_0</action>
+
+                <text>val_smart_terrain_15_stalker_scammer_fake_gauss_fail_dialog_0</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_FAIL_STOP_DIALOG</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="val_smart_terrain_15_stalker_scammer_fake_gauss_good_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__val_smart_terrain_15_stalker_scammer_fake_gauss_good_dialog_0</action>
+
+                <text>val_smart_terrain_15_stalker_scammer_fake_gauss_good_dialog_0</text>
+                <precondition>dialogs_val_restore.if_actor_has_money_800</precondition>
+                <action>dialogs.break_dialog</action>
+				<action>dialogs_val_restore.transfer_800</action>
+                <give_flag>VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_GOOD_STOP_DIALOG</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="esc_smart_terrain_1_trader_sidorovich_x18_documents">
+        <has_flag>ESC_RETURN_FROM_DV_INFO</has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO</dont_has_flag>
+        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_1_x18</precondition>
+        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_2_x18</precondition>
+        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_3_x18</precondition>
+        <phrase_list>
+            <phrase id="0">
+                <text>esc_smart_terrain_1_trader_sidorovich_x18_documents_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <text>esc_smart_terrain_1_trader_sidorovich_x18_documents_1</text>
+                <action>dialogs_money.give_money_to_actor_1000</action>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+</game_dialogs>

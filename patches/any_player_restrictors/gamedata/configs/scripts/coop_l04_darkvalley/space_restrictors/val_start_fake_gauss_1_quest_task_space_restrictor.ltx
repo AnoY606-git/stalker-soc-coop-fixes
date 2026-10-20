@@ -1,0 +1,7 @@
+[logic]
+active 												= sr_idle@start_quest
+;Квест Алексея Змея(Поговорить со Змеем):
+[sr_idle@start_quest]
+on_any_player_inside 									=  sr_idle@nil %=give_task(val_start_fake_gauss_1_quest_task)%
+
+[sr_idle@nil]

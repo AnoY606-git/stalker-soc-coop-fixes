@@ -1,0 +1,33 @@
+[logic]
+active 												= sr_idle@start_quest_idle_1
+;Начало квеста:
+[sr_idle@start_quest_idle_1]
+;on_info 											= {+BAR_SMART_TERRAIN_1_STALKER_INFORMANT_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO} sr_idle@start_quest_idle_2
+
+;Подготовка к встрече:
+[sr_idle@start_quest_idle_2]
+on_actor_inside 									= {+BAR_SMART_TERRAIN_1_STALKER_INFORMANT_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO} sr_idle@start_1
+
+[sr_idle@start_1]
+on_actor_inside 									= sr_idle@start_2 %+GAR_MEETING_PLACE_INFO%
+;on_info 											= {+GAR_MEETING_PLACE_INFO +GAR_SNIPER_PLACE_INFO} sr_idle@start_quest_spawn_squad %=give_task(bar_start_the_meeting_place_cannot_be_changed_3_quest_task)%
+on_info 											= {+GAR_MEETING_PLACE_INFO} sr_idle@start_quest_spawn_squad %=give_task(bar_start_the_meeting_place_cannot_be_changed_3_quest_task)%
+
+[sr_idle@start_2]
+on_actor_outside 									= sr_idle@start_1 %-GAR_MEETING_PLACE_INFO =give_task(bar_start_the_meeting_place_cannot_be_changed_1_quest_task)%
+;on_info 											= {+GAR_MEETING_PLACE_INFO +GAR_SNIPER_PLACE_INFO} sr_idle@start_quest_spawn_squad %=give_task(bar_start_the_meeting_place_cannot_be_changed_3_quest_task)%
+on_info 											= {+GAR_MEETING_PLACE_INFO} sr_idle@start_quest_spawn_squad %=give_task(bar_start_the_meeting_place_cannot_be_changed_3_quest_task)%
+
+;Спавн сквада на встрече:
+[sr_idle@start_quest_spawn_squad]
+;on_actor_inside 									= {+GAR_MEETING_PLACE_INFO +GAR_SNIPER_PLACE_INFO} sr_idle@wait %=create_squad(gar_smart_terrain_10_bandit_1_squad:gar_smart_terrain_10)%
+on_actor_inside 									= {+GAR_MEETING_PLACE_INFO} sr_idle@wait %=create_squad(gar_smart_terrain_10_bandit_1_squad:gar_smart_terrain_10)%
+
+[sr_idle@wait]
+;SoC never forces the player to holster: the zone stays idle (was: sr_no_weapon@wait)
+;on_actor_inside = {=actor_in_zone(gar_player_meeting_place_space_restrictor)} sr_no_weapon@wait
+
+[sr_no_weapon@wait]
+on_actor_outside = sr_idle@wait
+
+[sr_idle@nil]

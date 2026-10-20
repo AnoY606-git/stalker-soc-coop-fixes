@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="scn_monolith_join_phrase">
+		<text>I agree to join the C-Consciousness.</text>
+	</string>
+	<string id="scn_monolith_join_card">
+		<text>You join the C-Consciousness. The Zone falls silent, and the Marked One is gone.</text>
+	</string>
+	<string id="scn_monolith_choice_caption">
+		<text>C-Consciousness</text>
+	</string>
+	<string id="scn_monolith_choice_join">
+		<text>A member of the party answered for everyone: we join the C-Consciousness.</text>
+	</string>
+	<string id="scn_monolith_choice_refuse">
+		<text>A member of the party answered for everyone: we refuse. The C-Consciousness must be destroyed.</text>
+	</string>
+</string_table>

@@ -1,0 +1,9 @@
+[logic]
+active 												= sr_idle@the_order_to_attack_the_players
+
+[sr_idle@the_order_to_attack_the_players]
+on_any_player_inside 									= sr_idle@nil %+ESC_THE_ORDER_TO_ATTACK_THE_PLAYERS_INFO =scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info  											= {+ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_SQUAD_DEAD} sr_idle@nil
+on_info2  											= {+ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO} sr_idle@nil %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov)%
+
+[sr_idle@nil]

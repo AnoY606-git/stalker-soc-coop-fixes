@@ -1,0 +1,183 @@
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜ ˜˜˜ Shadow_of_COOP
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜ ˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+function give_start_item(actor, npc)
+	game_cl.executeFunctionOnServer("give_start_item")
+end
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜:
+-------------------------------------------------------------------------------------------------------
+function give_item_scientific_outfit_and_dev_card_1(actor, npc)
+	game_cl.executeFunctionOnServer("give_item_scientific_outfit_and_dev_card_1")
+end
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜ ˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜ "˜˜-˜˜˜" ˜˜˜˜˜˜˜
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜ ˜˜˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+
+function show_test_dialog(actor, npc, p)
+	if p[1] and p[2] and p[2] == "true" then
+		ui_test_dialog.show("message_box_yes_no", p[1])
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- Party map vote (guide transitions)
+-------------------------------------------------------------------------------------------------------
+function coop_map_vote_begin(actor, npc, p)
+	if p and p[1] and OnServer() then
+		coop_map_vote.start(p[1])
+	end
+end
+
+function coop_map_vote_prompt(actor, npc, p)
+	local text_id = "st_coop_map_vote_default"
+	if p and p[1] then
+		text_id = p[1]
+	end
+	coop_map_vote.prompt_client(text_id)
+end
+
+function coop_map_vote_reset_prompt(actor, npc, p)
+	coop_map_vote.reset_client_prompt()
+end
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜˜˜ SOS:
+-------------------------------------------------------------------------------------------------------
+function all_players_message_sos_signal(mp_actors)
+		news_manager.send_tip(db.actor, "st_all_players_message_sos_signal", nil, "all_players_message_sos_signal", nil, nil)
+end
+
+-------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+function add_spot_on_map(obj_id,type,text) --+
+  if obj_id then
+    if text==nil then text=" " end
+    level.map_add_object_spot_ser(obj_id, type, text)
+  end
+end
+
+function remove_spot_from_map(obj_id,type) --+
+  if obj_id and level.map_has_object_spot(obj_id, type)~= 0 then
+    level.map_remove_object_spot(obj_id, type)
+  end
+end
+
+
+function add_self_spot(actor, npc, p)
+ local metka = p[1] or "green_location"
+ local tips = game.translate_string(p[2] or npc:name())
+ add_spot_on_map(npc:id(), metka, tips)
+end
+
+function remowe_self_spot(actor, npc, p)
+ local metka = p[1] or "green_location"
+ local tips = game.translate_string(p[2] or npc:name())
+ remove_spot_from_map(npc:id(), metka, tips)
+end
+
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+function give_dev_psi_protection_helmet(actor, npc)
+	game_cl.executeFunctionOnServer("give_dev_psi_protection_helmet")
+end
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜ ˜˜˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+function mil_dolg_increase_goodwill(actor, npc)
+	game_cl.executeFunctionOnServer("mil_dolg_increase_goodwill")
+end
+
+function mil_freedom_increase_goodwill(actor, npc)
+	game_cl.executeFunctionOnServer("mil_freedom_increase_goodwill")
+end
+
+-------------------------------------------------------------------------------------------------------
+function pas_b400_play_particle(actor, npc, p)
+	db.actor:start_particles("monsters\effects\polter_spark","bip01_head")
+end
+
+function pas_b400_play_particle_1(actor, npc, p)
+	db.actor:start_particles("monsters\\effects\\polter_spark","bip01_head")
+end
+
+function pas_b400_play_particle_2(actor, npc, p)
+	db.actor:start_particles("monsters\effects\polter_spark","bip01_head")
+end
+
+function pas_b400_play_particle_3(actor, npc, p)
+	db.actor:start_particles("monsters\\effects\\polter_spark","bip01_head")
+end
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+-- CNPP shake: runs on the machine that owns the local player only (a dedicated server has no db.actor and
+-- used to raise an error every wave). Every effector is removed before it is added again, so repeated waves
+-- never stack effectors, and the two camera effectors have their own ids (the second one used to replace the first).
+function stc_surge(actor, npc)
+    if db.actor == nil then
+        return
+    end
+    level.remove_cam_effector(20080501)
+    level.remove_cam_effector(20080503)
+    level.remove_pp_effector(surge_shock_pp_eff)
+    level.set_weather_fx("fx_surge_day_3_stancia")
+    xr_sound.set_sound_play(db.actor:id(), "blowout_begin")
+    level.add_cam_effector("camera_effects\\shell_shock.anm", 20080501, false, "")
+    level.add_cam_effector("camera_effects\\earthquake_00.anm", 20080503, false, "")
+    level.add_pp_effector("surge_shock.ppe", surge_shock_pp_eff, true)
+end
+
+function stc_stop_surge(actor, npc)
+    if db.actor == nil then
+        return
+    end
+    level.set_weather("[default]",false)
+    level.remove_cam_effector(20080501)
+    level.remove_cam_effector(20080503)
+    level.remove_pp_effector(surge_shock_pp_eff)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- ˜˜˜˜˜˜˜˜:
+-------------------------------------------------------------------------------------------------------
+function sar_bad_final_monolith_info(actor, npc)
+	if xr_conditions.actor_in_zone(actor, npc, {"sar_monolith_space_restrictor"})
+		then
+		story_flags.give_flag("SAR_BAD_FINAL_MONOLITH_INFO")
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+
+-- CNPP shake fix: stc_surge/stc_stop_surge use this id for the looping surge_shock.ppe, but it was never defined.
+surge_shock_pp_eff = 20080402
+
+-- task_guard patch: give_task on a dedicated server with no spawned player crashed at getLocalActor():get_task (nil).
+local task_guard_orig_give_task = give_task
+function give_task(actor, obj, p)
+	if p ~= nil and p[1] ~= nil and OnServer() and IsDedicatedServer() and (db.mp_actors == nil or next(db.mp_actors) == nil) then
+		coop_task_guard.hold(p[1])
+		return
+	end
+	return task_guard_orig_give_task(actor, obj, p)
+end
+coop_task_guard.install()

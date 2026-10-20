@@ -1,0 +1,15 @@
+[logic]
+active 												= sr_idle@start_surge_idle
+
+[sr_idle@start_surge_idle]
+on_player_inside  									= {-CON_TEST_1_INFO} sr_idle@surge_on %=stc_surge%
+
+; CNPP tremors in waves like the original game: 15 s of shaking, then 45 s calm, repeated.
+; (The mod started the shake once and never called stc_stop_surge, so it never ended.)
+[sr_idle@surge_on]
+on_timer 											= 15000 | sr_idle@surge_off %=stc_stop_surge%
+
+[sr_idle@surge_off]
+on_timer 											= 45000 | sr_idle@surge_on %=stc_surge%
+
+[sr_idle@nil]

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="esc_rookie_technician_name">
+		<text>Stepan Gaika</text>
+	</string>
+	<string id="esc_rookie_technician_bio">
+		<text>Stepan Gaika came to the Zone as a rookie mechanic and stayed. He has a bench in the village and fixes what the greenhorns carry in.</text>
+	</string>
+	<string id="esc_rookie_technician_start_dialog_0">
+		<text>Something broken? Put it on the bench. I patch up rookie gear and bolt on the simple upgrades.</text>
+	</string>
+	<string id="esc_rookie_technician_what_can_you_do_0">
+		<text>What can you do for me?</text>
+	</string>
+	<string id="esc_rookie_technician_what_can_you_do_1">
+		<text>I repair anything you carry, and I fit basic upgrades on common guns and suits. Fancy work, go see the mechanic at the Bar.</text>
+	</string>
+</string_table>

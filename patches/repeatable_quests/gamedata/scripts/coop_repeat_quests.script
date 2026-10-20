@@ -1,0 +1,362 @@
+-- Repeatable side quests for Shadow of COOP (restores the SoC task_manager "idle_time" refresh and the
+-- eliminate_lager / defend_lager / kill_stalker / find_item job types).
+-- Server authoritative. All state lives in story flags (saved with the game + synced to every client, incl. late joiners):
+--   RQ_<TASK>_C<n>  repeat cycle number (absent = cycle 0)      RQ_<TASK>_A<n>  "task given in cycle n" marker
+--   RQ_<TASK>_R<m>  refresh at game minute m (since 2000-01-01)  RQ_<TASK>_T<m>  accepted at game minute m (generated jobs)
+--   RQ_<TASK>_S<id> spawned squad ids                            RQ_<TASK>_I<id> spawned item id      RQ_<TASK>_P<id> map spot object
+-- Two families, both in misc/coop_repeat_quests.ltx:
+--   legacy (no "kind"): the mod's own sq_* quests. Cycle 0 is run by the mod's one-shot restrictors, from cycle 1 on this script
+--                       gives the task and re-creates the target squads itself.
+--   generated (kind = gen_kill | gen_camp | gen_defend | gen_find): this script spawns the targets (generic simulation squads
+--                       or an item) when the dialog sets the accept flag, watches them, and sets the done / fail flag.
+
+cooldown_override_min = nil   -- tests only
+local TICK_MS = 2000
+local GRACE_MS = 8000
+local last_tick = 0
+local last_clock = 0
+local ini = nil
+quests = nil
+known_actors = nil            -- module level so tests can forget an actor
+local epoch = nil
+local SPOT = {gen_kill = "red_location", gen_camp = "red_location", gen_defend = "red_location", gen_find = "green_location"}
+
+local function load_cfg()
+	if quests ~= nil then return end
+	quests = {}
+	ini = ini_file("misc\\coop_repeat_quests.ltx")
+	local default_cd = 1440
+	if ini:section_exist("defaults") and ini:line_exist("defaults", "cooldown_min") then
+		default_cd = ini:r_float("defaults", "cooldown_min")
+	end
+	local n = ini:line_count("list")
+	for i = 0, n - 1 do
+		local _, id, _ = ini:r_line("list", i, "", "")
+		local q = {id = id, key = "RQ_" .. string.upper(id)}
+		local function str(k, def)
+			if ini:line_exist(id, k) then return ini:r_string(id, k) end
+			return def
+		end
+		q.level = ini:r_string(id, "level")
+		q.accept = ini:r_string(id, "accept")
+		q.done = ini:r_string(id, "done")
+		q.fail = ini:r_string(id, "fail")
+		q.kind = str("kind", nil)
+		q.smart = str("smart", nil)
+		q.item = str("item", nil)
+		q.cd = default_cd
+		if ini:line_exist(id, "cooldown_min") then q.cd = ini:r_float(id, "cooldown_min") end
+		q.timeout = 2880
+		if ini:line_exist(id, "timeout_min") then q.timeout = ini:r_float(id, "timeout_min") end
+		q.spawn = {}
+		local sp = str("spawn", "none")
+		if sp ~= "none" then
+			for squad, smart in string.gmatch(sp, "([%w_]+):([%w_]+)") do
+				table.insert(q.spawn, {squad = squad, smart = smart})
+			end
+		end
+		q.reward_items = {}
+		for sec in string.gmatch(str("reward_items", ""), "[%w_.]+") do table.insert(q.reward_items, sec) end
+		q.squads = {}
+		for sec in string.gmatch(str("squads", ""), "[%w_]+") do table.insert(q.squads, sec) end
+		table.insert(quests, q)
+	end
+end
+
+-- quest clock in game minutes. The game clock does not advance on a dedicated server (tested: game_min stays the
+-- same while real time passes), so use real time scaled by the time factor when os.time is available.
+local function now_min()
+	if os ~= nil and os.time ~= nil then
+		local ok, tf = pcall(level.get_time_factor)
+		if not ok or tf == nil or tf <= 0 then tf = 10 end
+		return math.floor(os.time() * tf / 60)
+	end
+	if epoch == nil then
+		epoch = game.CTime()
+		epoch:set(2000, 1, 1, 0, 0, 0, 0)
+	end
+	return math.floor(game.get_game_time():diffSec(epoch) / 60)
+end
+
+local function has(f) return story_flags.has_flag(f) end
+local function set_flag(f) story_flags.give_flag(f) end
+local function clr_flag(f) story_flags.disable_flag(f) end
+
+-- all numbers N for flags "<prefix>N" that are set
+local function find_nums(prefix)
+	local plen = string.len(prefix)
+	local res = {}
+	for k, v in pairs(story_flags.story_flags) do
+		if v == true and string.sub(k, 1, plen) == prefix then
+			local num = tonumber(string.sub(k, plen + 1))
+			if num ~= nil then table.insert(res, num) end
+		end
+	end
+	return res
+end
+local function find_num(prefix) return find_nums(prefix)[1] end
+
+local function level_matches(q)
+	local ln = level.name()
+	return ln ~= nil and string.find(ln, q.level, 1, true) ~= nil
+end
+
+local function squad_alive(squad_id)
+	local ok, s = pcall(get_story_squad, squad_id)
+	return ok and s ~= nil
+end
+
+local function smart_obj(name)
+	local board = sim_board.get_sim_board()
+	if board == nil or board.smarts_by_names == nil then return nil end
+	return board.smarts_by_names[name]
+end
+
+-- can the quest be (re)started on this level?
+local function can_spawn(q)
+	if q.kind ~= nil then
+		return q.smart ~= nil and smart_obj(q.smart) ~= nil
+	end
+	for _, sp in ipairs(q.spawn) do
+		if smart_obj(sp.smart) == nil then return false end
+	end
+	return true
+end
+
+local function give_to_all(task_id)
+	-- xr_effects.give_task falls through to getLocalActor() when db.mp_actors is empty: nil on a dedicated server
+	if db.mp_actors == nil or next(db.mp_actors) == nil then return end
+	xr_effects.give_task(nil, nil, {task_id})
+end
+
+local function add_spot(q, obj_id)
+	if obj_id == nil then return end
+	local ok = pcall(level.map_add_object_spot_ser, obj_id, SPOT[q.kind] or "red_location", game.translate_string("rq_spot_" .. q.id))
+	if ok then set_flag(q.key .. "_P" .. obj_id) end
+end
+
+local function clear_tracking(q)
+	for _, id in ipairs(find_nums(q.key .. "_P")) do
+		pcall(xr_effects.remove_spot_from_map, id, SPOT[q.kind] or "red_location")
+		clr_flag(q.key .. "_P" .. id)
+	end
+	for _, id in ipairs(find_nums(q.key .. "_S")) do clr_flag(q.key .. "_S" .. id) end
+	for _, id in ipairs(find_nums(q.key .. "_I")) do clr_flag(q.key .. "_I" .. id) end
+	for _, id in ipairs(find_nums(q.key .. "_T")) do clr_flag(q.key .. "_T" .. id) end
+end
+
+-- spawn the targets of a generated job; returns true when something exists to hunt / find
+local function spawn_generated(q)
+	local smart = smart_obj(q.smart)
+	if smart == nil then return false end
+	local spot_obj = nil
+	if q.kind == "gen_find" then
+		local ok, se = pcall(function()
+			return alife():create(q.item, smart.position, smart.m_level_vertex_id, smart.m_game_vertex_id)
+		end)
+		if not ok or se == nil then
+			printf_msg("[RQ] %s: item spawn failed %s", q.id, tostring(se))
+			return false
+		end
+		set_flag(q.key .. "_I" .. se.id)
+		spot_obj = se.id
+	else
+		local board = sim_board.get_sim_board()
+		for _, sec in ipairs(q.squads) do
+			local ok, sq = pcall(board.create_squad, board, smart, sec)
+			if ok and sq ~= nil then
+				set_flag(q.key .. "_S" .. sq.id)
+				spot_obj = spot_obj or sq.id
+			else
+				printf_msg("[RQ] %s: create_squad %s failed %s", q.id, sec, tostring(sq))
+			end
+		end
+		if spot_obj == nil then return false end
+	end
+	add_spot(q, spot_obj)
+	set_flag(q.key .. "_T" .. now_min())
+	return true
+end
+
+local function start_cycle(q, cyc)
+	if q.kind ~= nil then
+		if not spawn_generated(q) then
+			printf_msg("[RQ] %s: could not spawn targets, failing the job", q.id)
+			set_flag(q.fail)
+			set_flag(q.key .. "_A" .. cyc)
+			return
+		end
+	else
+		for _, sp in ipairs(q.spawn) do
+			if not squad_alive(sp.squad) then
+				local ok, err = pcall(xr_effects.create_squad, nil, nil, {sp.squad, sp.smart})
+				printf_msg("[RQ] create_squad %s:%s ok=%s %s", sp.squad, sp.smart, tostring(ok), tostring(err))
+			end
+		end
+	end
+	give_to_all(q.id)
+	set_flag(q.key .. "_A" .. cyc)
+	printf_msg("[RQ] %s cycle %d task given", q.id, cyc)
+end
+
+local function squad_dead(sid)
+	local so = alife():object(sid)
+	if so == nil then return true end
+	local ok, cnt = pcall(function() return so:npc_count() end)
+	return ok and cnt == 0
+end
+
+-- running generated job: done when every spawned squad is dead, failed on timeout
+local function monitor(q)
+	if q.kind == "gen_find" then
+		-- done flag is set by the hand-in dialog
+	else
+		local sids = find_nums(q.key .. "_S")
+		if #sids > 0 then
+			local all_dead = true
+			for _, sid in ipairs(sids) do
+				if not squad_dead(sid) then all_dead = false break end
+			end
+			if all_dead then
+				set_flag(q.done)
+				clear_tracking(q)
+				printf_msg("[RQ] %s: all targets dead -> done", q.id)
+				return
+			end
+		end
+	end
+	local t0 = find_num(q.key .. "_T")
+	if t0 ~= nil and now_min() - t0 >= q.timeout then
+		set_flag(q.fail)
+		clear_tracking(q)
+		printf_msg("[RQ] %s: timed out -> failed", q.id)
+	end
+end
+
+-- item rewards go straight into every connected player's inventory (the task manager can only pay money without an NPC)
+local function grant_items(q)
+	if db.mp_actors == nil then return end
+	for _, sec in ipairs(q.reward_items) do
+		for id, a in pairs(db.mp_actors) do
+			pcall(function()
+				alife():create(sec, a:position(), a:level_vertex_id(), a:game_vertex_id(), a:id())
+			end)
+		end
+	end
+	if #q.reward_items > 0 then printf_msg("[RQ] %s: item reward granted (%d items each)", q.id, #q.reward_items) end
+end
+
+-- has the mod's one-shot quest restrictor already switched to its parked sr_idle@nil state?
+function restrictor_fired(q)
+	local ok, res = pcall(function()
+		local ro = alife():object(q.id .. "_space_restrictor")
+		if ro == nil then return false end
+		local st = db.storage[ro.id]
+		return st ~= nil and st.active_section == "sr_idle@nil"
+	end)
+	return ok and res == true
+end
+
+local function update_quest(q)
+	local cyc = find_num(q.key .. "_C") or 0
+	local accepted, done, failed = has(q.accept), has(q.done), has(q.fail)
+	local act = has(q.key .. "_A" .. cyc)
+	local ready = find_num(q.key .. "_R")
+	local active = accepted and not done and not failed
+	if active and q.kind ~= nil and not level_matches(q) then return end   -- targets only exist on their own level
+
+	if active and not act then
+		if cyc == 0 and q.kind == nil then
+			-- legacy first run: the mod's restrictor gives the task, but only while it is online (near a player).
+			-- If it did not fire within the grace period, do it ourselves.
+			if restrictor_fired(q) then
+				set_flag(q.key .. "_A0")
+				printf_msg("[RQ] %s: mod restrictor handled the first run", q.id)
+			else
+				local now = time_global()
+				q.seen_accept = q.seen_accept or now
+				if now - q.seen_accept < GRACE_MS then return end
+				printf_msg("[RQ] %s: restrictor offline, script takes over the first run", q.id)
+				q.seen_accept = nil
+				start_cycle(q, 0)
+			end
+		else
+			start_cycle(q, cyc)
+		end
+		return
+	end
+	if active and q.kind ~= nil then
+		monitor(q)
+		return
+	end
+
+	if (done or failed) and ready == nil then
+		local cd = cooldown_override_min or q.cd
+		set_flag(q.key .. "_R" .. (now_min() + cd))
+		if q.kind ~= nil then clear_tracking(q) end
+		if done and not failed then grant_items(q) end
+		printf_msg("[RQ] %s finished (done=%s fail=%s), refresh in %d game min", q.id, tostring(done), tostring(failed), cd)
+		return
+	end
+
+	if ready ~= nil and now_min() >= ready and not q.block_logged and not (level_matches(q) and can_spawn(q)) then
+		q.block_logged = true
+		printf_msg("[RQ] %s due but blocked: level_ok=%s spawn_ok=%s level=%s", q.id, tostring(level_matches(q)), tostring(can_spawn(q)), tostring(level.name()))
+	end
+	if ready ~= nil and now_min() >= ready and level_matches(q) and can_spawn(q) then
+		q.block_logged = nil
+		clr_flag(q.accept); clr_flag(q.done); clr_flag(q.fail)
+		clr_flag(q.key .. "_A" .. cyc)
+		clr_flag(q.key .. "_R" .. ready)
+		if cyc > 0 then clr_flag(q.key .. "_C" .. cyc) end
+		set_flag(q.key .. "_C" .. (cyc + 1))
+		printf_msg("[RQ] %s refreshed -> cycle %d, offered again", q.id, cyc + 1)
+	end
+end
+
+-- late join: give every running repeatable task to actors that appeared after we last looked
+local function catch_up()
+	if db.mp_actors == nil then return end
+	local cur = {}
+	for id, v in pairs(db.mp_actors) do cur[id] = true end
+	if known_actors == nil then known_actors = cur return end
+	local fresh = {}
+	for id in pairs(cur) do
+		if not known_actors[id] then table.insert(fresh, id) end
+	end
+	known_actors = cur
+	if #fresh == 0 then return end
+	if not IsAllClientsConnectedToActors() then
+		known_actors = nil -- retry once everyone is connected
+		return
+	end
+	for _, q in ipairs(quests) do
+		local cyc = find_num(q.key .. "_C") or 0
+		if has(q.accept) and not has(q.done) and not has(q.fail) and has(q.key .. "_A" .. cyc) then
+			for _, id in ipairs(fresh) do
+				client_tasks.give_task_to_client(q.id, id)
+				printf_msg("[RQ] late join: task %s -> actor %s", q.id, tostring(id))
+			end
+		end
+	end
+end
+
+function update()
+	if not OnServer() then return end
+	local t = time_global()
+	if t - last_tick < TICK_MS then return end
+	last_tick = t
+	if db.mp_actors == nil or next(db.mp_actors) == nil then return end
+	load_cfg()
+	if t - (last_clock or 0) > 30000 then
+		last_clock = t
+		local ok, tf = pcall(level.get_time_factor)
+		printf_msg("[RQ] clock game_min=%s time_factor=%s os_time=%s", tostring(now_min()), tostring(ok and tf), tostring(os and os.time and os.time()))
+	end
+	for _, q in ipairs(quests) do
+		local ok, err = pcall(update_quest, q)
+		if not ok then printf_msg("[RQ] error %s: %s", q.id, tostring(err)) end
+	end
+	local ok, err = pcall(catch_up)
+	if not ok then printf_msg("[RQ] catch_up error: %s", tostring(err)) end
+end

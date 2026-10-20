@@ -1,0 +1,46 @@
+; Player-count enemy scaling (patches\player_scaling). Server only: the host's copy of this file is the one that counts,
+; but every player must have the same .db (the add-on is checksummed).
+; 1 player = the original game. Every extra player raises the number of hostile enemies.
+; Applies only to HOSTILE factions (hostile_factions). Friendly/neutral squads and squads with named (story) NPCs are never touched.
+
+[scaling]
+; master switch: false = original balance for any number of players
+enabled = true
+
+; Extra members per additional player, as a fraction of the squad's normal size.
+; Squad size = normal size * (1 + extra_per_player * (players - 1)), at most max_factor times normal.
+; Example with 0.5: 2 players = 1.5x, 3 players = 2x, 4 players = 2.5x. Fractions are rounded per squad (some squads get +1, some not).
+human_extra_per_player = 0.5
+mutant_extra_per_player = 0.5
+max_factor = 2.5
+; never add more than this many NPCs to one squad
+max_extra_members = 6
+
+; Reinforcement squads: an extra copy of one of the hostile squads of a smart terrain (the "base"), added per additional player.
+; Chance per smart terrain = extra_squads_per_player * (players - 1); 0.34 = about a third of the hostile bases get one with 2 players,
+; two thirds with 3, all of them with 4. 0 = no reinforcement squads.
+extra_squads_per_player = 0.34
+; hard cap per smart terrain (more than 1 overflows the smart terrain's job slots: do not raise it)
+max_extra_squads_per_smart = 1
+; seconds after an extra squad died before the base gets a new one
+reinforce_cooldown_s = 300
+; seconds to wait after the player count changed before reinforcements appear
+reinforce_first_delay_s = 30
+; reinforcements only appear when every player is at least this far (meters) from the smart terrain
+reinforce_min_distance = 120
+
+; Safety: extra NPCs are only added while the smart terrain has free job slots. slot_fraction of the smart terrain's jobs are
+; assumed usable at any time of day; slot_margin jobs are always kept free. Lower the fraction if the server logs
+; "no job in ..." lines in pscale.log.
+slot_fraction = 0.6
+slot_margin = 1
+
+; Comma separated lists
+hostile_factions = monster,monster_predatory_day,monster_predatory_night,monster_vegetarian,monster_zombied_day,monster_zombied_night,monster_special,bandit,killer,monolith,zombied
+; levels that are never scaled (the Sarcophagus is already heavy on FPS)
+skip_levels = coop_l11_sarcofag
+; smart terrains that never get reinforcement squads
+skip_smarts =
+
+; write pscale.log (in the game's logs folder) with every change
+log = true

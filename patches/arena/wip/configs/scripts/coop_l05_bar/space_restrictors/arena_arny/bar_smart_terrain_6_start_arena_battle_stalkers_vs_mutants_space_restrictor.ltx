@@ -1,0 +1,24 @@
+[logic]
+active 												= sr_idle@determine_cl_sv
+type 												= no_save
+
+[sr_idle@determine_cl_sv]
+on_info 											= {=isServer} sr_idle@sv_control
+on_info2 											= {=isClient} sr_idle@cl_control
+
+;server logic
+[sr_idle@sv_control]
+on_info   											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BET_START_ARENA_INFO} sr_idle@sv_start_arena_svs_and_svm
+
+[sr_idle@sv_start_arena_svs_and_svm]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BET_START_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_BET_START_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@sv_control %=xrmpe_teleport_actors(bar_smart_terrain_6_arena_spawn_players_3_walk:bar_smart_terrain_6_arena_spawn_players_3_look) =forward_game_time(4)%
+
+
+;client logic
+[sr_idle@cl_control]
+on_info  											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BET_START_ARENA_INFO} sr_idle@cl_start_arena_svs_and_svm
+
+[sr_idle@cl_start_arena_svs_and_svm]
+on_info 											= {+BAR_ARNY_ARENA_SMART_TERRAIN_BET_START_ARENA_INFO} %-BAR_ARNY_ARENA_SMART_TERRAIN_BET_START_ARENA_INFO%
+on_game_timer 										= 20 | sr_idle@cl_control

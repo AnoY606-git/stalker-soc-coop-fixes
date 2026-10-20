@@ -227,3 +227,6 @@ function create_squad(actor, obj, p)
 	end
 	squad:update()
 end
+
+-- CNPP shake fix: stc_surge/stc_stop_surge use this id for the looping surge_shock.ppe, but it was never defined.
+surge_shock_pp_eff = 20080402

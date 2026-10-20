@@ -1,0 +1,34 @@
+[logic]
+active = ph_door@locked_start_open_idle
+
+[ph_door@locked_start_open_idle]
+locked 											= true
+closed 											= true
+snd_open_start 									= metal_small_open
+snd_close_start 								= metal_small_close_start
+snd_close_stop 									= metal_small_close_stop
+on_use 											= {=actor_has_item(dev_decoder)} ph_door@locked_start_open %+LOCKED_START_OPEN_INFO =scenario_autosave(st_open_the_door_to_monolith_management)%
+
+[ph_door@locked_start_open]
+locked 											= true
+closed 											= true
+snd_open_start 									= metal_small_open
+snd_close_start 								= metal_small_close_start
+snd_close_stop 									= metal_small_close_stop
+on_info 										= {+SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_1_SQUAD_DEAD +SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_2_SQUAD_DEAD +SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_3_SQUAD_DEAD} ph_door@open
+
+[ph_door@close]
+locked 											= false
+closed 											= true
+snd_open_start 									= metal_small_open
+snd_close_start 								= metal_small_close_start
+snd_close_stop 									= metal_small_close_stop
+on_use 											= ph_door@open
+
+[ph_door@open]
+locked 											= false
+closed 											= false
+snd_open_start 									= metal_small_open
+snd_close_start 								= metal_small_close_start
+snd_close_stop 									= metal_small_close_stop
+on_use 											= ph_door@close

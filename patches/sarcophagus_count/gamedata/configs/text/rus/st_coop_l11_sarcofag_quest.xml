@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_sar_start_get_to_the_monolith_quest_task_name">
+		<text>Тайна Зоны</text>
+	</string>
+	<string id="st_sar_start_get_to_the_monolith_quest_task_descr">
+		<text>Добраться до "Монолита"</text>	
+	</string>
+
+
+	<string id="st_sar_start_kill_the_monolith_preacher_quest_task_name">
+		<text>Пора со всем покончить!</text>
+	</string>
+	<string id="st_sar_start_kill_the_monolith_preacher_quest_task_descr">
+		<text>Убить Проповедника "Монолита"</text>	
+	</string>
+
+
+	<string id="st_sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task_name">
+		<text>Пора со всем покончить!</text>
+	</string>
+	<string id="st_sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task_descr">
+		<text>Найдите декодер</text>	
+	</string>
+
+
+	<string id="st_sar_start_open_the_door_to_monolith_management_quest_task_name">
+		<text>Пора со всем покончить!</text>
+	</string>
+	<string id="st_sar_start_open_the_door_to_monolith_management_quest_task_descr">
+		<text>Применить декодер и открыть дверь в Управление "Монолитом"</text>	
+	</string>
+</string_table>

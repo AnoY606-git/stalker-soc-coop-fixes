@@ -1,0 +1,155 @@
+-- Lighting presets (client side). The preset values live in configs\lumscale_presets.ltx, the player's choice in
+-- _appdata_\lumscale_preset.txt (one line: "preset = soc"). Missing file or "off" = this script changes nothing.
+-- In-game (console, key ~):   run_string lumscale_presets.soc()     also .bright()  .default()  .off()  .status()
+-- Only local console variables are set, nothing is sent over the network.
+
+local CFG_FILE = "lumscale_preset.txt"
+local INI_NAME = "lumscale_presets.ltx"
+local current = nil
+
+local function say(s)
+	pcall(function() printf("[lumscale] %s", tostring(s)) end)
+	pcall(function() get_console():execute("flush") end)
+end
+
+local function logfile(s)
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "lumscale_presets.log"), "a")
+		if f then
+			f:write(tostring(s), "\n")
+			f:close()
+		end
+	end)
+end
+
+local function cfg_path()
+	return getFS():update_path("$app_data_root$", CFG_FILE)
+end
+
+function read_choice()
+	local ok, name = pcall(function()
+		-- _appdata_\lumscale_preset.txt, then _appdata_\logs\ as a fallback ($logs$ is known to resolve)
+		local f = nil
+		for _, pth in ipairs({cfg_path(), getFS():update_path("$logs$", CFG_FILE)}) do
+			f = io.open(pth, "r")
+			logfile("CHOICEPATH " .. tostring(pth) .. " open=" .. tostring(f ~= nil))
+			if f then break end
+		end
+		if not f then return nil end
+		local res = nil
+		for line in f:lines() do
+			local v = string.match(line, "^%s*preset%s*=%s*([%w_]+)")
+			if v then res = string.lower(v) end
+		end
+		f:close()
+		return res
+	end)
+	if ok and name then return name end
+	return "off"
+end
+
+local function write_choice(name)
+	pcall(function()
+		local f = io.open(cfg_path(), "w")
+		if f then
+			f:write("; Lighting preset for Shadow of COOP: off | default | soc | bright\r\n")
+			f:write("preset = " .. name .. "\r\n")
+			f:close()
+		end
+	end)
+end
+
+-- value of one console variable as text (nil if the engine cannot give it)
+function get_cvar(name)
+	local c = get_console()
+	local ok, v = pcall(function() return c:get_float(name) end)
+	if ok and v ~= nil then return string.format("%.6g", v) end
+	ok, v = pcall(function() return c:get_string(name) end)
+	if ok and v ~= nil and v ~= "" then return tostring(v) end
+	ok, v = pcall(function() return c:get_bool(name) end)
+	if ok and v ~= nil then return v and "on" or "off" end
+	return nil
+end
+
+local function renderer_name()
+	local ok, v = pcall(function() return get_console():get_string("renderer") end)
+	if ok and v ~= nil then return tostring(v) end
+	return "?"
+end
+
+-- list of "var", "value" pairs of a section; a section "<name>@r4" or "<name>@r2" overrides for that renderer
+local function section_vars(ini, sec)
+	local out, idx = {}, {}
+	local function add(s)
+		local n = ini:line_count(s)
+		for i = 0, n - 1 do
+			local _, id, value = ini:r_line(s, i, "", "")
+			if id ~= nil and id ~= "" then
+				if idx[id] ~= nil then
+					out[idx[id]][2] = value
+				else
+					out[#out + 1] = { id, value }
+					idx[id] = #out
+				end
+			end
+		end
+	end
+	if ini:section_exist(sec) then add(sec) end
+	local r = renderer_name()
+	local tag = nil
+	if string.find(r, "r4", 1, true) then tag = "r4" elseif string.find(r, "r3", 1, true) then tag = "r3" elseif string.find(r, "r2", 1, true) then tag = "r2" end
+	if tag ~= nil and ini:section_exist(sec .. "@" .. tag) then add(sec .. "@" .. tag) end
+	return out
+end
+
+function apply(name, remember)
+	name = string.lower(tostring(name or "off"))
+	if IsDedicatedServer ~= nil and IsDedicatedServer() then return false end
+	if name == "off" then
+		current = "off"
+		if remember then write_choice("off") end
+		say("preset off: your own lighting settings are used")
+		return true
+	end
+	local ini = ini_file(INI_NAME)
+	if not ini:section_exist(name) or name == "presets" then
+		say("unknown preset '" .. name .. "' (use off, default, soc, bright)")
+		return false
+	end
+	local vars = section_vars(ini, name)
+	local c = get_console()
+	local lines = {}
+	for _, kv in ipairs(vars) do
+		c:execute(kv[1] .. " " .. kv[2])
+		lines[#lines + 1] = kv[1] .. "=" .. kv[2]
+	end
+	current = name
+	if remember then write_choice(name) end
+	logfile("APPLY " .. name .. " renderer=" .. renderer_name() .. " :: " .. table.concat(lines, " "))
+	say("preset " .. name .. " applied (" .. #vars .. " variables)")
+	return true
+end
+
+function on_game_start()
+	local name = read_choice()
+	logfile("GAME START choice=" .. name)
+	if name ~= "off" then apply(name, false) end
+end
+
+function off() return apply("off", true) end
+function default() return apply("default", true) end
+function soc() return apply("soc", true) end
+function bright() return apply("bright", true) end
+function set(name) return apply(name, true) end
+
+function status()
+	local ini = ini_file(INI_NAME)
+	local parts = {}
+	for _, kv in ipairs(section_vars(ini, "default")) do
+		parts[#parts + 1] = kv[1] .. "=" .. tostring(get_cvar(kv[1]))
+	end
+	local s = "choice=" .. tostring(current or read_choice()) .. " renderer=" .. renderer_name() .. " " .. table.concat(parts, " ")
+	logfile("STATUS " .. s)
+	say(s)
+	return s
+end

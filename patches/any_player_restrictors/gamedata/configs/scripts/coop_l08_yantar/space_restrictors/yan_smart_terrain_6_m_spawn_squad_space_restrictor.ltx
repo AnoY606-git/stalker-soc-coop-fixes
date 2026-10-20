@@ -1,0 +1,7 @@
+[logic]
+active 									= sr_idle@spawn_gigant_idle
+
+[sr_idle@spawn_gigant_idle]
+on_any_player_inside 						= sr_idle@nil %+YAN_GIGANT_SPAWN_INFO =create_squad(yan_smart_terrain_6_m_gigant_squad:yan_smart_terrain_6_m)%
+
+[sr_idle@nil]

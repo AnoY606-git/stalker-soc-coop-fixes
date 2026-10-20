@@ -1,0 +1,68 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "pripyat" (WP5): the Pripyat stadium flyover to the CNPP.
+-- Original SoC logic (alife_l11_pripyat.ltx, pri_space_restrictor_0011):
+--   [sr_idle@wait]  on_actor_inside = sr_cutscene %+pri_stadium_reached%
+--   [sr_cutscene]   point = pri_stadium_eff_point, look = pri_stadium_eff_look, cam_effector = pri_fly_to_aes
+--                   on_signal = cameff_end | nil %=teleport_actor(pri_tele_point:pri_tele_look)%
+-- The restrictor does not exist in the mod's all.spawn, so the trigger is a box test on the server
+-- (SoC coordinates are the same in the mod level). Everybody is moved with the finder, like the camera
+-- scenes of the core: all clients play, a skip by anyone ends it.
+-------------------------------------------------------------------------------------------------------
+
+local LEVEL = "coop_l10_pripyat"
+
+-- pri_space_restrictor_0011: box, axis lengths 27.9148 / 7.9966 / 9.7120 (half sizes below), no rotation
+local BOX = { x = 31.2853240966797, y = 3.07400941848755, z = 266.346801757813, hx = 13.9573965, hy = 3.9983, hz = 4.856 }
+-- way_l11_pripyat: pri_stadium_eff_point / pri_stadium_eff_look / pri_tele_point / pri_tele_look
+local EFF_POS = { x = 31.4487648010254, y = 1.5703592300415, z = 279.992431640625 }
+local EFF_LOOK = { x = 31.1490230560303, y = 1.13923978805542, z = 285.333099365234 }
+local TELE_POS = { x = 33.4589729309082, y = -0.681340217590332, z = 463.037689208984 }
+local TELE_LOOK = { x = 33.3639831542969, y = -0.681344985961914, z = 473.487701416016 }
+
+local function in_box(p)
+	return math.abs(p.x - BOX.x) <= BOX.hx and math.abs(p.y - BOX.y) <= BOX.hy and math.abs(p.z - BOX.z) <= BOX.hz
+end
+
+local function teleport(env, pos, look)
+	local a = env.actor
+	if a == nil then return end
+	a:set_actor_position(vector():set(pos.x, pos.y, pos.z))
+	a:set_actor_direction(math.atan2(look.x - pos.x, look.z - pos.z))
+end
+
+local function fn_teleport(pos, look, mark_done)
+	return { ["do"] = "fn", fn = function(env)
+		teleport(env, pos, look)
+		if mark_done then env.pri_done = true end
+	end }
+end
+
+coop_scenes.register{
+	id = "pri_stadium_fly", kind = "camera", level = LEVEL, once = true,
+	length_ms = 45000, grace_ms = 20000, skip = "any",
+	trigger = function(ctx)
+		for _, a in ipairs(ctx.players()) do
+			if in_box(a:position()) then return true end
+		end
+		return false
+	end,
+	on_go = function(ctx, var)
+		story_flags.give_flag("PRI_STADIUM_REACHED")
+	end,
+	-- skip / watchdog: the original teleports on cameff_end whatever ended the camera
+	on_client_end = function(env, reason)
+		if not env.pri_done then
+			teleport(env, TELE_POS, TELE_LOOK)
+			env.pri_done = true
+		end
+	end,
+	steps = function(var, env)
+		return {
+			{ ["do"] = "ui_off" },
+			fn_teleport(EFF_POS, EFF_LOOK),
+			{ ["do"] = "cam", anm = "pri_fly_to_aes", id = 9301, global = true, wait = true, cap_ms = 45000 },
+			fn_teleport(TELE_POS, TELE_LOOK, true),
+			{ ["do"] = "ui_on" },
+		}
+	end,
+}

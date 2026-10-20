@@ -1,0 +1,324 @@
+-------------------------------------------------------------------------------------------------------
+-- stash_markers (patches/stash_markers): SoC stash info -> PDA map marks, shared by the whole party.
+-- Server decides, clients show:
+--   * knowledge is two story flags per stash (saved, synced to every client and to late joiners by the mod's own flag sync):
+--       STASH_G_<ID>  info given (anyone got it)      STASH_D_<ID>  stash looted (mark gone for everybody)
+--   * the server puts the map spot on the stash box (level.map_add_object_spot_ser + level.map_sync_spot to all clients),
+--     removes it when the last item has left the box, and re-adds it after a level load / for late joiners.
+-- Hooks (all pcall-protected, called from the shipped treasure_manager.script override):
+--   on_register(se_obj)   every server item/box registers here (tracks which items sit in which stash box)
+--   send_map_locations(gameID)  new client joined
+--   give_treasure(id)     SoC stash id (esc_secret_*...) -> give()
+-- Corpse search: motivator_binder.use_callback is wrapped once; the first search of a dead stalker rolls SoC's treasure
+-- table (35 percent, rank / level / community weights from SoC treasure_manager.ltx).
+-- Server-only logic: everything returns at once when not OnServer().
+-------------------------------------------------------------------------------------------------------
+local S = { box_id = {}, box_by_id = {}, items = {}, pend = {}, seen = {}, processed = {}, by_id = nil, by_box = nil,
+	installed = false, gen = 0, last_tick = 0, hooked = false, shown = {}, log_n = 0 }
+
+local function slog(msg)
+	if S.log_n > 400 then return end
+	S.log_n = S.log_n + 1
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "stash_markers.log"), "a")
+		if f then f:write(string.format("[%d] %s\n", time_global(), tostring(msg))); f:close() end
+	end)
+end
+
+local function index()
+	if S.by_id then return end
+	S.by_id, S.by_box = {}, {}
+	for _, st in ipairs(stash_markers_data.stashes) do
+		S.by_id[st.id] = st
+		S.by_box[st.box] = st
+	end
+end
+
+local function fname(kind, id) return "STASH_" .. kind .. "_" .. string.upper(id) end
+local function flag(kind, id) return story_flags.has_flag(fname(kind, id)) end
+
+function is_stash(id)
+	index()
+	return S.by_id[id] ~= nil
+end
+
+function state(id)
+	if flag("D", id) then return "looted" end
+	if flag("G", id) then return "given" end
+	return "unknown"
+end
+
+-- ---------------------------------------------------------------------------------------------- tracking
+function on_register(se)
+	index()
+	local st = S.by_box[se:name()]
+	if st then
+		S.box_id[st.box] = se.id
+		S.box_by_id[se.id] = st
+		local it = S.items[se.id] or {}
+		S.items[se.id] = it
+		local p = S.pend[se.id]
+		if p then
+			for i in pairs(p) do it[i] = true; S.seen[se.id] = true end
+			S.pend[se.id] = nil
+		end
+		ensure()
+		return
+	end
+	local par = se.parent_id
+	if par ~= nil and par ~= 65535 and par ~= -1 then
+		local it = S.items[par]
+		if it then
+			it[se.id] = true
+			S.seen[par] = true
+		else
+			local p = S.pend[par]
+			if not p then p = {}; S.pend[par] = p end
+			p[se.id] = true
+		end
+	end
+end
+
+local function box_items(box)
+	local it = S.items[box]
+	if not it then return nil end
+	local n = 0
+	for i in pairs(it) do
+		local o = alife():object(i)
+		if o == nil or o.parent_id ~= box then it[i] = nil else n = n + 1 end
+	end
+	return n
+end
+
+-- ---------------------------------------------------------------------------------------------- map spots
+local function has_spot(id)
+	local ok, r = pcall(level.map_has_object_spot, id, "treasure")
+	return ok and r ~= nil and r ~= false and r ~= 0
+end
+
+local function add_spot(st, box)
+	pcall(level.map_add_object_spot_ser, box, "treasure", "stash_hint_" .. st.id)
+	pcall(function() level.map_sync_spot(box, "treasure", SV_OBJECT_ID) end)
+	S.shown[box] = true
+	slog("spot added " .. st.id .. " box " .. tostring(box))
+end
+
+local function remove_spot(st, box)
+	pcall(level.map_remove_object_spot, box, "treasure")
+	S.shown[box] = nil
+	slog("spot removed " .. st.id .. " box " .. tostring(box))
+end
+
+local function news(n)
+	pcall(function() news_manager.send_treasure(n) end)
+end
+
+-- ---------------------------------------------------------------------------------------------- API
+-- give the stash info to the whole party. returns true when newly given
+function give(id, quiet)
+	if not OnServer() then return false end
+	index()
+	local st = S.by_id[id]
+	if not st then return false end
+	if flag("G", id) or flag("D", id) then
+		if not quiet then news(2) end
+		return false
+	end
+	local box = S.box_id[st.box]
+	if box ~= nil and not S.seen[box] then
+		-- box on this level and it holds nothing: SoC says "already empty"
+		if not quiet then news(2) end
+		return false
+	end
+	story_flags.give_flag(fname("G", id))
+	if not quiet then news(0) end
+	slog("given " .. id)
+	reconcile()
+	return true
+end
+
+local function finish(st, box)
+	story_flags.give_flag(fname("D", st.id))
+	remove_spot(st, box)
+	news(1)
+	slog("looted " .. st.id)
+end
+
+-- test helper: take everything out of the stash box (server side)
+function loot(id)
+	if not OnServer() then return 0 end
+	index()
+	local st = S.by_id[id]
+	local box = st and S.box_id[st.box]
+	if not box then return -1 end
+	local n = 0
+	for i in pairs(S.items[box] or {}) do
+		local o = alife():object(i)
+		if o then
+			pcall(function() alife():release(o, true) end)
+			n = n + 1
+		end
+	end
+	return n
+end
+
+function box_of(id)
+	index()
+	local st = S.by_id[id]
+	return st and S.box_id[st.box] or nil
+end
+
+function item_count(id)
+	local b = box_of(id)
+	return b and box_items(b) or nil
+end
+
+function spot_present(id)
+	local b = box_of(id)
+	return b ~= nil and has_spot(b)
+end
+
+-- ---------------------------------------------------------------------------------------------- reconcile (server tick)
+function reconcile()
+	if not OnServer() then return end
+	index()
+	for box, st in pairs(S.box_by_id) do
+		local boxid = box
+		local fg, fd = flag("G", st.id), flag("D", st.id)
+		if fd then
+			if has_spot(boxid) then remove_spot(st, boxid) end
+		elseif fg then
+			local n = box_items(boxid)
+			if S.seen[boxid] and n == 0 then
+				finish(st, boxid)
+			elseif not has_spot(boxid) then
+				add_spot(st, boxid)
+			end
+		end
+	end
+end
+
+function send_map_locations(gameID)
+	if not OnServer() then return end
+	for box, st in pairs(S.box_by_id) do
+		if flag("G", st.id) and not flag("D", st.id) and has_spot(box) then
+			pcall(function() level.map_sync_spot(box, "treasure", gameID) end)
+		end
+	end
+end
+
+-- ---------------------------------------------------------------------------------------------- corpse search
+local function cond_ok(e, npc, lvl)
+	if e.lvl and e.lvl ~= lvl then return false end
+	if e.rank then
+		local ok, r = pcall(function() return ranks.get_obj_rank_name(npc) end)
+		if not ok or r ~= e.rank then return false end
+	end
+	if e.prof ~= nil and npc:profile_name() ~= e.prof then return false end
+	if e.need then
+		for _, x in ipairs(e.need) do if not story_flags.has_flag(string.upper(x)) then return false end end
+	end
+	if e.avoid then
+		for _, x in ipairs(e.avoid) do if story_flags.has_flag(string.upper(x)) then return false end end
+	end
+	return true
+end
+
+-- weight of a stash for this corpse (SoC: first condlist entry that matches)
+function weight(st, npc, lvl)
+	if not st.comm[npc:character_community()] then return 0 end
+	for _, e in ipairs(st.cond) do
+		if cond_ok(e, npc, lvl) then return e.p end
+	end
+	return 0
+end
+
+-- roll: nil = random like SoC, or a number 1..100 to force (tests)
+function on_corpse_use(npc, who, roll)
+	if not OnServer() then return nil end
+	if S.processed[npc:id()] then return nil end
+	S.processed[npc:id()] = true
+	index()
+	local lvl = stash_markers_data.levels[level.name()]
+	local avail, sum = {}, 0
+	for _, st in ipairs(stash_markers_data.stashes) do
+		if not flag("G", st.id) and not flag("D", st.id) then
+			local box = S.box_id[st.box]
+			local usable = (box == nil) or S.seen[box]
+			local w = usable and weight(st, npc, lvl) or 0
+			if w == 100 then
+				give(st.id)
+			elseif w > 0 then
+				avail[#avail + 1] = { st = st, w = w }
+				sum = sum + w
+			end
+		end
+	end
+	if sum == 0 then return nil end
+	if (roll or math.random(100)) < 65 then return nil end
+	local r = math.random(sum)
+	for _, a in ipairs(avail) do
+		r = r - a.w
+		if r <= 0 then
+			give(a.st.id)
+			return a.st.id
+		end
+	end
+	return nil
+end
+
+local function hook_motivator()
+	if S.hooked then return end
+	pcall(function()
+		local mb = xr_motivator.motivator_binder
+		local orig = mb.use_callback
+		if orig == nil then return end
+		mb.use_callback = function(self, obj, who)
+			local r = orig(self, obj, who)
+			pcall(function()
+				if OnServer() and obj ~= nil and not obj:alive() then on_corpse_use(obj, who) end
+			end)
+			return r
+		end
+		S.hooked = true
+		slog("motivator use_callback wrapped")
+	end)
+end
+
+function hooked() return S.hooked end
+
+-- ---------------------------------------------------------------------------------------------- tick install
+function ensure()
+	local now = time_global()
+	if S.installed and now >= S.last_tick and now - S.last_tick < 4000 then return end
+	install()
+end
+
+function install()
+	if not OnServer() then return end
+	S.gen = S.gen + 1
+	local gen = S.gen
+	S.installed = true
+	S.last_tick = time_global()
+	hook_motivator()
+	local ok, err = pcall(function()
+		local acc = 0
+		level.add_call(function()
+			if gen ~= S.gen then return true end
+			local now = time_global()
+			S.last_tick = now
+			if now - acc >= 1000 then
+				acc = now
+				local ok2, e2 = pcall(reconcile)
+				if not ok2 then slog("TICKERR " .. tostring(e2)) end
+			end
+			return false
+		end, function() end)
+	end)
+	if not ok then
+		S.installed = false
+		slog("INSTALLERR " .. tostring(err))
+	else
+		slog("installed gen " .. gen)
+	end
+end

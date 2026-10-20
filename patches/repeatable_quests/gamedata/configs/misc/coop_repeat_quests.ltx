@@ -1,0 +1,510 @@
+; Repeatable side quests (restores the original SoC task_manager idle_time refresh).
+; Generated from tm_coop_*.ltx and the sq_* space restrictors. cooldown is in GAME minutes (1440 = the original 24 h idle_time).
+
+[list]
+esc_start_sq_art_1_quest_task
+esc_start_sq_art_2_quest_task
+esc_start_sq_art_3_quest_task
+esc_start_sq_killer_1_quest_task
+esc_start_sq_killer_3_quest_task
+esc_start_sq_killer_2_quest_task
+esc_start_sq_killer_mutants_1_quest_task
+esc_start_sq_killer_mutants_2_quest_task
+esc_start_sq_killer_mutants_3_quest_task
+esc_start_sq_mutant_boar_part_1_quest_task
+esc_start_sq_mutant_dog_part_2_quest_task
+esc_start_sq_mutant_flesh_part_3_quest_task
+bar_start_sq_art_1_quest_task
+bar_start_sq_art_2_quest_task
+bar_start_sq_art_3_quest_task
+bar_start_sq_killer_mutants_3_quest_task
+bar_start_sq_mutant_krovosos_part_3_quest_task
+bar_start_sq_mutant_psevdodog_part_1_quest_task
+bar_start_sq_mutant_snork_part_2_quest_task
+yan_start_sq_art_1_quest_task
+yan_start_sq_art_2_quest_task
+yan_start_sq_art_3_quest_task
+yan_start_sq_killer_mutants_3_quest_task
+yan_start_sq_mutant_chimera_part_3_quest_task
+yan_start_sq_mutant_krovosos_part_2_quest_task
+yan_start_sq_mutant_snork_part_1_quest_task
+rq_sid_camp
+rq_sid_kill
+rq_sid_defend
+rq_wolf_camp1
+rq_wolf_camp2
+rq_shu_find
+rq_bar_kill1
+rq_bar_kill2
+rq_bar_camp1
+rq_bar_camp2
+rq_bar_defend
+rq_vor_camp1
+rq_vor_camp2
+rq_vor_kill
+rq_vor_defend
+rq_vor_find
+rq_vor_camp3
+rq_pet_kill
+rq_hun_camp
+rq_inf_kill
+rq_inf_find
+rq_inf_camp
+rq_inf_defend
+rq_zho_find
+rq_ska_kill
+rq_sak_camp1
+rq_sak_camp2
+rq_sak_find
+
+[defaults]
+cooldown_min = 1440
+
+[esc_start_sq_art_1_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_FAIL_INFO
+spawn = none
+
+[esc_start_sq_art_2_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_FAIL_INFO
+spawn = none
+
+[esc_start_sq_art_3_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_FAIL_INFO
+spawn = none
+
+[esc_start_sq_killer_1_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_8_STALKER_1_SQUAD_DEAD
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_FAIL_INFO
+spawn = esc_smart_terrain_8_stalker_1_squad:esc_smart_terrain_8
+
+[esc_start_sq_killer_3_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_10_STALKER_1_SQUAD_DEAD
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_FAIL_INFO
+spawn = esc_smart_terrain_10_stalker_1_squad:esc_smart_terrain_10
+
+[esc_start_sq_killer_2_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_9_STALKER_1_SQUAD_DEAD
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_FAIL_INFO
+spawn = esc_smart_terrain_9_stalker_1_squad:esc_smart_terrain_9
+
+[esc_start_sq_killer_mutants_1_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_M_DOG_SQUAD_DEAD
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_FAIL_INFO
+spawn = esc_smart_terrain_1_m_dog_squad:esc_smart_terrain_1_m
+
+[esc_start_sq_killer_mutants_2_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_7_M_BOAR_SQUAD_DEAD
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_FAIL_INFO
+spawn = esc_smart_terrain_7_m_boar_squad:esc_smart_terrain_7_m
+
+[esc_start_sq_killer_mutants_3_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_13_M_BOAR_SQUAD_DEAD
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_FAIL_INFO
+spawn = esc_smart_terrain_13_m_boar_squad:esc_smart_terrain_13_m
+
+[esc_start_sq_mutant_boar_part_1_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_FAIL_INFO
+spawn = none
+
+[esc_start_sq_mutant_dog_part_2_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_FAIL_INFO
+spawn = none
+
+[esc_start_sq_mutant_flesh_part_3_quest_task]
+level = coop_l01_escape
+accept = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_STOP_DIALOG_INFO
+done = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO
+fail = ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_FAIL_INFO
+spawn = none
+
+[bar_start_sq_art_1_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_ART_1_STOP_DIALOG_INFO
+done = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO
+fail = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_ART_1_FAIL_INFO
+spawn = none
+
+[bar_start_sq_art_2_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_ART_2_STOP_DIALOG_INFO
+done = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO
+fail = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_ART_2_FAIL_INFO
+spawn = none
+
+[bar_start_sq_art_3_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_ART_3_STOP_DIALOG_INFO
+done = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO
+fail = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_ART_3_FAIL_INFO
+spawn = none
+
+[bar_start_sq_killer_mutants_3_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_9_STALKER_HUNTER_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_12_M_CHIMERA_SQUAD_DEAD
+fail = BAR_SMART_TERRAIN_9_STALKER_HUNTER_SQ_KILLER_MUTANTS_3_FAIL_INFO
+spawn = yan_smart_terrain_12_m_chimera_squad:yan_smart_terrain_12_m
+
+[bar_start_sq_mutant_krovosos_part_3_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_MUTANT_KROVOSOS_PART_3_STOP_DIALOG_INFO
+done = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO
+fail = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_MUTANT_KROVOSOS_PART_3_FAIL_INFO
+spawn = none
+
+[bar_start_sq_mutant_psevdodog_part_1_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_MUTANT_PSEVDODOG_PART_1_STOP_DIALOG_INFO
+done = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO
+fail = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_MUTANT_PSEVDODOG_PART_1_FAIL_INFO
+spawn = none
+
+[bar_start_sq_mutant_snork_part_2_quest_task]
+level = coop_l05_bar
+accept = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_MUTANT_SNORK_PART_2_STOP_DIALOG_INFO
+done = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO
+fail = BAR_SMART_TERRAIN_1_TRADER_BARMEN_SQ_MUTANT_SNORK_PART_2_FAIL_INFO
+spawn = none
+
+[yan_start_sq_art_1_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_1_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO
+fail = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_1_FAIL_INFO
+spawn = none
+
+[yan_start_sq_art_2_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_2_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO
+fail = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_2_FAIL_INFO
+spawn = none
+
+[yan_start_sq_art_3_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_3_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO
+fail = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_3_FAIL_INFO
+spawn = none
+
+[yan_start_sq_killer_mutants_3_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_12_M_CHIMERA_SQUAD_DEAD
+fail = YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_3_FAIL_INFO
+spawn = yan_smart_terrain_12_m_chimera_squad:yan_smart_terrain_12_m
+
+[yan_start_sq_mutant_chimera_part_3_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_CHIMERA_PART_3_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO
+fail = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_CHIMERA_PART_3_FAIL_INFO
+spawn = none
+
+[yan_start_sq_mutant_krovosos_part_2_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_KROVOSOS_PART_2_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO
+fail = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_KROVOSOS_PART_2_FAIL_INFO
+spawn = none
+
+[yan_start_sq_mutant_snork_part_1_quest_task]
+level = coop_l08_yantar
+accept = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_SNORK_PART_1_STOP_DIALOG_INFO
+done = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO
+fail = YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_SNORK_PART_1_FAIL_INFO
+spawn = none
+
+; ---- generated jobs (tools: scratchpad gen2.py)
+[rq_sid_camp]
+level = coop_l01_escape
+kind = gen_camp
+accept = RQG_RQ_SID_CAMP_ACC
+done = RQG_RQ_SID_CAMP_DONE
+fail = RQG_RQ_SID_CAMP_FAIL
+smart = esc_smart_terrain_12
+squads = bandit_sim_squad_novice,bandit_sim_squad_novice
+reward_items = grenade_rgd5,grenade_rgd5
+
+[rq_sid_kill]
+level = coop_l01_escape
+kind = gen_kill
+accept = RQG_RQ_SID_KILL_ACC
+done = RQG_RQ_SID_KILL_DONE
+fail = RQG_RQ_SID_KILL_FAIL
+smart = esc_smart_terrain_10
+squads = bandit_sim_squad_novice
+
+[rq_sid_defend]
+level = coop_l01_escape
+kind = gen_defend
+accept = RQG_RQ_SID_DEFEND_ACC
+done = RQG_RQ_SID_DEFEND_DONE
+fail = RQG_RQ_SID_DEFEND_FAIL
+smart = esc_smart_terrain_1
+squads = bandit_sim_squad_novice
+reward_items = medkit_army
+timeout_min = 60
+
+[rq_wolf_camp1]
+level = coop_l01_escape
+kind = gen_camp
+accept = RQG_RQ_WOLF_CAMP1_ACC
+done = RQG_RQ_WOLF_CAMP1_DONE
+fail = RQG_RQ_WOLF_CAMP1_FAIL
+smart = esc_smart_terrain_9
+squads = bandit_sim_squad_novice,bandit_sim_squad_novice
+reward_items = ammo_12x76_zhekan,ammo_12x76_zhekan
+
+[rq_wolf_camp2]
+level = coop_l01_escape
+kind = gen_camp
+accept = RQG_RQ_WOLF_CAMP2_ACC
+done = RQG_RQ_WOLF_CAMP2_DONE
+fail = RQG_RQ_WOLF_CAMP2_FAIL
+smart = esc_smart_terrain_4_m
+squads = simulation_dog,simulation_dog
+
+[rq_shu_find]
+level = coop_l01_escape
+kind = gen_find
+accept = RQG_RQ_SHU_FIND_ACC
+done = RQG_RQ_SHU_FIND_DONE
+fail = RQG_RQ_SHU_FIND_FAIL
+smart = esc_smart_terrain_5
+item = wpn_fort
+
+[rq_bar_kill1]
+level = coop_l05_bar
+kind = gen_kill
+accept = RQG_RQ_BAR_KILL1_ACC
+done = RQG_RQ_BAR_KILL1_DONE
+fail = RQG_RQ_BAR_KILL1_FAIL
+smart = bar_smart_terrain_7
+squads = merc_sim_squad_novice
+
+[rq_bar_kill2]
+level = coop_l05_bar
+kind = gen_kill
+accept = RQG_RQ_BAR_KILL2_ACC
+done = RQG_RQ_BAR_KILL2_DONE
+fail = RQG_RQ_BAR_KILL2_FAIL
+smart = bar_smart_terrain_11
+squads = bandit_sim_squad_advanced
+reward_items = grenade_f1
+
+[rq_bar_camp1]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_BAR_CAMP1_ACC
+done = RQG_RQ_BAR_CAMP1_DONE
+fail = RQG_RQ_BAR_CAMP1_FAIL
+smart = bar_smart_terrain_1_m
+squads = simulation_dog,simulation_dog
+
+[rq_bar_camp2]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_BAR_CAMP2_ACC
+done = RQG_RQ_BAR_CAMP2_DONE
+fail = RQG_RQ_BAR_CAMP2_FAIL
+smart = bar_smart_terrain_2_m
+squads = simulation_boar,simulation_flesh
+reward_items = medkit_army
+
+[rq_bar_defend]
+level = coop_l05_bar
+kind = gen_defend
+accept = RQG_RQ_BAR_DEFEND_ACC
+done = RQG_RQ_BAR_DEFEND_DONE
+fail = RQG_RQ_BAR_DEFEND_FAIL
+smart = bar_smart_terrain_8
+squads = bandit_sim_squad_novice
+timeout_min = 60
+
+[rq_vor_camp1]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_VOR_CAMP1_ACC
+done = RQG_RQ_VOR_CAMP1_DONE
+fail = RQG_RQ_VOR_CAMP1_FAIL
+smart = bar_smart_terrain_12
+squads = bandit_sim_squad_advanced,bandit_sim_squad_advanced
+reward_items = grenade_f1,grenade_f1
+
+[rq_vor_camp2]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_VOR_CAMP2_ACC
+done = RQG_RQ_VOR_CAMP2_DONE
+fail = RQG_RQ_VOR_CAMP2_FAIL
+smart = bar_smart_terrain_13
+squads = freedom_sim_squad_novice,freedom_sim_squad_novice
+
+[rq_vor_kill]
+level = coop_l05_bar
+kind = gen_kill
+accept = RQG_RQ_VOR_KILL_ACC
+done = RQG_RQ_VOR_KILL_DONE
+fail = RQG_RQ_VOR_KILL_FAIL
+smart = bar_smart_terrain_11
+squads = freedom_sim_squad_novice
+
+[rq_vor_defend]
+level = coop_l05_bar
+kind = gen_defend
+accept = RQG_RQ_VOR_DEFEND_ACC
+done = RQG_RQ_VOR_DEFEND_DONE
+fail = RQG_RQ_VOR_DEFEND_FAIL
+smart = bar_smart_terrain_4
+squads = bandit_sim_squad_advanced
+reward_items = medkit_army,medkit_army
+timeout_min = 60
+
+[rq_vor_find]
+level = coop_l05_bar
+kind = gen_find
+accept = RQG_RQ_VOR_FIND_ACC
+done = RQG_RQ_VOR_FIND_DONE
+fail = RQG_RQ_VOR_FIND_FAIL
+smart = bar_smart_terrain_10
+item = wpn_ak74u
+
+[rq_vor_camp3]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_VOR_CAMP3_ACC
+done = RQG_RQ_VOR_CAMP3_DONE
+fail = RQG_RQ_VOR_CAMP3_FAIL
+smart = bar_smart_terrain_14
+squads = merc_sim_squad_novice,merc_sim_squad_novice
+
+[rq_pet_kill]
+level = coop_l05_bar
+kind = gen_kill
+accept = RQG_RQ_PET_KILL_ACC
+done = RQG_RQ_PET_KILL_DONE
+fail = RQG_RQ_PET_KILL_FAIL
+smart = bar_smart_terrain_6
+squads = merc_sim_squad_advanced
+
+[rq_hun_camp]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_HUN_CAMP_ACC
+done = RQG_RQ_HUN_CAMP_DONE
+fail = RQG_RQ_HUN_CAMP_FAIL
+smart = bar_smart_terrain_2_m
+squads = simulation_flesh,simulation_boar
+reward_items = ammo_12x76_zhekan
+
+[rq_inf_kill]
+level = coop_l05_bar
+kind = gen_kill
+accept = RQG_RQ_INF_KILL_ACC
+done = RQG_RQ_INF_KILL_DONE
+fail = RQG_RQ_INF_KILL_FAIL
+smart = bar_smart_terrain_9
+squads = stalker_sim_squad_novice
+
+[rq_inf_find]
+level = coop_l05_bar
+kind = gen_find
+accept = RQG_RQ_INF_FIND_ACC
+done = RQG_RQ_INF_FIND_DONE
+fail = RQG_RQ_INF_FIND_FAIL
+smart = bar_smart_terrain_10
+item = wpn_desert_eagle
+
+[rq_inf_camp]
+level = coop_l05_bar
+kind = gen_camp
+accept = RQG_RQ_INF_CAMP_ACC
+done = RQG_RQ_INF_CAMP_DONE
+fail = RQG_RQ_INF_CAMP_FAIL
+smart = bar_smart_terrain_13
+squads = duty_sim_squad_novice,duty_sim_squad_novice
+
+[rq_inf_defend]
+level = coop_l05_bar
+kind = gen_defend
+accept = RQG_RQ_INF_DEFEND_ACC
+done = RQG_RQ_INF_DEFEND_DONE
+fail = RQG_RQ_INF_DEFEND_FAIL
+smart = bar_smart_terrain_8
+squads = duty_sim_squad_novice
+timeout_min = 60
+
+[rq_zho_find]
+level = coop_l05_bar
+kind = gen_find
+accept = RQG_RQ_ZHO_FIND_ACC
+done = RQG_RQ_ZHO_FIND_DONE
+fail = RQG_RQ_ZHO_FIND_FAIL
+smart = bar_smart_terrain_7
+item = vodka
+
+[rq_ska_kill]
+level = coop_l05_bar
+kind = gen_kill
+accept = RQG_RQ_SKA_KILL_ACC
+done = RQG_RQ_SKA_KILL_DONE
+fail = RQG_RQ_SKA_KILL_FAIL
+smart = bar_smart_terrain_6
+squads = bandit_sim_squad_novice
+
+[rq_sak_camp1]
+level = coop_l08_yantar
+kind = gen_camp
+accept = RQG_RQ_SAK_CAMP1_ACC
+done = RQG_RQ_SAK_CAMP1_DONE
+fail = RQG_RQ_SAK_CAMP1_FAIL
+smart = yan_smart_terrain_3_m
+squads = simulation_snork
+
+[rq_sak_camp2]
+level = coop_l08_yantar
+kind = gen_camp
+accept = RQG_RQ_SAK_CAMP2_ACC
+done = RQG_RQ_SAK_CAMP2_DONE
+fail = RQG_RQ_SAK_CAMP2_FAIL
+smart = yan_smart_terrain_5_m
+squads = simulation_bloodsucker
+reward_items = medkit_army
+
+[rq_sak_find]
+level = coop_l08_yantar
+kind = gen_find
+accept = RQG_RQ_SAK_FIND_ACC
+done = RQG_RQ_SAK_FIND_DONE
+fail = RQG_RQ_SAK_FIND_FAIL
+smart = yan_smart_terrain_6_z
+item = detector_simple
+

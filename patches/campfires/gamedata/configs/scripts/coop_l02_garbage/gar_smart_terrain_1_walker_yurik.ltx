@@ -1,0 +1,148 @@
+[logic@gar_smart_terrain_1_walker_yurik]
+suitable 											= {=check_npc_name(gar_smart_terrain_1_stalker_yurik)} true
+active 												= walker@gar_smart_terrain_1_walker_yurik
+prior 												= 300
+
+[walker@gar_smart_terrain_1_walker_yurik]
+path_walk 											= walker_yurik_1_walk
+path_look 											= walker_yurik_1_look
+def_state_standing 									= hands_up
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+;combat_ignore_cond 									= {=check_npc_name(sim_default_bandit_0} true
+combat_ignore_cond 									= {=check_enemy_name(sim_default)} true 
+on_info  											= {+GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_1_walker_yurik_1
+on_info2  											= {+GAR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_1_walker_yurik_4_attack   
+
+[walker@gar_smart_terrain_1_walker_yurik_1]
+path_walk 											= walker_yurik_1_walk
+path_look 											= walker_yurik_1_look
+def_state_standing 									= hands_up
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+;combat_ignore_cond 									= {=check_npc_name(sim_default_bandit_0} true
+combat_ignore_cond 									= {=check_enemy_name(sim_default)} true 
+on_game_timer 										= 20 | %=play_sound(dramatic_newbie_no_money)%
+on_info  											= {+GAR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_1_walker_yurik_4_attack 
+on_signal 											= sound_end | walker@gar_smart_terrain_1_walker_yurik_2 %+GAR_SAY_BANDIT_1_INFO%
+
+[walker@gar_smart_terrain_1_walker_yurik_2]
+path_walk 											= walker_yurik_1_walk
+path_look 											= walker_yurik_1_look
+def_state_standing 									= hands_up
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+;combat_ignore_cond 									= {=check_npc_name(sim_default_bandit_0} true
+combat_ignore_cond 									= {=check_enemy_name(sim_default)} true 
+on_info  											= {+GAR_SAY_YURIK_1_INFO} %=play_sound(dramatic_newbie_no_money)%
+on_info2  											= {+GAR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_1_walker_yurik_4_attack 
+on_signal 											= sound_end | walker@gar_smart_terrain_1_walker_yurik_3 %-GAR_SAY_YURIK_1_INFO +GAR_SAY_BANDIT_1_INFO%
+
+[walker@gar_smart_terrain_1_walker_yurik_3]
+path_walk 											= walker_yurik_1_walk
+path_look 											= walker_yurik_1_look
+def_state_standing 									= hands_up
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+;combat_ignore_cond 									= {=check_npc_name(sim_default_bandit_0} true
+combat_ignore_cond 									= {=check_enemy_name(sim_default)} true 
+on_info  											= {+GAR_SAY_YURIK_1_INFO} %=play_sound(dramatic_newbie_no_money)%
+on_info2  											= {+GAR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_1_walker_yurik_4_attack 
+on_signal 											= sound_end | walker@gar_smart_terrain_1_walker_yurik_4 %-GAR_SAY_YURIK_1_INFO +GAR_SAY_BANDIT_1_INFO%
+
+[walker@gar_smart_terrain_1_walker_yurik_4]
+path_walk 											= walker_yurik_1_walk
+path_look 											= walker_yurik_1_look
+def_state_standing 									= hands_up
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+;combat_ignore_cond 									= {=check_npc_name(sim_default_bandit_0} true
+combat_ignore_cond 									= {=check_enemy_name(sim_default)} true 
+on_info  											= {+GAR_SAY_BANDIT_1_INFO} walker@gar_smart_terrain_1_walker_yurik_1
+on_info2  											= {+GAR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_1_walker_yurik_4_attack 
+
+[walker@gar_smart_terrain_1_walker_yurik_4_attack]
+path_walk 											= walker_yurik_1_walk
+path_look 											= walker_yurik_1_look
+def_state_standing 									= hands_up
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= meet@gar_smart_terrain_1_walker_yurik
+on_info  											= {+GAR_SMART_TERRAIN_1_BANDIT_1_SQUAD_DEAD} walker@gar_smart_terrain_1_walker_yurik_4_go_on_devil %=scenario_autosave(st_stalker_yurik_save) =give_task(gar_start_talk_to_yurik_quest_task)%
+;on_info  											= {+GAR_SMART_TERRAIN_1_BANDIT_1_SQUAD_DEAD} walker@gar_smart_terrain_1_walker_yurik_4_go_on_devil %=scenario_autosave(st_stalker_yurik_save)%
+
+[walker@gar_smart_terrain_1_walker_yurik_4_go_on_devil]
+path_walk 											= walker_yurik_2_walk
+def_state_moving 									= run
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= no_meet
+on_timer 											= 32000 | walker@gar_smart_terrain_1_walker_yurik_4_attack_bandit
+
+[walker@gar_smart_terrain_1_walker_yurik_4_attack_bandit]
+path_walk 											= walker_yurik_3_walk
+path_look 											= walker_yurik_3_look
+def_state_standing 									= hide
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= meet@gar_smart_terrain_1_walker_yurik
+on_info  											= {+GAR_SMART_TERRAIN_1_STALKER_YURIK_HELP_STOP_DIALOG_INFO} walker@gar_smart_terrain_1_walker_yurik_4_attack_bandit_no_meet
+on_info2  											= {+GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD} walker@gar_smart_terrain_1_walker_yurik_4_attack_bandit_no_meet
+
+[walker@gar_smart_terrain_1_walker_yurik_4_attack_bandit_no_meet]
+path_walk 											= walker_yurik_3_walk
+path_look 											= walker_yurik_3_look
+def_state_standing 									= hide
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+meet 												= meet@gar_smart_terrain_1_walker_yurik
+on_info  											= {+GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD} kamp@gar_smart_terrain_1_animpoint_5_no_meet
+
+[kamp@gar_smart_terrain_1_animpoint_5_no_meet]
+center_pos = -60.90, -2.30, -217.87
+radius = 2.1
+use_camp = false
+def_state_moving = walk
+invulnerable 										= true
+meet 												= no_meet
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+
+[meet@gar_smart_terrain_1_walker_yurik]
+close_snd_hello 									= nil
+close_snd_bye 										= nil
+close_anim 											= nil
+close_victim 										= nil
+far_anim 											= nil
+far_victim 											= nil
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance									= 5
+abuse           									= false
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false
+
+;================================================

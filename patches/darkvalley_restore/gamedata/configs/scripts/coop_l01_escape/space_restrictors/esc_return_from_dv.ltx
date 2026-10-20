@@ -1,0 +1,12 @@
+; Cordon arrival zone from Dark Valley (original SoC esc_return_from_dv).
+; After the raid at the lab entrance (VAL_RAID_START) the first arrival gets the trader message; ESC_RETURN_FROM_DV_INFO unlocks the Sidorovich document dialog.
+[logic]
+active = sr_idle@esc_return_from_dv
+
+[sr_idle@esc_return_from_dv]
+on_actor_inside = {+VAL_RAID_START -ESC_RETURN_FROM_DV_INFO} sr_idle@esc_return_from_dv_flag %=send_tip(st_esc_return_dv:all_players_message_from_sidorovich)%
+
+[sr_idle@esc_return_from_dv_flag]
+on_game_timer = 20 | sr_idle@nil %+ESC_RETURN_FROM_DV_INFO%
+
+[sr_idle@nil]

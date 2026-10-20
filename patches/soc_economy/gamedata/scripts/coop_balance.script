@@ -1,0 +1,137 @@
+-- Co-op balance for Shadow of COOP (server only). Settings: configs\misc\coop_balance.ltx
+--  A. on_npc_hit(): extra damage of players' weapons against NPCs and mutants (global multiplier).
+--  B. trader_ammo(): trader ammo stock grows with the number of players (called from trade_manager.update).
+-- Both are inert when the multiplier is <= 1 / the factor is 0.
+
+local cache = nil
+local in_extra = false
+
+local defaults = { player_damage_mult = 1.5, hit_amount_scale = 0.01, log = true, ammo_per_extra_player = 1.0, max_players = 4 }
+
+function cfg()
+	if cache ~= nil then return cache end
+	local c = {}
+	for k, v in pairs(defaults) do c[k] = v end
+	pcall(function()
+		local ini = ini_file("misc\\coop_balance.ltx")
+		if ini == nil then return end
+		local function rd(sect, key)
+			if ini:section_exist(sect) and ini:line_exist(sect, key) then
+				if type(defaults[key]) == "boolean" then c[key] = ini:r_bool(sect, key)
+				else c[key] = ini:r_float(sect, key) end
+			end
+		end
+		rd("damage", "player_damage_mult"); rd("damage", "hit_amount_scale"); rd("damage", "log")
+		rd("ammo", "ammo_per_extra_player"); rd("ammo", "max_players")
+	end)
+	cache = c
+	clog("coop_balance config: damage_mult=%.2f amount_scale=%.4f ammo_per_extra_player=%.2f max_players=%d",
+		c.player_damage_mult, c.hit_amount_scale, c.ammo_per_extra_player, c.max_players)
+	return c
+end
+
+function clog(fmt, ...)
+	local s = string.format(fmt, ...)
+	pcall(function() printf_msg("[CBAL] %s", s) end)
+	if cache ~= nil and cache.log == false then return end
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "cb.log"), "a")
+		if f then
+			f:write(string.format("[%8.1f] %s\n", time_global() / 1000, s))
+			f:close()
+		end
+	end)
+end
+
+-- same counting as player_scaling.player_count(): living db.mp_actors, never more than the server's player slots
+function player_count()
+	local n = 0
+	if db.mp_actors ~= nil then
+		for _, a in pairs(db.mp_actors) do
+			local ok, alive = pcall(function() return a:alive() end)
+			if ok and alive then n = n + 1 end
+		end
+	end
+	local ok, g = pcall(function() return get_players_count() end)
+	if ok and g ~= nil then
+		if IsDedicatedServer() then g = g - 1 end
+		if g >= 0 and n > g then n = g end
+	end
+	return n
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- A. damage
+-----------------------------------------------------------------------------------------------------------------
+-- Called first thing from the hit callbacks of the NPC binder (xr_motivator) and the monster binder (bind_monster).
+function on_npc_hit(obj, amount, who, bone_index)
+	if in_extra then return end
+	if type(bone_index) ~= "number" then return end          -- fake hit from death_callback
+	if amount == nil or amount <= 0 or who == nil or obj == nil then return end
+	if db.mp_actors == nil or db.mp_actors[who:id()] == nil then return end   -- only players' hits
+	local c = cfg()
+	if c.player_damage_mult <= 1.0 then return end
+	if who:id() == obj:id() then return end
+	local ok, err = pcall(function()
+		if not obj:alive() or obj:invulnerable() then return end
+		local extra = amount * (c.player_damage_mult - 1.0) * c.hit_amount_scale
+		local hp = obj.health
+		if hp == nil or extra <= 0 then return end
+		if hp - extra > 0.005 then
+			obj.health = hp - extra                          -- plain health loss: no armor re-applied, no new callback
+		else
+			-- the extra damage is lethal: kill with a real hit so death, loot and kill credit run normally
+			in_extra = true
+			local h = hit()
+			h.draftsman = who
+			h.type = hit.fire_wound
+			h.direction = obj:position():sub(who:position())
+			h.power = 10
+			h.impulse = 0
+			pcall(function() h:bone(IsStalker(obj) and "bip01_spine" or "pelvis") end)
+			obj:hit(h)
+			in_extra = false
+		end
+	end)
+	in_extra = false
+	if not ok then clog("on_npc_hit error: %s", tostring(err)) end
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- B. trader ammo
+-----------------------------------------------------------------------------------------------------------------
+-- trade_manager.update calls this right after the vanilla npc:buy_supplies(): the stock for 1 player was just delivered.
+function on_supplied(npc, tt, sect)
+	tt.cb_sect = sect
+	tt.cb_given = 1
+	tt.cb_next = nil
+end
+
+-- Called from trade_manager.update on every tick; cheap (throttled to once per 3 s per trader).
+-- For every player above the number already served, the "<supplies section>_ammo" section (the ammo lines of that supplies
+-- section, see the trader ltx files) is delivered ammo_per_extra_player times.
+function trader_ammo(npc, tt)
+	if tt.cb_given == nil or tt.cb_sect == nil or tt.cb_sect ~= tt.current_buy_supplies then return end
+	local now = time_global()
+	if tt.cb_next ~= nil and now < tt.cb_next then return end
+	tt.cb_next = now + 3000
+	if not OnServer() then return end
+	local c = cfg()
+	if c.ammo_per_extra_player <= 0 then return end
+	local n = player_count()
+	if n > c.max_players then n = math.floor(c.max_players) end
+	if n <= tt.cb_given then return end
+	local ammo_sect = tt.cb_sect .. "_ammo"
+	local ok, err = pcall(function()
+		if not tt.config:section_exist(ammo_sect) then return end
+		for p = tt.cb_given + 1, n do
+			local whole = math.floor(c.ammo_per_extra_player)
+			local frac = c.ammo_per_extra_player - whole
+			for i = 1, whole do npc:buy_supplies(tt.config, ammo_sect) end
+			if frac > 0 and math.random() < frac then npc:buy_supplies(tt.config, ammo_sect) end
+			clog("trader %s: extra ammo for player %d (%s)", npc:name(), p, ammo_sect)
+		end
+	end)
+	if not ok then clog("trader_ammo error: %s", tostring(err)) end
+	tt.cb_given = n
+end

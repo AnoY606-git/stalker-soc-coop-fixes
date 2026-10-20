@@ -1,0 +1,47 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Основной квест(Добраться до "Монолита")
+[sar_start_get_to_the_monolith_quest_task]
+icon 									= ui_inGame2_sar_start_get_to_the_monolith_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_start_get_to_the_monolith_quest_task_name
+descr 									= st_sar_start_get_to_the_monolith_quest_task_descr
+target 									= sar_monolith
+condlist_0 								= {+SAR_MONOLITH_WISH_SPACE_RESTRICTOR_INFO} complete %=give_task(sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task)%
+
+;Основной квест(Убить Проповедника "Монолита")
+[sar_start_kill_the_monolith_preacher_quest_task]
+icon 									= ui_inGame2_sar_start_kill_the_monolith_preacher_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_start_kill_the_monolith_preacher_quest_task_name
+descr 									= st_sar_start_kill_the_monolith_preacher_quest_task_descr
+target 									= sar_smart_terrain_17_monolith_preacher
+condlist_0 								= {+SAR_SMART_TERRAIN_17_PREACHER_MONOLITH_1_SQUAD_DEAD} complete %=give_task(sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task)%
+
+;Основной квест(Обыскать тело Проповедника и забрать декодер)
+[sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task]
+icon 									= ui_inGame2_sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task_name
+descr 									= st_sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task_descr
+target 									= sar_codedoor_left_decoder
+condlist_0 								= {=actor_has_item(dev_decoder)} complete %=give_task(sar_start_open_the_door_to_monolith_management_quest_task) +SAR_START_OPEN_THE_DOOR_TO_MONOLITH_MANAGEMENT_QUEST_TASK_INFO%
+condlist_1 								= {+SAR_START_OPEN_THE_DOOR_TO_MONOLITH_MANAGEMENT_QUEST_TASK_INFO} complete %=give_task(sar_start_open_the_door_to_monolith_management_quest_task)%
+
+;Основной квест(Применить декодер и открыть дверь в Управление "Монолитом")
+[sar_start_open_the_door_to_monolith_management_quest_task]
+icon 									= ui_inGame2_sar_start_open_the_door_to_monolith_management_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_start_open_the_door_to_monolith_management_quest_task_name
+descr 									= st_sar_start_open_the_door_to_monolith_management_quest_task_descr
+target 									= sar_codedoor_left_decoder
+condlist_0 								= {+SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_1_SQUAD_DEAD +SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_2_SQUAD_DEAD +SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_3_SQUAD_DEAD} complete %=give_task(con_start_sneak_into_the_control_room_quest_task)%
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------

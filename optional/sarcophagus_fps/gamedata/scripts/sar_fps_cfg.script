@@ -1,6 +1,6 @@
 -- Sarcophagus FPS settings, read once from <game folder>\sarcophagus_fps.txt (host only).
 -- Lines like "corpse_limit = 30". Missing file or values = defaults below.
-local defaults = { corpse_limit = 30, sarcophagus_corpse_limit = 12, sarcophagus_wave_percent = 55 }
+local defaults = { corpse_limit = 30, sarcophagus_corpse_limit = 12, sarcophagus_wave_percent = 100 }
 local values = nil
 
 local function load()

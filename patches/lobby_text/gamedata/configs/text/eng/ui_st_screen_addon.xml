@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="character_revive">
+		<text>Revive ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b12_conteiner_full_locked">
+		<text>Container is locked - two keys required</text>
+	</string>
+	<string id="zat_b12_conteiner_has_one_key">
+		<text>Use key ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b12_conteiner_has_two_key">
+		<text>Use keys ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b12_conteiner_locked">
+		<text>Container is locked - second key required</text>
+	</string>
+	<string id="zat_b12_conteiner_open">
+		<text>Open container ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b14_door_locked_hint">
+		<text>Door mechanism is blocked from the inside</text>
+	</string>
+	<string id="zat_b57_balon_use_hint">
+		<text>Connect gas cylinder ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b57_gas_warning">
+		<text>Warning! Chemical hazard!</text>
+	</string>
+	<string id="zat_b57_vintil_press">
+		<text>Turn the valve ($$ACTION_USE$$)</text>
+	</string>
+	<string id="zat_b33_car_searching_tip">
+		<text>Search "Zaporozhets" ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b10_ufo_searching_tips">
+		<text>Search the aircraft ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b1_bar_door">
+		<text>Door is jammed</text>
+	</string>
+	<string id="jup_b1_door_is_closed">
+		<text>Door is closed from the inside</text>
+	</string>
+	<string id="jup_b202_treasures_closed">
+		<text>Safe is locked</text>
+	</string>
+	<string id="jup_b205_tip_door_closed">
+		<text>Code required</text>
+	</string>
+	<string id="jup_b205_tip_door_decode">
+		<text>Enter code ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b206_use_plant">
+		<text>Pick plant ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b209_scanner_place_tips">
+		<text>Place scanner ($$ACTION_USE$$)</text>
+	</string>
+	<string id="jup_b209_scanner_remove_tips">
+		<text>Pick up scanner ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_jup_b41_door_locked">
+		<text>Wait for the airlock to seal</text>
+	</string>
+	<string id="pas_b400_tip_switcher">
+		<text>Turn on the switch ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_a18_use_idol">
+		<text>Inspect construction ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_a25_blow_up_enter_door">
+		<text>Plant explosives ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_a28_talk_with_stupid_medic">
+		<text>Revive ($$ACTION_USE$$)</text>
+	</string>
+	<string id="pri_b306_elevator_door_locked_used">
+		<text>Elevator has no power</text>
+	</string>
+	<string id="pri_b306_generator_use">
+		<text>Start generator ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_pri_b306_go_down">
+		<text>Go down in the elevator ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_lx8_button_press_true">
+		<text>Access granted</text>
+	</string>
+	<string id="st_lx8_lift_button">
+		<text>Go up in the elevator ($$ACTION_USE$$)</text>
+	</string>
+	<string id="lx8_raduga">
+		<text>Aggression suppressor "Rainbow"\nexternal emitter complex mockup\nscale 1:20</text>
+	</string>
+
+	<string id="st_resupply_ready">
+		<text>Before the operation, you can replenish medical supplies and ammunition from Lieutenants Rogovets and Kirillov.</text>
+	</string>
+	<string id="st_freeplay_text_ok">
+		<text>You didn't make it to the helicopters in time. The evacuation group left the Zone without you.</text>
+	</string>
+	<string id="st_freeplay_text_yes_no">
+		<text>Are you ready to leave the Zone? There will be no turning back.</text>
+	</string>
+	<string id="st_test_text_yes_no">
+		<text>Are you ready to travel to the Center of the Zone? There will be no turning back.</text>
+	</string>
+	<string id="st_question_space_restrictor_text_yes_no">
+		<text>Are you ready to proceed?</text>
+	</string>
+	<string id="sar_bad_final_monolith_use">
+		<text>MAKE A WISH ($$ACTION_USE$$)</text>
+	</string>
+	<string id="st_gameover_sub">
+		<text>ONE OF THE CHARACTERS DIED</text>
+	</string>
+	<string id="st_gameover_load_after">
+		<text>LOADING LAST SAVE IN:</text>
+	</string>
+	<string id="st_game_over_uppercase">
+		<text>GAME OVER</text>
+	</string>
+	<string id="st_zat_b57_gas_timer">
+		<text>GAS EFFECT ENDS</text>
+	</string>
+	<string id="st_pri_a28_helis_leave_timer">
+		<text>HELICOPTER DEPARTURE</text>
+	</string>
+	
+	<string id="st_ach_balance_advocate">
+		<text>Achievement unlocked: "Balance Advocate".</text>
+	</string>
+	<string id="st_ach_battle_systems_master">
+		<text>Achievement unlocked: "Battle Systems Master".</text>
+	</string>
+	<string id="st_ach_detective">
+		<text>Achievement unlocked: "Detective".</text>
+	</string>
+	<string id="st_ach_diplomat">
+		<text>Achievement unlocked: "Diplomat".</text>
+	</string>
+	<string id="st_ach_friend_of_duty">
+		<text>Achievement unlocked: "Friend of Duty".</text>
+	</string>
+	<string id="st_ach_friend_of_freedom">
+		<text>Achievement unlocked: "Friend of Freedom".</text>
+	</string>
+	<string id="st_ach_friend_of_stalkers">
+		<text>Achievement unlocked: "Friend of Stalkers".</text>
+	</string>
+	<string id="st_ach_herald_of_justice">
+		<text>Achievement unlocked: "Herald of Justice".</text>
+	</string>
+	<string id="st_ach_high_tech_master">
+		<text>Achievement unlocked: "High Tech Master".</text>
+	</string>
+	<string id="st_ach_information_dealer">
+		<text>Achievement unlocked: "Information Dealer".</text>
+	</string>
+	<string id="st_ach_keeper_of_secrets">
+		<text>Achievement unlocked: "Keeper of Secrets".</text>
+	</string>
+	<string id="st_ach_kingpin">
+		<text>Achievement unlocked: "Kingpin".</text>
+	</string>
+	<string id="st_ach_leader">
+		<text>Achievement unlocked: "Leader".</text>
+	</string>
+	<string id="st_ach_mutant_hunter">
+		<text>Achievement unlocked: "Mutant Hunter".</text>
+	</string>
+	<string id="st_ach_one_of_the_lads">
+		<text>Achievement unlocked: "One of the Lads".</text>
+	</string>
+	<string id="st_ach_pioneer">
+		<text>Achievement unlocked: "Pioneer".</text>
+	</string>
+	<string id="st_ach_research_man">
+		<text>Achievement unlocked: "Research Assistant".</text>
+	</string>
+	<string id="st_ach_seeker">
+		<text>Achievement unlocked: "Seeker".</text>
+	</string>
+	<string id="st_ach_skilled_stalker">
+		<text>Achievement unlocked: "Experienced Stalker".</text>
+	</string>
+	<string id="st_ach_wealthy">
+		<text>Achievement unlocked: "Wealthy Client".</text>
+	</string>
+	<string id="st_ach_wheel_litter_sisyphus">
+		<text>Achievement unlocked: "Sisyphus Labor".</text>
+	</string>
+	<string id="st_coop_desc">
+		<text>«S.T.A.L.K.E.R. Shadow of COOP» is an addon for the multiplayer modification «X-Ray Multiplayer Extension» that lets you play through the reworked Shadow Of Chernobyl storyline in co-op, designed for 2 to 4 players.
+		\n-Inventory is saved before moving to the next location.
+		\n-To pick a map manually, press F5 and vote for the map where you left off.</text>
+	</string>
+	<string id="st_coop_name">
+		<text>S.T.A.L.K.E.R. Shadow of COOP</text>
+	</string>
+	<string id="st_primary_switcher_idle_off_desc">
+		<text>Turn off the device ($$ACTION_USE$$)</text>
+	</string>	
+	<string id="st_door_trader_locked_desc">
+		<text>Door blocked</text>
+	</string>
+	<string id="st_door_trader_unlock_desc">
+		<text>Door unblocked</text>
+	</string>
+	<string id="st_during_the_time_arena">
+		<text>Kill mutants</text>
+	</string>	
+</string_table>

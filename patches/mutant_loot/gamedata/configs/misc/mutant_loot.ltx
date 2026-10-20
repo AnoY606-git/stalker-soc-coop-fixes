@@ -1,0 +1,26 @@
+; Mutant corpse loot (patch mutant_loot).
+; chance = probability that a fresh corpse carries the part. It is rolled once, when the mutant dies.
+; The SoC value is Spawn_Inventory_Item_Probability = 0.2 in m_*.ltx of original Shadow of Chernobyl.
+; The part section comes from PartSpawnName in the mutant's own section (m_*.ltx of the add-on).
+; Parts that original SoC never dropped (tushkano, controller, chimera, gigant) keep the add-on's own chance.
+; Set a chance to 0 to switch a part off.
+
+[chance]
+; --- SoC parts (soc item name in the comment)
+mutant_dog_part        = 0.2   ; mutant_dog_tail
+mutant_flesh_part      = 0.2   ; mutant_flesh_eye
+mutant_boar_part       = 0.2   ; mutant_boar_leg
+mutant_snork_part      = 0.2   ; mutant_snork_leg
+mutant_burer_part      = 0.2   ; mutant_burer_hand
+mutant_krovosos_part   = 0.2   ; mutant_krovosos_jaw
+mutant_psevdodog_part  = 0.2   ; mutant_psevdodog_tail
+mutant_zombie_part     = 0.2   ; mutant_zombie_hand
+; --- add-on only (as before: PartSpawnProbaility of the add-on)
+mutant_tushkano_part   = 0.3
+mutant_controller_part = 0.8
+mutant_chimera_part    = 0.8
+mutant_gigant_part     = 1.0
+
+[settings]
+; how far (metres) a player may be from the corpse when taking the part
+take_distance = 6

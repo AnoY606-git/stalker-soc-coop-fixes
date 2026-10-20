@@ -1,0 +1,31 @@
+-- Server crash guard for xr_effects.give_task (patch task_guard).
+-- On the server give_task hands the task to the first entry of db.mp_actors; when that table is empty (every player dead,
+-- respawning or still loading) it falls through to getLocalActor():get_task(), which is nil on a dedicated server:
+-- "xr_effects.script:1686: attempt to index a nil value" and the server dies. Such tasks are kept here instead and handed
+-- out as soon as a player exists again (flush runs from client_tasks.update_delayed_tasks, called every server actor update).
+local pending = {}
+
+function hold(task_id)
+	pending[tostring(task_id)] = true
+	printf_msg("[task_guard] no player spawned, holding task %s", tostring(task_id))
+end
+
+function flush()
+	if next(pending) == nil or db.mp_actors == nil or next(db.mp_actors) == nil then return end
+	for task_id, _ in pairs(pending) do
+		pending[task_id] = nil
+		printf_msg("[task_guard] giving held task %s", task_id)
+		xr_effects.give_task(nil, nil, {task_id})
+	end
+end
+
+local installed = false
+function install()
+	if installed then return end
+	installed = true
+	local orig = client_tasks.update_delayed_tasks
+	client_tasks.update_delayed_tasks = function(...)
+		orig(...)
+		flush()
+	end
+end

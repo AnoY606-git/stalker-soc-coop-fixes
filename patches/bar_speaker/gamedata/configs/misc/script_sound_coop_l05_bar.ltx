@@ -1,0 +1,101 @@
+[list_script_coop_l05_bar]
+bar_guard_prohodi_1
+bar_guard_stop
+duty_hangar_1
+bar_informer
+
+bar_megafon
+bar_megafon_speech
+bar_megafon_music_1
+bar_megafon_music_2
+bar_megafon_music_3
+bar_megafon_music_4
+bar_megafon_music_5
+bar_megafon_music_6
+bar_megafon_music_7
+bar_radio_soc
+
+bar_barman_meet_greet
+
+duty_petrenko_hello
+duty_petrenko
+
+duty_voronin
+duty_voronin_hello
+
+arena_public
+
+skamarokh_music_1
+skamarokh_music_2
+
+bar_radio_barmen
+bar_radio_hunter
+
+bar_hunter
+bar_veteran
+bar_visitor
+
+; Bar loudspeaker (see patches/bar_speaker/NOTES.md): 10 Duty announcements as one random theme, each music track its own theme.
+[bar_megafon_speech]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_speech_
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_1]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_15
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_2]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_16
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_3]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_4
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_4]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_5
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_5]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_7
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_6]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_12
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+[bar_megafon_music_7]
+type = 3d
+path = characters_voice\scenario\coop_l05_bar\bar_megafon_14
+shuffle = rnd
+idle = 0,0,100
+sync = true
+
+; patch soc_music: original SoC Bar radio track (sounds\characters_voice\scenario\bar\radio_music\bar_radio_soc_1.ogg)
+[bar_radio_soc]
+type = 3d
+path = characters_voice\scenario\bar\radio_music\bar_radio_soc_
+shuffle = seq
+idle = 0,0,100
+sync = true

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="scn_monolith_join_phrase">
+		<text>Я согласен присоединиться к О-Сознанию.</text>
+	</string>
+	<string id="scn_monolith_join_card">
+		<text>Ты присоединяешься к О-Сознанию. Зона затихает, и Меченого больше нет.</text>
+	</string>
+	<string id="scn_monolith_choice_caption">
+		<text>О-Сознание</text>
+	</string>
+	<string id="scn_monolith_choice_join">
+		<text>Один из группы ответил за всех: мы присоединяемся к О-Сознанию.</text>
+	</string>
+	<string id="scn_monolith_choice_refuse">
+		<text>Один из группы ответил за всех: мы отказываемся. О-Сознание нужно уничтожить.</text>
+	</string>
+</string_table>

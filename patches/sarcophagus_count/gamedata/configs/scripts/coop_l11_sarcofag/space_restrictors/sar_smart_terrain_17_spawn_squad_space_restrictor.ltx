@@ -1,0 +1,9 @@
+[logic]
+active = sr_idle@start_1
+
+; SoC: the decoder is an item lying in the level, no Preacher. Spawn it where the Preacher stood.
+[sr_idle@start_1]
+on_info = {+SAR_SMART_TERRAIN_17_SPAWN_SQUAD_STOP_INFO} sr_idle@nil
+on_timer = 1000 | sr_idle@nil %=spawn_object(dev_decoder:sar_smart_terrain_17_walker_monolith_preacher_1_walk) +SAR_SMART_TERRAIN_17_SPAWN_SQUAD_STOP_INFO%
+
+[sr_idle@nil]

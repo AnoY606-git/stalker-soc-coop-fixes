@@ -137,3 +137,24 @@ All under `configs/scripts/coop_l05_bar/` (CRLF/cp1251 preserved, byte-copy + mi
  
  ;server logic
 ```
+
+## Status (paused 2026-10-18, no fix written yet; patch files unchanged)
+- Done: test bot `scratchpad/arena_fix/arena_hooks.lua` (full flow: travel Cordon->Bar by guide vote, 4 fights, reward, leave/return, flag trace). Stock files for A/B are in `scratchpad/arena_fix/stock_dir`. The released arena patch is byte-identical to this folder (checked against the zzz db inside coop.addon).
+- Learned: starting a run directly on coop_l05_bar does not work (Cordon alife, Bar restrictors stay offline). Run `run_coop.ps1 -Map coop_l01_escape` and let the bot travel to the Bar. Arena start/stop restrictors are at (149,0.4,69), cat/spawn restrictors in the pit at (152,-21,75), return point (153,0,69).
+- Left: no in-game failure reproduced yet. The last run stuck at the first step on the Bar (heartbeat log "HB" was just added to find out why); suspect `#actors < want` or the Arnie wait. Root cause, fix, 1-player and 2-player PASS lines and the screenshot (Downloads\arena_fix_working.jpg) are still open. New report to cover: empty hall with kill-the-mutants timer (squad not spawned).
+- Next step: rerun the stock listen run, read `arena_flagchg.log` HB lines, get one full fight logged, then compare with the released patch and fix (likely the start/stop restrictor clears on re-init, plus the cat-scene idle_reset).
+- Process note: I once ran a broad taskkill by mistake that ended other agents' xrEngine processes; their runs restarted.
+
+## Status update 2026-10-19 (in progress, patch files NOT final)
+- Reproduced in game (1 player, listen, travel Cordon->Bar by guide): stock 8.1 runs all 4 fights fine (cutscene ends ~10 s, flags clean, reward flag set). The released patch fails: fight 1 cutscene never ends (START_CAT_SCENE_INFO is cleared ~2 s after the teleport into the arena, so sr_cutscene never starts and START_ARENA_GO never comes) and later fights sometimes never get the return teleport (stop restrictor path eaten). Stock Arnie: `meet use=false` (bug 1 confirmed), patched Arnie: `use=true talk_enabled=true`.
+- Hypothesis tried: guard the level-load clears with "no fight flag set" (no *_ARENA_INFO / SPAWN_*_ARENA_INFO) and revert the 2 start restrictors that only cleared request flags. The same failure still happened with the guard, so the cause of the early clear is not yet identified; a traceback logger for START_CAT_SCENE_INFO was added to the bot (arena_hooks.lua) for the next run.
+- Files in patches/arena: bar_smart_terrain_6_guard_arny.ltx (Arnie [meet], keep) is final. The 5 restrictor files are IN PROGRESS (guard edits untested/insufficient); until fixed, safest for release is: guard_arny.ltx only + stock restrictors (drop the other 6 files), which equals stock fight behaviour.
+- cats copy of bar_actor_cat_scene_space_restrictor.ltx: request written to CONTRACT_REQUESTS.md; keep ONE merged copy once the arena version is final.
+
+## v2 release decision (2026-10-19)
+In-game result: stock 8.1 arena fights all work; the restrictor changes of this patch (and the same `idle_reset` in
+`patches\cutscenes_pkg_cats`) clear `START_CAT_SCENE_INFO` about 2 s after the teleport, so the cutscene never ends.
+The v2 release ships only `bar_smart_terrain_6_guard_arny.ltx` (Arnie can be talked to, confirmed in game). The six restrictor
+files are parked in `wip\` (not built) until the root cause is fixed. The cats package's copy is parked in `patches\cutscenes_pkg_cats\wip\`.
+Likely cause to check next: `type = no_save` + `sr_idle@idle_reset` runs again whenever the restrictor comes back online
+(players teleported into the pit), and clears the flags mid-fight.

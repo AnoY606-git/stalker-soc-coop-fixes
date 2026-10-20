@@ -1,0 +1,15 @@
+[logic]
+active = sr_idle
+
+; patch soc_music: the original SoC Bar radio track (bar_radio_soc), played again and again like SoC's ph_sound radio_music.
+; on_timer (real ms) instead of on_game_timer: the game clock does not advance on a dedicated server.
+[sr_idle]
+on_info = {-bar_player_music_info -bar_megafon_alarm =dist_to_actor_le(15)} sr_idle@play %=play_sound(bar_radio_soc)%
+
+[sr_idle@play]
+on_signal = sound_end | sr_idle@wait
+on_info = {+bar_player_music_info} sr_idle
+
+[sr_idle@wait]
+on_timer = 2000 | sr_idle
+on_info = {+bar_player_music_info} sr_idle

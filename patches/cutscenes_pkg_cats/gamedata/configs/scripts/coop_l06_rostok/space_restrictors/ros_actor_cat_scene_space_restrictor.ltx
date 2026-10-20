@@ -1,0 +1,16 @@
+[logic]
+active 												= sr_idle@idle_start_cat_scene
+
+[sr_idle@idle_start_cat_scene]
+on_info 											= {+ROS_START_GO_TO_YANTAR_QUEST_TASK_INFO} sr_idle@nil
+on_info2 											= {=scene_played(cats_rostok)} sr_idle@nil
+on_player_inside 									= {+ROS_SNIPER_SPACE_RESTRICTOR_INFO !scene_played(cats_rostok)} sr_idle@idle_start_cat_scene_idle %=disable_ui =run_postprocess(blink)%
+
+[sr_idle@idle_start_cat_scene_idle]
+on_info  											= {+ROS_SNIPER_SPACE_RESTRICTOR_INFO} sr_idle@cat_scene_wait %+ROS_SMART_TERRAIN_3_KRUGLOV_HELP_SPACE_RESTRICTOR_INFO%
+
+; The camera flight itself is now played by the Scene Director (scene cats_rostok, patches/cutscenes_pkg_cats).
+[sr_idle@cat_scene_wait]
+on_info 											= {=scene_played(cats_rostok)} sr_idle@nil %=enable_ui =run_postprocess(blink) =scenario_autosave(st_help_kruglov)%
+
+[sr_idle@nil]

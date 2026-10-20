@@ -1,0 +1,83 @@
+[logic@yan_smart_terrain_1_walker_kruglov]
+suitable 											= {=check_npc_name(yan_smart_terrain_1_ecolog_kruglov)} true
+prior 												= 300
+level_spot 											= quest_npc
+active 												= walker@yan_smart_terrain_1_walker_kruglov_idle
+
+[walker@yan_smart_terrain_1_walker_kruglov_idle]
+path_walk 											= walker_kruglov_1_walk
+path_look 											= walker_kruglov_1_look
+def_state_standing 									= wait
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= meet
+invulnerable 										= true
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+YAN_SMART_TERRAIN_1_WALKER_KRUGLOV_GO_TO_SAXAROV_INFO} walker@yan_smart_terrain_1_walker_kruglov_go_to_saxarov
+
+[walker@yan_smart_terrain_1_walker_kruglov_go_to_saxarov]
+path_walk 											= walker_kruglov_1_walk
+path_look 											= walker_kruglov_1_look
+def_state_standing 									= wait
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= meet
+invulnerable 										= true
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {-YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO +YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO} walker@yan_smart_terrain_1_walker_kruglov_talk %=scenario_autosave(st_talk_to_the_kruglov)%
+;on_info2 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO} walker@yan_smart_terrain_1_walker_kruglov_talk
+
+[walker@yan_smart_terrain_1_walker_kruglov_talk]
+path_walk 											= walker_kruglov_1_walk
+path_look 											= walker_kruglov_1_look
+def_state_standing 									= wait
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= meet@hello_players
+invulnerable 										= true
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO} companion@yan_smart_terrain_1_walker_kruglov_follow %=scenario_autosave(st_take_measurements_1)%
+
+[meet@hello_players]
+close_snd_hello 									= nil
+close_snd_bye   									= nil
+close_anim 											= hello_wpn
+close_victim 										= actor
+far_anim 											= hello_wpn
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= true
+
+;================================================
+[companion@yan_smart_terrain_1_walker_kruglov_follow]
+meet = no_meet
+invulnerable = true
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+allow_break = false
+on_info = {+YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO} walker@yan_smart_terrain_1_walker_kruglov_go_to_saxarov

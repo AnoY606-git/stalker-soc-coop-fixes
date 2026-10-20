@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="scn_yantar_restore_ghost_name">
+		<text>Призрак</text>
+	</string>
+	<string id="scn_yantar_restore_docs_name">
+		<text>Документы из лаборатории X16</text>
+	</string>
+	<string id="scn_yantar_restore_docs_descr">
+		<text>Папка с бумагами из лаборатории X16. Её нёс сталкер, которому не удалось выбраться.</text>
+	</string>
+	<string id="scn_yantar_restore_saharov_msg_3">
+		<text>Отлично, Меченый! Излучение отключено, ты жив. Мы вызвали пару военных вертолётов, чтобы они зачистили территорию от зомби, поэтому ты туда пока не ходи, чтоб не попасть под обстрел. Да, кстати, будешь поблизости, загляни к нам в бункер.</text>
+	</string>
+	<string id="scn_yantar_restore_ghost_tip">
+		<text>Звуковая запись Призрака.</text>
+	</string>
+</string_table>

@@ -1,0 +1,7 @@
+[logic]
+active 									= sr_idle@controller_script_attack
+
+[sr_idle@controller_script_attack]
+on_any_player_inside 						= sr_idle@nil %=play_sound(controller_script_attack) =create_squad(agru_smart_terrain_4_m_controller_1_squad:agru_smart_terrain_4_m)%
+
+[sr_idle@nil]

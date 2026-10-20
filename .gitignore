@@ -5,3 +5,8 @@ __pycache__/
 *.db1
 *.log
 *.zip
+
+# Akasi's SoC levels: his work, not ours to publish
+patches/soc_levels/
+# throwaway copies of shipped files
+patches/yantar_restore/wip_heli/from_working_tree_*/

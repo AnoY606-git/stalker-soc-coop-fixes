@@ -1,0 +1,422 @@
+<?xml version='1.0' encoding="windows-1251"?>
+<xml>
+
+<specific_character id="esc_smart_terrain_1_stalker_wolf" team_default = "1">
+    <name>esc_smart_terrain_1_stalker_wolf_name</name>
+	<icon>ui_inGame2_wolf</icon>
+    <map_icon x="1" y="0"></map_icon>
+    <bio>esc_wolf_bio</bio>
+
+    <class>esc_smart_terrain_1_stalker_wolf</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+
+    <rank>30</rank>
+    <reputation>0</reputation>
+	<money min="500" max="1500" infinitive="0"/>
+    <visual>actors\stalker_neutral\stalker_neytral_balon_1</visual>
+    <supplies>
+	
+    [spawn] \n
+	hand_radio = 1 \n
+    wpn_ak74u \n
+    ammo_5.45x39_fmj = 1 \n
+    wpn_pm \n
+    ammo_9x18_fmj = 1 \n
+    grenade_rgd5 = 2 \n 
+	  
+#include "gameplay\character_items.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_1_stalker_wolf_start_dialog</start_dialog>
+	<actor_dialog>rq_wolf_dialog</actor_dialog>	
+	<actor_dialog>esc_smart_terrain_1_stalker_wolf_help_atp</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_stalker_wolf_help_atp_end</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_stalker_wolf_help_atp_the</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+</specific_character>
+
+<specific_character id="esc_smart_terrain_1_trader_sidorovich" team_default = "1">
+	<name>esc_smart_terrain_1_trader_sidorovich_name</name>
+	<icon>ui_inGame2_sidorovich</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_sidorovich_bio</bio>
+
+	<class>esc_smart_terrain_1_trader_sidorovich</class>
+	<community>stalker</community>
+	<money min="1000000" max="1000000" infinitive="1"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+	<visual>actors\stalker_trader\trader_sidorovich</visual>
+	<supplies>
+		
+    [spawn] \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_1_trader_sidorovich_start_dialog</start_dialog>
+	<actor_dialog>rq_sid_dialog</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_talk_to_the_wolf</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_go_to_fox</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_flesh</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_x18_documents</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_secondary_quests_dialog</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_secondary_quests_fail_dialog</actor_dialog>
+	<actor_dialog>esc_smart_terrain_1_trader_sidorovich_secondary_quests_idle_dialog</actor_dialog>		
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character>
+
+<specific_character id="esc_smart_terrain_1_stalker_guide" team_default = "1">
+	<name>esc_smart_terrain_1_stalker_guide_name</name>
+	<icon>ui_inGame2_guide</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_guide_bio</bio>
+
+	<class>esc_smart_terrain_1_stalker_guide</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+
+	<visual>actors\stalker_trader\upir_sglasheniy_new_animation</visual>
+	<supplies>
+		
+    [spawn] \n
+	hand_radio = 1 \n
+    wpn_ak74u \n
+    ammo_5.45x39_fmj = 1 \n
+    wpn_pm \n
+    ammo_9x18_fmj = 1 \n
+    grenade_rgd5 = 2 \n   
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_1_stalker_guide_start_dialog</start_dialog>
+	<actor_dialog>esc_smart_terrain_1_stalker_guide_help</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+</specific_character>
+
+<specific_character id="esc_smart_terrain_3_stalker_shustry" team_default = "1">
+	<name>esc_smart_terrain_3_stalker_shustry_name</name>
+	<icon>ui_inGame2_shustry</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_shustry_bio</bio>
+
+	<class>esc_smart_terrain_3_stalker_shustry</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+	<visual>actors\stalker_neutral\stalker_neutral_shustry</visual>
+	<supplies>
+		
+    [spawn] \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_3_stalker_shustry_start_dialog</start_dialog>
+	<actor_dialog>rq_shu_dialog</actor_dialog>
+	<actor_dialog>rq_shu_handin</actor_dialog>
+	<actor_dialog>esc_smart_terrain_3_stalker_shustry_go_to_vilage</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character>
+
+<specific_character id="esc_smart_terrain_4_stalker_petruha" team_default = "1">
+	<name>esc_smart_terrain_4_stalker_petruha_name</name>
+	<icon>ui_inGame2_petruha</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_petruha_bio</bio>
+
+	<class>esc_smart_terrain_4_stalker_petruha</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+	<visual>actors\stalker_neutral\stalker_neutral_petruha</visual>
+	<supplies>
+		
+    [spawn] \n
+    wpn_bm16  \n
+    ammo_12x70_buck  = 1 \n
+    wpn_pm \n
+    ammo_9x18_fmj = 1 \n   
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_4_stalker_petruha_start_dialog</start_dialog>
+	<actor_dialog>esc_smart_terrain_4_stalker_petruha_help_atp</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character>
+
+<specific_character id="esc_smart_terrain_5_stalker_tolik" team_default = "1">
+	<name>esc_smart_terrain_5_stalker_tolik_name</name>
+	<icon>ui_inGame2_tolik</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_tolik_bio</bio>
+
+	<class>esc_smart_terrain_5_stalker_tolik</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+	<visual>actors\stalker_neutral\stalker_neutral_tolik</visual>
+	<supplies>
+		
+    [spawn] \n
+    wpn_pm \n
+    ammo_9x18_fmj = 1 \n  
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_5_walker_tolik_start_dialog</start_dialog>
+	<actor_dialog>esc_smart_terrain_5_walker_tolik_help</actor_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character> 
+
+<specific_character id="esc_smart_terrain_6_stalker_fox" team_default = "1">
+	<name>esc_smart_terrain_6_stalker_fox_name</name>
+	<icon>ui_inGame2_fox</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_fox_bio</bio>
+
+	<class>esc_smart_terrain_6_stalker_fox</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+	<visual>actors\stalker_neutral\stalker_neutral_fox</visual>
+	<supplies>
+		
+    [spawn] \n
+	hand_radio = 1 \n
+    wpn_bm16  \n
+    ammo_12x70_buck  = 1 \n
+    wpn_pm \n
+    ammo_9x18_fmj = 1 \n
+	  
+#include "gameplay\character_items.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_6_stalker_fox_start_dialog</start_dialog>
+	<actor_dialog>esc_smart_terrain_6_stalker_fox_info_military</actor_dialog>
+	<actor_dialog>esc_smart_terrain_6_stalker_fox_help_dialog</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character>   
+  
+<specific_character id="esc_smart_terrain_7_military_kuznetsov" team_default = "1">
+	<name>esc_smart_terrain_7_military_kuznetsov_name</name>
+	<icon>ui_inGame2_kuznetsov</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_kuznetsov_bio</bio>
+
+	<class>esc_smart_terrain_7_military_kuznetsov</class>
+	<community>army</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\military\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+	<visual>actors\stalker_military\stalker_military_kuznetsov</visual>
+	<supplies>
+		
+    [spawn] \n
+	wpn_ak74u \n
+    ammo_5.45x39_fmj = 1 \n
+    wpn_fort_m1 = 1 \n
+    ammo_9x18_fmj = 1 \n
+    grenade_rgd5 = 2 \n   
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_7_military_kuznetsov_start_dialog</start_dialog>
+	<actor_dialog>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1</actor_dialog>
+	<actor_dialog>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2</actor_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character>
+
+<specific_character id="esc_smart_terrain_7_military_shtirts" team_default = "1">
+	<name>esc_smart_terrain_7_military_shtirts_name</name>
+    <icon>ui_inGame2_Soldier_4</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_shtirts_bio</bio>
+
+	<class>esc_smart_terrain_7_military_shtirts</class>
+	<community>army</community>
+	<money min="600" max="2000" infinitive="0"/>
+    <community>army</community> 
+	<terrain_sect>stalker_terrain</terrain_sect>
+    <snd_config>characters_voice\human_03\military\</snd_config>
+
+    <rank>60</rank>
+    <reputation>0</reputation>
+
+    <visual>actors\stalker_soldier\stalker_soldier_4</visual>
+	<supplies>
+		
+    [spawn] \n
+	wpn_ak74u \n
+    ammo_5.45x39_fmj = 1 \n
+    wpn_pm \n
+    ammo_9x18_fmj = 1 \n
+    grenade_rgd5 = 2 \n   
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_drugs.xml"
+#include "gameplay\character_drugs_mil.xml"	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>esc_smart_terrain_7_military_kuznetsov_start_dialog</start_dialog>
+	<actor_dialog>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1</actor_dialog>
+	<actor_dialog>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2</actor_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+  </specific_character>    
+
+<specific_character id="esc_smart_terrain_8_stalker_killer" team_default = "1">
+	<name>esc_smart_terrain_8_stalker_killer_name</name>
+	<icon>ui_inGame2_neutral_1</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_fox_bio</bio>
+
+	<class>esc_smart_terrain_8_stalker_killer</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_0_1</visual>
+	<supplies>
+		
+			[spawn]\n
+			
+      		wpn_ak74u = 2 \n
+      		ammo_5.45x39_fmj = 1 \n
+      		wpn_pmm \n
+      		ammo_9x18_fmj = 1 \n	
+			grenade_rgd5 = 1 \n
+	  
+#include "gameplay\character_items.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+  </specific_character>   
+
+<specific_character id="esc_smart_terrain_9_stalker_idiot" team_default = "1">
+	<name>esc_smart_terrain_9_stalker_idiot_name</name>
+	<icon>ui_inGame2_neutral_2_mask</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_fox_bio</bio>
+
+	<class>esc_smart_terrain_9_stalker_idiot</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_2_mask</visual>
+	<supplies>
+		
+			[spawn]\n
+			
+      		wpn_ak74u = 2 \n
+      		ammo_5.45x39_fmj = 1 \n
+      		wpn_fort \n
+      		ammo_9x18_fmj = 1 \n
+			grenade_rgd5 = 1 \n
+	  
+#include "gameplay\character_items.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+  </specific_character>   
+  
+<specific_character id="esc_smart_terrain_10_stalker_sniper_loser" team_default = "1">
+	<name>esc_smart_terrain_10_stalker_sniper_loser_name</name>
+	<icon>ui_inGame2_neutral_1</icon>
+	<map_icon x="1" y="0">
+	</map_icon>
+	<bio>esc_fox_bio</bio>
+
+	<class>esc_smart_terrain_10_stalker_sniper_loser</class>
+	<community>stalker</community>
+	<money min="600" max="2000" infinitive="0"/>
+	<terrain_sect>stalker_terrain</terrain_sect>
+	<snd_config>characters_voice\human_03\stalker\</snd_config>
+
+	<rank>16568</rank>
+	<reputation>2453</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_0_1</visual>
+	<supplies>
+		
+      [spawn] \n
+      
+      wpn_val = 1, scope \n
+      ammo_9x39_ap = 1 \n
+      wpn_sig220 = 1, silencer \n
+      ammo_11.43x23_fmj = 1 \n
+      grenade_f1 = 3 \n
+	  
+#include "gameplay\character_items.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+  </specific_character>   
+
+</xml>

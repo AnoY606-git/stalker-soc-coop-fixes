@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_val_start_sneak_into_the_x_18_lab_1_quest_task_name">
+		<text>Infiltrate laboratory X-18</text>
+	</string>
+	<string id="st_val_start_sneak_into_the_x_18_lab_1_quest_task_descr">
+		<text>Infiltrate the abandoned laboratory and find any documents.</text>
+	</string>	
+	
+	
+	<string id="st_val_start_take_the_documents_to_the_barmen_quest_task_name">
+		<text>Return to the Barkeep</text>
+	</string>
+	<string id="st_val_start_take_the_documents_to_the_barmen_quest_task_descr">
+		<text>Leave the laboratory and hand the documents over to the Barkeep. Surely, he will be pleased.</text>
+	</string>
+	
+
+	<string id="st_val_start_go_to_the_sos_signal_1_quest_task_name">
+		<text>SOS Signal</text>
+	</string>
+	<string id="st_val_start_go_to_the_sos_signal_1_quest_task_descr">
+		<text>Go to the SOS signal</text>
+	</string>
+
+	<string id="st_val_start_go_to_the_sos_signal_2_quest_task_name">
+		<text>SOS Signal</text>
+	</string>
+	<string id="st_val_start_go_to_the_sos_signal_2_quest_task_descr">
+		<text>Escort the stalker to the farm</text>
+	</string>
+
+
+	<string id="st_val_start_fake_gauss_1_quest_task_name">
+		<text>New Weapon</text>
+	</string>
+	<string id="st_val_start_fake_gauss_1_quest_task_descr">
+		<text>Talk to the stalker</text>
+	</string>
+
+	<string id="st_val_start_fake_gauss_2_quest_task_name">
+		<text>New Weapon</text>
+	</string>
+	<string id="st_val_start_fake_gauss_2_quest_task_descr">
+		<text>Wait for Snake to return with the weapon</text>
+	</string>
+
+
+	<string id="st_val_start_follow_the_bullet_quest_task_name">
+		<text>Unwilling Captive</text>
+	</string>
+	<string id="st_val_start_follow_the_bullet_quest_task_descr">
+		<text>Follow Bullet</text>
+	</string>
+
+	<string id="st_val_start_save_the_prisoner_quest_task_name">
+		<text>Unwilling Captive</text>
+	</string>
+	<string id="st_val_start_save_the_prisoner_quest_task_descr">
+		<text>Wait for the bandits and save the prisoner</text>
+	</string>	
+	<string id="st_val_start_get_out_via_south_gate_quest_task_name">
+		<text>Leave Dark Valley</text>
+	</string>
+	<string id="st_val_start_get_out_via_south_gate_quest_task_descr">
+		<text>The military has blocked the way to the Garbage. Leave Dark Valley by the old road through the south gate, it leads to the Cordon.</text>
+	</string>
+	<string id="st_val_start_show_documents_to_sidorovich_quest_task_name">
+		<text>Show the documents to the trader</text>
+	</string>
+	<string id="st_val_start_show_documents_to_sidorovich_quest_task_descr">
+		<text>Sidorovich wants to see the documents from X-18. He will give them back: they are meant for the Barkeep.</text>
+	</string>
+</string_table>

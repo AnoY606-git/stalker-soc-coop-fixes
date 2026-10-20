@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_mil_start_talk_to_the_cap_quest_task_name">
+		<text>Barrier Defense</text>
+	</string>
+	<string id="st_mil_start_talk_to_the_cap_quest_task_descr">
+		<text>Talk to Cap.</text>	
+	</string>
+	<string id="st_mil_start_protect_the_barrier_quest_task_name">
+		<text>Barrier Defense</text>
+	</string>
+	<string id="st_mil_start_protect_the_barrier_quest_task_descr">
+		<text>Destroy the Monolith squad.</text>	
+	</string>
+	
+	<string id="st_mil_start_go_to_radar_quest_task_name">
+		<text>Time to head to the Center of the Zone!</text>
+	</string>
+	<string id="st_mil_start_go_to_radar_quest_task_descr">
+		<text>Head to the Radar.</text>	
+	</string>
+	
+	<string id="st_mil_start_kill_the_sniper_on_the_tower_quest_task_name">
+		<text>For Duty!</text>
+	</string>
+	<string id="st_mil_start_kill_the_sniper_on_the_tower_quest_task_descr">
+		<text>Kill the sniper on the tower.</text>	
+	</string>
+	<string id="st_mil_start_talk_to_skull_about_the_assault_quest_task_name">
+		<text>For Duty!</text>
+	</string>
+	<string id="st_mil_start_talk_to_skull_about_the_assault_quest_task_descr">
+		<text>Talk to Skull.</text>	
+	</string>
+	<string id="st_mil_start_kill_lukash_quest_task_name">
+		<text>For Duty!</text>
+	</string>
+	<string id="st_mil_start_kill_lukash_quest_task_descr">
+		<text>Kill Lukash.</text>	
+	</string>
+	<string id="st_mil_start_kill_the_snipers_quest_task_name">
+		<text>For Duty!</text>
+	</string>
+	<string id="st_mil_start_kill_the_snipers_quest_task_descr">
+		<text>Kill the Snipers.</text>	
+	</string>	
+	
+	<string id="st_mil_start_report_to_max_quest_task_name">
+		<text>For Freedom!</text>
+	</string>
+	<string id="st_mil_start_report_to_max_quest_task_descr">
+		<text>Report to Max.</text>	
+	</string>
+	<string id="st_mil_start_kill_skull_quest_task_name">
+		<text>For Freedom!</text>
+	</string>
+	<string id="st_mil_start_kill_skull_quest_task_descr">
+		<text>Kill Skull.</text>	
+	</string>
+	<string id="st_mil_start_kill_the_duty_quest_task_name">
+		<text>For Freedom!</text>
+	</string>
+	<string id="st_mil_start_kill_the_duty_quest_task_descr">
+		<text>Kill the Duty members.</text>	
+	</string>
+	<string id="st_mil_start_max_flash_quest_task_name">
+		<text>Madman's flash drive</text>
+	</string>
+	<string id="st_mil_start_max_flash_quest_task_descr">
+		<text>Take the flash drive from the insane stalker</text>
+	</string>
+	<string id="st_mil_start_max_flash_return_quest_task_name">
+		<text>Return the flash drive to Max</text>
+	</string>
+	<string id="st_mil_start_max_flash_return_quest_task_descr">
+		<text>Give the flash drive to Max and get the promised gun.</text>
+	</string>
+</string_table>

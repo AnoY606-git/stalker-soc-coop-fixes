@@ -1,0 +1,9 @@
+[logic]
+active 												= sr_idle@wait
+
+[sr_idle@wait]
+;SoC never forces the player to holster: the zone stays idle (was: sr_no_weapon@wait)
+;on_any_player_inside 								= sr_no_weapon@wait
+
+[sr_no_weapon@wait]
+on_no_players_inside 								= sr_idle@wait

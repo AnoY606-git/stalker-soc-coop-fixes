@@ -1,0 +1,11 @@
+[logic]
+active 												= sr_idle@start_quest
+;Квест Лукаша(Доложить Максу):
+[sr_idle@start_quest]
+on_info  											= {+MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO} sr_idle@flash %=give_task(mil_start_report_to_max_quest_task) =scenario_autosave(st_report_to_max)%
+
+;Max's flash drive job (SoC): task given when a player accepted it
+[sr_idle@flash]
+on_info = {+MIL_MAX_FLASH_JOB_INFO} sr_idle@nil %=give_task(mil_start_max_flash_quest_task)%
+
+[sr_idle@nil]

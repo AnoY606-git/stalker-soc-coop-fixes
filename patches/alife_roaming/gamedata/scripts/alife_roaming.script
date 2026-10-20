@@ -1,0 +1,325 @@
+--[[
+A-Life roaming for Shadow of COOP (server side).
+
+Every squad in this add-on has a fixed "target_smart" in squad_descr_*.ltx, so sim_squad_scripted always
+takes the scripted branch and never joins the simulation; the sim itself cannot run either (the SoC smart
+terrains have no section in simulation_objects_props.ltx and the army/ecolog/monster factions have no
+sim_board.simulation_activities entry). Instead of turning that machinery on, this module re-points the
+scripted target of selected squads from time to time, so the existing, tested reach_target / stay_point
+logic walks them to another smart terrain. Nothing is created or removed: the population stays the same.
+
+Hook: sim_squad_scripted:update() calls alife_roaming.tick(self).
+Config: configs/misc/alife_roaming.ltx
+]]
+
+local cfg_ini = nil
+local cfg = nil
+local state = { moving = 0, last_log = 0, moves = 0, stats = {} }
+local LOG_ON = true
+
+local function log(fmt, ...)
+	if not LOG_ON then return end
+	local ok, s = pcall(string.format, fmt, ...)
+	if ok then printf("[alife_roaming] %s", s) end
+end
+
+local function split(s)
+	local t = {}
+	if s == nil then return t end
+	for w in string.gfind(s, "([%w_%-%.]+)") do table.insert(t, w) end
+	return t
+end
+
+local function num(sect, key, def)
+	if cfg_ini:section_exist(sect) and cfg_ini:line_exist(sect, key) then
+		local v = tonumber(cfg_ini:r_string(sect, key))
+		if v ~= nil then return v end
+	end
+	return def
+end
+
+local function str(sect, key, def)
+	if cfg_ini:section_exist(sect) and cfg_ini:line_exist(sect, key) then
+		return cfg_ini:r_string(sect, key)
+	end
+	return def
+end
+
+local function set_of(list)
+	local t = {}
+	for _, v in ipairs(list) do t[v] = true end
+	return t
+end
+
+-- read the config once per level (sections are per level name)
+local function load_cfg()
+	if cfg ~= nil and cfg.level == level.name() then return cfg end
+	cfg_ini = ini_file("misc\\alife_roaming.ltx")
+	cfg = { level = level.name(), enabled = false }
+	cfg.enabled = (str("roaming", "enabled", "true") == "true")
+	cfg.start_delay = num("roaming", "start_delay", 90)
+	cfg.stay_min = num("roaming", "stay_min", 240)
+	cfg.stay_max = num("roaming", "stay_max", 720)
+	cfg.check_period = num("roaming", "check_period", 5)
+	cfg.move_timeout = num("roaming", "move_timeout", 900)
+	cfg.max_moving = num("roaming", "max_moving", 4)
+	cfg.max_squad_size = num("roaming", "max_squad_size", 4)
+	cfg.max_npc_per_smart = num("roaming", "max_npc_per_smart", 10)
+	cfg.max_squads_per_smart = num("roaming", "max_squads_per_smart", 3)
+	cfg.max_mutant_squads_per_smart = num("roaming", "max_mutant_squads_per_smart", 2)
+	cfg.go_home_chance = num("roaming", "go_home_chance", 35)
+	cfg.avoid_enemies = (str("roaming", "avoid_enemies", "true") == "true")
+	cfg.allow_online_move = (str("roaming", "allow_online_move", "true") == "true")
+	cfg.min_players_dist = num("roaming", "min_players_dist", 0)
+	cfg.night_only_mutants = false
+	cfg.log = (str("roaming", "log", "false") == "true")
+	LOG_ON = cfg.log
+	cfg.communities = set_of(split(str("roaming", "communities", "stalker bandit army dolg freedom")))
+	cfg.mutants = (str("roaming", "mutants", "true") == "true")
+	cfg.groups = {}
+	local sect = "level@" .. level.name()
+	cfg.level_ok = cfg_ini:section_exist(sect)
+	if cfg.level_ok then
+		cfg.exclude_squads = set_of(split(str(sect, "exclude_squads", "")))
+		cfg.exclude_dest = set_of(split(str(sect, "exclude_dest", "")))
+		cfg.only_squads = split(str(sect, "only_squads", ""))
+		-- route groups: group_<name> = smart list ; squad_group_<community or species> = group name
+		local n = cfg_ini:line_count(sect)
+		for i = 0, n - 1 do
+			local _, k, v = cfg_ini:r_line(sect, i, "", "")
+			local g = string.match(k, "^group_(.+)$")
+			if g ~= nil then cfg.groups[g] = split(v) end
+		end
+		cfg.community_group = {}
+		for i = 0, n - 1 do
+			local _, k, v = cfg_ini:r_line(sect, i, "", "")
+			local c = string.match(k, "^use_(.+)$")
+			if c ~= nil then cfg.community_group[c] = v end
+		end
+	end
+	log("config loaded level=%s ok=%s enabled=%s", cfg.level, tostring(cfg.level_ok), tostring(cfg.enabled))
+	return cfg
+end
+
+function reload()
+	cfg = nil
+	state.moving = 0
+end
+
+-- species of a monster squad from its section name (esc_smart_terrain_6_m_dog_squad -> dog)
+local function mutant_species(sect)
+	return string.match(sect, "_m_([a-z]+)[%w_]*_squad$")
+end
+
+local function squad_member_count(squad)
+	local n = 0
+	for _ in squad:squad_members() do n = n + 1 end
+	return n
+end
+
+-- the squads that are "story" keep their fixed target: named characters, anything with on_death flags,
+-- explicit excludes, *_dead_* decor squads
+local function all_generic_members(squad)
+	local sections = system_ini():r_string(squad:section_name(), "npc")
+	for _, v in ipairs(split(sections)) do
+		if string.find(v, "^sim_default_") == nil then return false end
+	end
+	return true
+end
+
+local function classify(squad, c)
+	if not c.level_ok then return nil end
+	local sname = squad:section_name()
+	if c.exclude_squads[sname] then return nil end
+	if string.find(sname, "_dead_squad$") then return nil end
+	local ini = system_ini()
+	if ini:line_exist(sname, "on_death") and ini:r_string(sname, "on_death") ~= "" then return nil end
+	local fac = squad.player_id
+	local group = nil
+	if fac == "monster" then
+		if not c.mutants then return nil end
+		local sp = mutant_species(sname)
+		if sp == nil then return nil end
+		group = c.community_group["mutant_" .. sp]
+		if group == nil then return nil end
+		return { kind = "mutant", group = group, tag = "mutant_" .. sp }
+	end
+	if not c.communities[fac] then return nil end
+	if not all_generic_members(squad) then return nil end
+	group = c.community_group[fac]
+	if group == nil then return nil end
+	return { kind = "human", group = group, tag = fac }
+end
+
+local function smart_by_name(name)
+	return sim_board.get_sim_board().smarts_by_names[name]
+end
+
+-- members and squads that are in or heading to a smart (excluding `me`)
+local function load_of(smart, me)
+	local board = sim_board.get_sim_board()
+	local npcs, humans, mutants, enemies = 0, 0, 0, {}
+	local count = function(sq)
+		if sq.id == me.id then return end
+		local n = squad_member_count(sq)
+		npcs = npcs + n
+		if sq.player_id == "monster" then mutants = mutants + 1 else humans = humans + 1 end
+		table.insert(enemies, sq.player_id)
+	end
+	-- squads standing in the smart
+	local rec = board.smarts[smart.id]
+	local seen = {}
+	if rec ~= nil then
+		for id, sq in pairs(rec.squads) do
+			if sq.assigned_target_id == nil or sq.assigned_target_id == smart.id then
+				seen[id] = true
+				count(sq)
+			end
+		end
+	end
+	-- squads walking there
+	for id, sq in pairs(state.roamers or {}) do
+		if not seen[id] and sq.assigned_target_id == smart.id and sq.smart_id ~= smart.id then
+			local o = alife():object(id)
+			if o ~= nil then count(o) end
+		end
+	end
+	return npcs, humans, mutants, enemies
+end
+
+local function players_near(smart, dist)
+	if dist <= 0 then return false end
+	for _, obj in pairs(db.mp_actors or {}) do
+		local ok, d = pcall(function() return obj:position():distance_to(smart.position) end)
+		if ok and d < dist then return true end
+	end
+	return false
+end
+
+local function pick_destination(squad, info, c)
+	local list = c.groups[info.group]
+	if list == nil then return nil end
+	local n = squad_member_count(squad)
+	local cands = {}
+	for _, name in ipairs(list) do
+		if not c.exclude_dest[name] and name ~= squad.roam.current then
+			local smart = smart_by_name(name)
+			if smart ~= nil and smart.id ~= squad.smart_id then
+				local npcs, humans, mutants, facs = load_of(smart, squad)
+				local ok = (npcs + n <= c.max_npc_per_smart)
+				if ok then
+					if info.kind == "mutant" then
+						ok = (mutants < c.max_mutant_squads_per_smart) and humans == 0
+					else
+						ok = (humans < c.max_squads_per_smart) and mutants == 0
+					end
+				end
+				if ok and c.avoid_enemies then
+					for _, f in ipairs(facs) do
+						if f ~= "monster" or info.kind == "human" then
+							local en = false
+							pcall(function() en = game_relations.is_factions_enemies(squad.player_id, f) end)
+							if en then ok = false break end
+						end
+					end
+				end
+				if ok and players_near(smart, c.min_players_dist) then ok = false end
+				if ok then table.insert(cands, name) end
+			end
+		end
+	end
+	if #cands == 0 then return nil end
+	return cands[math.random(#cands)]
+end
+
+local function set_target(squad, smart_name)
+	squad.action_condlist = xr_logic.parse_condlist(squad, "assign_action", "target_smart", smart_name)
+end
+
+local function squad_busy(squad)
+	-- do not start a move while the squad fights or is already walking
+	if squad.current_action == nil then return false end
+	return squad.current_action.name == "reach_target"
+end
+
+-- Called from sim_squad_scripted:update() for every squad, cheap: returns at once for non roamers
+local function tick_inner(squad)
+	local c = load_cfg()
+	if not c.enabled or not c.level_ok then return end
+	local now = time_global()
+	local r = squad.roam
+	if r == nil then
+		local info = classify(squad, c)
+		if info == nil or squad_member_count(squad) > c.max_squad_size then
+			squad.roam = { skip = true }
+			return
+		end
+		r = { info = info, home = nil, next = now + (c.start_delay + math.random(0, c.stay_max - c.stay_min)) * 1000, current = nil, moving = false }
+		squad.roam = r
+		state.roamers = state.roamers or {}
+		state.roamers[squad.id] = squad
+		state.stats[info.tag] = (state.stats[info.tag] or 0) + 1
+		return
+	end
+	if r.skip then return end
+	if now < r.next then return end
+	-- throttle
+	r.next = now + c.check_period * 1000
+	if squad.smart_id == nil then return end
+	if r.home == nil then
+		local o = alife():object(squad.smart_id)
+		r.home = o and o:name()
+		r.current = r.home
+	end
+	-- arrived?
+	if r.moving then
+		if now - r.started > c.move_timeout * 1000 then
+			r.moving = false
+			state.moving = math.max(0, state.moving - 1)
+			r.next = now + math.random(c.stay_min, c.stay_max) * 1000
+			log("squad %s move timeout", tostring(squad.id))
+			return
+		end
+		if squad.current_action ~= nil and squad.current_action.name == "stay_point" and squad.smart_id == squad.assigned_target_id then
+			r.moving = false
+			state.moving = math.max(0, state.moving - 1)
+			local o = alife():object(squad.smart_id)
+			r.current = o and o:name() or r.current
+			r.next = now + math.random(c.stay_min, c.stay_max) * 1000
+			log("squad %s (%s) arrived at %s", tostring(squad.id), squad:section_name(), tostring(r.current))
+		end
+		return
+	end
+	if squad_busy(squad) then return end
+	if not c.allow_online_move and squad.online then return end
+	if state.moving >= c.max_moving then return end
+	local dest = nil
+	if r.current ~= r.home and math.random(100) <= c.go_home_chance then
+		dest = r.home
+	else
+		dest = pick_destination(squad, r.info, c)
+	end
+	if dest == nil then
+		r.next = now + math.random(c.stay_min, c.stay_max) * 1000 / 4
+		return
+	end
+	set_target(squad, dest)
+	r.moving = true
+	r.started = now
+	state.moving = state.moving + 1
+	state.moves = state.moves + 1
+	log("squad %s (%s) %s -> %s", tostring(squad.id), squad:section_name(), tostring(r.current), dest)
+end
+
+local err_logged = false
+function tick(squad)
+	local ok, e = pcall(tick_inner, squad)
+	if not ok and not err_logged then
+		err_logged = true
+		printf("[alife_roaming] ERROR %s", tostring(e))
+	end
+end
+
+function stats()
+	return state
+end

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+;===========================COOP=============================================================================================================================================================================================================================================
+	<string id="st_coop_desc">
+		<text>«S.T.A.L.K.E.R. Shadow of COOP» is an addon for the multiplayer modification «X-Ray Multiplayer Extension» that lets you play through the reworked Shadow Of Chernobyl storyline in co-op, designed for 2 to 4 players.
+		\n-Inventory is saved before moving to the next location.
+		\n-To pick a map manually, press F5 and vote for the map where you left off.</text>
+	</string>
+	<string id="coop_l01_escape">
+		<text>Cordon</text>
+	</string>
+	<string id="coop_l02_garbage">
+		<text>Garbage</text>
+	</string>	
+	<string id="coop_l03_agroprom">
+		<text>Agroprom</text>
+	</string>
+	<string id="coop_l03_agroprom_underground">
+		<text>Agroprom Underground</text>
+	</string>
+	<string id="coop_l04_darkvalley">
+		<text>Dark Valley</text>
+	</string>
+	<string id="coop_l04_x18">
+		<text>Laboratory X-18</text>
+	</string>
+	<string id="coop_l05_bar">
+		<text>Bar</text>
+	</string>
+	<string id="coop_l06_rostok">
+		<text>Wild Territory</text>
+	</string>
+	<string id="coop_l07_military">
+		<text>Army Warehouses</text>
+	</string>
+	<string id="coop_l08_x16">
+		<text>Laboratory X-16</text>
+	</string>
+	<string id="coop_l08_yantar">
+		<text>Yantar</text>
+	</string>
+	<string id="coop_l09_radar">
+		<text>Radar</text>
+	</string>
+	<string id="coop_l09_x10">
+		<text>Laboratory X-10</text>
+	</string>
+	<string id="coop_l10_pripyat">
+		<text>Pripyat</text>
+	</string>
+	<string id="coop_l11_stancia_1">
+		<text>Chernobyl NPP</text>
+	</string>
+	<string id="coop_l11_sarcofag">
+		<text>Sarcophagus</text>
+	</string>
+	<string id="coop_l11_control_monolith">
+		<text>Monolith Control Center</text>
+	</string>
+	<string id="coop_l11_stancia_2">
+		<text>Chernobyl NPP</text>
+	</string>
+</string_table>

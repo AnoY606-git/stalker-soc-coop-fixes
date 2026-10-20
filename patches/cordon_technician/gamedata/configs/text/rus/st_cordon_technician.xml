@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="esc_rookie_technician_name">
+		<text>Степан Гайка</text>
+	</string>
+	<string id="esc_rookie_technician_bio">
+		<text>Степан Гайка пришёл в Зону механиком-новичком и остался. У него в деревне свой верстак, и он чинит всё, что несут зелёные.</text>
+	</string>
+	<string id="esc_rookie_technician_start_dialog_0">
+		<text>Что-то сломалось? Клади на верстак. Я латаю новичкам снарягу и ставлю простые доработки.</text>
+	</string>
+	<string id="esc_rookie_technician_what_can_you_do_0">
+		<text>Что ты можешь для меня сделать?</text>
+	</string>
+	<string id="esc_rookie_technician_what_can_you_do_1">
+		<text>Починю всё, что несёшь, и поставлю простые улучшения на ходовые стволы и костюмы. За хитрой работой иди к механику в Баре.</text>
+	</string>
+</string_table>

@@ -1,0 +1,432 @@
+----------------------------------------------------------------------------------------------------------------------
+--  Scheme "kamp": stalkers gather in a circle around a campfire (Shadow of COOP campfire fix).
+--
+--  Based on the xrMPE/CoP xr_kamp.script (itself the Shadow of Chernobyl scheme by Stohe), changed so it works here:
+--   * the stock file indexes xr_animpoint_predicates.associations["kamp"], which does not exist (pairs(nil)) and asks
+--     state_mgr for the states eat_kolbasa/eat_vodka/eat_energy/eat_bread, which state_lib does not have, so every
+--     [kamp@...] section failed;
+--   * the circle centre can be given as a point, "center_pos = x, y, z" (the levels have no kamp patrol paths and spawn
+--     files cannot be edited), as well as the old "center_point = <patrol>";
+--   * the seated stalkers hook into the Call of Pripyat camp (sr_camp / bind_camp): when the fire lies inside a
+--     camp_zone, one stalker at a time plays guitar/harmonica or tells a joke while the others turn to him and listen.
+--
+--  Logic section example:
+--    [kamp@my_job]
+--    center_pos = -206.9, -19.6, -140.1     ; or: center_point = <patrol path name>
+--    radius     = 2.4                       ; distance from the fire to the seats
+--    use_camp   = true                      ; take part in the camp music/story state machine
+----------------------------------------------------------------------------------------------------------------------
+
+kamps = {}
+kamp_stalkers = {} -- may the player talk to this stalker (read by xr_conditions._kamp_talk)
+
+local SECTORS = {
+	{x =  1, z =  0}, {x =  1, z =  1}, {x =  0, z =  1}, {x = -1, z =  1},
+	{x = -1, z =  0}, {x = -1, z = -1}, {x =  0, z = -1}, {x =  1, z = -1},
+}
+local SIT_STATES = { "sit", "sit_ass", "sit_knee" }
+local NO_VERTEX = 4294967295
+
+local function parse_pos(str)
+	if str == nil then return nil end
+	local t = {}
+	for n in string.gmatch(str, "[^,%s]+") do
+		t[#t + 1] = tonumber(n)
+	end
+	if #t ~= 3 or t[1] == nil or t[2] == nil or t[3] == nil then return nil end
+	return vector():set(t[1], t[2], t[3])
+end
+
+----------------------------------------------------------------------------------------------------------------------
+-- Evaluators
+----------------------------------------------------------------------------------------------------------------------
+class "evaluator_kamp_end" (property_evaluator)
+function evaluator_kamp_end:__init(name, storage) super(nil, name)
+	self.st = storage
+end
+function evaluator_kamp_end:evaluate()
+	return not xr_logic.is_active(self.object, self.st)
+end
+
+-- standing on the assigned seat
+class "evaluator_on_position" (property_evaluator)
+function evaluator_on_position:__init(name, storage) super(nil, name)
+	self.st = storage
+end
+function evaluator_on_position:evaluate()
+	if self.st.pos_vertex ~= nil and self.object:level_vertex_id() == self.st.pos_vertex then
+		return true
+	end
+	return false
+end
+
+----------------------------------------------------------------------------------------------------------------------
+-- Actions
+----------------------------------------------------------------------------------------------------------------------
+-- walk to the seat
+class "action_go_position" (action_base)
+function action_go_position:__init(npc, action_name, storage) super(nil, action_name)
+	self.st = storage
+end
+function action_go_position:initialize()
+	action_base.initialize(self)
+	self.object:set_desired_position()
+	self.object:set_desired_direction()
+	self.st.pos_vertex = nil
+	self.st.npc_position_num = nil
+	self.st.signals = {}
+end
+function action_go_position:execute()
+	action_base.execute(self)
+
+	local kamp = kamps[self.st.kamp_key]
+	local vertex, num = kamp:getDestVertex(self.object, self.st.radius)
+	if vertex == nil then
+		return
+	end
+	if self.st.npc_position_num ~= num or self.st.pos_vertex ~= vertex then
+		self.st.npc_position_num = num
+		self.st.pos_vertex = vertex
+
+		-- look at the fire (a little bit off centre so the circle looks natural)
+		local pp = vector():set(kamp.center.x, kamp.center.y, kamp.center.z)
+		local ang = math.random() * 6.2831853
+		local off = math.random() * 0.5
+		pp.x = pp.x + math.cos(ang) * off
+		pp.z = pp.z + math.sin(ang) * off
+		self.st.pp = pp
+
+		self.object:set_dest_level_vertex_id(vertex)
+		local dir = vector():sub(pp, level.vertex_position(vertex))
+		dir.y = 0
+		if dir:magnitude() > 0.01 then
+			dir:normalize()
+			self.object:set_desired_direction(dir)
+		end
+		self.object:set_path_type(game_object.level_path)
+		state_mgr.set_state(self.object, self.st.def_state_moving)
+	end
+end
+function action_go_position:finalize()
+	action_base.finalize(self)
+end
+
+-- sit by the fire
+class "action_wait" (action_base)
+function action_wait:__init(npc, action_name, storage) super(nil, action_name)
+	self.st = storage
+	-- names are read by sr_camp (roles of the stalkers in a camp)
+	self.st.description = "kamp"
+	self.st.base_action = self.st.description
+	self.st.approved_actions = { { name = "kamp" } }
+	self.camp = nil
+end
+function action_wait:refresh_approved_actions()
+	local id = self.object:id()
+	local list = { { name = "kamp" } }
+	if xr_animpoint_predicates.animpoint_predicate_guitar(id, true) then
+		list[#list + 1] = { name = "kamp_guitar" }
+	end
+	if xr_animpoint_predicates.animpoint_predicate_harmonica(id, true) then
+		list[#list + 1] = { name = "kamp_harmonica" }
+	end
+	self.st.approved_actions = list
+end
+function action_wait:initialize()
+	action_base.initialize(self)
+	self.object:set_desired_position()
+	self.object:set_desired_direction()
+	self.st.signals = {}
+
+	local kamp = kamps[self.st.kamp_key]
+	kamp:increase_population(self.object)
+
+	-- join the camp the fire belongs to (guitar / harmonica / stories)
+	if self.st.use_camp then
+		self:refresh_approved_actions()
+		local camp = sr_camp.get_current_camp(kamp.center)
+		if camp ~= nil then
+			self.camp = camp
+			camp:register_npc(self.object:id())
+		end
+	end
+end
+function action_wait:leave_camp()
+	if self.camp ~= nil then
+		if db.storage[self.object:id()] ~= nil and db.storage[self.object:id()].registred_camp ~= nil then
+			self.camp:unregister_npc(self.object:id())
+		end
+		self.camp = nil
+	end
+end
+function action_wait:activate_scheme()
+	self.st.signals = {}
+end
+function action_wait:execute()
+	action_base.execute(self)
+	local kamp = kamps[self.st.kamp_key]
+	local state, look_at = kamp:update_npc(self.object, self.camp)
+	state_mgr.set_state(self.object, state, nil, nil, { look_position = look_at or self.st.pp })
+end
+function action_wait:update()
+	-- camp state changed (called through xr_logic.issue_event by sr_camp)
+	local kamp = kamps[self.st.kamp_key]
+	if kamp ~= nil and kamp.npc[self.object:id()] ~= nil then
+		kamp.npc[self.object:id()].begin = nil
+	end
+end
+function action_wait:finalize()
+	local kamp = kamps[self.st.kamp_key]
+	if kamp ~= nil then
+		kamp:decrease_population(self.object)
+	end
+	self:leave_camp()
+	kamp_stalkers[self.object:id()] = nil
+	action_base.finalize(self)
+end
+function action_wait:deactivate(npc)
+	self:leave_camp()
+	if kamps[self.st.kamp_key] ~= nil then
+		kamps[self.st.kamp_key]:remove_npc(npc)
+	end
+end
+function action_wait:death_callback(npc)
+	self:leave_camp()
+	if kamps[self.st.kamp_key] ~= nil then
+		kamps[self.st.kamp_key]:remove_npc(npc)
+	end
+end
+function action_wait:net_destroy(npc)
+	self:leave_camp()
+	if kamps[self.st.kamp_key] ~= nil then
+		kamps[self.st.kamp_key]:remove_npc(npc)
+	end
+end
+
+----------------------------------------------------------------------------------------------------------------------
+-- Camp manager: hands out the seats of the circle
+----------------------------------------------------------------------------------------------------------------------
+class "CKampManager"
+function CKampManager:__init(key, center)
+	self.kamp_name = key
+	self.center = center
+	self.position = {}
+	for i = 1, #SECTORS do
+		self.position[i] = { dir = vector():set(SECTORS[i].x, 0, SECTORS[i].z), used = nil }
+		self.position[i].dir:normalize()
+	end
+	self.npc = {}
+	self.population = 0
+end
+function CKampManager:select_position(npc_id)
+	local free = {}
+	for k, v in pairs(self.position) do
+		if v.used == nil then
+			table.insert(free, k)
+		end
+	end
+	local n = self.npc[npc_id]
+	if #free > 0 then
+		local pick = free[math.random(#free)]
+		self.position[pick].used = npc_id
+		n.position = pick
+	else
+		-- more stalkers than seats: share a seat instead of failing
+		n.position = math.random(#self.position)
+		n.shared = true
+	end
+end
+-- seat vertex in the sector of the stalker, at the given distance from the fire
+function CKampManager:getDestVertex(npc, radius)
+	local npc_id = npc:id()
+	local n = self.npc[npc_id]
+	if n == nil then
+		return nil
+	end
+	if n.position == nil then
+		self:select_position(npc_id)
+	end
+	if n.vertex ~= nil then
+		return n.vertex, n.position
+	end
+
+	local base = self.position[n.position].dir
+	local dir = vector():set(base.x + math.random(-1, 1) / 6, 0, base.z + math.random(-1, 1) / 6)
+	dir:normalize()
+
+	local r = radius + (math.random() - 0.5) * 0.6
+	local dest_vertex = NO_VERTEX
+	while dest_vertex == NO_VERTEX do
+		local p = vector():set(self.center.x + dir.x * r, self.center.y, self.center.z + dir.z * r)
+		dest_vertex = level.vertex_id(p)
+		if dest_vertex == NO_VERTEX then
+			if r < 1 then
+				-- no walkable ground in this direction: use the AI node of the fire itself
+				dest_vertex = level.vertex_id(self.center)
+				break
+			end
+			r = r - 0.5
+		end
+	end
+	if dest_vertex == NO_VERTEX then
+		return nil
+	end
+	if not npc:accessible(dest_vertex) then
+		dest_vertex = npc:accessible_nearest(level.vertex_position(dest_vertex), vector():set(0, 0, 0))
+	end
+	n.vertex = dest_vertex
+	return dest_vertex, n.position
+end
+-- what to do while sitting
+function CKampManager:update_npc(npc, camp)
+	local npc_id = npc:id()
+	local n = self.npc[npc_id]
+	if n == nil then
+		return "sit", nil
+	end
+
+	-- the camp (sr_camp) picks who plays or tells; everybody else listens
+	if camp ~= nil then
+		local action, is_director = camp:get_camp_action(npc_id)
+		if action == "guitar" or action == "harmonica" or action == "story" then
+			if is_director then
+				kamp_stalkers[npc_id] = false
+				if action == "guitar" then return "play_guitar", nil end
+				if action == "harmonica" then return "play_harmonica", nil end
+			else
+				kamp_stalkers[npc_id] = true
+				-- turn towards the performer
+				local d = camp.director
+				local dst = d ~= nil and db.storage[d] and db.storage[d].object
+				local look
+				if dst ~= nil then
+					look = dst:position()
+				end
+				return self:idle_state(n, npc), look
+			end
+		end
+	end
+
+	kamp_stalkers[npc_id] = true
+	return self:idle_state(n, npc), nil
+end
+-- sit / sit on the ground / sit on the heels, changed every 15-25 s
+function CKampManager:idle_state(n, npc)
+	local now = time_global()
+	if n.state_selected == nil or n.begin == nil or now - n.begin >= n.state_idle then
+		n.begin = now
+		n.state_idle = math.random(15000, 25000)
+		n.state_selected = SIT_STATES[math.random(#SIT_STATES)]
+	end
+	return n.state_selected
+end
+function CKampManager:add_npc(npc)
+	if self.npc[npc:id()] ~= nil then
+		return
+	end
+	self.npc[npc:id()] = { name = npc:name(), position = nil, vertex = nil, begin = nil, state_idle = 0 }
+	self:select_position(npc:id())
+end
+function CKampManager:remove_npc(npc)
+	local npc_id = npc:id()
+	local n = self.npc[npc_id]
+	if n ~= nil then
+		if n.position ~= nil and self.position[n.position].used == npc_id then
+			self.position[n.position].used = nil
+		end
+		self.npc[npc_id] = nil
+	end
+end
+function CKampManager:increase_population(npc)
+	self.population = self.population + 1
+end
+function CKampManager:decrease_population(npc)
+	self.population = self.population - 1
+end
+
+----------------------------------------------------------------------------------------------------------------------
+-- Binder
+----------------------------------------------------------------------------------------------------------------------
+function add_to_binder(npc, ini, scheme, section, storage)
+	local operators = {}
+	local properties = {}
+
+	local manager = npc:motivation_action_manager()
+
+	properties["kamp_end"] = xr_evaluators_id.stohe_kamp_base + 1
+	properties["on_position"] = xr_evaluators_id.stohe_kamp_base + 2
+	properties["contact"] = xr_evaluators_id.stohe_meet_base + 1
+	properties["state_mgr_logic_active"] = xr_evaluators_id.state_mgr + 4
+
+	operators["go_position"] = xr_actions_id.stohe_kamp_base + 1
+	operators["wait"] = xr_actions_id.stohe_kamp_base + 2
+
+	manager:add_evaluator(properties["kamp_end"], this.evaluator_kamp_end("kamp_end", storage, "kamp_end"))
+	manager:add_evaluator(properties["on_position"], this.evaluator_on_position("kamp_on_position", storage, "kamp_on_position"))
+
+	local action = this.action_wait(npc, "action_kamp_wait", storage)
+	action:add_precondition(world_property(stalker_ids.property_alive, true))
+	action:add_precondition(world_property(stalker_ids.property_danger, false))
+	action:add_precondition(world_property(stalker_ids.property_enemy, false))
+	action:add_precondition(world_property(stalker_ids.property_anomaly, false))
+	xr_motivator.addCommonPrecondition(action)
+	action:add_precondition(world_property(properties["on_position"], true))
+	action:add_effect(world_property(properties["kamp_end"], true))
+	action:add_effect(world_property(properties["state_mgr_logic_active"], false))
+	manager:add_action(operators["wait"], action)
+	xr_logic.subscribe_action_for_events(npc, storage, action)
+
+	action = this.action_go_position(npc, "action_go_kamp", storage)
+	action:add_precondition(world_property(stalker_ids.property_alive, true))
+	action:add_precondition(world_property(stalker_ids.property_danger, false))
+	action:add_precondition(world_property(stalker_ids.property_enemy, false))
+	action:add_precondition(world_property(stalker_ids.property_anomaly, false))
+	xr_motivator.addCommonPrecondition(action)
+	action:add_precondition(world_property(properties["on_position"], false))
+	action:add_effect(world_property(properties["on_position"], true))
+	action:add_effect(world_property(properties["state_mgr_logic_active"], false))
+	manager:add_action(operators["go_position"], action)
+	xr_logic.subscribe_action_for_events(npc, storage, action)
+
+	action = manager:action(xr_actions_id.alife)
+	action:add_precondition(world_property(properties["kamp_end"], true))
+end
+
+-- scheme on
+function set_scheme(npc, ini, scheme, section, gulag_name)
+	local st = xr_logic.assign_storage_and_bind(npc, ini, scheme, section)
+
+	st.logic = xr_logic.cfg_get_switch_conditions(ini, section, npc)
+
+	local center
+	local pos_str = utils.cfg_get_string(ini, section, "center_pos", npc, false, "", nil)
+	if pos_str ~= nil then
+		center = parse_pos(pos_str)
+		if center == nil then
+			abort("kamp: wrong center_pos [%s] in section [%s]", tostring(pos_str), section)
+		end
+		st.kamp_key = "pos:" .. pos_str
+	else
+		st.center_point = utils.cfg_get_string(ini, section, "center_point", npc, true, gulag_name)
+		center = patrol(st.center_point):point(0)
+		st.kamp_key = st.center_point
+	end
+	st.radius = utils.cfg_get_number(ini, section, "radius", npc, false, 2)
+	st.use_camp = utils.cfg_get_bool(ini, section, "use_camp", npc, false, true)
+
+	if kamps[st.kamp_key] == nil then
+		kamps[st.kamp_key] = CKampManager(st.kamp_key, center)
+	end
+	kamps[st.kamp_key]:add_npc(npc)
+	st.pos_vertex = nil
+	st.pp = center
+
+	st.def_state_moving = utils.cfg_get_string(ini, section, "def_state_moving", npc, false, "", "walk")
+end
+function disable_scheme(npc, scheme)
+	local st = db.storage[npc:id()] and db.storage[npc:id()][scheme]
+	if st ~= nil and st.kamp_key ~= nil and kamps[st.kamp_key] ~= nil then
+		kamps[st.kamp_key]:remove_npc(npc)
+	end
+	kamp_stalkers[npc:id()] = nil
+end

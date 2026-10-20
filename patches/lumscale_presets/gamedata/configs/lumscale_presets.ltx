@@ -1,0 +1,33 @@
+; Lighting presets for Shadow of COOP (client side). Every line is a console variable and its value.
+; Pick a preset: see NOTES.md. Edit the numbers here if you want your own look.
+; Lines starting with ; are comments.
+[presets]
+off
+default
+soc
+bright
+
+; off      = the add-on does nothing, your own settings (user.ltx) stay as they are. This is the default choice.
+; default  = the usual xrMPE look (puts the lighting variables back to their normal values)
+; soc      = closer to the original Shadow of Chernobyl: darker shadows and interiors, more contrast
+; bright   = lifted shadows and a brighter night, for dark rooms and dim monitors
+
+[default]
+r2_sun_lumscale = 1.0
+r2_sun_lumscale_amb = 1.0
+r2_sun_lumscale_hemi = 1.0
+r2_tonemap = on
+r2_tonemap_middlegray = 1.0
+r2_tonemap_adaptation = 1.0
+r2_tonemap_lowlum = 0.0001
+r2_tonemap_amount = 0.7
+
+[soc]
+r2_sun_lumscale = 1.0
+r2_sun_lumscale_amb = 1.0
+r2_sun_lumscale_hemi = 1.0
+
+[bright]
+r2_sun_lumscale = 1.0
+r2_sun_lumscale_amb = 1.0
+r2_sun_lumscale_hemi = 1.0

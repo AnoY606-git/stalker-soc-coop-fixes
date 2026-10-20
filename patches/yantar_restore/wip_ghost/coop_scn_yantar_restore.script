@@ -1,0 +1,201 @@
+-------------------------------------------------------------------------------------------------------
+-- Yantar / X16 restore package (Scene Director package, loaded by file discovery "coop_scn_*").
+-- Original SoC content that the mod dropped, restored from the level data that is still in the add-on:
+--
+--  1. Sakharov's PDA message after the X16 installation is switched off, with the military helicopters that
+--     clear the zombies (SoC yan_saharov_message_3, text id scn_yantar_restore_saharov_msg_3). The level still
+--     has the helicopter flight paths heli_move_1..3 / heli_look_1..3 / heli_move_end_1,2 (coop_l08_yantar) but no
+--     helicopter object. Two are added to the level's level.spawn (parked at heli_stay_1 / heli_stay_3, logic
+--     scripts/coop_l08_yantar/yan_helicopter_N_a.ltx); this script only raises YAN_RESTORE_HELI_DONE and shows the
+--     message. (A script created helicopter crashes the server: its startup animation stays "$editor".)
+--  2. The Ghost's corpse in the X16 lab area with the lab documents (SoC x16_stalker_ghost, character yan_ghost).
+--     The level still has the restrictor x16_space_restrictor_ghost_pda at (-75.06, 5.59, -10.24).
+--     Picking the documents up plays the SoC tip "Ghost's audio recording" (yan_ghost_pda / storyline_ghost_tip).
+--
+-- All server work runs inside a scene "trigger" (polled every 500 ms by the director, which returns false there).
+-------------------------------------------------------------------------------------------------------
+
+local ID_HELI  = "yan_heli"
+local ID_GHOST = "x16_ghost_pda"
+local ID_WATCH = "yan_restore_tick"
+
+local FLAG_HELI_DONE  = "YAN_RESTORE_HELI_DONE"
+local FLAG_DOCS_TAKEN = "X16_GHOST_DOCS_TAKEN"
+
+local MSG_ID  = "scn_yantar_restore_saharov_msg_3"
+local TIP_ID  = "scn_yantar_restore_ghost_tip"
+local DOCS    = "lab_x16_documents"
+
+local GHOST_SECTION = "x16_stalker_ghost"
+local GHOST_STORY   = "x16_stalker_ghost"
+local GHOST_POS     = { x = -75.06, y = 5.59, z = -10.24 }      -- level object x16_space_restrictor_ghost_pda
+
+
+local function dbg(s)
+	pcall(printf_msg, "YANRESTORE %s", tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "YANRESTORE " .. tostring(s)) end
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[YR] " .. tostring(s)) end
+end
+
+local function first_player(ctx)
+	local pl = ctx.players()
+	return pl[1]
+end
+
+local function all_levers(ctx)
+	return ctx.flag("X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO")
+		and ctx.flag("X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO")
+		and ctx.flag("X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO")
+		and ctx.flag("X16_LAB_PRIMARY_SWITCHER_4_DEACTIVATE_INFO")
+end
+
+-- Sakharov's message (client): the player's PDA news with Sakharov's icon
+local function show_msg(actor)
+	if actor == nil then return end
+	local ok = pcall(function()
+		actor:give_game_news(game.translate_string("st_tip"), game.translate_string(MSG_ID), "ui_inGame2_saharov", 0, 12000, 0)
+	end)
+	if not ok then
+		ok = pcall(news_manager.send_tip, actor, MSG_ID, 0, "ecolog", 12000)
+	end
+	dbg("sakharov message shown ok=" .. tostring(ok))
+end
+
+coop_scenes.register {
+	id        = ID_HELI,
+	kind      = "sequence",
+	level     = "coop_l08_yantar",
+	once      = true,
+	skip      = "none",
+	length_ms = 3000,
+	grace_ms  = 20000,
+	settle_ms = 4000,
+
+	-- SERVER: the player came out of the X16 tunnel (the mod's "get out of the lab" zone) and the installation is off
+	trigger = function(ctx)
+		if ctx.flag(FLAG_HELI_DONE) then return false end
+		return ctx.flag("X16_START_GET_OUT_OF_THE_LAB_TASK_INFO") and all_levers(ctx)
+	end,
+
+	on_go = function(ctx, var)
+		-- the helicopters are level objects (levels/coop_l08_yantar/level.spawn, logic yan_helicopter_N_a.ltx): they
+		-- start their sweep on this flag
+		story_flags.give_flag(FLAG_HELI_DONE)
+	end,
+
+	steps = function(var, env)
+		return {
+			{ ["do"] = "fn", fn = function(e) show_msg(e.actor) end },
+			{ ["do"] = "wait", ms = 1500 },
+		}
+	end,
+}
+
+-------------------------------------------------------------------------------------------------------
+-- Ghost's corpse (server, idempotent every session; the runtime object is not part of the level spawn)
+-------------------------------------------------------------------------------------------------------
+G = G or { id = nil, tries = 0, cleaned = false }
+
+local function ensure_ghost(ctx)
+	if G.id ~= nil then return end
+	local ex = get_story_object_id(GHOST_STORY)
+	if ex ~= nil then G.id = ex return end
+	local pl = first_player(ctx)
+	if pl == nil then return end
+	G.tries = G.tries + 1
+	local ok, err = pcall(function()
+		local pos = vector():set(GHOST_POS.x, GHOST_POS.y, GHOST_POS.z)
+		local lv = level.vertex_id(pos)
+		local gpos = pos
+		if lv ~= nil and lv ~= 4294967295 then
+			local vp = level.vertex_position(lv)
+			gpos = vector():set(GHOST_POS.x, vp.y, GHOST_POS.z)
+		else
+			lv = pl:level_vertex_id()
+		end
+		local se = alife():create(GHOST_SECTION, gpos, lv, pl:game_vertex_id())
+		G.id = se.id
+		dbg("ghost created id=" .. tostring(se.id) .. " lvid=" .. tostring(lv))
+		pcall(function() se:kill() end)
+		pcall(function()
+			if not story_flags.has_flag(FLAG_DOCS_TAKEN) then alife():create(DOCS, gpos, lv, pl:game_vertex_id(), se.id) end
+		end)
+		G.killed_at_create = true
+	end)
+	if not ok then dbg("ghost create failed: " .. tostring(err)) end
+end
+
+local function ghost_cleanup()
+	-- the documents are a single copy per save: if somebody already took them in an earlier session the new corpse does not carry them
+	if G.cleaned or G.id == nil then return end
+	local o = level.object_by_id(G.id)
+	if o == nil then return end
+	G.cleaned = true
+	if story_flags.has_flag(FLAG_DOCS_TAKEN) then
+		pcall(function()
+			o:iterate_inventory(function(owner, item)
+				if item:section() == DOCS then
+					local se = alife():object(item:id())
+					if se then alife():release(se, true) end
+				end
+			end, o)
+		end)
+	end
+	if o:alive() then pcall(function() o:kill(o) end) end
+end
+
+local function watch_docs(ctx)
+	if story_flags.has_flag(FLAG_DOCS_TAKEN) then return end
+	for _, a in ipairs(ctx.players()) do
+		local ok, has = pcall(function() return a:object(DOCS) ~= nil end)
+		if ok and has then
+			story_flags.give_flag(FLAG_DOCS_TAKEN)
+			dbg("documents taken by " .. tostring(a:name()))
+			return
+		end
+	end
+end
+
+-- the polling hook: returns false always (it only does server work)
+coop_scenes.register {
+	id        = ID_WATCH,
+	kind      = "sequence",
+	once      = false,
+	skip      = "none",
+	length_ms = 1000,
+	settle_ms = 2000,
+	trigger = function(ctx)
+		local now = time_global()
+		if ctx.level == "coop_l08_x16" then
+			ensure_ghost(ctx)
+			ghost_cleanup()
+			watch_docs(ctx)
+		end
+		return false
+	end,
+}
+
+-- the PDA tip when somebody picks the documents up (SoC yan_ghost_pda -> storyline_ghost_tip), once per save
+coop_scenes.register {
+	id        = ID_GHOST,
+	kind      = "sequence",
+	level     = "coop_l08_x16",
+	once      = true,
+	skip      = "none",
+	length_ms = 2500,
+	grace_ms  = 20000,
+	settle_ms = 2000,
+	trigger = function(ctx) return ctx.flag(FLAG_DOCS_TAKEN) end,
+	steps = function(var, env)
+		return {
+			{ ["do"] = "fn", fn = function(e)
+				local ok = pcall(function()
+					e.actor:give_game_news(game.translate_string("st_tip"), game.translate_string(TIP_ID), "ui_iconsTotal_grouping", 0, 6000, 0)
+				end)
+				dbg("ghost audio tip shown ok=" .. tostring(ok))
+			end },
+			{ ["do"] = "wait", ms = 1000 },
+		}
+	end,
+}

@@ -1,0 +1,100 @@
+-- NPC weapons with installed scope / silencer / grenade launcher (patch npc_attachments).
+-- Called from se_item.script when a weapon server object registers (at spawn and at every save load, the roll is stable).
+-- The addon flags are not exported to Lua, so they are set by rewriting the weapon's STATE packet: the flags byte is the third
+-- eighth byte from the end of cse_alife_item_weapon.STATE_Write for every weapon class (tail layout: flags, 5a 00, ammo 2 bytes, state, ammo type, grenades;
+-- the third byte from the end is the AMMO TYPE: setting a silencer bit there selected ammo index 4, an empty ammo section: "Can't open section ''").
+
+local ADDON_SCOPE = 1
+local ADDON_LAUNCHER = 2
+local ADDON_SILENCER = 4
+
+local cfg = nil
+
+-- Weapons whose installed silencer aborts the game with "Can't open section ''" when the NPC spawns (found by boot checks, PB pistol).
+local SKIP_SILENCER = { ["wpn_pb"] = true }
+
+local function load_cfg()
+	cfg = { chance = 25, scope = true, silencer = true, launcher = false }
+	local ok, ini = pcall(ini_file, "misc" .. string.char(92) .. "npc_attachments.ltx")
+	if ok and ini and ini:section_exist("npc_attachments") then
+		if ini:line_exist("npc_attachments", "chance") then cfg.chance = ini:r_float("npc_attachments", "chance") end
+		if ini:line_exist("npc_attachments", "scope") then cfg.scope = ini:r_bool("npc_attachments", "scope") end
+		if ini:line_exist("npc_attachments", "silencer") then cfg.silencer = ini:r_bool("npc_attachments", "silencer") end
+		if ini:line_exist("npc_attachments", "launcher") then cfg.launcher = ini:r_bool("npc_attachments", "launcher") end
+	end
+end
+
+-- stable pseudo random number in [0, 1) for a weapon id and an addon
+local function roll(id, salt)
+	local x = math.sin(id * 12.9898 + salt * 78.233) * 43758.5453
+	return x - math.floor(x)
+end
+
+-- the weapon takes this addon (status 2) AND names an existing addon section: with the flag set but no name the engine
+-- reads the addon's values from section '' and aborts ("Can't open section ''")
+local function attachable(sys, section, key, name_key)
+	if not (sys:line_exist(section, key) and sys:r_u32(section, key) == 2) then return false end
+	if not sys:line_exist(section, name_key) then return false end
+	local name = sys:r_string(section, name_key)
+	return name ~= nil and name ~= "" and sys:section_exist(name)
+end
+
+local function npc_parent(se)
+	local pid = se.parent_id
+	if pid == nil or pid == 65535 then return false end
+	local parent = alife():object(pid)
+	if parent == nil or parent:clsid() ~= clsid.script_stalker then return false end
+	local ok, alive = pcall(function() return parent:alive() end)
+	return ok and alive
+end
+
+function addon_mask(se)
+	if cfg == nil then load_cfg() end
+	if cfg.chance <= 0 then return 0 end
+	local sys = system_ini()
+	local section = se:section_name()
+	if not sys:section_exist(section) then return 0 end
+	local p = cfg.chance / 100
+	local mask = 0
+	if cfg.scope and attachable(sys, section, "scope_status", "scope_name") and roll(se.id, 1) < p then mask = mask + ADDON_SCOPE end
+	if cfg.launcher and attachable(sys, section, "grenade_launcher_status", "grenade_launcher_name") and roll(se.id, 2) < p then mask = mask + ADDON_LAUNCHER end
+	if cfg.silencer and not SKIP_SILENCER[section] and attachable(sys, section, "silencer_status", "silencer_name") and roll(se.id, 3) < p then mask = mask + ADDON_SILENCER end
+	-- weapons marked restricted_gl_and_sil cannot carry both at once
+	if mask >= ADDON_LAUNCHER + ADDON_SILENCER and sys:line_exist(section, "restricted_gl_and_sil") and sys:r_bool(section, "restricted_gl_and_sil") then
+		mask = mask - ADDON_LAUNCHER
+	end
+	return mask
+end
+
+function set_addon_flags(se, mask)
+	local pk = net_packet()
+	se:STATE_Write(pk)
+	local n = pk:r_elapsed()
+	local bytes = {}
+	for i = 1, n do bytes[i] = pk:r_u8() end
+	local idx = n - 8
+	local cur = bytes[idx]
+	-- OR the bits in (Lua 5.1 has no bit operators)
+	local add = 0
+	for _, bit in ipairs({ ADDON_SCOPE, ADDON_LAUNCHER, ADDON_SILENCER }) do
+		if mask >= 0 and math.floor(mask / bit) % 2 == 1 and math.floor(cur / bit) % 2 == 0 then add = add + bit end
+	end
+	if add == 0 then return false end
+	bytes[idx] = cur + add
+	local out = net_packet()
+	for i = 1, n do out:w_u8(bytes[i]) end
+	se:STATE_Read(out, n)
+	return true
+end
+
+function on_weapon_register(se)
+	if not OnServer() then return end
+	local ok, err = pcall(function()
+		if not npc_parent(se) then return end
+		local mask = addon_mask(se)
+		if mask ~= 0 then set_addon_flags(se, mask) end
+	end)
+	if not ok then
+		printf("[npc_attachments] %s", tostring(err))
+	end
+end

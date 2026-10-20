@@ -1,0 +1,766 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene Director (Shadow of COOP cutscene core). See CONTRACT.md.
+-- Server decides (GO/END story flags), every client plays locally, clients ack by RPC.
+-------------------------------------------------------------------------------------------------------
+
+defs = {}
+order = {}
+dbg = { no_ack = false, no_end = false }
+cfg = { lobby = { x = 105.0, y = -15.8, z = -9.8, r = 25.0 }, fs_settle_ms = 2500 }
+
+local PKGS = { "opening", "endings", "x18", "radar", "yantar", "monolith", "pripyat", "cats", "misc1", "misc2", "misc3" }
+local I = { gen = 0, installed = false, last_tick = 0, pkgs_loaded = false }
+local S = { queue = {}, active = nil, live_since = nil, recovered = false, fs_seen = {}, cool = 0 }
+local C = { level = nil, base = false, seen = {}, run = nil, jump_down = false }
+local T = { srv = 0, cli = 0 }
+local first_spawn_cbs = {}
+
+-------------------------------------------------------------------------------------------------------
+-- helpers
+-------------------------------------------------------------------------------------------------------
+local function slog(s)
+	local line = "SCENE " .. tostring(s)
+	pcall(printf_msg, "%s", line)
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then
+		pcall(bot.log, line)
+	end
+end
+
+local function UP(s) return string.upper(tostring(s)) end
+local function has(name) return story_flags.has_flag(name) end
+local function give(name) story_flags.give_flag(name) end
+
+local function eff(def, var)
+	if var == nil or def.variants == nil or def.variants[var] == nil then
+		return def
+	end
+	local t = {}
+	for k, v in pairs(def) do t[k] = v end
+	for k, v in pairs(def.variants[var]) do t[k] = v end
+	return t
+end
+
+local function last_n(id)
+	local n = 0
+	local u = UP(id)
+	while has("SCN_" .. u .. "_GO_" .. (n + 1)) do n = n + 1 end
+	return n
+end
+
+local function flag_variant(id, n)
+	local prefix = "SCN_" .. UP(id) .. "_VAR_" .. n .. "_"
+	local tbl = story_flags.story_flags
+	if tbl == nil then return nil end
+	for k, v in pairs(tbl) do
+		if v == true and string.sub(k, 1, #prefix) == prefix then
+			return string.lower(string.sub(k, #prefix + 1))
+		end
+	end
+	return nil
+end
+
+local function players()
+	local t = {}
+	if db.mp_actors == nil then return t end
+	for id, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then t[#t + 1] = a end
+	end
+	return t
+end
+
+local function in_lobby(a)
+	local l = cfg.lobby
+	local p = a:position()
+	local dx, dz = p.x - l.x, p.z - l.z
+	return (dx * dx + dz * dz) < l.r * l.r and math.abs(p.y - l.y) < 40
+end
+
+function near(x, y, z, r, mode)
+	local pl = players()
+	local v = vector():set(x, y, z)
+	local c = 0
+	for _, a in ipairs(pl) do
+		if a:position():distance_to(v) <= r then c = c + 1 end
+	end
+	mode = mode or "any"
+	if mode == "any" then return c >= 1 end
+	if mode == "all" then return #pl > 0 and c == #pl end
+	local n = tonumber(string.match(mode, "count>=(%d+)"))
+	return n ~= nil and c >= n
+end
+
+function party()
+	local r = { n = 0, money = 0, rep = 0, players = {} }
+	for _, a in ipairs(players()) do
+		local m, rp = 0, 0
+		pcall(function() m = a:money() end)
+		pcall(function() rp = a:character_reputation() end)
+		r.n = r.n + 1
+		r.money = r.money + m
+		r.rep = r.rep + rp
+		r.players[#r.players + 1] = { id = a:id(), name = a:name(), money = m, rep = rp }
+	end
+	return r
+end
+
+local function make_ctx()
+	return {
+		now = time_global(),
+		players = players,
+		count = function() return #players() end,
+		flag = has,
+		near = near,
+		party = party,
+		level = level.name(),
+	}
+end
+
+-------------------------------------------------------------------------------------------------------
+-- registration and query API
+-------------------------------------------------------------------------------------------------------
+function register(def)
+	if type(def) ~= "table" or type(def.id) ~= "string" or not string.match(def.id, "^[a-z0-9_]+$") then
+		slog("REGERR bad id")
+		return false
+	end
+	def.kind = def.kind or "sequence"
+	if def.once == nil then def.once = true end
+	def.length_ms = def.length_ms or 5000
+	def.grace_ms = def.grace_ms or 20000
+	def.settle_ms = def.settle_ms or 6000
+	if def.skip == nil then
+		if def.kind == "movie" then def.skip = "majority"
+		elseif def.kind == "camera" then def.skip = "any"
+		else def.skip = "none" end
+	end
+	if defs[def.id] == nil then order[#order + 1] = def.id end
+	defs[def.id] = def
+	return true
+end
+
+function played(id) return has("SCN_" .. UP(id) .. "_PLAYED") end
+function is_active(id)
+	local n = last_n(id)
+	return n > 0 and not has("SCN_" .. UP(id) .. "_END_" .. n)
+end
+function now_id() return S.active and S.active.id or nil end
+function variant(id)
+	local n = last_n(id)
+	if n == 0 then return nil end
+	return flag_variant(id, n)
+end
+function flag(name) return has(name) end
+
+local function queued(id)
+	for _, q in ipairs(S.queue) do if q.id == id then return true end end
+	return false
+end
+
+function request(id, var, opts)
+	if not OnServer() then return false end
+	local def = defs[id]
+	if def == nil then slog("REQERR unknown " .. tostring(id)); return false end
+	if def.once and played(id) then return false end
+	if queued(id) or (S.active and S.active.id == id) then return false end
+	ensure()
+	if var == nil and def.pick then
+		local ok, v = pcall(def.pick, make_ctx())
+		if ok then var = v else slog("PICKERR " .. id .. " " .. tostring(v)) end
+	end
+	if var ~= nil then
+		var = string.lower(tostring(var))
+		if not string.match(var, "^[a-z0-9_]+$") then slog("REQERR bad variant"); var = nil end
+	end
+	opts = opts or {}
+	S.queue[#S.queue + 1] = { id = id, var = var, target = opts.target, due = time_global() + (opts.delay_ms or 0) }
+	slog(string.format("%s REQUEST n=%d expected=%d var=%s", id, last_n(id) + 1, #players(), tostring(var)))
+	return true
+end
+
+-------------------------------------------------------------------------------------------------------
+-- server
+-------------------------------------------------------------------------------------------------------
+local function finish(reason)
+	local A = S.active
+	if A == nil then return end
+	S.active = nil
+	S.cool = time_global() + 300
+	local u = UP(A.id)
+	if not dbg.no_end then
+		give("SCN_" .. u .. "_END_" .. A.n)
+	end
+	give("SCN_" .. u .. "_PLAYED")
+	slog(string.format("%s END n=%d reason=%s", A.id, A.n, reason))
+	local def = defs[A.id]
+	if def and def.on_end then
+		local ok, err = pcall(def.on_end, make_ctx(), A.var, reason)
+		if not ok then slog("HOOKERR on_end " .. A.id .. " " .. tostring(err)) end
+	end
+end
+
+local function start_run(q)
+	local def0 = defs[q.id]
+	local def = eff(def0, q.var)
+	local n = last_n(q.id) + 1
+	local u = UP(q.id)
+	local expected, cnt = {}, 0
+	if q.target ~= nil then
+		expected[q.target] = true; cnt = 1
+	else
+		for _, a in ipairs(players()) do expected[a:id()] = true; cnt = cnt + 1 end
+	end
+	local now = time_global()
+	S.active = { id = q.id, n = n, var = q.var, expected = expected, count = cnt, acked = {}, votes = {},
+		votes_n = 0, skip = def.skip, deadline = now + def.length_ms + def.grace_ms }
+	if q.var then give("SCN_" .. u .. "_VAR_" .. n .. "_" .. UP(q.var)) end
+	if q.target ~= nil then
+		give("SCN_" .. u .. "_TGTD_" .. n)
+		give("SCN_" .. u .. "_TGT_" .. n .. "_" .. q.target)
+	end
+	give("SCN_" .. u .. "_GO_" .. n)
+	slog(string.format("%s GO n=%d var=%s", q.id, n, tostring(q.var)))
+	if def0.on_go then
+		local ok, err = pcall(def0.on_go, make_ctx(), q.var)
+		if not ok then slog("HOOKERR on_go " .. q.id .. " " .. tostring(err)) end
+	end
+end
+
+function on_ack(initiator_id)
+	local A = S.active
+	if A == nil or not A.expected[initiator_id] then
+		slog("ACK_LATE actor=" .. tostring(initiator_id))
+		return
+	end
+	if A.acked[initiator_id] then return end
+	A.acked[initiator_id] = true
+	slog(A.id .. " ACK actor=" .. tostring(initiator_id))
+end
+
+function on_skip(initiator_id)
+	local A = S.active
+	if A == nil then slog("SKIP_LATE actor=" .. tostring(initiator_id)); return end
+	if A.skip == "none" or not A.expected[initiator_id] or A.votes[initiator_id] then return end
+	A.votes[initiator_id] = true
+	A.votes_n = A.votes_n + 1
+	slog(string.format("%s SKIP_VOTE actor=%s %d/%d policy=%s", A.id, tostring(initiator_id), A.votes_n, A.count, A.skip))
+	if A.skip == "any" or A.votes_n * 2 > A.count then
+		finish("skipped")
+	end
+end
+
+local function waiting_for_ack(A)
+	for id, _ in pairs(A.expected) do
+		if not A.acked[id] then
+			local a = db.mp_actors and db.mp_actors[id]
+			if a ~= nil and a:alive() then return true end
+		end
+	end
+	return false
+end
+
+local function recover_orphans()
+	for _, id in ipairs(order) do
+		local n = last_n(id)
+		local u = UP(id)
+		if n > 0 and not has("SCN_" .. u .. "_END_" .. n) then
+			give("SCN_" .. u .. "_END_" .. n)
+			give("SCN_" .. u .. "_PLAYED")
+			slog(string.format("%s END n=%d reason=orphan", id, n))
+		end
+	end
+end
+
+local function level_ok(def, ln)
+	if def.level == nil then return true end
+	if type(def.level) == "table" then
+		for _, l in ipairs(def.level) do if l == ln then return true end end
+		return false
+	end
+	return def.level == ln
+end
+
+local function first_spawn_tick(now, pl)
+	if #first_spawn_cbs == 0 then return end
+	for _, a in ipairs(pl) do
+		local id = a:id()
+		if a:section() == "actor_the_main_character" and not in_lobby(a) then
+			local nm = string.gsub(UP(a:name()), "[^A-Z0-9]", "_")
+			local fl = "SCN_FS_" .. nm
+			if not has(fl) then
+				if S.fs_seen[id] == nil then S.fs_seen[id] = now end
+				if now - S.fs_seen[id] >= cfg.fs_settle_ms then
+					give(fl)
+					slog("FIRST_SPAWN name=" .. a:name() .. " id=" .. id)
+					local ctx = make_ctx()
+					for _, cb in ipairs(first_spawn_cbs) do
+						local ok, err = pcall(cb, a, ctx)
+						if not ok then slog("HOOKERR first_spawn " .. tostring(err)) end
+					end
+				end
+			end
+		end
+	end
+end
+
+function on_first_spawn(fn) first_spawn_cbs[#first_spawn_cbs + 1] = fn end
+
+function _debug_reset_first_spawn(name)
+	local nm = string.gsub(UP(name), "[^A-Z0-9]", "_")
+	story_flags.disable_flag("SCN_FS_" .. nm)
+	S.fs_seen = {}
+end
+
+local function server_tick(now)
+	local pl = players()
+	local outside = 0
+	for _, a in ipairs(pl) do if not in_lobby(a) then outside = outside + 1 end end
+	if outside == 0 then S.live_since = nil
+	elseif S.live_since == nil then S.live_since = now end
+	if #pl == 0 then return end
+	if not S.recovered then
+		S.recovered = true
+		recover_orphans()
+	end
+	first_spawn_tick(now, pl)
+	local A = S.active
+	if A ~= nil then
+		if not waiting_for_ack(A) then
+			finish("all_acked")
+		elseif now >= A.deadline then
+			finish("timeout")
+		end
+		return
+	end
+	if now >= S.cool and #S.queue > 0 and S.queue[1].due <= now and S.live_since ~= nil then
+		local q = table.remove(S.queue, 1)
+		start_run(q)
+		return
+	end
+	if S.live_since == nil then return end
+	local ln = level.name()
+	local ctx = nil
+	for _, id in ipairs(order) do
+		local def = defs[id]
+		if def.trigger and level_ok(def, ln) and not (def.once and played(id)) and not queued(id)
+			and now - S.live_since >= def.settle_ms then
+			ctx = ctx or make_ctx()
+			local ok, res = pcall(def.trigger, ctx)
+			if not ok then
+				slog("HOOKERR trigger " .. id .. " " .. tostring(res))
+				def.trigger = nil
+			elseif res then
+				request(id)
+			end
+		end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- client
+-------------------------------------------------------------------------------------------------------
+function cam_cb()
+	local R = C.run
+	if R then R.cam_ended = (R.cam_ended or 0) + 1 end
+end
+
+function client_movie_stopped()
+	C.movie_stopped_at = time_global()
+end
+
+local function send_ack(R)
+	if R.acked then return end
+	R.acked = true
+	if dbg.no_ack then slog("ACK_BLOCKED actor=" .. tostring(LocalActor())); return end
+	game_cl.executeFunctionOnServer("coop_scn_ack")
+end
+
+function send_skip()
+	local R = C.run
+	if R == nil or R.skip_sent then return false end
+	R.skip_sent = true
+	slog("SKIP_SEND actor=" .. tostring(LocalActor()))
+	game_cl.executeFunctionOnServer("coop_scn_skip")
+	return true
+end
+skip_local = send_skip
+
+local function missing_need(def)
+	local nd = def.need
+	if nd == nil then return nil end
+	local fs = getFS()
+	for _, p in ipairs(nd.tex or {}) do
+		if not fs:exist("$game_textures$", p) then return p end
+	end
+	for _, p in ipairs(nd.snd or {}) do
+		if not fs:exist("$game_sounds$", p) then return p end
+	end
+	return nil
+end
+
+local function build_steps(def, var, env)
+	local s = def.steps
+	if type(s) == "function" then s = s(var, env) end
+	if s ~= nil then return s end
+	local k = def.kind
+	if k == "movie" then
+		return { { ["do"] = "ui_off" }, { ["do"] = "tutorial", name = def.tutorial, wait = true }, { ["do"] = "ui_on" } }
+	elseif k == "camera" then
+		local c = def.cam
+		if type(c) == "string" then c = { anm = c } end
+		local st = { ["do"] = "cam", anm = c.anm, id = c.id or 9001, global = c.global, fov = c.fov, wait = true }
+		return { { ["do"] = "ui_off" }, st, { ["do"] = "ui_on" } }
+	elseif k == "ppe" then
+		return { { ["do"] = "pp", name = def.ppe, id = 9002 }, { ["do"] = "wait", ms = def.length_ms }, { ["do"] = "pp_stop", id = 9002 } }
+	elseif k == "sound" then
+		return { { ["do"] = "snd2d", path = def.sound, wait = true } }
+	end
+	return {}
+end
+
+local function cleanup(R)
+	if R.tut and game.has_active_tutorial() then pcall(game.stop_tutorial) end
+	for id, _ in pairs(R.cams) do pcall(level.remove_cam_effector, id) end
+	for id, _ in pairs(R.pps) do pcall(level.remove_pp_effector, id) end
+	for id, _ in pairs(R.cpps) do pcall(level.remove_complex_effector, id) end
+	for _, s in ipairs(R.snds) do pcall(function() if s:playing() then s:stop() end end) end
+	if R.ui_off then
+		R.ui_off = false
+		pcall(xr_effects.enable_ui, nil, nil)
+	end
+end
+
+local function end_run(reason)
+	local R = C.run
+	if R == nil then return end
+	C.run = nil
+	cleanup(R)
+	send_ack(R)
+	slog(string.format("%s CLIENT_END actor=%s reason=%s", R.id, tostring(LocalActor()), reason))
+	if R.def.on_client_end then
+		local ok, err = pcall(R.def.on_client_end, R.env, reason)
+		if not ok then slog("HOOKERR on_client_end " .. tostring(err)) end
+	end
+end
+
+local function begin_run(id, n, now, a)
+	local def0 = defs[id]
+	local var = flag_variant(id, n)
+	local def = eff(def0, var)
+	local u = UP(id)
+	local targeted = has("SCN_" .. u .. "_TGTD_" .. n)
+	local me = LocalActor()
+	local is_target = (not targeted) or has("SCN_" .. u .. "_TGT_" .. n .. "_" .. me)
+	if not is_target then return end
+	local env = { id = id, n = n, var = var, actor = a, actor_id = me, is_target = is_target, fallback = false }
+	if targeted then env.target = me end
+	local miss = missing_need(def)
+	local steps
+	if miss ~= nil then
+		slog("FALLBACK " .. miss)
+		env.fallback = true
+		local fb = def.fallback
+		local ok, res = pcall(function()
+			if type(fb) == "function" then return fb(var, env) end
+			return fb
+		end)
+		steps = ok and res or {}
+	else
+		local ok, res = pcall(build_steps, def, var, env)
+		if not ok then slog("STEPERR " .. id .. " " .. tostring(res)); res = {} end
+		steps = res
+	end
+	C.run = { id = id, n = n, def = def, env = env, steps = steps or {}, idx = 0, t0 = now, block = nil,
+		cams = {}, pps = {}, cpps = {}, snds = {}, tut = false, ui_off = false,
+		watchdog = now + def.length_ms + def.grace_ms + 5000, started = now }
+	slog(string.format("%s CLIENT_START actor=%s", id, tostring(me)))
+	if def.on_client_start then
+		local ok, err = pcall(def.on_client_start, env)
+		if not ok then slog("HOOKERR on_client_start " .. tostring(err)) end
+	end
+end
+
+local function exec_step(R, st, now)
+	local k = st["do"]
+	local a = getLocalActor()
+	if k == "ui_off" then
+		pcall(xr_effects.disable_ui, nil, nil)
+		R.ui_off = true
+	elseif k == "ui_on" then
+		pcall(xr_effects.enable_ui, nil, nil)
+		R.ui_off = false
+	elseif k == "cam" then
+		local path = "camera_effects\\" .. st.anm .. ".anm"
+		local id = st.id or 9001
+		if not getFS():exist("$game_anims$", path) then
+			slog("NOCAM " .. path)
+			return
+		end
+		local ok, err
+		if st.global then
+			ok, err = pcall(level.add_cam_effector2, path, id, false, "coop_scenes.cam_cb", st.fov or (a and a:fov() * 0.75) or 60)
+		else
+			ok, err = pcall(level.add_cam_effector, path, id, false, "coop_scenes.cam_cb")
+		end
+		if not ok then slog("CAMERR " .. tostring(err)); return end
+		R.cams[id] = true
+		if st.wait then
+			R.block = { kind = "cam", ended0 = R.cam_ended or 0, till = now + (st.cap_ms or (R.def.length_ms + 5000)) }
+		end
+	elseif k == "cam_stop" then
+		pcall(level.remove_cam_effector, st.id or 9001); R.cams[st.id or 9001] = nil
+	elseif k == "pp" then
+		local ok, err = pcall(level.add_pp_effector, st.name .. ".ppe", st.id or 9002, st.loop and true or false)
+		if ok then R.pps[st.id or 9002] = true else slog("PPERR " .. tostring(err)) end
+	elseif k == "pp_stop" then
+		pcall(level.remove_pp_effector, st.id or 9002); R.pps[st.id or 9002] = nil
+	elseif k == "cpp" then
+		local ok, err = pcall(level.add_complex_effector, st.name, st.id or 9003)
+		if ok then R.cpps[st.id or 9003] = true else slog("CPPERR " .. tostring(err)) end
+	elseif k == "cpp_stop" then
+		pcall(level.remove_complex_effector, st.id or 9003); R.cpps[st.id or 9003] = nil
+	elseif k == "snd2d" then
+		if not getFS():exist("$game_sounds$", st.path .. ".ogg") then
+			slog("NOSND " .. st.path)
+			return
+		end
+		local ok, s = pcall(function()
+			local so = sound_object(st.path)
+			if st.vol then so.volume = st.vol end
+			so:play(a, 0, sound_object.s2d)
+			return so
+		end)
+		if not ok then slog("SNDERR " .. tostring(s)); return end
+		R.snds[#R.snds + 1] = s
+		if st.wait then R.block = { kind = "snd", s = s, min = now + 500, till = now + (st.cap_ms or (R.def.length_ms + 5000)) } end
+	elseif k == "tutorial" then
+		local ok, err = pcall(game.start_tutorial, st.name)
+		if not ok then slog("TUTERR " .. tostring(err)); return end
+		R.tut = true
+		if st.wait ~= false then
+			R.block = { kind = "tut", min = now + (st.min_ms or 1500), till = now + (st.cap_ms or (R.def.length_ms + 5000)) }
+		end
+	elseif k == "tutorial_stop" then
+		if game.has_active_tutorial() then pcall(game.stop_tutorial) end
+		R.tut = false
+	elseif k == "wait" then
+		R.block = { kind = "wait", till = now + st.ms }
+	elseif k == "teleport" then
+		if a ~= nil and (st.only ~= "target" or R.env.is_target) then
+			a:set_actor_position(vector():set(st.pos.x, st.pos.y, st.pos.z))
+			if st.dir then a:set_actor_direction(st.dir) end
+		end
+	elseif k == "fn" then
+		local ok, err = pcall(st.fn, R.env)
+		if not ok then slog("FNERR " .. tostring(err)) end
+	elseif k == "main_menu" then
+		send_ack(R)
+		R.leaving = true
+		R.block = { kind = "menu", at = nil }
+	else
+		slog("STEPERR unknown " .. tostring(k))
+	end
+end
+
+local function block_done(R, b, now)
+	if b.kind == "wait" then return now >= b.till end
+	if b.kind == "cam" then return (R.cam_ended or 0) > b.ended0 or now >= b.till end
+	if b.kind == "snd" then
+		if now >= b.till then return true end
+		return now >= b.min and not b.s:playing()
+	end
+	if b.kind == "tut" then
+		if now >= b.till then
+			if game.has_active_tutorial() then pcall(game.stop_tutorial) end
+			R.tut = false
+			return true
+		end
+		return now >= b.min and not game.has_active_tutorial()
+	end
+	if b.kind == "menu" then
+		if b.at == nil then
+			if OnServer() then
+				local u = UP(R.id)
+				if has("SCN_" .. u .. "_END_" .. R.n) then b.at = now + 2000 end
+			else
+				b.at = now + 1500
+			end
+			if b.at == nil and now > R.watchdog - 1000 then b.at = now end
+		elseif now >= b.at then
+			slog("DISCONNECT actor=" .. tostring(LocalActor()))
+			get_console():execute("disconnect")
+			b.at = now + 1000000
+		end
+		return false
+	end
+	return true
+end
+
+local function poll_skip(R, now)
+	if R.def.skip == "none" or R.skip_sent or now - R.t0 < 800 then return end
+	local down = false
+	pcall(function() down = is_action_pressed(key_bindings.kJUMP) end)
+	if down and not C.jump_down then send_skip() end
+	C.jump_down = down
+end
+
+local function run_update(now)
+	local R = C.run
+	local u = UP(R.id)
+	if has("SCN_" .. u .. "_END_" .. R.n) and not R.leaving then
+		end_run(R.skip_sent and "skip" or "stopped")
+		return
+	end
+	if now >= R.watchdog then end_run("watchdog"); return end
+	if getLocalActor() == nil then end_run("stopped"); return end
+	poll_skip(R, now)
+	for _ = 1, 50 do
+		if R.block then
+			if block_done(R, R.block, now) then R.block = nil else return end
+		end
+		local st = R.steps[R.idx + 1]
+		if st == nil then
+			end_run(R.env.fallback and "fallback_done" or "done")
+			return
+		end
+		if st.at and now - R.t0 < st.at then return end
+		R.idx = R.idx + 1
+		local ok, err = pcall(exec_step, R, st, now)
+		if not ok then slog("STEPERR " .. tostring(err)) end
+	end
+end
+
+function _debug_reset_baseline()
+	C.base = false
+	C.seen = {}
+end
+
+local function client_tick(now)
+	local ln = level.name()
+	if C.level ~= ln then
+		C.level = ln
+		C.base = false
+		C.seen = {}
+		C.run = nil
+	end
+	local a = getLocalActor()
+	if a == nil then return end
+	if not C.base then
+		C.base = true
+		for _, id in ipairs(order) do
+			local n = last_n(id)
+			C.seen[id] = n
+			if n > 0 and not has("SCN_" .. UP(id) .. "_END_" .. n) then
+				slog(id .. " SKIP_LATE (joined mid scene) n=" .. n)
+			end
+		end
+		return
+	end
+	if C.run ~= nil then
+		run_update(now)
+		return
+	end
+	for _, id in ipairs(order) do
+		local n = (C.seen[id] or 0) + 1
+		local u = UP(id)
+		if has("SCN_" .. u .. "_GO_" .. n) then
+			C.seen[id] = n
+			if has("SCN_" .. u .. "_END_" .. n) then
+				slog(id .. " SKIP_LATE (already ended) n=" .. n)
+			else
+				begin_run(id, n, now, a)
+				if C.run ~= nil then return end
+			end
+		end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- install / packages
+-------------------------------------------------------------------------------------------------------
+local function load_packages()
+	if I.pkgs_loaded then return end
+	I.pkgs_loaded = true
+	local names, seen = {}, {}
+	for _, p in ipairs(PKGS) do names[#names + 1] = "coop_scn_" .. p; seen["coop_scn_" .. p] = true end
+	pcall(function()
+		local fl = getFS():file_list_open("$game_scripts$", 1)
+		if fl then
+			for i = 0, fl:Size() - 1 do
+				local f = fl:GetAt(i)
+				local nm = string.match(tostring(f), "^(coop_scn_[%w_]+)%.script$")
+				if nm and not seen[nm] then seen[nm] = true; names[#names + 1] = nm end
+			end
+			fl:Free()
+		end
+	end)
+	for _, nm in ipairs(names) do
+		if getFS():exist("$game_scripts$", nm .. ".script") then
+			local ok, err = pcall(function() return _G[nm] end)
+			if not ok then slog("PKGERR " .. nm .. " " .. tostring(err)) end
+		end
+	end
+end
+
+local function inject()
+	pcall(function()
+		game_sv.coop_scn_ack = function(i) coop_scenes.on_ack(i) end
+		game_sv.coop_scn_skip = function(i) coop_scenes.on_skip(i) end
+	end)
+	pcall(function()
+		xr_effects.scene_request = function(actor, npc, p)
+			if p and p[1] then coop_scenes.request(p[1], p[2]) end
+		end
+	end)
+end
+
+function ensure()
+	local now = time_global()
+	if I.installed and now >= I.last_tick and now - I.last_tick < 4000 then return end
+	install()
+end
+
+function install()
+	I.gen = I.gen + 1
+	local gen = I.gen
+	I.installed = true
+	I.last_tick = time_global()
+	T.srv, T.cli = 0, 0
+	inject()
+	local ok, err = pcall(function()
+		level.add_call(function()
+			if gen ~= I.gen then return true end
+			local now = time_global()
+			I.last_tick = now
+			if now - T.srv >= 500 then
+				T.srv = now
+				if OnServer() then
+					local ok2, e2 = pcall(server_tick, now)
+					if not ok2 then slog("TICKERR server " .. tostring(e2)) end
+				end
+			end
+			if now - T.cli >= 50 then
+				T.cli = now
+				if not IsDedicatedServer() then
+					local ok2, e2 = pcall(client_tick, now)
+					if not ok2 then slog("TICKERR client " .. tostring(e2)) end
+				end
+			end
+			return false
+		end, function() end)
+	end)
+	if not ok then
+		I.installed = false
+		slog("INSTALLERR " .. tostring(err))
+		return
+	end
+	if not I.pkgs_loaded then
+		local ok3, e3 = pcall(load_packages)
+		if not ok3 then slog("PKGERR load " .. tostring(e3)) end
+	end
+	slog("INSTALL gen=" .. gen .. " dedicated=" .. tostring(IsDedicatedServer()) .. " server=" .. tostring(OnServer()))
+end
+
+function status()
+	return string.format("active=%s queue=%d installed=%s", tostring(S.active and S.active.id), #S.queue, tostring(I.installed))
+end

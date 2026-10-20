@@ -1,0 +1,31 @@
+; Выдача заданий: =give_task(тип_задания:ид_задания:группировка)
+
+;Основные сюжетные задания:
+#include "tm_coop_l01_escape.ltx"
+#include "tm_coop_l02_garbage.ltx"
+#include "tm_coop_l03_agroprom.ltx"
+#include "tm_coop_l03_agroprom_underground.ltx"
+#include "tm_coop_l04_darkvalley.ltx"
+#include "tm_coop_l04_x18.ltx"
+#include "tm_coop_l05_bar.ltx"
+#include "tm_coop_l06_rostok.ltx"
+#include "tm_coop_l07_military.ltx"
+#include "tm_coop_l08_x16.ltx"
+#include "tm_coop_l08_yantar.ltx"
+#include "tm_coop_l09_radar.ltx"
+#include "tm_coop_l09_x10.ltx"
+#include "tm_coop_l10_pripyat.ltx"
+#include "tm_coop_l11_control_monolith.ltx"
+#include "tm_coop_l11_sarcofag.ltx"
+#include "tm_coop_l11_stancia_1.ltx"
+#include "tm_coop_repeat.ltx"
+
+[hide_from_surge]
+icon = ui_inGame2_Vibros
+prior = 200
+title_functor = surge_task_title
+descr_functor = surge_task_descr
+target_functor = surge_task_target
+;dont_send_update_news = true
+condlist_0 = {=surge_complete()} complete
+condlist_1 = {!actor_alive()} fail

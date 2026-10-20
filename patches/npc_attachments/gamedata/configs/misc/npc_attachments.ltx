@@ -1,0 +1,10 @@
+; NPC weapon attachments (patch npc_attachments).
+; Every weapon that an NPC carries gets each addon it supports (scope, silencer, grenade launcher: addon status 2 in the
+; weapon section) installed with this probability. The roll is fixed per weapon, so a save load never changes it.
+[npc_attachments]
+; chance in percent for each supported addon of each NPC weapon. 0 turns the feature off, 100 gives every NPC weapon all its addons.
+chance = 25
+; scope and silencer are checked on all levels. launcher stays off: an installed grenade launcher aborts with "Can't open section ''" on spawn.
+scope = true
+silencer = true
+launcher = false

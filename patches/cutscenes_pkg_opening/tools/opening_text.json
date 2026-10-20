@@ -1,0 +1,83 @@
+{
+ "lines": {
+  "monolog1": {"dur": 23.4, "segs": [
+   {"t0": 0, "en": "Listen, Marked One: I saved you, and I will not play the noble type. You do a couple of jobs for me and we are even.", "ru": "Короче, Меченый, я тебя спас, и в благородство играть не буду. Выполнишь для меня пару заданий, и мы в расчёте."},
+   {"t0": 8, "en": "We will see how fast your head clears up after the amnesia, and I will try to dig up something on your case.", "ru": "Заодно посмотрим, как быстро у тебя башка после амнезии прояснится, а по твоей теме постараюсь разузнать."},
+   {"t0": 15.5, "en": "Who knows why this Strelok matters to you, but I stay out of other people's business.", "ru": "Хрен его знает, на кой ты этому Стрелку сдался, но я в чужие дела не лезу."},
+   {"t0": 21, "en": "You want him dead, so there must be a reason.", "ru": "Хочешь убить, значит, есть за что."}]},
+  "monolog2": {"dur": 29.7, "segs": [
+   {"t0": 0, "en": "So, I found out a few things about Strelok.", "ru": "В общем, по Стрелку узнал кое-что."},
+   {"t0": 3.2, "en": "There was a stalker like that.", "ru": "Был такой сталкер."},
+   {"t0": 5, "en": "They say he found a way to the North.", "ru": "Говорят, дорогу на Север нашёл."},
+   {"t0": 7.9, "en": "I would love to know how he got through.", "ru": "Как он туда прорывался, я бы сам хотел узнать."},
+   {"t0": 10.4, "en": "Untouched places, an artifact goldmine.", "ru": "Места-то нетронутые. Клондайк артефактов."},
+   {"t0": 13.9, "en": "Anyway, the other traders and I will help you find him.", "ru": "В общем, мы с другими торговцами поможем тебе его найти."},
+   {"t0": 17.1, "en": "And maybe you will find that hidden path yourself.", "ru": "А там, глядишь, и ты тропку потаённую найдёшь."},
+   {"t0": 20, "en": "And things will be good for all of us.", "ru": "И будет нам всем хорошо."},
+   {"t0": 21.8, "en": "You take Strelok down, and we open the road North.", "ru": "Ты Стрелка замочишь, а мы путь на Север откроем."},
+   {"t0": 25.4, "en": "Unlikely to work, but as they say, no risk, no champagne.", "ru": "Вряд ли получится, но, как говорится, кто не рискует, тот не пьёт шампанского."}]},
+  "come1b": {"dur": 2.8, "segs": [{"t0": 0, "en": "Well, why are you standing there? Come on over, I do not bite.", "ru": "Ну, чё стоишь? Подходи, не кусаюсь."}]},
+  "come1a": {"dur": 2.8, "segs": [{"t0": 0, "en": "Come here. We need to clear up the situation.", "ru": "Подойди-ка. Надо бы ситуацию прояснить."}]},
+  "hello1": {"dur": 0.8, "segs": [{"t0": 0, "en": "Well, hello!", "ru": "Ну, здорово!"}]},
+  "hello2": {"dur": 0.7, "segs": [{"t0": 0, "en": "You are back.", "ru": "Вернулся."}]},
+  "hello3": {"dur": 0.9, "segs": [{"t0": 0, "en": "Brought any loot?", "ru": "Хабар принёс?"}]},
+  "hello4": {"dur": 1.2, "segs": [{"t0": 0, "en": "Got anything worth my while?", "ru": "Есть что-то стоящее?"}]},
+  "hello5": {"dur": 0.8, "segs": [{"t0": 0, "en": "What did you drag in?", "ru": "Что притащил?"}]},
+  "bye1": {"dur": 1.4, "segs": [{"t0": 0, "en": "Well, go get some air, then come back.", "ru": "Ну, проветришься, заходи!"}]},
+  "bye2": {"dur": 1.4, "segs": [{"t0": 0, "en": "Good hunting, stalker.", "ru": "Ну, удачной охоты, сталкер."}]},
+  "pda1": {"dur": 13.3, "segs": [
+   {"t0": 0, "en": "This is your personal PDA.", "ru": "Это твой личный КПК."},
+   {"t0": 2.4, "en": "This handy gadget will help you survive in the Zone.", "ru": "Эта полезная штуковина поможет тебе выжить в Зоне."},
+   {"t0": 6.4, "en": "And if you die anyway, others will at least know where and how.", "ru": "А если и погибнешь, то другие хотя бы узнают где и как."},
+   {"t0": 10.4, "en": "Just kidding.", "ru": "Шучу."},
+   {"t0": 11.4, "en": "Here, let me remind you how to use it.", "ru": "Давай напомню, как им пользоваться."}]},
+  "pda2": {"dur": 3.6, "segs": [{"t0": 0, "en": "Your tasks are in the first section of the PDA.", "ru": "Твои задания находятся в первом разделе КПК."}]},
+  "pda3": {"dur": 5.7, "segs": [{"t0": 0, "en": "Most tasks have buttons that give you additional information on the task.", "ru": "У большинства заданий есть кнопки с дополнительной информацией о задании."}]},
+  "pda4": {"dur": 4.5, "segs": [{"t0": 0, "en": "Remember, each new task is shown automatically on your mini-map.", "ru": "Помни, каждое новое задание автоматически отмечается на мини-карте."}]},
+  "pda5": {"dur": 4.1, "segs": [{"t0": 0, "en": "Moving on. The second section of the PDA is the map.", "ru": "Идём дальше. Второй раздел КПК это карта."}]},
+  "pda6": {"dur": 3.5, "segs": [{"t0": 0, "en": "The buttons above the map let you zoom in and out.", "ru": "Кнопки над картой позволяют приближать и отдалять её."}]},
+  "pda7": {"dur": 5.9, "segs": [{"t0": 0, "en": "You can also center the map on yourself, and so on.", "ru": "Ещё карту можно центрировать на себе, и так далее."}]},
+  "pda9": {"dur": 7.1, "segs": [{"t0": 0, "en": "You will figure out the rest, it is not hard. The PDA also has a contacts section.", "ru": "Остальное разберёшь сам, это несложно. В КПК есть и раздел контактов."}]},
+  "pda11": {"dur": 21.6, "segs": [
+   {"t0": 0, "en": "The contacts section lists the stalkers within 50 meters of you.", "ru": "В разделе контактов список сталкеров в пятидесяти метрах от тебя."},
+   {"t0": 5.5, "en": "You can see a short description, rank, group and their likely attitude toward you.", "ru": "Видны краткое описание, звание, группировка и вероятное отношение к тебе."},
+   {"t0": 11.8, "en": "Remember, while you are neutral, how other stalkers feel about you depends on you alone.", "ru": "Помни, пока ты нейтрален, отношение других сталкеров зависит только от тебя."},
+   {"t0": 18, "en": "Notice how someone's attitude changes when you help them.", "ru": "Заметишь, как меняется отношение, когда ты кому-то помогаешь."}]},
+  "pda12": {"dur": 16.3, "segs": [
+   {"t0": 0, "en": "Be careful if enemies are around. They are marked red on the visor, friends green, neutrals yellow.", "ru": "Осторожней, если рядом враги: они отмечены красным, друзья зелёным, нейтралы жёлтым."},
+   {"t0": 7, "en": "And PDAs of dead stalkers are gray. Handy if you like looting corpses.", "ru": "КПК погибших сталкеров серые. Удобно, если любишь обшаривать трупы."},
+   {"t0": 13, "en": "What else? Oh yes, there is a diary too.", "ru": "Что ещё? Да, есть ещё дневник."}]},
+  "pda13": {"dur": 13.8, "segs": [
+   {"t0": 0, "en": "Well, what is there to say about it?", "ru": "Ну, что тут скажешь?"},
+   {"t0": 2.8, "en": "All the information you need is noted in your journal.", "ru": "Вся нужная информация записывается в твой журнал."},
+   {"t0": 6.5, "en": "And the news, too.", "ru": "И новости тоже."},
+   {"t0": 7.9, "en": "Even what I am telling you right now can be found in this section.", "ru": "Даже то, что я тебе сейчас говорю, можно найти в этом разделе."},
+   {"t0": 11.8, "en": "Then there is the ranking section.", "ru": "Дальше раздел рейтинга."}]},
+  "pda14": {"dur": 16.4, "segs": [
+   {"t0": 0, "en": "You can see the top 20 stalkers I know.", "ru": "Здесь двадцать лучших сталкеров из тех, кого я знаю."},
+   {"t0": 3.4, "en": "I refresh it from time to time to keep up the competitive spirit.", "ru": "Я время от времени обновляю список, чтобы поддерживать дух соперничества."},
+   {"t0": 9, "en": "Maybe you will be at the top someday. Who knows?", "ru": "Может, когда-нибудь ты окажешься наверху. Кто знает?"},
+   {"t0": 12.7, "en": "Your own achievements are in the statistics section.", "ru": "Твои достижения записаны в разделе статистики."}]},
+  "pda14_1": {"dur": 4.9, "segs": [{"t0": 0, "en": "It is pretty much self-explanatory. And then there is the encyclopedia.", "ru": "Тут всё понятно. Ну и ещё энциклопедия."}]},
+  "pda15": {"dur": 9.3, "segs": [
+   {"t0": 0, "en": "It holds information about the Zone, and survival tips you find or get from other stalkers.", "ru": "В ней сведения о Зоне и советы по выживанию, которые находишь сам или получаешь от других сталкеров."},
+   {"t0": 7.7, "en": "That is basically it, I think.", "ru": "Вот, пожалуй, и всё."}]},
+  "pda15_1": {"dur": 28.1, "segs": [
+   {"t0": 0, "en": "Oh, one more thing. Your PDA has a wide-band radio scanner with a built-in decoder.", "ru": "Да, ещё одно. В твоём КПК есть широкополосный радиосканер со встроенным декодером."},
+   {"t0": 7.4, "en": "Its range is about 400 meters, so you can even listen in on military channels.", "ru": "Радиус действия около четырёхсот метров, так что можно слушать и военные частоты."},
+   {"t0": 13.7, "en": "Mine reaches 30 kilometers, so I can always get in touch with you.", "ru": "У моего радиус тридцать километров, так что я всегда с тобой свяжусь."},
+   {"t0": 19, "en": "I will send you tasks and the latest news. At first I will give advice too.", "ru": "Буду присылать задания и новости. Поначалу и советы."},
+   {"t0": 24.9, "en": "So, is everything clear, or should I repeat?", "ru": "Ну что, всё ясно, или повторить?"}]}
+ },
+ "hints": {
+  "jump": {"sec": 5, "en": "To hop over a low obstacle, press $$ACTION_jump$$.", "ru": "Чтобы перепрыгнуть невысокое препятствие, нажмите $$ACTION_jump$$."},
+  "crouch": {"sec": 6, "en": "To duck under a low obstacle, press $$ACTION_crouch$$. To crouch lower, hold $$ACTION_accel$$ as well.", "ru": "Чтобы пройти под невысоким препятствием, нажмите $$ACTION_crouch$$. Чтобы присесть ниже, добавьте $$ACTION_accel$$."},
+  "sprint": {"sec": 10, "en": "To run faster, hold $$ACTION_sprint_toggle$$ while moving. A sprinting stalker runs and jumps farther but tires quickly and cannot shoot.", "ru": "Чтобы бежать быстрее, нажмите $$ACTION_sprint_toggle$$ во время движения. В спринте вы бежите и прыгаете дальше, но быстро устаёте и не можете стрелять."},
+  "binoc": {"sec": 6, "en": "Select the binoculars with $$ACTION_wpn_5$$ and press fire to zoom in on distant things.", "ru": "Выберите бинокль ($$ACTION_wpn_5$$) и нажмите огонь, чтобы приблизить далёкие объекты."},
+  "relations": {"sec": 10, "en": "Helping people raises their attitude toward you and your reputation. Traders sell cheaper to those they like. Shoot at someone and they and their friends will turn on you.", "ru": "Помогая людям, вы улучшаете их отношение и свою репутацию. Торговцы продают дешевле тем, кто им нравится. Откроете огонь по кому-то, и он и его друзья станут врагами."}
+ },
+ "misc": {
+  "tip_talk": {"en": "To talk to someone, aim at them and press $$ACTION_use$$.", "ru": "Чтобы поговорить, наведите прицел на собеседника и нажмите $$ACTION_use$$."},
+  "pda_offer": {"en": "Sidorovich can walk you through the PDA. Listen to him?", "ru": "Сидорович может объяснить, как пользоваться КПК. Послушать?"}
+ }
+}

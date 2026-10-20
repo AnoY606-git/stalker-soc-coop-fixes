@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+;===========================COOP=============================================================================================================================================================================================================================================
+	<string id="st_coop_desc">
+		<text>«S.T.A.L.K.E.R. Shadow of COOP» - аддон для мультиплеерной модификации «X-Ray Multiplayer Extension», позволяющий пройти переработанный сюжет игры Shadow Of Chernobyl в кооперативе, рассчитанный от 2 до 4 игроков.
+		\n-Инвентарь сохраняется перед переходом на следующую локацию.
+		\n-Выбор карты вручную: F5, затем голосование за карту, на которой вы остановились.</text>
+	</string>
+	<string id="coop_l01_escape">
+		<text>Кордон</text>
+	</string>
+	<string id="coop_l02_garbage">
+		<text>Свалка</text>
+	</string>	
+	<string id="coop_l03_agroprom">
+		<text>Агропром</text>
+	</string>
+	<string id="coop_l03_agroprom_underground">
+		<text>Подземелья агропрома</text>
+	</string>
+	<string id="coop_l04_darkvalley">
+		<text>Тёмная долина</text>
+	</string>
+	<string id="coop_l04_x18">
+		<text>Лаборатория Х-18</text>
+	</string>
+	<string id="coop_l05_bar">
+		<text>Бар</text>
+	</string>
+	<string id="coop_l06_rostok">
+		<text>Дикая территория</text>
+	</string>
+	<string id="coop_l07_military">
+		<text>Военные склады</text>
+	</string>
+	<string id="coop_l08_x16">
+		<text>Лаборатория Х-16</text>
+	</string>
+	<string id="coop_l08_yantar">
+		<text>Янтарь</text>
+	</string>
+	<string id="coop_l09_radar">
+		<text>Радар</text>
+	</string>
+	<string id="coop_l09_x10">
+		<text>Лаборатория Х-10</text>
+	</string>
+	<string id="coop_l10_pripyat">
+		<text>Припять</text>
+	</string>
+	<string id="coop_l11_stancia_1">
+		<text>ЧАЭС</text>
+	</string>
+	<string id="coop_l11_sarcofag">
+		<text>Саркофаг</text>
+	</string>
+	<string id="coop_l11_control_monolith">
+		<text>Управление Монолитом</text>
+	</string>
+	<string id="coop_l11_stancia_2">
+		<text>ЧАЭС</text>
+	</string>
+</string_table>

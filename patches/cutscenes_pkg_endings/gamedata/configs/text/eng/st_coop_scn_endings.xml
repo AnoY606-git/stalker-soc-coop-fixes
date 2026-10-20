@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<string_table>
+	<string id="scn_endings_text_to_monolith"><text>Ending: The Monolith</text></string>
+	<string id="scn_endings_text_gold"><text>Ending: Gold</text></string>
+	<string id="scn_endings_text_blind"><text>Ending: Good Will</text></string>
+	<string id="scn_endings_text_apocal"><text>Ending: Apocalypse</text></string>
+	<string id="scn_endings_text_immortal"><text>Ending: Immortality</text></string>
+	<string id="scn_endings_text_peace"><text>Ending: Peace</text></string>
+</string_table>

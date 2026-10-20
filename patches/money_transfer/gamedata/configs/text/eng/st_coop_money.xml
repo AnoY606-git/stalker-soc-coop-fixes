@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<string_table>
+	<string id="st_coop_money_caption"><text>Money transfer</text></string>
+	<string id="st_coop_money_title"><text>Give money to a teammate</text></string>
+	<string id="st_coop_money_balance"><text>You have</text></string>
+	<string id="st_coop_money_to"><text>To:</text></string>
+	<string id="st_coop_money_next"><text>Next player</text></string>
+	<string id="st_coop_money_all"><text>Everything</text></string>
+	<string id="st_coop_money_close"><text>Close</text></string>
+	<string id="st_coop_money_hint"><text>Look at a teammate and press Use to give them money. With nobody in the crosshair, crouch and press Use.</text></string>
+	<string id="st_coop_money_msg_sent"><text>You gave %s: %s RU.</text></string>
+	<string id="st_coop_money_msg_got"><text>%s gave you %s RU.</text></string>
+	<string id="st_coop_money_msg_nofunds"><text>Not enough money to give %s RU.</text></string>
+	<string id="st_coop_money_msg_busy"><text>Wait a moment before the next transfer.</text></string>
+	<string id="st_coop_money_msg_badtarget"><text>Transfer failed: that player is not available.</text></string>
+</string_table>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_mini_dialog_start_dialog_0">
+        <text>Great, how are you doing?</text>
+    </string>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_mini_dialog_start_dialog_1">
+        <text>We're getting by. Come on in and make yourself at home, brother! You too, guys!</text>
+    </string>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_mini_dialog_start_dialog_2">
+        <text>Thanks. Stay safe!</text>
+    </string>
+    <string id="mil_smart_terrain_11_freedom_sniper_1_start_dialog_0">
+        <text>Hey there. How's it going?</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_0">
+        <text>Greetings, what happened?</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_1">
+        <text>You're just in time! We're fighting off those Monolith morons, another wave is coming soon! Can you imagine, they took out our last sniper! Can you help? We'll settle up after the fight, you won't regret it!</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_2">
+        <text>Of course we'll help.</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_3">
+        <text>Great! One of you, get to the tower! Hit them from above, don't come down or we might accidentally shoot you ourselves. The rest take cover. Is the task clear?</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_4">
+        <text>Yes.</text>
+    </string>
+    <string id="mil_smart_terrain_12_1_freedom_cap_start_dialog_0">
+        <text>Hello, stalkers!</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_0">
+        <text>What's the plan of action?</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_1">
+        <text>We'll gather the guys and take out those morons. How many are there?</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_2">
+        <text>Eight or nine people. Well equipped.</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_3">
+        <text>Coming with us?</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_4">
+        <text>Let's go!</text>
+    </string>
+    <string id="mil_smart_terrain_15_freedom_max_start_dialog_0">
+        <text>Hey man, how's it going?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_start_dialog_0">
+        <text>What do you want?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_0">
+        <text>Here's a tricky question - where can I get weapons and equipment?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_1">
+        <text>From me, of course! For money. Or over in the village for free, but that's riskier.</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_2">
+        <text>In the village?</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_3">
+        <text>In the village. There's a hell of a lot of anomalies there and stalkers disappear often.</text>
+    </string>
+    <string id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_4">
+        <text>Got it.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_0">
+        <text>We don't mind.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_1">
+        <text>Excellent. Just over the hill is the main nest of those scum - "Freedom", which the boys and I are about to stir up good. There is a small problem, though. There's only one entrance to the base and it's well guarded by snipers. You take them out, and the rest is on us - everything in the base is yours.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_2">
+        <text>We'll try.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_start_dialog_0">
+        <text>Hello men. I'm from "Duty", performing a mission in this territory. Don't want to join us?</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_0">
+        <text>It's done, the sniper is eliminated.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_1">
+        <text>Thanks for the help, guys. Here, take your payment.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_2">
+        <text>Thanks.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_3">
+        <text>Now we're going to blow the fence and start the fun. You guys look tough - maybe you can handle Lukash and the snipers? Someone come with us to take out the snipers, the others take Lukash.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_4">
+        <text>Another time.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_5">
+        <text>Good.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_6">
+        <text>Well, look. I won't force you.</text>
+    </string>
+    <string id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_7">
+        <text>That's great.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_0">
+        <text>We saw a "Duty" squad at the farmstead, not far from your base. Nine men, well armed.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_1">
+        <text>Damn, those goats just won't settle down! Alright, we'll have to punish them... Well, if you help us - we'll be grateful. Go to Max - he's our main military guy. Gather the people and weed out those oafs.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_2">
+        <text>Okay.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_3">
+        <text>Well, good luck!</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_0">
+        <text>Nothing really.</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_1">
+        <text>Then let's split, yeah? Time is money!</text>
+    </string>
+    <string id="mil_smart_terrain_3_freedom_lukash_start_dialog_0">
+        <text>Hello, stalkers. What do you need?</text>
+    </string>
+    <string id="mil_max_flash_d_opener">
+        <text>Max, do you have a job for me?</text>
+    </string>
+    <string id="mil_max_flash_d_offer">
+        <text>You're no slouch, kid! Could you do a job for me? Do it and I'll give you my Black Hawk. Great gun, powerful!..</text>
+    </string>
+    <string id="mil_max_flash_d_what">
+        <text>What needs doing?</text>
+    </string>
+    <string id="mil_max_flash_d_task">
+        <text>A guy has holed up in the swamp. The boys saw him tearing out of the village, not picking his way. He clearly saw something that blew his mind - now he shoots at everyone he sees. We need to find out what he dug up, our men are afraid to go to the village.</text>
+    </string>
+    <string id="mil_max_flash_d_accept">
+        <text>I'll try.</text>
+    </string>
+    <string id="mil_max_flash_d_luck">
+        <text>Good luck then. Keep in mind there's an old minefield there, but with the old trusty bolts you can get around the mines.</text>
+    </string>
+    <string id="mil_max_flash_d_decline">
+        <text>No, not this time.</text>
+    </string>
+    <string id="mil_max_flash_d_decline_r">
+        <text>Well, as you like.</text>
+    </string>
+    <string id="mil_max_flash_r_opener">
+        <text>Max, about that job...</text>
+    </string>
+    <string id="mil_max_flash_r_asked">
+        <text>So, did you find out? What did that nutcase find?</text>
+    </string>
+    <string id="mil_max_flash_r_give">
+        <text>Here's the flash drive - I found it on the crazy guy.</text>
+    </string>
+    <string id="mil_max_flash_r_thanks">
+        <text>Thanks, stalker! Take the gun - you earned it.</text>
+    </string>
+    <string id="mil_max_flash_r_ammo">
+        <text>And ammo for it?</text>
+    </string>
+    <string id="mil_max_flash_r_noammo">
+        <text>Only what's in the magazine. Sorry, there's just no more. Go see Skryaga - he might have some.</text>
+    </string>
+    <string id="mil_max_flash_w_opener">
+        <text>Max, about that job...</text>
+    </string>
+    <string id="mil_max_flash_w_already">
+        <text>What, already?</text>
+    </string>
+</string_table>

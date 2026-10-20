@@ -1,0 +1,18 @@
+<!-- coop_scn_radar: tutorial blocks of scene package "radar". Fallback text card only; the dream movie block comes from cutscenes_core (soc_dream_*). -->
+
+	<scn_radar_card>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static x="12" y="350" width="1000" height="40" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="255" align="c">scn_radar_card</text></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="200" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item>
+			<length_sec>120</length_sec>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<grab_input>0</grab_input>
+			<main_wnd/>
+		</item>
+	</scn_radar_card>

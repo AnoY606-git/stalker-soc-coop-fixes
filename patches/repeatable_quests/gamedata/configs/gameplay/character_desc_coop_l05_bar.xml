@@ -1,0 +1,418 @@
+<?xml version='1.0' encoding="windows-1251"?>
+<xml>
+        <specific_character id="bar_smart_terrain_1_stalker_garik" team_default = "1">
+        <name>bar_smart_terrain_1_stalker_garik_name</name>
+        <icon>ui_inGame2_garik</icon>
+        <map_icon x="0" y="0"></map_icon>
+        <bio>bar_garik_bio</bio>
+        <class>bar_smart_terrain_1_stalker_garik</class>
+        <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+        <money min="200" max="600" infinitive="0"></money>
+        <rank>7327</rank>
+        <reputation>976</reputation>
+        <visual>actors\stalker_neutral\stalker_bar_security</visual>
+        <snd_config>characters_voice\human_01\stalker\</snd_config>
+        <crouch_type>-1</crouch_type>
+        <supplies>
+        [spawn] \n
+        wpn_ak74 \n
+        ammo_5.45x39_fmj \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+#include "gameplay\character_dialogs.xml"
+	<start_dialog>bar_smart_terrain_1_trader_barmen_start_dialog</start_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>
+	
+    <specific_character id="bar_smart_terrain_1_stalker_zhorik" team_default = "1">
+    <name>bar_smart_terrain_1_stalker_zhorik_name</name>
+    <icon>ui_inGame2_zhorik</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_zhorik_bio</bio>
+    <class>bar_smart_terrain_1_stalker_zhorik</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_bar_security</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+        [spawn] \n
+        wpn_ak74 \n
+        ammo_5.45x39_fmj \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+#include "gameplay\character_dialogs.xml"
+	<start_dialog>bar_smart_terrain_1_trader_barmen_start_dialog</start_dialog>
+	<actor_dialog>rq_zho_dialog</actor_dialog>
+	<actor_dialog>rq_zho_handin</actor_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>
+
+    <specific_character id="bar_smart_terrain_1_stalker_vlad_volchara" team_default = "1">
+    <name>bar_smart_terrain_1_stalker_vlad_volchara_name</name>
+    <icon>ui_inGame2_neutral_1</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_vlad_volchara_bio</bio>
+    <class>bar_smart_terrain_1_stalker_vlad_volchara</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="0" max="1500" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_1_mask</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+      wpn_pm = 1 \n
+      ammo_9x18_fmj = 1 \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_1_stalker_vlad_volchara_start_dialog</start_dialog>	
+	<actor_dialog>bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_stalker_vlad_volchara_break_dialog</actor_dialog>
+    </specific_character>
+	
+    <specific_character id="bar_smart_terrain_1_stalker_informant" team_default = "1">
+    <name>bar_smart_terrain_1_stalker_informant_name</name>
+    <icon>ui_inGame2_bandit_3_mask</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_informant_bio</bio>
+    <class>bar_smart_terrain_1_stalker_informant</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_bandit\stalker_bandit_3_mask</visual>
+    <snd_config>characters_voice\human_02\bandit\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+	  wpn_akm \n
+	  ammo_7.62x39_fmj = 1 \n
+	  wpn_pm = 2 \n
+	  ammo_9x18_pmm = 1 \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_1_stalker_informant_start_dialog</start_dialog>
+	<actor_dialog>rq_inf_dialog</actor_dialog>
+	<actor_dialog>rq_inf_handin</actor_dialog>	
+	<!--actor_dialog>bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog</actor_dialog-->
+	<actor_dialog>bar_smart_terrain_1_stalker_informant_break_dialog</actor_dialog>
+    </specific_character>
+	
+    <specific_character id="bar_smart_terrain_1_stalker_barmen" team_default = "1">
+    <name>bar_smart_terrain_1_stalker_barmen_name</name>
+    <icon>ui_inGame2_barmen</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_barmen_bio</bio>
+    <class>bar_smart_terrain_1_stalker_barmen</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="6000000" max="12000000" infinitive="1"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_trader\barman</visual>
+    <snd_config>characters_voice\human_02\bandit\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_1_trader_barmen_start_dialog</start_dialog>
+	<actor_dialog>rq_bar_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog</actor_dialog>	
+	<actor_dialog>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_stalker_barmen_go_to_military_dialog</actor_dialog>	
+	<actor_dialog>bar_smart_terrain_1_trader_barmen_secondary_quests_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog</actor_dialog>			
+	<actor_dialog>bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog</actor_dialog>		
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>
+	
+    <specific_character id="bar_smart_terrain_1_stalker_bad_hunter" team_default = "1">
+    <name>bar_smart_terrain_1_stalker_bad_hunter_name</name>
+    <icon>ui_inGame2_neutral_0_3</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_bad_hunter_bio</bio>
+    <class>bar_smart_terrain_1_stalker_bad_hunter</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="0" max="1500" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_0_3</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+      wpn_pm = 1 \n
+      ammo_9x18_fmj = 1 \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_1_stalker_bad_hunter_start_dialog</start_dialog>	
+	<actor_dialog>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_1_stalker_bad_hunter_break_dialog</actor_dialog>
+    </specific_character>
+
+    <specific_character id="bar_smart_terrain_2_stalker_lelik" team_default = "1">
+    <name>bar_smart_terrain_2_stalker_lelik_name</name>
+    <icon>ui_inGame2_lelik</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_lelik_bio</bio>
+    <class>bar_smart_terrain_2_stalker_lelik</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_bar_security</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+        [spawn] \n
+        wpn_ak74 \n
+        ammo_5.45x39_fmj \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+#include "gameplay\character_dialogs.xml"
+	<start_dialog>bar_smart_terrain_1_trader_barmen_start_dialog</start_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>
+	
+    <specific_character id="bar_smart_terrain_2_stalker_arny" team_default = "1">
+    <name>bar_smart_terrain_2_stalker_arny_name</name>
+    <icon>ui_inGame2_arny</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_arny_bio</bio>
+    <class>bar_smart_terrain_2_stalker_arny</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neytral_balon_6</visual>
+    <snd_config>characters_voice\human_02\bandit\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+	  wpn_akm \n
+	  ammo_7.62x39_fmj = 1 \n
+	  wpn_pm = 2 \n
+	  ammo_9x18_pmm = 1 \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_2_stalker_arny_start_dialog</start_dialog>	
+	<actor_dialog>bar_smart_terrain_2_stalker_arny_arena_dialog</actor_dialog>	
+	<actor_dialog>bar_smart_terrain_2_stalker_arny_victory_arena_dialog</actor_dialog>		
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>
+	
+    <specific_character id="bar_smart_terrain_4_duty_voronin" team_default = "1">
+    <name>bar_smart_terrain_4_duty_voronin_name</name>
+    <icon>ui_inGame2_voronin</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_voronin_bio</bio>
+    <class>bar_smart_terrain_4_duty_voronin</class>
+    <community>dolg</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_dolg\stalker_do_komandir</visual>
+    <snd_config>characters_voice\human_02\dolg\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+      wpn_groza = 1 \n
+      ammo_9x39_ap = 1 \n
+      wpn_sig220 = 1 \n
+      ammo_11.43x23_hydro  = 1 \n
+      grenade_f1 = 4 \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_4_duty_voronin_start_dialog</start_dialog>
+	<actor_dialog>rq_vor_dialog</actor_dialog>
+	<actor_dialog>rq_vor_handin</actor_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>	
+	
+    <specific_character id="bar_smart_terrain_4_duty_petrenko" team_default = "1">
+    <name>bar_smart_terrain_4_duty_petrenko_name</name>
+    <icon>ui_inGame2_petrenko</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_petrenko_bio</bio>
+    <class>bar_smart_terrain_4_duty_petrenko</class>
+    <community>dolg</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="6000000" max="12000000" infinitive="1"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_dolg\stalker_do_balon_3</visual>
+    <snd_config>characters_voice\human_02\dolg\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+      wpn_groza = 1 \n
+      ammo_9x39_ap = 1 \n
+      wpn_sig220 = 1 \n
+      ammo_11.43x23_hydro  = 1 \n
+      grenade_f1 = 4 \n
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_4_duty_petrenko_start_dialog</start_dialog>
+	<actor_dialog>rq_pet_dialog</actor_dialog>	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>	
+
+    <specific_character id="bar_smart_terrain_9_stalker_hunter" team_default = "1">
+    <name>bar_smart_terrain_9_stalker_hunter_name</name>
+    <icon>ui_inGame2_hunter</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_hunter_bio</bio>
+    <class>bar_smart_terrain_9_stalker_hunter</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="6000000" max="12000000" infinitive="1"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_hunter</visual>
+    <snd_config>characters_voice\human_02\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_9_stalker_hunter_start_dialog</start_dialog>
+	<actor_dialog>rq_hun_dialog</actor_dialog>
+	<!--actor_dialog>bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog</actor_dialog-->
+	<!--actor_dialog>bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog</actor_dialog-->
+	<!--actor_dialog>bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog</actor_dialog-->	
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>	
+	
+    <specific_character id="bar_smart_terrain_10_stalker_plyushkin" team_default = "1">
+    <name>bar_smart_terrain_10_stalker_plyushkin_name</name>
+    <icon>ui_inGame2_plyushkin</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_plyushkin_bio</bio>
+    <class>bar_smart_terrain_10_stalker_plyushkin</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+	<mechanic_mode>1</mechanic_mode>
+    <money min="6000000" max="12000000" infinitive="1"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_plyushkin</visual>
+    <snd_config>characters_voice\human_02\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n     
+
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_10_stalker_plyushkin_start_dialog</start_dialog>
+	<actor_dialog>bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>		
+	
+    <specific_character id="bar_smart_terrain_12_stalker_skamarokh" team_default = "1">
+    <name>bar_smart_terrain_12_stalker_skamarokh_name</name>
+    <icon>ui_inGame2_skamarokh</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_skamarokh_bio</bio>
+    <class>bar_smart_terrain_12_stalker_skamarokh</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="6000000" max="12000000" infinitive="1"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_skamarokh</visual>
+    <snd_config>characters_voice\human_02\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+		[spawn] \n
+		guitar_a = 2 \n	  
+
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+	<start_dialog>bar_smart_terrain_12_stalker_skamarokh_start_dialog</start_dialog>
+	<actor_dialog>rq_ska_dialog</actor_dialog>
+	<actor_dialog>bar_smart_terrain_12_stalker_skamarokh_order_music_dialog</actor_dialog>
+	<actor_dialog>actor_break_dialog</actor_dialog>
+    </specific_character>	
+
+    <specific_character id="bar_arny_arena_smart_terrain_stalker_arena_beginner" team_default = "1">
+    <name>GENERATE_NAME_stalker</name>
+    <icon>ui_inGame2_neutral_1</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_arena_beginner_bio</bio>
+    <class>bar_arny_arena_smart_terrain_stalker_arena_beginner</class>
+    <community>bandit</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_2_face_1</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+	
+        [spawn] \n
+		wpn_hpsa = 2 \n
+		ammo_9x19_fmj = 1 \n
+		
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+#include "gameplay\character_dialogs.xml"
+    </specific_character>
+	
+    <specific_character id="bar_arny_arena_smart_terrain_stalker_arena_experienced" team_default = "1">
+    <name>GENERATE_NAME_stalker</name>
+    <icon>ui_inGame2_neutral_2_mask</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_zhorik_bio</bio>
+    <class>bar_arny_arena_smart_terrain_stalker_arena_experienced</class>
+    <community>bandit</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_2_face_1</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+	
+      [spawn] \n      
+      wpn_l85 \n
+      ammo_5.56x45_ss190  = 1 \n
+      wpn_hpsa = 2 \n
+      ammo_9x19_fmj = 1 \n
+		
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+#include "gameplay\character_dialogs.xml"
+    </specific_character>
+
+    <specific_character id="bar_arny_arena_smart_terrain_stalker_arena_master" team_default = "1">
+    <name>GENERATE_NAME_stalker</name>
+    <icon>ui_inGame2_neutral_4</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>bar_zhorik_bio</bio>
+    <class>bar_arny_arena_smart_terrain_stalker_arena_master</class>
+    <community>bandit</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="200" max="600" infinitive="0"></money>
+    <rank>6516</rank>
+    <reputation>817</reputation>
+    <visual>actors\stalker_neutral\stalker_neutral_4</visual>
+    <snd_config>characters_voice\human_01\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+	
+      [spawn] \n     
+      wpn_groza = 1, silencer \n
+      ammo_9x39_ap = 1 \n
+      wpn_usp = 1 \n
+      ammo_11.43x23_hydro = 1 \n
+	  
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+#include "gameplay\character_dialogs.xml"
+    </specific_character>
+  </xml>

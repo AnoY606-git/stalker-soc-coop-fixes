@@ -1,0 +1,182 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "yantar": X16 brain shutdown + the doctor dream (original SoC tutorial yantar_dream),
+-- and the ghost sleep in Yantar. Registers two scenes with the Scene Director (coop_scenes).
+-- Runs on every machine at load time.
+--
+-- yantar_brain, original SoC (yan/brain_system_message.ltx:26-40, xr_effects.script:1923-1927):
+--   +yan_labx16_switcher_primary_off -> yan_gluk (psy_blackout l/r + earthquake.anm) + system_message_3
+--   1 s: radar_stop.anm; 10 s: agr_u_fade.ppe; 13 s: start_yantar_dream + disable_ui (movie, sound dream_doctor)
+--   end_yantar_dream (+yantar_find_ghost_task_start): prison_1.anm; 4 s: enable_ui
+--   Mod equivalent of "primary switcher off": the four lever flags X16_LAB_PRIMARY_SWITCHER_1..4_DEACTIVATE_INFO
+--   (patches/x16 sets lever n's flag on the press; the brain's psi field also ends on all four).
+--   system_message_3 is NOT played here: the mod's lever 4 already plays its own system_message_1 on the press and
+--   a second voice on top of it would overlap; the x16 lever logic is left exactly as patches/x16 has it.
+--
+-- yantar_ghost_sleep, original SoC (yan/yan_sleep_restrictor.ltx:1-20, gulag_yantar.ltx scientist_wounded_1):
+--   +yan_spawn_ghost (the wounded-scientist research scene) -> yan_gluk -> 3 s agr_u_fade -> 2.5 s deadcity_wake.ppe,
+--   dream.anm looped (1002), dream voices, disable_ui -> 15 s -> 3 s: prison_0.anm looped (1003) -> 7 s: prison_1.anm,
+--   enable_ui.  The mod has no yan_spawn_ghost flag or gulag scene (not in all.spawn logic), so the trigger is the
+--   position of the scientists' research stop (way yan_scientist_wait_walk_3 of the SoC spawn: 174.65,-7.80,-99.65)
+--   while the brain scene has not played yet (the ghost sleep comes before the X16 dream in the SoC story).
+--   The original also teleported the sleeper to a hidden spot (yan_actor_sleep_1) and back; in co-op everybody
+--   sleeps where they stand, so the teleports are left out.
+-------------------------------------------------------------------------------------------------------
+
+local ID_BRAIN = "yantar_brain"
+local ID_SLEEP = "yantar_ghost_sleep"
+
+local function ex_anim(p) return getFS():exist("$game_anims$", p) end
+local function ex_snd(p) return getFS():exist("$game_sounds$", p .. ".ogg") end
+
+local function pp_pick(list)
+	for _, n in ipairs(list) do
+		if ex_anim(n .. ".ppe") then return n end
+	end
+	return nil
+end
+
+-- yan_gluk: psy_blackout l/r (tinnitus3a if the pair is not installed) + earthquake.anm (id given)
+local function gluk(add, cam_id)
+	if ex_snd("affects\\psy_blackout_l") then
+		add { ["do"] = "snd2d", path = "affects\\psy_blackout_l" }
+		add { ["do"] = "snd2d", path = "affects\\psy_blackout_r" }
+	else
+		add { ["do"] = "snd2d", path = "affects\\tinnitus3a" }
+	end
+	add { ["do"] = "cam", anm = "earthquake", id = cam_id }
+end
+
+-- looped camera effectors: the director's cam step cannot loop (CONTRACT_REQUESTS.md), so these two are started
+-- with level.add_cam_effector directly and always removed again (own stop step + on_client_end).
+local function loop_cam_start(env, name, id)
+	local path = "camera_effects\\" .. name .. ".anm"
+	if not getFS():exist("$game_anims$", path) then return end
+	local ok = pcall(level.add_cam_effector, path, id, true, "")
+	if ok then
+		env.loops = env.loops or {}
+		env.loops[id] = true
+	end
+end
+
+local function loop_cam_stop(env, id)
+	if env.loops and env.loops[id] then
+		pcall(level.remove_cam_effector, id)
+		env.loops[id] = nil
+	end
+end
+
+local function loop_cam_stop_all(env)
+	if env and env.loops then
+		for id, _ in pairs(env.loops) do pcall(level.remove_cam_effector, id) end
+		env.loops = {}
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- yantar_brain
+-------------------------------------------------------------------------------------------------------
+local function build_brain(var, env, use_movie)
+	local st = {}
+	local function add(t) st[#st + 1] = t end
+
+	gluk(add, 9031)
+	add { ["do"] = "cam", anm = "radar_stop", id = 9032, at = 1000 }
+
+	local fade = pp_pick({ "agr_u_fade", "black_screen" })
+	if fade then add { ["do"] = "pp", name = fade, id = 9033, at = 10000 } end
+
+	add { ["do"] = "cam_stop", id = 9031, at = 13000 }
+	add { ["do"] = "ui_off", at = 13000 }
+	if use_movie then
+		add { ["do"] = "tutorial", name = "scn_yantar_dream", wait = true, cap_ms = 100000 }
+	else
+		add { ["do"] = "tutorial", name = "scn_yantar_card", wait = false }
+		add { ["do"] = "wait", ms = 14000 }
+		add { ["do"] = "tutorial_stop" }
+	end
+
+	add { ["do"] = "pp_stop", id = 9033 }
+	add { ["do"] = "cam", anm = "prison_1", id = 9034 }
+	add { ["do"] = "wait", ms = 4000 }
+	add { ["do"] = "ui_on" }
+	return st
+end
+
+coop_scenes.register {
+	id        = ID_BRAIN,
+	kind      = "sequence",
+	level     = "coop_l08_x16",
+	once      = true,
+	skip      = "majority",                 -- contains a movie
+	-- 13 s + ~78.4 s movie + 4 s
+	length_ms = 96000,
+	grace_ms  = 20000,
+
+	-- SERVER: all four levers of the X16 lab pulled (the brain is off)
+	trigger = function(ctx)
+		return ctx.flag("X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO")
+			and ctx.flag("X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO")
+			and ctx.flag("X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO")
+			and ctx.flag("X16_LAB_PRIMARY_SWITCHER_4_DEACTIVATE_INFO")
+	end,
+
+	-- the original yantar_dream tutorial plays dream_doctor (video) with the dream_doctor _l/_r sound pair
+	need = {
+		tex = { "intro\\dream_doctor.ogm" },
+		snd = { "characters_voice\\scenario\\video\\dream_doctor_l.ogg", "characters_voice\\scenario\\video\\dream_doctor_r.ogg" },
+	},
+	steps    = function(var, env) return build_brain(var, env, true) end,
+	fallback = function(var, env) return build_brain(var, env, false) end,
+}
+
+-------------------------------------------------------------------------------------------------------
+-- yantar_ghost_sleep
+-------------------------------------------------------------------------------------------------------
+local SLEEP_POS = { x = 174.65, y = -7.80, z = -99.65 }   -- SoC way yan_scientist_wait_walk_3 (research stop)
+local SLEEP_R   = 10.0
+
+local function build_sleep(var, env)
+	local st = {}
+	local function add(t) st[#st + 1] = t end
+
+	gluk(add, 9041)                                                    -- yan_gluk
+	local fade = pp_pick({ "agr_u_fade", "black_screen" })
+	if fade then add { ["do"] = "pp", name = fade, id = 9042, at = 3000 } end   -- agr_u_fade
+	-- 5.5 s: deadcity_wake.ppe, dream.anm looped, dream voices, disable_ui
+	local wake = pp_pick({ "deadcity_wake" })
+	if wake then add { ["do"] = "pp", name = wake, id = 9043, at = 5500 } end
+	add { ["do"] = "ui_off", at = 5500 }
+	add { ["do"] = "fn", fn = function(e) loop_cam_start(e, "dream", 9044) end }
+	add { ["do"] = "snd2d", path = "characters_voice\\scenario\\yantar\\dream_talk_l" }
+	add { ["do"] = "snd2d", path = "characters_voice\\scenario\\yantar\\dream_talk_r" }
+	-- 20.5 s: dream ends, prison_0.anm looped
+	add { ["do"] = "fn", fn = function(e) loop_cam_stop(e, 9044) end, at = 20500 }
+	add { ["do"] = "pp_stop", id = 9043 }
+	-- 23.5 s
+	add { ["do"] = "fn", fn = function(e) loop_cam_start(e, "prison_0", 9045) end, at = 23500 }
+	-- 30.5 s: prison_1.anm (waking up) + enable_ui
+	add { ["do"] = "fn", fn = function(e) loop_cam_stop(e, 9045) end, at = 30500 }
+	add { ["do"] = "cam", anm = "prison_1", id = 9046 }
+	add { ["do"] = "ui_on" }
+	add { ["do"] = "wait", ms = 1500 }
+	return st
+end
+
+coop_scenes.register {
+	id        = ID_SLEEP,
+	kind      = "sequence",
+	level     = "coop_l08_yantar",
+	once      = true,
+	skip      = "any",                      -- camera scene, no movie
+	length_ms = 33000,
+	grace_ms  = 20000,
+
+	-- SERVER: somebody reaches the research stop of the Yantar scientists, before the X16 brain scene
+	trigger = function(ctx)
+		if ctx.flag("SCN_YANTAR_BRAIN_PLAYED") then return false end
+		return ctx.near(SLEEP_POS.x, SLEEP_POS.y, SLEEP_POS.z, SLEEP_R, "any")
+	end,
+
+	steps = function(var, env) return build_sleep(var, env) end,
+	on_client_end = function(env, reason) loop_cam_stop_all(env) end,
+}

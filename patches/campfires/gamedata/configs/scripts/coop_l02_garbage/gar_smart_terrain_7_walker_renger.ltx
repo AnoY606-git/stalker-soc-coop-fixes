@@ -1,0 +1,189 @@
+[logic@gar_smart_terrain_7_walker_renger_1]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_7_walker_renger_1_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_7_walker_renger_1_idle]
+path_walk 											= walker_renger_1_walk
+path_look 											= walker_renger_1_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+invulnerable 										= true
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_7_walker_renger_1_attack
+
+[walker@gar_smart_terrain_7_walker_renger_1_attack]                                                                                                                                                 
+path_walk 											= walker_renger_1_walk
+path_look 											= walker_renger_1_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet  
+on_info 											= {+GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD} walker@gar_smart_terrain_7_walker_renger_1_off
+
+[walker@gar_smart_terrain_7_walker_renger_1_off]                                                                                                                                                 
+path_walk 											= guard_1_walk
+path_look 											= guard_1_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet  
+
+;================================================
+
+[logic@gar_smart_terrain_7_walker_renger_2]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_7_walker_renger_2_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_7_walker_renger_2_idle]
+path_walk 											= walker_renger_2_walk
+path_look 											= walker_renger_2_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+invulnerable 										= true
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_7_walker_renger_2_attack
+
+[walker@gar_smart_terrain_7_walker_renger_2_attack]                                                                                                                                                 
+path_walk 											= walker_renger_2_walk
+path_look 											= walker_renger_2_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet  
+on_info 											= {+GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD} walker@gar_smart_terrain_7_walker_renger_2_off
+
+[walker@gar_smart_terrain_7_walker_renger_2_off]                                                                                                                                                 
+path_walk 											= guard_2_walk
+path_look 											= guard_2_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet    
+
+;================================================
+
+[logic@gar_smart_terrain_7_walker_renger_3]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_7_walker_renger_3_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_7_walker_renger_3_idle]
+path_walk 											= walker_renger_3_walk
+path_look 											= walker_renger_3_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+invulnerable 										= true
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_7_walker_renger_3_attack
+
+[walker@gar_smart_terrain_7_walker_renger_3_attack]                                                                                                                                                 
+path_walk 											= walker_renger_3_walk
+path_look 											= walker_renger_3_look                                                                                                                                                                                                                                                                        
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet
+on_info 											= {+GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD} walker@gar_smart_terrain_7_walker_renger_3_off
+
+[walker@gar_smart_terrain_7_walker_renger_3_off]                                                                                                                                                 
+path_walk 											= guard_3_walk
+path_look 											= guard_3_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet      
+
+;================================================
+
+[logic@gar_smart_terrain_7_walker_renger_4]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_7_walker_renger_4_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_7_walker_renger_4_idle]
+path_walk 											= walker_renger_4_walk
+path_look 											= walker_renger_4_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+invulnerable 										= true
+meet 												= no_meet
+combat_ignore_cond 									= true
+on_info 											= {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_7_walker_renger_4_attack
+
+[walker@gar_smart_terrain_7_walker_renger_4_attack]                                                                                                                                                 
+path_walk 											= walker_renger_4_walk
+path_look 											= walker_renger_4_look                                                                                                                                                                                                                                                                         
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet 
+on_info 											= {+GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD} walker@gar_smart_terrain_7_walker_renger_4_off
+
+[walker@gar_smart_terrain_7_walker_renger_4_off]                                                                                                                                                 
+path_walk 											= guard_4_walk
+path_look 											= guard_4_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet     
+
+;================================================
+
+[logic@gar_smart_terrain_7_walker_renger_5]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_7_walker_renger_5_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_7_walker_renger_5_idle]
+path_walk 											= walker_renger_5_walk
+path_look 											= walker_renger_5_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+invulnerable 										= true
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_7_walker_renger_5_attack
+
+[walker@gar_smart_terrain_7_walker_renger_5_attack]                                                                                                                                                 
+path_walk 											= walker_renger_5_walk
+path_look 											= walker_renger_5_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet
+on_info 											= {+GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD} walker@gar_smart_terrain_7_walker_renger_5_off
+
+[walker@gar_smart_terrain_7_walker_renger_5_off]                                                                                                                                                 
+path_walk 											= patrol_1_walk
+path_look 											= patrol_1_look                                                                                                                                                                                                                                                                          
+def_state_moving 									= walk                                                                                                                                               
+meet 												= no_meet      
+
+;================================================
+
+[logic@gar_smart_terrain_7_walker_renger_6]
+suitable 											= {=check_npc_name(sim_default_stalker_1)} true
+active 												= walker@gar_smart_terrain_7_walker_renger_6_idle
+prior 												= 300
+
+[walker@gar_smart_terrain_7_walker_renger_6_idle]
+path_walk 											= walker_renger_6_walk
+path_look 											= walker_renger_6_look
+def_state_standing 									= hide
+def_state_moving 									= assault
+invulnerable 										= true
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_7_walker_renger_6_attack
+
+[walker@gar_smart_terrain_7_walker_renger_6_attack]                                                                                                                                                 
+path_walk 											= walker_renger_6_walk
+path_look 											= walker_renger_6_look                                                                                                                                                                                                                                                                         
+def_state_moving 									= assault                                                                                                                                               
+meet 												= no_meet 
+on_info 											= {+GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD +GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD} kamp@gar_smart_terrain_7_animpoint_2_off
+
+[kamp@gar_smart_terrain_7_animpoint_2_off]
+center_pos = -60.98, 0.82, 5.18
+radius = 1.9
+use_camp = false
+def_state_moving = walk
+invulnerable 										= true
+meet 												= no_meet
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false   
+
+;================================================

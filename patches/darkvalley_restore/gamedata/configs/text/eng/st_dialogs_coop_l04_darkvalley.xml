@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="val_smart_terrain_15_stalker_scammer_fake_gauss_fail_dialog_0">
+        <text>Nah, don't need it. Money's tight right now.</text>
+    </string>
+    <string id="val_smart_terrain_15_stalker_scammer_fake_gauss_good_dialog_0">
+        <text>Here, we'll wait.</text>
+    </string>
+    <string id="val_smart_terrain_15_stalker_scammer_start_dialog_0">
+        <text>Listen, need a cool gun? I found something near Yantar... there was a stash there, basically. Among the stuff, there was a Gauss rifle. Excellent piece of work, I tell you - drops anyone dead from a hundred meters. I can let it go if you're interested. For only eight hundred, I'll bring it out in two minutes!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_1_start_dialog_0">
+        <text>Help, hurry... They'll be back soon...</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_2_start_dialog_0">
+        <text>Thanks for saving me. I'd be a goner without you!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_0">
+        <text>How are you? Alive?</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_1">
+        <text>Alive, give me a medkit, quick!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_2">
+        <text>Here!</text>
+    </string>
+    <string id="val_smart_terrain_16_stalker_lucky_help_3">
+        <text>We'll find one, hang on!</text>
+    </string>
+	<string id="st_val_monolith_trader_pda1">
+		<text>Marked One! The military has attacked the bandit base. They have blocked the way to the Garbage. But there is an old road to the south. Try to get out that way, but be careful. Good luck.</text>
+	</string>
+	<string id="st_esc_return_dv">
+		<text>Hello, Marked One, glad you are alive, and you even dropped by our fire. Come in, let's talk. Another job is shaping up.</text>
+	</string>
+	<string id="esc_smart_terrain_1_trader_sidorovich_x18_documents_0">
+		<text>I have been to X-18. Here are the documents.</text>
+	</string>
+	<string id="esc_smart_terrain_1_trader_sidorovich_x18_documents_1">
+		<text>Hm... aha... Now this is very interesting! If I told people, they would not believe it. Hm-m... uh-huh... well, look at that! I never imagined... things are really bad. Anyway. Take them back. All of this has to go to the Barkeep, and you have earned a reward for your trouble!</text>
+	</string>
+</string_table>

@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="stash_hint_esc_secret_bridge_vagon">
+		<text>%c[255,238,155,23]Вагон над мостом\n%c[default]Во время перегруппировки спрятал боеприпас в вагоне. Не забыть.</text>
+	</string>
+	<string id="stash_hint_esc_secret_anomaly_dead">
+		<text>%c[255,238,155,23]Вещи погибшего в аномалии\n%c[default]Видел, как возле железнодорожного туннеля в лесу накрылся в аномалии какой-то сталкер, вроде шмотки неплохие были.</text>
+	</string>
+	<string id="stash_hint_esc_secret_bandit_cross">
+		<text>%c[255,238,155,23]Крест у лагеря бандюков\n%c[default]Возле лагеря бандитов под крестом я спрятал хабар.</text>
+	</string>
+	<string id="stash_hint_esc_secret_bandit_supply">
+		<text>%c[255,238,155,23]Бандитский склад\n%c[default]Перехваченный бандитами ящик обнаружен на чердаке центрального дома, надо подготовить отряд и отбить его.</text>
+	</string>
+	<string id="stash_hint_esc_secret_under_cross">
+		<text>%c[255,238,155,23]Под крестом\n%c[default]Когда мы с братками отбивались от собак в погонах, я зарыл кое-какое добро под крестом. Пусть полежит.</text>
+	</string>
+	<string id="stash_hint_esc_secret_refuge">
+		<text>%c[255,238,155,23]Убежище на чердаке\n%c[default]Рюкзак я сунул на чердак. Вернусь потом, пока никак.</text>
+	</string>
+	<string id="stash_hint_esc_secret_safe_farm">
+		<text>%c[255,238,155,23]Сейф на ферме\n%c[default]На ферме нашел полузакопанный сейф, буду пока там хранить добро.</text>
+	</string>
+	<string id="stash_hint_esc_secret_vagon_container">
+		<text>%c[255,238,155,23]Контейнер в вагоне\n%c[default]Ребятки шепнули, что в вагоне на мосту кто-то что-то прячет, надо заглянуть на обратном пути. Узнать бы кто…</text>
+	</string>
+	<string id="stash_hint_esc_secret_stalker_things">
+		<text>%c[255,238,155,23]Товар сталкера\n%c[default]Спрятал товар под самой крышей, в домике возле моста.</text>
+	</string>
+	<string id="stash_hint_esc_secret_box_bridge">
+		<text>%c[255,238,155,23]Вещи около моста\n%c[default]Шмотье спрятал в одном из ящиков недалеко от моста. Все, завязываю. Ухожу из Зоны, прощайте, братки! Не забуду мать родную.</text>
+	</string>
+	<string id="stash_hint_esc_secret_village_rucksack">
+		<text>%c[255,238,155,23]Рюкзак возле деревни\n%c[default]Недалеко от лагеря новичков сгинул какой-то сталкер, надо бы посмотреть его добро.</text>
+	</string>
+	<string id="stash_hint_esc_secret_village_roof">
+		<text>%c[255,238,155,23]Чердак в деревне\n%c[default]На чердаке тайник, узнал у Лихого. Он много языком ляпал, мы его и пришили.</text>
+	</string>
+	<string id="stash_hint_esc_secret_nice_place">
+		<text>%c[255,238,155,23]Удобное место\n%c[default]Нашел на чердаке отличный тайник, подожду, пока кто-то туда что-то положит.</text>
+	</string>
+	<string id="stash_hint_esc_secret_vorpal">
+		<text>%c[255,238,155,23]Тайник Ворпала\n%c[default]На чердаке тайник, узнал от Ворпала. Наши разведку местности проводили. Проверим.</text>
+	</string>
+	<string id="stash_hint_esc_secret_commander_goods">
+		<text>%c[255,238,155,23]Ценности командира\n%c[default]Говорят, у командира есть хитрый ящик в кабинете, и там ценного добра навалом.</text>
+	</string>
+	<string id="stash_hint_esc_secret_road">
+		<text>%c[255,238,155,23]У сельской дороги\n%c[default]Недалеко от лагеря новичков сгинул какой-то сталкер, надо бы посмотреть, что он нес. Кто их вообще сюда пропускает?</text>
+	</string>
+	<string id="stash_hint_esc_secret_thief">
+		<text>%c[255,238,155,23]Воровской чердак\n%c[default]На чердаке у бандитов спрятал хабар, пока их не было. Теперь бы улучить момент и забрать.</text>
+	</string>
+	<string id="stash_hint_esc_secret_gas_pipe">
+		<text>%c[255,238,155,23]Газовая труба\n%c[default]Обнаружил инвентарь в трубе, недалеко от фермы. Вот гаупвахта закончится - обязательно вернусь.</text>
+	</string>
+	<string id="stash_hint_esc_secret_truck_goods">
+		<text>%c[255,238,155,23]Спрятанные вещи\n%c[default]Недалеко от поста скинул рюкзак, надо поскорее забрать, пока командир не перевел нас на другую локацию.</text>
+	</string>
+	<string id="stash_hint_esc_secret_kpp_tower">
+		<text>%c[255,238,155,23]Вышка на КПП\n%c[default]На вышке временно оставил ящик. Заберу, когда смогу.</text>
+	</string>
+	<string id="stash_hint_gar_secret_bandit_hiding">
+		<text>%c[255,238,155,23]Бандитский схрон\n%c[default]Видел, как бандит прятал свое добро в ангаре в ящике. Как бы это тихо упереть?</text>
+	</string>
+	<string id="stash_hint_gar_secret_old_kran">
+		<text>%c[255,238,155,23]Старый кран\n%c[default]Мы с Васей ходили посмотреть чё как, тут Васю и настигла ментовская пуля. А я тут ни при чем. Пуля - дура. Вещички схоронил на кране в трубе.</text>
+	</string>
+	<string id="stash_hint_gar_secret_grizly">
+		<text>%c[255,238,155,23]Вещи Гризли\n%c[default]На Свалке в железнодорожном туннеле за дизелем со всем своим барахлом накрылся Гризли. Жаль парня.</text>
+	</string>
+	<string id="stash_hint_gar_secret_north_tube">
+		<text>%c[255,238,155,23]Труба на Северной куче\n%c[default]Хабар прятанул в трубе на свалке.</text>
+	</string>
+	<string id="stash_hint_gar_secret_metal_hiding">
+		<text>%c[255,238,155,23]Заначка в металлоломе\n%c[default]Вещи лежат на свалке, в одной трубе. Если не знать, где точно, ни за что не найдешь.</text>
+	</string>
+	<string id="stash_hint_gar_secret_cistern_pipe">
+		<text>%c[255,238,155,23]Чугунка возле цистерн\n%c[default]Спрятал барахло в металлической трубе возле двух цистерн. Надо бы забрать, но некогда.</text>
+	</string>
+	<string id="stash_hint_gar_secret_east_tube">
+		<text>%c[255,238,155,23]Труба на Восточной куче\n%c[default]Среди радиоактивного мусора, где мало кто шастает, спрятаны кое-какие полезные вещи.</text>
+	</string>
+	<string id="stash_hint_gar_secret_rucksack_noones">
+		<text>%c[255,238,155,23]Ничейный рюкзак\n%c[default]В низине валяется чей-то рюкзак, вокруг аномалии. Как бы до него добраться?</text>
+	</string>
+	<string id="stash_hint_gar_secret_murdered">
+		<text>%c[255,238,155,23]Вещи убитого\n%c[default]Замочили стукача на болоте, там мы его и прикопали. А хабарок его под крестом оставили, не до того было.</text>
+	</string>
+	<string id="stash_hint_gar_secret_rotted_stump">
+		<text>%c[255,238,155,23]Трухлявый пень\n%c[default]В пеньке тайник, хорошее место.</text>
+	</string>
+	<string id="stash_hint_gar_secret_forest_log">
+		<text>%c[255,238,155,23]Бревно в лесу\n%c[default]В лесу бревно, внутри - дыра. В ней клад, забрать его пора.</text>
+	</string>
+	<string id="stash_hint_gar_secret_shooters_supply">
+		<text>%c[255,238,155,23]Склад группы Стрелка\n%c[default]Петренко передал, что есть информация про тайник группы Стрелка на Свалке. Тут на равнине в низине должен быть люк, рассказал как его надо хитро открывать. Как успокоится все, надо туда смотаться.</text>
+	</string>
+	<string id="stash_hint_gar_secret_car_hiding">
+		<text>%c[255,238,155,23]Тайник в машине\n%c[default]Запрятал в машину, Длинный говорил, хорошее место.</text>
+	</string>
+	<string id="stash_hint_gar_secret_bus_rucksack">
+		<text>%c[255,238,155,23]Рюкзак сталкера в автобусе\n%c[default]В автобусе положил рюкзак, вроде незаметно.</text>
+	</string>
+	<string id="stash_hint_gar_secret_toilet">
+		<text>%c[255,238,155,23]Сортирные запасы\n%c[default]Запас сложил в ящике, в странном домике за углом. До сих пор не пойму, для чего та постройка.</text>
+	</string>
+	<string id="stash_hint_gar_secret_south_safe">
+		<text>%c[255,238,155,23]Сейф на Южной куче\n%c[default]На куче мусора полузакопанный сейф, там то оно все и лежит. Не забыть бы, что.</text>
+	</string>
+	<string id="stash_hint_gar_secret_metal_hiding2">
+		<text>%c[255,238,155,23]Схрон в металлоломе\n%c[default]На куче мусора в трубе положил хабар.</text>
+	</string>
+	<string id="stash_hint_gar_secret_box_supply">
+		<text>%c[255,238,155,23]Запас в ящике\n%c[default]Начальник по рации передал - отход. Я набрел на ящик, скинул в него лишний вес и отошел налегке.</text>
+	</string>
+	<string id="stash_hint_gar_secret_bus_tube">
+		<text>%c[255,238,155,23]Труба у автобуса\n%c[default]Хабар сунул в трубу на свалке. Долго он там не пролежит.</text>
+	</string>
+	<string id="stash_hint_gar_secret_rucksack_ruins">
+		<text>%c[255,238,155,23]Рюкзак в развалинах\n%c[default]В развалинах хорошо запрятал рюкзак. Надеюсь, забрать будет легко, если бандиты не помешают.</text>
+	</string>
+	<string id="stash_hint_gar_secret_box_blockpost">
+		<text>%c[255,238,155,23]Ящик на блокпосте\n%c[default]Пока долговцы стрелялись, припрятал хабар в вагончике. Надо как-то зайти, забрать. И сказать спасибо Долгу.</text>
+	</string>
+	<string id="stash_hint_gar_secret_deadman">
+		<text>%c[255,238,155,23]Рюкзак Дохляка\n%c[default]Говорят, Дохляк на Свалке скопытился, надо наведаться, хабар глянуть. А то желающих много набежит.</text>
+	</string>
+	<string id="stash_hint_gar_secret_avoska">
+		<text>%c[255,238,155,23]Авоська в люке\n%c[default]В люке пока спрячу добро, авось не найдут.</text>
+	</string>
+	<string id="stash_hint_gar_secret_escavator">
+		<text>%c[255,238,155,23]Под ковшом\n%c[default]Возле эскаватора кто-то сгинул в аномалии, рюкзак видно, а достать тяжело.</text>
+	</string>
+	<string id="stash_hint_gar_secret_concrete_blocks">
+		<text>%c[255,238,155,23]Заначка под бетонными блоками\n%c[default]Еле пролез под балками, зато хорошо рюкзак спрятал, никто сюда не полезет.</text>
+	</string>
+	<string id="stash_hint_agr_secret_gray">
+		<text>%c[255,238,155,23]Тайник Серого\n%c[default]Тайник наш пока в туннеле, все добро лежит в трубе. Там хорошо, мало кто про место знает, да и аномалии отобьют охоту лезть.</text>
+	</string>
+	<string id="stash_hint_agr_secret_stump">
+		<text>%c[255,238,155,23]Дырявый пень\n%c[default]В пеньке спрятал, возле туннеля. Дырка там удобная.</text>
+	</string>
+	<string id="stash_hint_agr_secret_cross">
+		<text>%c[255,238,155,23]Заначка под крестом\n%c[default]Под крестом, возле куста, закопал хабара чуток.</text>
+	</string>
+	<string id="stash_hint_agr_secret_tree_rucksack">
+		<text>%c[255,238,155,23]Рюкзак под деревом\n%c[default]Скинул рюкзак под поваленным деревом.</text>
+	</string>
+	<string id="stash_hint_agr_secret_pipe_rucksack">
+		<text>%c[255,238,155,23]Рюкзак трубочиста\n%c[default]Рюкзак засунул в трубу, возле фабрики. Никто не найдет.</text>
+	</string>
+	<string id="stash_hint_agr_secret_roof_box">
+		<text>%c[255,238,155,23]Ящик на крыше\n%c[default]Ящик снычковал на крыше фабрики, там никто не увидит. Только под дождем заржавеет.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rucksack_blue">
+		<text>%c[255,238,155,23]Рюкзак пьяницы\n%c[default]Стреляли, пришлось бросить рюкзак под вагоном, за колесом. Зато ушел. Потом вернусь, заберу.</text>
+	</string>
+	<string id="stash_hint_agr_secret_cisterne">
+		<text>%c[255,238,155,23]У трех цистерн\n%c[default]Под крестом спрятал, за цистернами. Покопай немного, только не увлекайся.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rucksack_window">
+		<text>%c[255,238,155,23]Рюкзак в иллюминаторе\n%c[default]На фабрике положил рюкзак наверху, так что снизу не увидать. Только вот точно не помню, что в нем.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_radiation">
+		<text>%c[255,238,155,23]Радиоактивный ящик\n%c[default]Внутри фабрики, в ящике спрятал вещички.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_stairs">
+		<text>%c[255,238,155,23]Ящик в пролете\n%c[default]Под лестницей в ящике тайник.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_factory">
+		<text>%c[255,238,155,23]Фабричный ящик\n%c[default]В ящичке спрятал, все равно никто проверять не будет.</text>
+	</string>
+	<string id="stash_hint_agr_secret_bag_stand">
+		<text>%c[255,238,155,23]Сумка на опоре\n%c[default]Скинул сумку за окном, заберу ее потом.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_trash">
+		<text>%c[255,238,155,23]Ящик мусора\n%c[default]Мы с Коляном на Агропроме неплохо погуляли, хлама разного нагребли, но кое-что довелось припрятать. Ящик положили в мусорном контейнере.</text>
+	</string>
+	<string id="stash_hint_agr_secret_safe_tree">
+		<text>%c[255,238,155,23]Сейф под деревом\n%c[default]Под поваленым деревом нашел сейф, пока буду тут все прятать.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rucksack_laketube">
+		<text>%c[255,238,155,23]Вещи в трубе\n%c[default]В трубу кинул вещи, потом заберу. Пришлось, а то бы с собой забрал, конечно. Только бы не намокли.</text>
+	</string>
+	<string id="stash_hint_agr_secret_tube_radiactive">
+		<text>%c[255,238,155,23]Радиоактивная труба\n%c[default]Добро в старой трубе, надо будет пацанам сказать. Я туда не полезу.</text>
+	</string>
+	<string id="stash_hint_agr_secret_pipe_breakdown">
+		<text>%c[255,238,155,23]Завал\n%c[default]Сбежал с базы, ну их в баню, лезть под пули сталкеров. Спрятал шмотки в трубу, в завале. Пересижу пока не улетят, потом заберу.</text>
+	</string>
+	<string id="stash_hint_agr_secret_safe_bush">
+		<text>%c[255,238,155,23]Сейф под кустом\n%c[default]Под кустом полузакопанный сейф, тут все прячу.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_archive">
+		<text>%c[255,238,155,23]Архивный бокс\n%c[default]Ящик обнаружили под опорой, кто-то его тащил аж с НИИ. Подождем вертолета, тогда заберем.</text>
+	</string>
+	<string id="stash_hint_agr_secret_sewers">
+		<text>%c[255,238,155,23]Под люком\n%c[default]В железной байдовине спрятал вещички.</text>
+	</string>
+	<string id="stash_hint_agr_secret_safe_wall">
+		<text>%c[255,238,155,23]Под кустом у стены\n%c[default]Под кустом полузакопанный сейф, там все прячу.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_institute">
+		<text>%c[255,238,155,23]Институтский ящик\n%c[default]Удобный ящик, чтоб лишнее барахло сбрасывать.</text>
+	</string>
+	<string id="stash_hint_agr_secret_agrosafe">
+		<text>%c[255,238,155,23]Агросейф\n%c[default]В сейфе спрятал, а пришли военные. Не достать теперь добро.</text>
+	</string>
+	<string id="stash_hint_agr_secret_truck">
+		<text>%c[255,238,155,23]Кузов грузовика\n%c[default]В трубу кинул шмотки, потом заберу.</text>
+	</string>
+	<string id="stash_hint_agr_secret_rotted_log">
+		<text>%c[255,238,155,23]Гнилое бревно\n%c[default]Забрать вещи из трухлявого бревна.</text>
+	</string>
+	<string id="stash_hint_agr_secret_box_zavhoz">
+		<text>%c[255,238,155,23]Ящик завхоза\n%c[default]Удобный ящик, чтоб лишнее барахло сбрасывать. Когда-то в нем хранился институтский хозяйственный инвентарь.</text>
+	</string>
+	<string id="stash_hint_agr_secret_inventory_schlosser">
+		<text>%c[255,238,155,23]Инвентарь слесаря\n%c[default]Удобный ящик для небольших вещей, я в таком слесарные инструменты дома держал.</text>
+	</string>
+	<string id="stash_hint_agru_secret_bandit_obschak">
+		<text>%c[255,238,155,23]Бандитский общак\n%c[default]Бандиты что-то прячут под трубой, надо наведаться. Из разговора ясно, что там их запасы.</text>
+	</string>
+	<string id="stash_hint_agru_secret_rucksack_corner">
+		<text>%c[255,238,155,23]Рюкзак в закоулке\n%c[default]Спрятал рюкзак за кусками бетона, пойду налегке. Лучше буду голодный, но живой.</text>
+	</string>
+	<string id="stash_hint_agru_secret_box_bloodsucker">
+		<text>%c[255,238,155,23]Ящик кровососа\n%c[default]Ящик за ржавой "бочкой" в подземелье, все там лежит. Я туда возвращаться не собираюсь, дудки! Каким чудом я того кровососа задавил, до сих пор не помню.</text>
+	</string>
+	<string id="stash_hint_agru_secret_box_habar">
+		<text>%c[255,238,155,23]Хабар сталкера\n%c[default]За стеной лежит хабар. Отвечаю за базар!</text>
+	</string>
+	<string id="stash_hint_agru_secret_mole_cave">
+		<text>%c[255,238,155,23]Нора крота\n%c[default]Я тут нарыл кое-какие ценности. Хитрое местечко для моего тайника. На желтой бочке, фиг найдешь.</text>
+	</string>
+	<string id="stash_hint_val_secret_0000">
+		<text>%c[255,238,155,23]Тайник под крестом\n%c[default]Под крестом, возле горы, закопал хабара чуток</text>
+	</string>
+	<string id="stash_hint_val_secret_0001">
+		<text>%c[255,238,155,23]Тайник в бревне\n%c[default]Сунул добро в бревно, думаю не найдут</text>
+	</string>
+	<string id="stash_hint_val_secret_0002">
+		<text>%c[255,238,155,23]Рюкзак под мостом\n%c[default]Под мост засунул рюкзак, пусть полежит пока</text>
+	</string>
+	<string id="stash_hint_val_secret_0003">
+		<text>%c[255,238,155,23]Машина с тайником\n%c[default]Положили ящик в машину возле болота</text>
+	</string>
+	<string id="stash_hint_val_secret_0004">
+		<text>%c[255,238,155,23]Тайник в пеньке\n%c[default]В пеньке тайник, хорошее место</text>
+	</string>
+	<string id="stash_hint_val_secret_0005">
+		<text>%c[255,238,155,23]Ящик c припасами\n%c[default]На ферме нашел отличный ящик, буду пока там хранить припасы</text>
+	</string>
+	<string id="stash_hint_val_secret_0006">
+		<text>%c[255,238,155,23]Тайник в трубе\n%c[default]В трубу кинул шмотки, потом заберу</text>
+	</string>
+	<string id="stash_hint_val_secret_0007">
+		<text>%c[255,238,155,23]Тайник под елкой\n%c[default]Спрятал рюкзак под елкой</text>
+	</string>
+	<string id="stash_hint_val_secret_0008">
+		<text>%c[255,238,155,23]Правительственный ящик\n%c[default]Новенький стащил таки ящик у бандитов, положил его в Ниве перевернутой. Говорит по виду вроде правительственный ящик. Надо будет снарядить ребят, забрать его</text>
+	</string>
+	<string id="stash_hint_val_secret_0009">
+		<text>%c[255,238,155,23]Ящик\n%c[default]Кругом одно ворье, уже у своих тырят, но мой ящичек не найдут</text>
+	</string>
+	<string id="stash_hint_val_secret_0010">
+		<text>%c[255,238,155,23]Тайник в люке\n%c[default]В люке схоронил вещи, когда-нибудь пригодятся</text>
+	</string>
+	<string id="stash_hint_val_secret_0011">
+		<text>%c[255,238,155,23]Рюкзак сталкера\n%c[default]Бросил рюкзак под дерево, иначе не ушел бы от бандитов</text>
+	</string>
+	<string id="stash_hint_val_secret_0012">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Барахлишко положил в трубу, потом заберу</text>
+	</string>
+	<string id="stash_hint_val_secret_0013">
+		<text>%c[255,238,155,23]Спрятаный сейф\n%c[default]Все что спер у Борова, припрятал в сейфе, что под елкой. Теперь переждать надо, пока они на нервах все</text>
+	</string>
+	<string id="stash_hint_val_secret_0014">
+		<text>%c[255,238,155,23]Склад в вагончике\n%c[default]Временный штаб в вагончике, ящик с припасами там же</text>
+	</string>
+	<string id="stash_hint_val_secret_0015">
+		<text>%c[255,238,155,23]Тайное место в трубе\n%c[default]Еле залез в трубу, под дорогой, будет теперь где рюкзак прятать</text>
+	</string>
+	<string id="stash_hint_val_secret_0016">
+		<text>%c[255,238,155,23]Ящик с добром\n%c[default]В ящик закинул добро, потом заберем</text>
+	</string>
+	<string id="stash_hint_val_secret_0017">
+		<text>%c[255,238,155,23]Тайник за трубой\n%c[default]Прячу хабар за трубой. Сложно добираться, зато не стырят</text>
+	</string>
+	<string id="stash_hint_val_secret_0018">
+		<text>%c[255,238,155,23]Тайник в электро-щитке\n%c[default]Сныкал патроны в электро-щитке</text>
+	</string>
+	<string id="stash_hint_val_secret_0019">
+		<text>%c[255,238,155,23]Ящик-тайник\n%c[default]Все что нашли оставили в ящике, будем идти назад заберем</text>
+	</string>
+	<string id="stash_hint_val_secret_0020">
+		<text>%c[255,238,155,23]Спрятанный рюкзак\n%c[default]Заныкали рюкзак новенького, он так и не нашел</text>
+	</string>
+	<string id="stash_hint_val_secret_0021">
+		<text>%c[255,238,155,23]Забытый ящик\n%c[default]В фургоне остался ящик, надо забрать</text>
+	</string>
+	<string id="stash_hint_val_secret_0022">
+		<text>%c[255,238,155,23]Сейф на бензоколонке\n%c[default]Нашел сейф на бензоколонке, спрятал там добро, вроде редко кто здесь ходит</text>
+	</string>
+	<string id="stash_hint_val_secret_0023">
+		<text>%c[255,238,155,23]Ящик\n%c[default]Ящик затащили на цистерну</text>
+	</string>
+	<string id="stash_hint_val_secret_0024">
+		<text>%c[255,238,155,23]Сейф на бензоколонке\n%c[default]Спрятал припасы в сейф на бензоколонке</text>
+	</string>
+	<string id="stash_hint_val_secret_0025">
+		<text>%c[255,238,155,23]Ящик в машине\n%c[default]В лагере бандитов, в машине какой-то ящик лежит, надо незаметно пробраться, чую там есть чем разжиться</text>
+	</string>
+	<string id="stash_hint_val_secret_0026">
+		<text>%c[255,238,155,23]Ящик в тайнике\n%c[default]Поставил ящик в тайник, место надежное</text>
+	</string>
+	<string id="stash_hint_val_secret_0027">
+		<text>%c[255,238,155,23]Оставленный рюкзак\n%c[default]Оставил рюкзак в заброшенном здании, хорошо, никого рядом нет</text>
+	</string>
+	<string id="stash_hint_val_secret_0028">
+		<text>%c[255,238,155,23]Тайник Борова\n%c[default]Добро будем хранить в сейфе, в незаметном месте. Не сегодня завтра военные придут, всем тут фитиль вставят, ну да рыскать долго они не будут, так что самое ценное останется у меня</text>
+	</string>
+	<string id="stash_hint_val_secret_0029">
+		<text>%c[255,238,155,23]Рюкзак в тайном месте\n%c[default]Рюкзак заныкал возле здания</text>
+	</string>
+	<string id="stash_hint_val_secret_0030">
+		<text>%c[255,238,155,23]Незаметный ящик\n%c[default]Сунул хабар в незаметный ящик, потом заберу</text>
+	</string>
+	<string id="stash_hint_val_secret_0031">
+		<text>%c[255,238,155,23]Спрятанный рюкзак\n%c[default]Рюкзак спрятал под машиной, туда никто не сунется</text>
+	</string>
+	<string id="stash_hint_val_secret_0032">
+		<text>%c[255,238,155,23]Тайник в машине\n%c[default]Хабар спрятал в машине под боком у бандитов, времени не было искать что получше</text>
+	</string>
+	<string id="stash_hint_mil_secret_0000">
+		<text>%c[255,238,155,23]Тайник в бревне\n%c[default]Сунул добро в бревно, думаю не найдут.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0001">
+		<text>%c[255,238,155,23]Тайник в печи\n%c[default]В печку припрятал барахлишко.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0002">
+		<text>%c[255,238,155,23]Тайник в КАМАЗе\n%c[default]В кабине КАМАЗа припрятал барахлишко.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0003">
+		<text>%c[255,238,155,23]Клад под крестом\n%c[default]Под крестом, возле деревни, закопал хабара чуток.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0004">
+		<text>%c[255,238,155,23]Тайник в трубе\n%c[default]В трубу кинул шмотки, потом заберу.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0005">
+		<text>%c[255,238,155,23]Клад в башне\n%c[default]Тайник в водонапорной башне, в ящике.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0006">
+		<text>%c[255,238,155,23]Печной тайник\n%c[default]В печку сунул рюкзак, потом пригодится.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0007">
+		<text>%c[255,238,155,23]Авто-тайник\n%c[default]Хабар спрятал в машине, в деревне заброшенной.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0008">
+		<text>%c[255,238,155,23]Опасный секрет\n%c[default]В развалинах с радиацией оставил рюкзак. Побоятся сунуться.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0009">
+		<text>%c[255,238,155,23]Схрон сталкера\n%c[default]Закопал хабар под крестом, в укромном месте.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0010">
+		<text>%c[255,238,155,23]Рюкзак со снаряжением\n%c[default]Припрятал рюкзачек со снарягой в укромном месте.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0011">
+		<text>%c[255,238,155,23]Тайник на холме\n%c[default]Шмотье припрятал на холме в машине.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0012">
+		<text>%c[255,238,155,23]Ящик из вертолёта\n%c[default]Упал вертолет возле заброшенной военной базы, ящик лежит недалеко, прямо под вертолетом. Одна беда, аномалии и радиация кругом.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0013">
+		<text>%c[255,238,155,23]Секрет в могиле\n%c[default]На холме под крестом закопал хабар.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0014">
+		<text>%c[255,238,155,23]Тайный пень\n%c[default]В пеньке тайник, хорошее место</text>
+	</string>
+	<string id="stash_hint_mil_secret_0015">
+		<text>%c[255,238,155,23]Тайник высотника\n%c[default]Оставил рюкзак в кабине крана, потом заберу.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0016">
+		<text>%c[255,238,155,23]Условленный тайник\n%c[default]Все сложил в ящик, в вагоне недалеко от базы. Так и договаривались, теперь осталось только ждать.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0017">
+		<text>%c[255,238,155,23]Клад в бревне\n%c[default]Сунул добро в бревно, думаю не найдут.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0018">
+		<text>%c[255,238,155,23]Труба с хабаром\n%c[default]Хабар сунул в трубу на берегу озера.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0019">
+		<text>%c[255,238,155,23]Тайник сталкера\n%c[default]В железной байдовине спрятал вещички.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0020">
+		<text>%c[255,238,155,23]Хабар в бревне\n%c[default]Сунул добро в бревно, думаю не найдут.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0021">
+		<text>%c[255,238,155,23]Удобный схрон\n%c[default]Удобный ящик, чтоб лишнее барахло сбрасывать.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0022">
+		<text>%c[255,238,155,23]Рюкзак в туннеле\n%c[default]В туннеле припрятал рюкзак с хабаром.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0023">
+		<text>%c[255,238,155,23]Ящик с добром\n%c[default]Удобный ящик, чтоб лишнее барахло сбрасывать.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0024">
+		<text>%c[255,238,155,23]Тайник в бревне\n%c[default]Сунул добро в бревно, думаю не найдут.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0025">
+		<text>%c[255,238,155,23]Временный тайник\n%c[default]В ящик закинул добро, потом заберу.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0026">
+		<text>%c[255,238,155,23]Стальной тайник\n%c[default]В люке схоронил вещи, когда-нибудь пригодятся.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0027">
+		<text>%c[255,238,155,23]Ящик с хабаром\n%c[default]В ящик закинул добро, потом заберу.</text>
+	</string>
+	<string id="stash_hint_mil_secret_0028">
+		<text>%c[255,238,155,23]Тайник в машине\n%c[default]Хабар спрятал в машине под боком у Свободы, времени не было искать что получше.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0000">
+		<text>%c[255,238,155,23]Тайник под крестом\n%c[default]Крест на холме, а под ним тайник.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0001">
+		<text>%c[255,238,155,23]Старый сейф\n%c[default]Говорят на островке среди болота сейф есть, полузакопанный. Надо наведаться.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0002">
+		<text>%c[255,238,155,23]Труба с добром\n%c[default]В трубу засунул добро, возле лагеря.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0003">
+		<text>%c[255,238,155,23]Рюкзак за гаражами\n%c[default]За гаражами припрятал хабарок.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0004">
+		<text>%c[255,238,155,23]Рюкзак с добычей\n%c[default]Припрятал рюкзак в будке, прямо за железной хренью.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0005">
+		<text>%c[255,238,155,23]Тайник в автобусе\n%c[default]В автобусе положил ящичек, вроде незаметно.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0006">
+		<text>%c[255,238,155,23]Добыча в машине\n%c[default]Хабар спрятан в машине, недалеко от территории. Излучение не очень сильное.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0007">
+		<text>%c[255,238,155,23]Старый рюкзак\n%c[default]Говорят, тут хабар чей-то есть, только под излучением не пробраться.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0008">
+		<text>%c[255,238,155,23]Тайник группировки\n%c[default]Говорят, тут тайник какой-то группировки, как только они под излучением пробрались?</text>
+	</string>
+	<string id="stash_hint_yan_secret_0009">
+		<text>%c[255,238,155,23]Рюкзак испытателя\n%c[default]Сгинул очередной сталкер-доброволец, очередной прототип не защитил от излучения. Смог дойти только до середины территории, там и остался. Сахаров хочет замеры более точные сделать, но я не пойду, а то и я там останусь, недалеко от территории.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0010">
+		<text>%c[255,238,155,23]Старый тайник\n%c[default]Говорят тут хабар чей-то есть, только под излучением не пробраться.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0011">
+		<text>%c[255,238,155,23]Тайник учёного\n%c[default]Надо валить. Сахаров и Круглов полные психи, требуют чтоб я отправился с каким-то сталкером в центр излучения. Ну их нафиг, как только соберу все запасы в люке, тут же свалю.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0012">
+		<text>%c[255,238,155,23]Клад в бревне\n%c[default]Сунул добро в бревно, думаю, не найдут.</text>
+	</string>
+	<string id="stash_hint_yan_secret_0013">
+		<text>%c[255,238,155,23]Ящик с добром\n%c[default]Говорят тут схрон чей-то, только под излучением не пробраться.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0000">
+		<text>%c[255,238,155,23]Клад Угрюмого\n%c[default]Крест по дороге к выжигателю, дальше не пошел, спрятал все под ним.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0001">
+		<text>%c[255,238,155,23]Хабар мёртвого сталкера\n%c[default]Тут погиб какой-то сталкер, хабар до сих пор валяется, никто подобрать не может.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0002">
+		<text>%c[255,238,155,23]Хабар в сейфе\n%c[default]Говорят в лесу полузакопанный сейф есть и там хабара полно.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0003">
+		<text>%c[255,238,155,23]Посылка Долгу\n%c[default]Говорил им не летать над выжигателем, вот и результат. В середине леса приземлились, вряд ли кто-то выжил. Где-то там и лежит то, что нам передали.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0004">
+		<text>%c[255,238,155,23]Запас группы отчаянных\n%c[default]Говорят там остался запас группы, которая пробивалась к центру Зоны, прямо под излучением Выжигателя. Никто из них не вернулся, а запас так и остался дожидаться того, кто его подберет.</text>
+	</string>
+	<string id="stash_hint_rad_secret_0005">
+		<text>%c[255,238,155,23]Хабар лидера группировки\n%c[default]Говорят сгинул здесь лидер какой-то бывшей группировки, и хабар у него с собой богатый был.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0000">
+		<text>%c[255,238,155,23]Вещи мёртвого сталкера\n%c[default]Говорят сгинул здесь какой-то сталкер известный, добро его до сих пор никто не подобрал.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0001">
+		<text>%c[255,238,155,23]Клад в гараже\n%c[default]В гараже, говорят, ящик стоит, а в нем хабара мама не горюй.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0002">
+		<text>%c[255,238,155,23]Старый тайник\n%c[default]В детском саду, говорят, ящик стоит, а в нем хабара мама не горюй.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0003">
+		<text>%c[255,238,155,23]Хабар Клыка\n%c[default]Клыка похоронил на Припяти, под памятником. Весь его хабар оставил там же, нехорошо забирать у мертвого.</text>
+	</string>
+	<string id="stash_hint_pri_secret_0004">
+		<text>%c[255,238,155,23]Запасы лидера Свободы\n%c[default]Последнее что было известно о нем, это то, что выжил только он один после выжигателя. Запасы оставил в каком-то бывшем универмаге и двинул дальше. Все пошло не так, как планировалось, а ведь это был лучший лидер Свободы, за всю нашу историю.</text>
+	</string>
+	<string id="stash_hint_x18_secret_0000">
+		<text>%c[255,238,155,23]Тайник Копченого\n%c[default]В подземной лаборатории, Копченый все сложил в сейфе. Место неплохое, ни у кого ключей от лаборатории нет. Одна напасть, камни вдруг ни с того ни с сего в воздухе летают, говорили кого-то пришибли</text>
+	</string>
+	<string id="stash_hint_x18_secret_0001">
+		<text>%c[255,238,155,23]Брошенный рюкзак\n%c[default]Рюкзак пришлось бросить</text>
+	</string>
+	<string id="stash_hint_bar_secret_0000">
+		<text>%c[255,238,155,23]Спрятанный рюкзак\n%c[default]Спрятал рюкзак возле базы долга. Потом заберу</text>
+	</string>
+	<string id="stash_hint_bar_secret_0001">
+		<text>%c[255,238,155,23]Оставленный рюкзак\n%c[default]За мной погналась большая стая собак, если бы рюкзак не оставил, то до заставы не добежал бы</text>
+	</string>
+	<string id="stash_hint_bar_secret_0002">
+		<text>%c[255,238,155,23]Тайник под крестом\n%c[default]Все что осталось закопали под крестом</text>
+	</string>
+	<string id="stash_hint_bar_secret_0003">
+		<text>%c[255,238,155,23]Рюкзак\n%c[default]Скинул тут рюкзак, так полегче будет</text>
+	</string>
+	<string id="stash_hint_bar_secret_0004">
+		<text>%c[255,238,155,23]Склад в бункере\n%c[default]Снаряга заставы Долга, хранится в бункере, но за ящиком никто не следит</text>
+	</string>
+	<string id="stash_hint_bar_secret_0005">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Видел как долговец что-то сунул в трубу, возле заставы</text>
+	</string>
+	<string id="stash_hint_bar_secret_0006">
+		<text>%c[255,238,155,23]Тайник под крестом\n%c[default]Это все ему принадлежало, пусть пока тут и полежит</text>
+	</string>
+	<string id="stash_hint_bar_secret_0007">
+		<text>%c[255,238,155,23]Рюкзак\n%c[default]Иду в бар, рюкзак оставил в ангаре</text>
+	</string>
+	<string id="stash_hint_bar_secret_0008">
+		<text>%c[255,238,155,23]Электрощиток с тайником\n%c[default]Говорят на территории Долга, в электрощитке, что-то ценное лежит</text>
+	</string>
+	<string id="stash_hint_bar_secret_0009">
+		<text>%c[255,238,155,23]Тайник на башне\n%c[default]Наверху башни возле Долга запихнул ящичек так, что никто не заметит</text>
+	</string>
+	<string id="stash_hint_bar_secret_0010">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Спрятал в трубе под лестницей</text>
+	</string>
+	<string id="stash_hint_bar_secret_0011">
+		<text>%c[255,238,155,23]Тайник Арни\n%c[default]Недалеко от бара схоронил добро, за аномалиями, никто не подберется. Да и как открывать не знают, а все просто, там поддеть дверцу надо, сразу и откроется</text>
+	</string>
+	<string id="stash_hint_bar_secret_0012">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Недалеко от бара схоронил добро</text>
+	</string>
+	<string id="stash_hint_bar_secret_0013">
+		<text>%c[255,238,155,23]Ящик\n%c[default]Возле бара в ящике</text>
+	</string>
+	<string id="stash_hint_bar_secret_0014">
+		<text>%c[255,238,155,23]Ящичек\n%c[default]В закоулке, возле бара, припрятал ящичек</text>
+	</string>
+	<string id="stash_hint_bar_secret_0015">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Закопал под крестом, за елками</text>
+	</string>
+	<string id="stash_hint_bar_secret_0016">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Под крестом, недалеко от прохода к Дикой территории</text>
+	</string>
+	<string id="stash_hint_bar_secret_0017">
+		<text>%c[255,238,155,23]Ящичек\n%c[default]В трубе, возле Арены, припрятал ящичек c антирадом</text>
+	</string>
+	<string id="stash_hint_bar_secret_0018">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Под башней спрятал шмотье в трубе</text>
+	</string>
+	<string id="stash_hint_bar_secret_0019">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Под крестом тайник</text>
+	</string>
+	<string id="stash_hint_ros_secret_0000">
+		<text>%c[255,238,155,23]Спрятанный рюкзак\n%c[default]Припрятал рюкзак, за железным листом</text>
+	</string>
+	<string id="stash_hint_ros_secret_0001">
+		<text>%c[255,238,155,23]Тайник под крестом\n%c[default]Приховал добро под крестом</text>
+	</string>
+	<string id="stash_hint_ros_secret_0002">
+		<text>%c[255,238,155,23]Ящик под домиком\n%c[default]Спрятал кое-что в ящике, под домиком. Не забыть</text>
+	</string>
+	<string id="stash_hint_ros_secret_0003">
+		<text>%c[255,238,155,23]Рюкзак сталкера\n%c[default]Сунул рюкзак под ступеньки, а там эти гады появились. Блин, как бы достать</text>
+	</string>
+	<string id="stash_hint_ros_secret_0004">
+		<text>%c[255,238,155,23]Тайник за деревом\n%c[default]Тут в углу, за деревом сейф полузакопанный, вот тут мое барахлишко и побудет</text>
+	</string>
+	<string id="stash_hint_ros_secret_0005">
+		<text>%c[255,238,155,23]Тайник в гараже\n%c[default]Все что зхватили во время рейда, спрятали в гараже в ящике</text>
+	</string>
+	<string id="stash_hint_ros_secret_0006">
+		<text>%c[255,238,155,23]Спрятанный ящик\n%c[default]За будкой в ящике припрятал вещички</text>
+	</string>
+	<string id="stash_hint_ros_secret_0007">
+		<text>%c[255,238,155,23]Рюкзак в тайнике\n%c[default]Сунул рюкзак в дырку, сверху вроде не заметно</text>
+	</string>
+	<string id="stash_hint_ros_secret_0008">
+		<text>%c[255,238,155,23]Ящик в уромном месте\n%c[default]Ящичек припрятал в укромном месте</text>
+	</string>
+	<string id="stash_hint_ros_secret_0009">
+		<text>%c[255,238,155,23]Тайник сталкера\n%c[default]Под крышей лежит мой рюкзак. Это на черный день</text>
+	</string>
+	<string id="stash_hint_ros_secret_0010">
+		<text>%c[255,238,155,23]Сейф в доме\n%c[default]Говорят в этом домике сейф есть, а в нем что-то припрятано</text>
+	</string>
+	<string id="stash_hint_ros_secret_0011">
+		<text>%c[255,238,155,23]Тайник в трубе\n%c[default]Спрятал в домике, в трубе. Осторожно там все фонит</text>
+	</string>
+	<string id="stash_hint_ros_secret_0012">
+		<text>%c[255,238,155,23]Спятанный ящичек\n%c[default]О чем договорились, возьмешь в ящичке, туда обычно никто не заглядывает</text>
+	</string>
+	<string id="stash_hint_ros_secret_0013">
+		<text>%c[255,238,155,23]Тайник под крестом\n%c[default]Под крестом спрятал, в закоулке</text>
+	</string>
+	<string id="stash_hint_ros_secret_0014">
+		<text>%c[255,238,155,23]Тайник под бетоном\n%c[default]Лишние припасы спрятали на стройке, под бетоном</text>
+	</string>
+	<string id="stash_hint_ros_secret_0015">
+		<text>%c[255,238,155,23]Тайник Счастливчика\n%c[default]Хабар будем складывать в ящике на стройке, на случай если ноги надо будет уносить</text>
+	</string>
+	<string id="stash_hint_ros_secret_0016">
+		<text>%c[255,238,155,23]Нычка\n%c[default]На стройке спрятал, в закоулке</text>
+	</string>
+	<string id="stash_hint_ros_secret_0017">
+		<text>%c[255,238,155,23]Тайник в трубе\n%c[default]Запихал все в какую-то трубу, потом заберем</text>
+	</string>
+	<string id="stash_hint_ros_secret_0018">
+		<text>%c[255,238,155,23]Ящик с медикаментами\n%c[default]Недалеко от стройки спрятал медикаменты в ящик</text>
+	</string>
+	<string id="stash_hint_ros_secret_0019">
+		<text>%c[255,238,155,23]Ящик на кране\n%c[default]Затащили ящик в кабину крана</text>
+	</string>
+	<string id="stash_hint_ros_secret_0020">
+		<text>%c[255,238,155,23]Тайник в люке\n%c[default]В углу, за жд закрыл свое добро в люке</text>
+	</string>
+	<string id="stash_hint_ros_secret_0021">
+		<text>%c[255,238,155,23]Брошенный рюкзак\n%c[default]Полез за артефактом и попал в аномалию, еле иду. Рюкзак скинул, в углу, за жд</text>
+	</string>
+	<string id="stash_hint_ros_secret_0022">
+		<text>%c[255,238,155,23]Ящичек под крышей\n%c[default]Наверху, под крышей возле вышки запихнул ящичек, чтоб никто не заметил</text>
+	</string>
+	<string id="stash_hint_ros_secret_0023">
+		<text>%c[255,238,155,23]Тайник в трубе\n%c[default]То, что нашли, спрятали в трубе, недалеко от стройки</text>
+	</string>
+	<string id="stash_hint_ros_secret_0024">
+		<text>%c[255,238,155,23]Тайник\n%c[default]Сунул добро в бревно, думаю не найдут</text>
+	</string>
+	<string id="stash_hint_ros_secret_0025">
+		<text>%c[255,238,155,23]Рюкзак\n%c[default]Нычканул рюкзак возле крана</text>
+	</string>
+</string_table>

@@ -196,6 +196,9 @@
     </supplies>
 	<start_dialog>mil_smart_terrain_15_freedom_max_start_dialog</start_dialog>	
 	<actor_dialog>mil_smart_terrain_15_freedom_max_help_freedom_start_dialog</actor_dialog>
+	<actor_dialog>mil_smart_terrain_15_freedom_max_flash_offer_dialog</actor_dialog>
+	<actor_dialog>mil_smart_terrain_15_freedom_max_flash_report_dialog</actor_dialog>
+	<actor_dialog>mil_smart_terrain_15_freedom_max_flash_wait_dialog</actor_dialog>
 	<actor_dialog>bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog</actor_dialog>
 	<actor_dialog>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog</actor_dialog>
 	<actor_dialog>actor_break_dialog</actor_dialog>
@@ -507,5 +510,24 @@
     </supplies>
     </specific_character>
 	
-  </xml>
+  <specific_character id="mil_crazy_stalker" team_default = "1">
+    <name>mil_crazy_stalker_name</name>
+    <icon>ui_inGame2_Zombied_2</icon>
+    <map_icon x="1" y="0"></map_icon>
+    <bio></bio>
+    <class>mil_crazy_stalker</class>
+    <community>zombied</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <snd_config>characters_voice\human_01\zombied\</snd_config>
+    <rank>10</rank>
+    <reputation>0</reputation>
+    <visual>actors\stalker_zombied\stalker_zombied_2</visual>
+    <crouch_type>0</crouch_type>
+    <supplies>
+      [spawn]\n
+      wpn_fort \n
+      ammo_9x18_fmj = 2 \n
+      crazy_flash = 1 \n
+    </supplies>
+</specific_character>
+</xml>
   

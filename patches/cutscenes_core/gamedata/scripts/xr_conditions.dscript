@@ -1,0 +1,379 @@
+function is_jup_a12_mercs_time (actor, npc)
+	return db.actor ~= nil and (level.get_time_hours() >= 1 and level.get_time_hours() < 5)
+end
+
+function zat_b7_is_night (actor, npc)
+	return db.actor ~= nil and (level.get_time_hours() >= 23 or level.get_time_hours() < 5)
+end
+
+function zat_b7_is_late_attack_time (actor, npc)
+	return db.actor ~= nil and (level.get_time_hours() >= 23 or level.get_time_hours() < 9)
+end
+
+function squads_in_zone_b41(actor, npc, p)
+	local smart = sim_board.get_sim_board():get_smart_by_name("jup_b41")
+	local zone = db.zone_by_name["jup_b41_sr_light"]
+	local al = alife()
+
+	if zone == nil then
+		return false
+	end
+	if smart == nil then
+		return false
+	end
+
+	for k,v in pairs(sim_board.get_sim_board().smarts[smart.id].squads) do
+		if v ~= nil then
+			for j in v:squad_members() do
+				if not zone:inside(j.object.position) then
+					return false
+				end
+			end
+		end
+	end
+
+	return true
+end
+
+function jup_b16_is_zone_active(actor, npc)
+	return story_flags.has_flag(string.upper(npc:name()))
+end
+
+function actor_has_nimble_weapon(actor, npc)
+	local need_item = {}
+	need_item["wpn_groza_nimble"] = true
+	need_item["wpn_desert_eagle_nimble"] = true
+	need_item["wpn_fn2000_nimble"] = true
+	need_item["wpn_g36_nimble"] = true
+	need_item["wpn_protecta_nimble"] = true
+	need_item["wpn_mp5_nimble"] = true
+	need_item["wpn_sig220_nimble"] = true
+	need_item["wpn_spas12_nimble"] = true
+	need_item["wpn_usp_nimble"] = true
+	need_item["wpn_vintorez_nimble"] = true
+	need_item["wpn_svu_nimble"] = true
+	need_item["wpn_svd_nimble"] = true
+	for k,v in pairs(need_item) do
+		if getNearestActor(npc):object(k) ~= nil then
+			return true
+		end
+	end
+	return false
+end
+
+function actor_has_active_nimble_weapon(actor, npc)
+	local need_item = {}
+	need_item["wpn_groza_nimble"] = true
+	need_item["wpn_desert_eagle_nimble"] = true
+	need_item["wpn_fn2000_nimble"] = true
+	need_item["wpn_g36_nimble"] = true
+	need_item["wpn_protecta_nimble"] = true
+	need_item["wpn_mp5_nimble"] = true
+	need_item["wpn_sig220_nimble"] = true
+	need_item["wpn_spas12_nimble"] = true
+	need_item["wpn_usp_nimble"] = true
+	need_item["wpn_vintorez_nimble"] = true
+	need_item["wpn_svu_nimble"] = true
+	need_item["wpn_svd_nimble"] = true
+
+	if getNearestActor(npc):item_in_slot(2) ~= nil and need_item[getNearestActor(npc):item_in_slot(2):section()] == true then
+		return true
+	end
+	if getNearestActor(npc):item_in_slot(3) ~= nil and need_item[getNearestActor(npc):item_in_slot(3):section()] == true then
+		return true
+	end
+	return false
+end
+
+function jup_b202_inventory_box_empty(actor, npc)
+	local inv_box = get_story_object("jup_b202_actor_treasure")
+	return inv_box:is_inv_box_empty()
+end
+--[[
+function jup_b46_actor_has_active_science_detector(actor, npc)
+	if actor:item_in_slot(9) ~= nil and actor:item_in_slot(9):section() == "detector_scientific" then return true end
+	return false
+end
+]]--
+
+function jup_b47_npc_online(actor, npc, p)
+	if OnClient() then 
+		return
+	end
+	
+--	printf("function jup_b47_npc_online: story_obj[%s]", tostring(p[1]))
+	local story_obj = get_story_object(p[1])
+	if story_obj == nil then
+		return false
+	end
+	local obj = alife():object(story_obj:id())
+	return obj ~= nil
+end
+
+function zat_b29_anomaly_has_af(actor, npc, p)
+	local az_name = p and p[1]
+	local af_name
+
+	local anomal_zone = db.anomaly_by_name[az_name]
+	if anomal_zone == nil then
+		return false
+	end
+
+	if anomal_zone.spawned_count < 1 then
+		return false
+	end
+
+	for i = 16, 23 do
+		if story_flags.has_flag(dialogs_zaton.zat_b29_infop_bring_table[i]) then
+			af_name = dialogs_zaton.zat_b29_af_table[i]
+			break
+		end
+	end
+
+	for k,v in pairs(anomal_zone.artefact_ways_by_id) do
+		if alife():object(tonumber(k)) and af_name == alife():object(tonumber(k)):section_name() then
+			story_flags.give_flag(az_name)
+			return true
+		end
+	end
+
+	return false
+end
+
+function jup_b221_who_will_start(actor, npc, p) -- доступные параметры: ability - проверить есть ли доступные темы, choose - выбрать групировку которая начнет перепалку
+	local reachable_theme = {}
+	local faction_table = {}
+	local info_table = {
+---------duty
+		[1] = "JUP_B25_FREEDOM_FLINT_GONE",
+		[2] = "JUP_B25_FLINT_BLAME_DONE_TO_DUTY",
+		[3] = "JUP_B4_MONOLITH_SQUAD_IN_DUTY",
+		[4] = "JUP_A6_DUTY_LEADER_BUNKER_GUARDS_WORK",
+		[5] = "JUP_A6_DUTY_LEADER_EMPLOY_WORK",
+		[6] = "JUP_B207_DUTY_WINS",
+---------freedom
+		[7] = "JUP_B207_FREEDOM_KNOW_ABOUT_DEPOT",
+		[8] = "JUP_B46_DUTY_FOUNDER_PDA_TO_FREEDOM",
+		[9] = "JUP_B4_MONOLITH_SQUAD_IN_FREEDOM",
+		[10] = "JUP_A6_FREEDOM_LEADER_BUNKER_GUARDS_WORK",
+		[11] = "JUP_A6_FREEDOM_LEADER_EMPLOY_WORK",
+		[12] = "JUP_B207_FREEDOM_WINS"
+	}
+--Составляем таблицу достыпных тем(тлько номера тем).
+	for k,v in pairs(info_table) do
+		if k <= 6 then
+			faction_table[1] = "DUTY"
+			faction_table[2] = "0"
+		else
+			faction_table[1] = "FREEDOM"
+			faction_table[2] = "6"
+		end
+		if (story_flags.has_flag(v)) and (not story_flags.has_flag("JUP_B221_" .. faction_table[1] .. "_MAIN_" .. tostring(k - tonumber(faction_table[2])) .. "_PLAYED")) then
+			table.insert(reachable_theme,k)
+			printf("jup_b221_who_will_start: table reachable_theme ------------------------------> [%s]", tostring(k))
+		end
+	end
+	if (p and p[1]) == nil then
+		abort("No such parameters in function 'jup_b221_who_will_start'")
+	end
+	if tostring(p[1]) == "ability" then
+		return #reachable_theme ~= 0 -- если таблица пуста значит нет доступных тем и ненадо играть сцену
+	elseif  tostring(p[1]) == "choose" then
+---------Выберем рандомам елемент составленой таблицы и проверим к какой груперовки он пренадлежит :)
+		return reachable_theme[math.random(1, #reachable_theme)] <= 6 -- если меньше 6-ти значит ДОЛГ если больше 6-ти значит СВОБОДА
+	else
+		abort("Wrong parameters in function 'jup_b221_who_will_start'")
+	end
+end
+
+function pas_b400_actor_far_forward(actor, npc)
+	local fwd_obj = get_story_object("pas_b400_fwd")
+	local _actor = getNearestActor(npc)
+	
+	if fwd_obj then
+		if distance_between(fwd_obj, _actor) > distance_between(fwd_obj, npc) then
+			return false
+		end
+	else
+		return false
+	end
+
+	local distance = 70 * 70
+	local self_dist = npc:position():distance_to_sqr(_actor:position())
+	if self_dist < distance then
+		return false
+	end
+
+	local squad = alife():object(alife():object(npc:id()).group_id)
+
+	for k in squad:squad_members() do
+		local other_dist = k.object.position:distance_to_sqr(_actor:position())
+		if other_dist < distance then
+			return false
+		end
+	end
+
+	--printf("npc: [%s], actor is far forward - self_dist [%s] distance [%s]", tostring(npc:name()), self_dist, distance)
+
+	return true
+end
+
+function pas_b400_actor_far_backward(actor, npc)
+	local bwd_obj = get_story_object("pas_b400_bwd")
+	local _actor = getNearestActor(npc)
+	
+	if bwd_obj then
+		if distance_between(bwd_obj, _actor) > distance_between(bwd_obj, npc) then
+			return false
+		end
+	else
+		return false
+	end
+
+	local distance = 70 * 70
+	local self_dist = npc:position():distance_to_sqr(_actor:position())
+	if self_dist < distance then
+		return false
+	end
+
+	local squad = alife():object(alife():object(npc:id()).group_id)
+
+	for k in squad:squad_members() do
+		local other_dist = k.object.position:distance_to_sqr(_actor:position())
+		if other_dist < distance then
+			return false
+		end
+	end
+
+	--printf("npc: [%s], actor is far backward - self_dist [%s] distance [%s]", tostring(npc:name()), self_dist, distance)
+
+	return true
+end
+
+function pri_a28_actor_is_far(actor, npc)
+	local distance = 150 * 150
+	local squad = get_story_squad("pri_a16_military_squad")
+
+	for k in squad:squad_members() do
+		local _actor = getNearestActor(k.object)
+		local npc_dist = k.object.position:distance_to_sqr(_actor:position())
+		if npc_dist < distance then
+			return false
+		end
+	end
+
+	return true
+end
+
+function zat_b103_actor_has_needed_food(actor, npc, p)
+	return (dialogs_zaton.zat_b103_actor_has_needed_food(actor, npc)) or (story_flags.has_flag("ZAT_B103_MERC_TASK_DONE"))
+end
+
+function zat_b29_rivals_dialog_precond(actor, npc)
+	local squads_table = {
+						"zat_b29_stalker_rival_default_1_squad",
+						"zat_b29_stalker_rival_default_2_squad",
+						"zat_b29_stalker_rival_1_squad",
+						"zat_b29_stalker_rival_2_squad"
+						}
+
+	local zones_table = {
+						"zat_b29_sr_1",
+						"zat_b29_sr_2",
+						"zat_b29_sr_3",
+						"zat_b29_sr_4",
+						"zat_b29_sr_5",
+						}
+
+	local f_squad = false
+
+	for k,v in pairs(squads_table) do
+		if alife():object(alife():object(npc:id()).group_id):section_name() == v then
+			f_squad = true
+			break
+		end
+	end
+
+	if not f_squad then
+		return false
+	end
+
+	for k,v in pairs(zones_table) do
+		if utils.npc_in_zone(npc, db.zone_by_name[v]) then
+			return true
+		end
+	end
+
+	return false
+end
+
+function jup_b202_actor_treasure_not_in_steal(actor, npc)
+	local before = ((not story_flags.has_flag("JUP_B52_ACTOR_ITEMS_CAN_BE_STOLEN")) and (not story_flags.has_flag("JUP_B202_ACTOR_ITEMS_RETURNED")))
+	local after  = (story_flags.has_flag("JUP_B52_ACTOR_ITEMS_CAN_BE_STOLEN") and story_flags.has_flag("JUP_B202_ACTOR_ITEMS_RETURNED"))
+	return (before or after)
+end
+
+function jup_b25_senya_spawn_condition(actor, npc)
+	return (story_flags.has_flag("JUP_B16_OASIS_FOUND") or story_flags.has_flag("ZAT_B57_BLOODSUCKER_LAIR_CLEAR") or story_flags.has_flag("JUP_B6_COMPLETE_END") or story_flags.has_flag("ZAT_B215_GAVE_MAPS")) and story_flags.has_flag("ZAT_B106_SEARCH_SOROKA")
+end
+
+function jup_b25_flint_gone_condition(actor, npc)
+	return story_flags.has_flag("JUP_B25_FLINT_BLAME_DONE_TO_DUTY") or story_flags.has_flag("JUP_B25_FLINT_BLAME_DONE_TO_FREEDOM") or story_flags.has_flag("ZAT_B106_FOUND_SOROKA_DONE")
+end
+
+function upgrade_hint_kardan(actor, npc, p)
+	local hint_table = {}
+	local can_upgrade = 0
+	local tools = (p and tonumber(p[1])) or 0
+
+	if not story_flags.has_flag("ZAT_B3_ALL_INSTRUMENTS_BROUGHT") then
+		if not story_flags.has_flag("ZAT_B3_TECH_INSTRUMENT_1_BROUGHT") and (tools == 0 or tools == 1) then
+			table.insert(hint_table, "st_upgr_toolkit_1")
+		elseif tools == 1 then
+			can_upgrade = can_upgrade + 1
+		end
+		if not story_flags.has_flag("ZAT_B3_TECH_INSTRUMENT_2_BROUGHT") and (tools == 0 or tools == 2) then
+			table.insert(hint_table, "st_upgr_toolkit_2")
+		elseif tools == 2 then
+			can_upgrade = can_upgrade + 1
+		end
+		if not story_flags.has_flag("ZAT_B3_TECH_INSTRUMENT_3_BROUGHT") and (tools == 0 or tools == 3) then
+			table.insert(hint_table, "st_upgr_toolkit_3")
+		elseif tools == 3 then
+			can_upgrade = can_upgrade + 1
+		end
+	else
+		can_upgrade = can_upgrade + 1
+	end
+
+	if not story_flags.has_flag("ZAT_B3_TECH_SEE_PRODUCE_62") then
+		if (tools == 1) and not story_flags.has_flag("ZAT_B3_TECH_HAVE_ONE_DOSE") then
+			table.insert(hint_table, "st_upgr_vodka")
+		elseif (tools ~= 1) and (not story_flags.has_flag("ZAT_B3_TECH_HAVE_COUPLE_DOSE")) then
+			table.insert(hint_table, "st_upgr_vodka")
+		else
+			can_upgrade = can_upgrade + 1
+		end
+	else
+		can_upgrade = can_upgrade + 1
+	end
+
+	inventory_upgrades.cur_hint = hint_table
+
+	return can_upgrade >= 2
+end
+
+function actor_helmet_in_slot(actor, npc, p)
+    return p[1] ~= nil and getLocalActor() and getLocalActor():alive() and getLocalActor():item_in_slot(12) and getLocalActor():item_in_slot(12):section() == p[1]
+end
+
+-- Scene Director bootstrap (patches/cutscenes_core): installs the director tick and the scene conditions.
+function scene_played(actor, npc, p)
+	return p ~= nil and p[1] ~= nil and coop_scenes.played(p[1])
+end
+
+function scene_active(actor, npc, p)
+	return p ~= nil and p[1] ~= nil and coop_scenes.is_active(p[1])
+end
+
+pcall(function() coop_scenes.install() end)

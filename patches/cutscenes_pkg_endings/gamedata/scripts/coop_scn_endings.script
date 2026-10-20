@@ -1,0 +1,298 @@
+-------------------------------------------------------------------------------------------------------
+-- Scene package "endings" (Shadow of COOP cutscenes WP2).
+--   end_wish : the five wish-granter endings, decided ONCE on the server from the WHOLE PARTY (original SoC rules,
+--              xr_effects.sar_monolith_miracle), same variant on every client, no skip.
+--   end_peace: the true ending (final_peace) at CNPP-2, one play for the whole party, no skip.
+--   credits  : original credits_seq after either ending, then every player returns to the main menu.
+-- Needs the Scene Director (cutscenes_core). Contract: CONTRACT.md. Notes: patches/cutscenes_pkg_endings/NOTES.md
+-------------------------------------------------------------------------------------------------------
+
+-- Decision settings (module table so tests and other patches can read/change them).
+--   mode "average": party money and reputation are divided by the number of players (default, see NOTES.md);
+--   mode "sum"    : the original thresholds are applied to the party total.
+-- With one player both modes are identical to the original single player rules.
+cfg = {
+	mode = "average",
+	gold = 50000,       -- original: db.actor:money() >= 50000
+	blind = 1000,       -- original: character_reputation() >= 1000
+	apocal = -1000,     -- original: character_reputation() <= -1000
+	credits_ms = 300000,
+}
+
+-- ending key -> core tutorial wrapper (ui_soc_scenes.xml), nominal movie length, probe files
+local ENDINGS = {
+	final_to_monolith = { key = "to_monolith", tut = "soc_end_to_monolith", ms = 50000 },
+	final_gold        = { key = "gold",        tut = "soc_end_gold",        ms = 76000 },
+	final_blind       = { key = "blind",       tut = "soc_end_blind",       ms = 58000 },
+	final_apocal      = { key = "apocal",      tut = "soc_end_apocal",      ms = 76000 },
+	final_immortal    = { key = "immortal",    tut = "soc_end_immortal",    ms = 54000 },
+}
+local PEACE = { key = "peace", tut = "soc_end_peace", ms = 106000 }
+
+-- the two faction leaders of the original rule (flags are honoured too, so another patch can give them)
+local LEADERS = {
+	{ flag = "MIL_LUKASH_DEAD", npc = "mil_smart_terrain_3_freedom_lukash", info = "mil_lukash_dead" },
+	{ flag = "BAR_VORONIN_DEAD", npc = "bar_smart_terrain_4_duty_voronin", info = "bar_voronin_dead" },
+}
+local leader_ids = {}
+
+local function slog(s)
+	local line = "SCENE " .. tostring(s)
+	pcall(printf_msg, "%s", line)
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, line) end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- decision (pure function plus the server side data gathering)
+-------------------------------------------------------------------------------------------------------
+-- st = { n = players counted, money = SUM, rep = SUM, leaders = true if both leaders are dead }
+function decide(st)
+	local n = tonumber(st.n) or 0
+	local div = 1
+	if cfg.mode == "average" and n > 1 then div = n end
+	local money = (tonumber(st.money) or 0) / div
+	local rep = (tonumber(st.rep) or 0) / div
+	if st.leaders then return "final_to_monolith" end
+	if money >= cfg.gold then return "final_gold" end
+	if rep >= cfg.blind then return "final_blind" end
+	if rep <= cfg.apocal then return "final_apocal" end
+	return "final_immortal"
+end
+
+-- Finds the server entities of the leaders by name once (alife covers all levels of all.spawn).
+local function scan_leaders()
+	local sim = alife()
+	if sim == nil then return end
+	local todo = 0
+	for _, L in ipairs(LEADERS) do
+		if leader_ids[L.npc] == nil then todo = todo + 1 end
+	end
+	if todo == 0 then return end
+	for i = 0, 65534 do
+		local o = sim:object(i)
+		if o ~= nil then
+			local nm = o:name()
+			for _, L in ipairs(LEADERS) do
+				if nm == L.npc then leader_ids[L.npc] = i end
+			end
+		end
+	end
+	for _, L in ipairs(LEADERS) do
+		if leader_ids[L.npc] == nil then leader_ids[L.npc] = false end
+	end
+end
+
+local function leader_state(L, ctx)
+	if ctx.flag(L.flag) then return "dead(flag)" end
+	local sim = alife()
+	if sim == nil then return "unknown" end
+	local id = leader_ids[L.npc]
+	if id == nil then
+		local ok = pcall(scan_leaders)
+		if not ok then return "unknown" end
+		id = leader_ids[L.npc]
+	end
+	if not id then return "missing" end
+	local o = sim:object(id)
+	if o == nil then return "dead(released)" end
+	local alive = true
+	local ok = pcall(function() alive = o:alive() end)
+	if not ok then return "unknown" end
+	if alive then return "alive" end
+	return "dead(alife)"
+end
+
+-- Both leaders dead = true. Results are logged so a missing identity is visible in the log.
+local function leaders_dead(ctx)
+	local all = true
+	local parts = {}
+	for _, L in ipairs(LEADERS) do
+		local s = leader_state(L, ctx)
+		parts[#parts + 1] = L.npc .. "=" .. s
+		if string.sub(s, 1, 4) ~= "dead" then all = false end
+	end
+	return all, table.concat(parts, " ")
+end
+
+local function pick_wish(ctx)
+	local p = ctx.party()
+	local dead, why = leaders_dead(ctx)
+	local st = { n = p.n, money = p.money, rep = p.rep, leaders = dead }
+	local var = decide(st)
+	slog(string.format("end_wish PICK var=%s mode=%s n=%d money_sum=%d rep_sum=%d leaders_dead=%s [%s]",
+		var, cfg.mode, p.n or 0, p.money or 0, p.rep or 0, tostring(dead), why))
+	if p.players then
+		for _, q in ipairs(p.players) do
+			slog(string.format("end_wish PLAYER name=%s id=%s money=%d rep=%d", tostring(q.name), tostring(q.id), q.money or 0, q.rep or 0))
+		end
+	end
+	return var
+end
+
+-------------------------------------------------------------------------------------------------------
+-- client helpers
+-------------------------------------------------------------------------------------------------------
+local patched = false
+-- xrMPE's after_credits talks to the main menu object, which may not exist in game; never let that error out.
+local function patch_credits_hooks()
+	if patched then return end
+	patched = true
+	pcall(function()
+		local orig_after = xr_effects.after_credits
+		xr_effects.after_credits = function(a, n)
+			if orig_after then
+				local ok, err = pcall(orig_after, a, n)
+				if not ok then slog("credits after_credits ignored error: " .. tostring(err)) end
+			end
+		end
+		local orig_before = xr_effects.before_credits
+		xr_effects.before_credits = function(a, n)
+			if orig_before then
+				local ok, err = pcall(orig_before, a, n)
+				if not ok then slog("credits before_credits ignored error: " .. tostring(err)) end
+			end
+		end
+	end)
+end
+
+local function later(ms, fn)
+	local at = time_global() + ms
+	pcall(level.add_call, function()
+		if time_global() < at then return false end
+		pcall(fn)
+		return true
+	end, function() end)
+end
+
+local leaving = false
+local function go_to_menu(why)
+	if leaving then return end
+	leaving = true
+	slog("credits LEAVE actor=" .. tostring(LocalActor()) .. " why=" .. tostring(why))
+	-- the host leaves after the clients so nobody is dropped mid-scene
+	later(OnServer() and 3000 or 1000, function()
+		slog("DISCONNECT actor=" .. tostring(LocalActor()) .. " (credits_end)")
+		get_console():execute("disconnect")
+	end)
+end
+
+local function log_var(env)
+	slog(string.format("%s CLIENT_VAR actor=%s n=%s var=%s", env.id, tostring(env.actor_id), tostring(env.n), tostring(env.var)))
+end
+
+-------------------------------------------------------------------------------------------------------
+-- step builders
+-------------------------------------------------------------------------------------------------------
+local function movie_steps(info, cap_ms)
+	return {
+		{ ["do"] = "tutorial_stop" },      -- closes the "press USE" prompt if it is still open
+		{ ["do"] = "ui_off" },
+		{ ["do"] = "tutorial", name = info.tut, wait = true, min_ms = 3000, cap_ms = cap_ms },
+	}
+end
+
+local function card_steps(info)
+	return {
+		{ ["do"] = "tutorial_stop" },
+		{ ["do"] = "ui_off" },
+		{ ["do"] = "tutorial", name = "scn_endings_card_" .. info.key, wait = true, min_ms = 1500, cap_ms = 12000 },
+	}
+end
+
+local function need_for(info)
+	return { tex = { "ui\\final_" .. info.key .. ".ogm" }, snd = { "intro\\final_" .. info.key .. ".ogg" } }
+end
+
+-------------------------------------------------------------------------------------------------------
+-- scenes
+-------------------------------------------------------------------------------------------------------
+local variants = {}
+for var, info in pairs(ENDINGS) do
+	variants[var] = { length_ms = info.ms, need = need_for(info) }
+end
+
+coop_scenes.register{
+	id = "end_wish",
+	kind = "movie",
+	level = "coop_l11_sarcofag",
+	once = true,
+	length_ms = 76000,
+	grace_ms = 30000,
+	skip = "none",
+	settle_ms = 3000,
+	variants = variants,
+	trigger = function(ctx)
+		return ctx.flag("SAR_BAD_FINAL_MONOLITH_INFO")
+	end,
+	pick = pick_wish,
+	steps = function(var, env)
+		local info = ENDINGS[var] or ENDINGS.final_immortal
+		return movie_steps(info, info.ms + 5000)
+	end,
+	fallback = function(var, env)
+		return card_steps(ENDINGS[var] or ENDINGS.final_immortal)
+	end,
+	on_client_start = log_var,
+	on_end = function(ctx, var, reason)
+		slog("end_wish DONE var=" .. tostring(var) .. " reason=" .. tostring(reason) .. " -> credits")
+		coop_scenes.request("credits")
+	end,
+}
+
+coop_scenes.register{
+	id = "end_peace",
+	kind = "movie",
+	level = "coop_l11_stancia_2",
+	once = true,
+	length_ms = PEACE.ms,
+	grace_ms = 30000,
+	skip = "none",
+	settle_ms = 3000,
+	need = need_for(PEACE),
+	trigger = function(ctx)
+		return ctx.flag("AES_2_THE_END_SPACE_RESTRICTOR_INFO")
+	end,
+	steps = function(var, env)
+		return movie_steps(PEACE, PEACE.ms + 5000)
+	end,
+	fallback = function(var, env)
+		return card_steps(PEACE)
+	end,
+	on_client_start = log_var,
+	on_end = function(ctx, var, reason)
+		slog("end_peace DONE reason=" .. tostring(reason) .. " -> credits")
+		coop_scenes.request("credits")
+	end,
+}
+
+-- Credits: the original credits_seq tutorial (credits.ogg, 295 s), then the main menu for everybody.
+-- A majority vote may skip the credits; whatever ends the run (done, skip, watchdog) leads to the menu.
+coop_scenes.register{
+	id = "credits",
+	kind = "sequence",
+	once = true,
+	length_ms = cfg.credits_ms,
+	grace_ms = 30000,
+	skip = "majority",
+	settle_ms = 0,
+	steps = function(var, env)
+		return {
+			{ ["do"] = "tutorial_stop" },
+			{ ["do"] = "ui_off" },
+			{ ["do"] = "tutorial", name = "credits_seq", wait = true, min_ms = 3000, cap_ms = cfg.credits_ms + 5000 },
+			{ ["do"] = "main_menu" },
+		}
+	end,
+	on_client_start = function(env)
+		patch_credits_hooks()
+		log_var(env)
+	end,
+	on_client_end = function(env, reason)
+		-- reaching here means the run was ended from outside (skip, END, watchdog) before the main_menu step
+		go_to_menu(reason)
+	end,
+	on_end = function(ctx, var, reason)
+		slog("credits DONE reason=" .. tostring(reason))
+	end,
+}

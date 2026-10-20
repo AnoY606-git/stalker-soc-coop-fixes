@@ -1,0 +1,118 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест Бармена(Пробраться в лабораторию X-18)
+[val_start_sneak_into_the_x_18_lab_1_quest_task]
+icon 									= ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_val_start_sneak_into_the_x_18_lab_1_quest_task_name
+descr 									= st_val_start_sneak_into_the_x_18_lab_1_quest_task_descr
+target 									= val_x18_level_changer
+condlist_0 								= {+VAL_START_SNEAK_INTO_THE_X_18_LAB_1_QUEST_TASK_INFO} complete %=give_task(x18_start_go_to_x18_doc_1_task) =give_task(x18_start_go_to_x18_doc_2_task) =give_task(x18_start_go_to_x18_doc_3_task)%
+
+;Квест Бармена(Вернуться к Бармену и отдать документы)
+[val_start_take_the_documents_to_the_barmen_quest_task]
+icon 									= ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_val_start_take_the_documents_to_the_barmen_quest_task_name
+descr 									= st_val_start_take_the_documents_to_the_barmen_quest_task_descr
+target 									= bar_smart_terrain_1_stalker_barmen
+condlist_0 								= {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} complete %=give_task(bar_start_go_to_yantar_quest_task)%
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест Сани Счастливчика(Пойти на сигнал SOS)
+[val_start_go_to_the_sos_signal_1_quest_task]
+icon 												= ui_inGame2_val_start_go_to_the_sos_signal_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_val_start_go_to_the_sos_signal_1_quest_task_name
+descr 												= st_val_start_go_to_the_sos_signal_1_quest_task_descr
+target 												= val_smart_terrain_16_stalker_lucky
+condlist_0 											= {+VAL_SMART_TERRAIN_16_STALKER_LUCKY_HELP_STOP_DIALOG_INFO} complete %=give_task(val_start_go_to_the_sos_signal_2_quest_task)%
+condlist_1 											= {+VAL_SMART_TERRAIN_16_STALKER_1_SQUAD_DEAD} fail
+
+;Квест Сани Счастливчика(Сопроводить сталкера до фермы)
+[val_start_go_to_the_sos_signal_2_quest_task]
+icon 												= ui_inGame2_val_start_go_to_the_sos_signal_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_val_start_go_to_the_sos_signal_2_quest_task_name
+descr 												= st_val_start_go_to_the_sos_signal_2_quest_task_descr
+target 												= val_smart_terrain_16_stalker_lucky_end_info_space_restrictor
+condlist_0 											= {+VAL_SMART_TERRAIN_16_STALKER_LUCKY_END_INFO} complete
+condlist_1 											= {+VAL_SMART_TERRAIN_16_STALKER_1_SQUAD_DEAD} fail
+reward_money 										= 5000
+
+
+;Квест Алексея Змея(Поговорить со Змеем)
+[val_start_fake_gauss_1_quest_task]
+icon 												= ui_inGame2_val_start_fake_gauss_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_val_start_fake_gauss_1_quest_task_name
+descr 												= st_val_start_fake_gauss_1_quest_task_descr
+target 												= val_smart_terrain_15_stalker_scammer
+condlist_0 											= {+VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_GOOD_STOP_DIALOG} complete %=give_task(val_start_fake_gauss_2_quest_task)%
+condlist_1 											= {+VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_FAIL_STOP_DIALOG} fail
+condlist_2 											= {+VAL_SMART_TERRAIN_15_STALKER_FAIL_INFO} fail
+
+;Квест Алексея Змея(Подождать когда Змей вернется с оружием)
+[val_start_fake_gauss_2_quest_task]
+icon 												= ui_inGame2_val_start_fake_gauss_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_val_start_fake_gauss_2_quest_task_name
+descr 												= st_val_start_fake_gauss_2_quest_task_descr
+target 												= nil
+condlist_0 											= {+VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_TEST_1_STOP_DIALOG} complete
+condlist_1 											= {+VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_TEST_2_STOP_DIALOG} fail
+condlist_2 											= {+VAL_SMART_TERRAIN_15_STALKER_FAIL_INFO} fail
+
+
+;Квест Пули(Следовать за Пулей)
+[val_start_follow_the_bullet_quest_task]
+icon 												= ui_inGame2_val_start_follow_the_bullet_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_val_start_follow_the_bullet_quest_task_name
+descr 												= st_val_start_follow_the_bullet_quest_task_descr
+target 												= val_smart_terrain_18_duty_bullet_squad
+condlist_0 											= {+VAL_SMART_TERRAIN_19_SPAWN_SQUAD_SPACE_RESTRICTOR_INFO} complete %=give_task(val_start_save_the_prisoner_quest_task)%
+condlist_1 											= {+VAL_SMART_TERRAIN_18_DUTY_BULLET_SQUAD_DEAD} fail
+
+;Квест Пули(Дождаться бандитов и спасти пленника)
+[val_start_save_the_prisoner_quest_task]
+icon 												= ui_inGame2_val_start_save_the_prisoner_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_val_start_save_the_prisoner_quest_task_name
+descr 												= st_val_start_save_the_prisoner_quest_task_descr
+target 												= val_smart_terrain_19_duty_1_squad
+condlist_0 											= {+VAL_SMART_TERRAIN_19_BANDIT_1_SQUAD_DEAD} complete
+condlist_1 											= {+VAL_SMART_TERRAIN_19_DUTY_1_SQUAD_DEAD} fail
+condlist_2 											= {+VAL_SMART_TERRAIN_18_DUTY_BULLET_SQUAD_DEAD} fail
+reward_money 										= 3000
+
+;Sidorovich/raid (original SoC task val_come_to_trader): leave Dark Valley by the south gate
+[val_start_get_out_via_south_gate_quest_task]
+icon 									= ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_val_start_get_out_via_south_gate_quest_task_name
+descr 									= st_val_start_get_out_via_south_gate_quest_task_descr
+target 									= val_esc_level_changer
+condlist_0 								= {+ESC_RETURN_FROM_DV_INFO} complete %=give_task(val_start_show_documents_to_sidorovich_quest_task)%
+
+[val_start_show_documents_to_sidorovich_quest_task]
+icon 									= ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_val_start_show_documents_to_sidorovich_quest_task_name
+descr 									= st_val_start_show_documents_to_sidorovich_quest_task_descr
+target 									= esc_smart_terrain_1_trader_sidorovich
+condlist_0 								= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO} complete
+condlist_1 								= {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} fail

@@ -1,0 +1,13 @@
+[logic]
+active 												= sr_idle@con_zone_teleport_2_space_restrictor_idle
+
+[sr_idle@con_zone_teleport_2_space_restrictor_idle]
+on_info 											= {+CON_ZONE_TELEPORT_2_SPACE_RESTRICTOR_STOP_INFO +CON_MONOLITH_GENERATOR_1_INFO +CON_MONOLITH_GENERATOR_2_INFO +CON_MONOLITH_GENERATOR_3_INFO +CON_MONOLITH_GENERATOR_4_INFO +CON_MONOLITH_GENERATOR_5_INFO +CON_MONOLITH_GENERATOR_6_INFO} sr_idle@nil
+on_info2 											= {-CON_ZONE_TELEPORT_2_SPACE_RESTRICTOR_STOP_INFO +CON_MONOLITH_GENERATOR_1_INFO +CON_MONOLITH_GENERATOR_2_INFO +CON_MONOLITH_GENERATOR_3_INFO +CON_MONOLITH_GENERATOR_4_INFO +CON_MONOLITH_GENERATOR_5_INFO +CON_MONOLITH_GENERATOR_6_INFO +SCN_OSO_ARRIVAL_PLAYED} sr_teleport@con_zone_teleport_2_space_restrictor_start %=remove_squad(con_smart_terrain_1_m_poltergeist_tele_1_squad) =remove_squad(con_smart_terrain_2_m_poltergeist_tele_1_squad) =remove_squad(con_smart_terrain_3_m_poltergeist_tele_1_squad)%
+
+[sr_teleport@con_zone_teleport_2_space_restrictor_start]
+point1 												= con_teleport_2_walk
+look1 												= con_teleport_2_look
+on_timer 											= 1000 | sr_idle@nil %+CON_ZONE_TELEPORT_2_SPACE_RESTRICTOR_STOP_INFO =scenario_autosave(st_talk_to_the_representative_awareness)%
+
+[sr_idle@nil]

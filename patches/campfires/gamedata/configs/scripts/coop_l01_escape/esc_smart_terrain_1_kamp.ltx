@@ -1,0 +1,111 @@
+;================================================
+; Cordon campfires: stalkers gather in a circle around the fire (scheme kamp, scripts/xr_kamp.script).
+; One section per seat; the centre is the position of the campfire object (esc_campfire / esc_campfire_0000).
+;================================================
+
+[logic@esc_smart_terrain_1_kamp_1]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_1
+
+[kamp@esc_smart_terrain_1_kamp_1]
+center_pos 											= -206.90, -19.61, -140.08
+radius 												= 2.4
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_2]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_2
+
+[kamp@esc_smart_terrain_1_kamp_2]
+center_pos 											= -206.90, -19.61, -140.08
+radius 												= 2.4
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_3]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_3
+
+[kamp@esc_smart_terrain_1_kamp_3]
+center_pos 											= -206.90, -19.61, -140.08
+radius 												= 2.4
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_4]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_4
+
+[kamp@esc_smart_terrain_1_kamp_4]
+center_pos 											= -206.90, -19.61, -140.08
+radius 												= 2.4
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_5]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_5
+
+[kamp@esc_smart_terrain_1_kamp_5]
+center_pos 											= -206.90, -19.61, -140.08
+radius 												= 2.4
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_6]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_6
+
+[kamp@esc_smart_terrain_1_kamp_6]
+center_pos 											= -206.90, -19.61, -140.08
+radius 												= 2.4
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_7]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_7
+
+[kamp@esc_smart_terrain_1_kamp_7]
+center_pos 											= -234.92, -19.36, -156.80
+radius 												= 2.2
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[logic@esc_smart_terrain_1_kamp_8]
+prior 												= 40
+active 												= kamp@esc_smart_terrain_1_kamp_8
+
+[kamp@esc_smart_terrain_1_kamp_8]
+center_pos 											= -234.92, -19.36, -156.80
+radius 												= 2.2
+use_camp 											= true
+def_state_moving 									= walk
+meet 												= meet@esc_smart_terrain_1_kamp
+
+[meet@esc_smart_terrain_1_kamp]
+close_distance 										= 0
+close_anim 											= {!is_squad_commander} nil, nil
+close_snd_hello 									= {!is_squad_commander} nil, nil
+close_snd_bye 										= {!is_squad_commander} nil, nil
+close_victim 										= {!is_squad_commander} nil, nil
+far_distance 										= 0
+far_anim 											= nil
+far_snd 											= nil
+far_victim 											= nil
+snd_on_use 											= {=is_wounded} nil, {=actor_enemy} nil, {=has_enemy} meet_use_no_fight, {!is_squad_commander} meet_use_no_talk_leader, {=actor_has_weapon} meet_use_no_weapon, {=dist_to_actor_ge(3)} meet_use_no_default, nil
+use 												= {=is_wounded} false, {=actor_enemy} false, {=has_enemy} false, {!is_squad_commander} false, {=actor_has_weapon} false, {=dist_to_actor_le(3)} true, false
+meet_dialog 										= nil
+abuse 												= {=has_enemy} false, true
+trade_enable 										= true
+allow_break 										= true
+meet_on_talking 									= false
+use_text 											= nil
