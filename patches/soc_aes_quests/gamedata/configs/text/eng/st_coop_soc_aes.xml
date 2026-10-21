@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="st_pri_soc_stash_name"><text>Secret stash at Pripyat</text></string>
+	<string id="st_pri_soc_stash_1_descr"><text>Get to the hotel.\n\nDoctor: When we last met, you left me the key from the secret stash at Pripyat and the diagram which showed how to find it...I managed to save them...the Mercs didn't find them...Here...Maybe you'll find something else there....And also you kept on mumbling that there was something shady with Monolith...That's for sure...</text></string>
+	<string id="st_pri_soc_stash_2_descr"><text>Find the room with the secret stash</text></string>
+	<string id="st_pri_soc_stash_3_descr"><text>Look the secret stash over</text></string>
+	<string id="st_sar_soc_wish_name"><text>Wish granter</text></string>
+	<string id="st_sar_soc_sneak_in_descr"><text>Sneak in to the sarcophagus</text></string>
+	<string id="st_sar_soc_find_wish_descr"><text>Find the Wish Granter</text></string>
+	<string id="st_sar_soc_lab_name"><text>Secret lab</text></string>
+	<string id="st_sar_soc_lab_1_descr"><text>Enter the secret bunker.\n\nDoctor: "So here's the deal. There's a decoder for opening the door which leads to the system of operation of Monolith. The decoder is hidden in a secret stash in Propyat. I'm giving you the coordinates of its location and the key. You'll take the decoder, find the right door in the sarcophagus, and then...and then you'll see how it goes."</text></string>
+	<string id="st_sar_soc_lab_2_descr"><text>Find the hidden door.</text></string>
+	<string id="st_sar_soc_lab_4_descr"><text>Find out what is behind the door.</text></string>
+	<string id="coop_soc_aes_stash_hint"><text>Find the room with the secret stash</text></string>
+	<string id="coop_soc_aes_stash_news_name"><text>Pripyat stash</text></string>
+	<string id="coop_soc_aes_stash_news_text"><text>The stash contained a short report on how Fang and I infiltrated the underground galleries under the station sarcophagus and found a suspicious-looking door. Fang said that he'd put together a decoder for the electronic lock for our next visit. After that we had to run for our lives. There were hordes of Monolith patrols there. Well. I also found the decoder in the stash and directions for finding the door. However, it seems that approaching the Monolith is extremely dangerous - last time we avoided going under the sarcophagus above the destroyed reactor and it seems that's where the Monolith is.</text></string>
+</string_table>

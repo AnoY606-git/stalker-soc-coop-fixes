@@ -1,0 +1,67 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест основной(Найти установку в лаборатории X-16)
+[x16_start_find_the_installation_quest_task]
+icon        = ui_inGame2_x16_start_find_the_installation_quest_task
+prior       = 150
+storyline   = true
+title       = st_x16_start_find_the_installation_quest_task_name
+descr       = {+X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} st_x16_start_turn_off_the_switch_4_task_descr, {+X16_START_FIND_THE_INSTALLATION_QUEST_TASK_INFO -X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO} st_x16_start_turn_off_the_switch_1_task_descr, {+X16_START_FIND_THE_INSTALLATION_QUEST_TASK_INFO -X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO} st_x16_start_turn_off_the_switch_2_task_descr, {+X16_START_FIND_THE_INSTALLATION_QUEST_TASK_INFO -X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} st_x16_start_turn_off_the_switch_3_task_descr, st_x16_start_find_the_installation_quest_task_descr
+target      = {+X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} x16_lab_primary_switcher_4, {-X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO} x16_lab_primary_switcher_1, {-X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO} x16_lab_primary_switcher_2, {-X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} x16_lab_primary_switcher_3, x16_lab_primary_switcher_4
+condlist_0  = {+X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_4_DEACTIVATE_INFO} complete
+
+;Квест основной(Выключить рубильники)
+[x16_start_turn_off_the_switch_1_task]
+icon 									= ui_inGame2_x16_start_turn_off_the_switch_task
+prior 									= 150
+storyline 								= true
+title 									= st_x16_start_turn_off_the_switch_1_task_name
+descr 									= st_x16_start_turn_off_the_switch_1_task_descr
+target 									= x16_lab_primary_switcher_1
+condlist_0 								= {+X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO} complete
+
+[x16_start_turn_off_the_switch_2_task]
+icon 									= ui_inGame2_x16_start_turn_off_the_switch_task
+prior 									= 150
+storyline 								= true
+title 									= st_x16_start_turn_off_the_switch_2_task_name
+descr 									= st_x16_start_turn_off_the_switch_2_task_descr
+target 									= x16_lab_primary_switcher_2
+condlist_0 								= {+X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO} complete
+
+[x16_start_turn_off_the_switch_3_task]
+icon 									= ui_inGame2_x16_start_turn_off_the_switch_task
+prior 									= 150
+storyline 								= true
+title 									= st_x16_start_turn_off_the_switch_3_task_name
+descr 									= st_x16_start_turn_off_the_switch_3_task_descr
+target 									= x16_lab_primary_switcher_3
+condlist_0 								= {+X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO} complete %=give_task(x16_start_turn_off_the_switch_4_task)%
+
+[x16_start_turn_off_the_switch_4_task]
+icon 									= ui_inGame2_x16_start_turn_off_the_switch_task
+prior 									= 150
+storyline 								= true
+title 									= st_x16_start_turn_off_the_switch_4_task_name
+descr 									= st_x16_start_turn_off_the_switch_4_task_descr
+target 									= x16_lab_primary_switcher_4
+condlist_0 								= {+X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO +X16_LAB_PRIMARY_SWITCHER_4_DEACTIVATE_INFO} complete %=give_task(x16_start_get_out_of_the_lab_task)%
+
+;Квест основной(Выбраться из лаборатории)
+[x16_start_get_out_of_the_lab_task]
+icon        = ui_inGame2_x16_start_get_out_of_the_lab_task
+prior       = 150
+storyline   = true
+title       = st_x16_start_get_out_of_the_lab_task_name
+descr       = {+X16_START_GET_OUT_OF_THE_LAB_TASK_INFO} st_yan_start_talk_to_the_saharov_x16_lab_quest_task_descr, coop_soc_yan_tunnel_descr
+target      = {+X16_START_GET_OUT_OF_THE_LAB_TASK_INFO} yan_smart_terrain_1_ecolog_saharov, x16_yan_2_level_changer
+condlist_0  = {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+
+;-- Patch soc_yan_x16_quests: x16_start_find_the_installation_quest_task is SoC yan_kill_brain_task (modules 1 to 3 and the mechanism) and
+;-- x16_start_get_out_of_the_lab_task is SoC yan_kill_brain_task_2 (secret tunnel, talk to Sakharov). x16_start_turn_off_the_switch_1..4_task
+;-- are no longer given (coop_hidden_tasks.ltx). Given to every player by coop_soc_yan.script.

@@ -1,0 +1,124 @@
+<specific_character id="mil_soc_pavlik" team_default = "1">
+    <name>mil_soc_pavlik_name</name>
+    <icon>ui_inGame2_Freedom_2</icon>
+    <map_icon x="0" y="6"></map_icon>
+    <bio>mil_soc_pavlik_bio</bio>
+    <class>mil_soc_pavlik</class>
+    <community>freedom</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="1000000" max="2000000" infinitive="1"></money>
+    <rank>540</rank>
+    <reputation>58</reputation>
+    <visual>actors\stalker_freedom\stalker_freedom_1</visual>
+    <snd_config>characters_voice\human_01\freedom\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+      wpn_walther \n
+      ammo_9x19_pbp = 1 \n
+      wpn_wincheaster1300 \n
+      ammo_12x76_zhekan = 1 \n
+      device_torch \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs_3.xml"
+#include "gameplay\character_drugs_sci.xml"
+#include "gameplay\character_drugs_mil.xml"
+    </supplies>
+</specific_character>
+<specific_character id="mil_soc_ara" team_default = "1">
+    <name>mil_soc_ara_name</name>
+    <icon>ui_inGame2_merc_2</icon>
+    <map_icon x="0" y="6"></map_icon>
+    <bio>mil_soc_ara_bio</bio>
+    <class>mil_soc_ara</class>
+    <community>killer</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="1000000" max="2000000" infinitive="1"></money>
+    <rank>904</rank>
+    <reputation>-149</reputation>
+    <visual>actors\stalker_merc\stalker_merc_2</visual>
+    <snd_config>characters_voice\human_03\killer\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+      wpn_walther \n
+      ammo_9x19_pbp = 1 \n
+      wpn_lr300 \n
+      ammo_5.56x45_ap = 1 \n
+      device_torch \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+</specific_character>
+<specific_character id="mil_soc_cook" team_default = "1">
+    <name>mil_soc_cook_name</name>
+    <icon>ui_inGame2_Freedom_2</icon>
+    <map_icon x="0" y="6"></map_icon>
+    <bio>mil_soc_cook_bio</bio>
+    <class>mil_soc_cook</class>
+    <community>freedom</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="1000000" max="2000000" infinitive="1"></money>
+    <rank>644</rank>
+    <reputation>84</reputation>
+    <visual>actors\stalker_freedom\stalker_freedom_3</visual>
+    <snd_config>characters_voice\human_02\freedom\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+      wpn_pm \n
+      ammo_9x18_fmj = 1 \n
+      wpn_wincheaster1300 \n
+      ammo_12x76_zhekan = 1 \n
+      device_torch \n
+      bread = 2 \n
+      kolbasa = 3 \n
+      conserva = 4 \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs_3.xml"
+#include "gameplay\character_drugs_sci.xml"
+#include "gameplay\character_drugs_mil.xml"
+    </supplies>
+    <start_dialog>mil_soc_cook_dialog</start_dialog>
+    <actor_dialog>mil_soc_cook_common1</actor_dialog>
+    <actor_dialog>mil_soc_cook_common2</actor_dialog>
+    <actor_dialog>mil_soc_cook_common3</actor_dialog>
+    <actor_dialog>mil_soc_cook_common4</actor_dialog>
+    <actor_dialog>mil_soc_cook_common5</actor_dialog>
+    <actor_dialog>mil_soc_cook_common6</actor_dialog>
+    <actor_dialog>mil_soc_cook_drink_for_rg6_1</actor_dialog>
+    <actor_dialog>mil_soc_cook_drink_for_rg6_2</actor_dialog>
+    <actor_dialog>mil_soc_cook_drink_for_rg6_3</actor_dialog>
+    <actor_dialog>mil_soc_cook_drunk_question_about_rg6_1</actor_dialog>
+    <actor_dialog>mil_soc_cook_drunk_question_about_rg6_2</actor_dialog>
+    <actor_dialog>mil_soc_cook_drunk_question_about_rg6_3</actor_dialog>
+    <actor_dialog>actor_break_dialog</actor_dialog>
+</specific_character>
+<specific_character id="mil_soc_ara_guard" team_default = "1">
+    <name>GENERATE_NAME_stalker</name>
+    <icon>ui_inGame2_merc_2</icon>
+    <map_icon x="0" y="6"></map_icon>
+    <bio>none</bio>
+    <class>mil_soc_ara_guard</class>
+    <community>killer</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="1000000" max="2000000" infinitive="1"></money>
+    <rank>740</rank>
+    <reputation>-86</reputation>
+    <visual>actors\stalker_merc\stalker_merc_2</visual>
+    <snd_config>characters_voice\human_03\killer\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+      [spawn] \n
+      wpn_walther \n
+      ammo_9x19_pbp = 1 \n
+      wpn_lr300 \n
+      ammo_5.56x45_ss190 = 1 \n
+
+#include "gameplay\character_items_nd.xml"
+#include "gameplay\character_food.xml"
+#include "gameplay\character_drugs.xml"
+    </supplies>
+</specific_character>

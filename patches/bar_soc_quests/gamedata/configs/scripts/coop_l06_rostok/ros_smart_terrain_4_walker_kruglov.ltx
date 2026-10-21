@@ -1,0 +1,236 @@
+[logic@ros_smart_terrain_4_walker_kruglov]
+active 												= walker@ros_smart_terrain_4_walker_kruglov_idle
+suitable 											= {=check_npc_name(ros_smart_terrain_4_ecolog_kruglov)} true
+prior 												= 300
+
+[walker@ros_smart_terrain_4_walker_kruglov_idle]
+path_walk 											= walker_kruglov_1_walk
+path_look 											= walker_kruglov_1_look
+def_state_standing 									= wait_rac
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info 											= {=dist_to_actor_le(2)} walker@ros_smart_terrain_4_walker_kruglov_help_1_start %+BAR_KRUGLOV_FOLLOW_ACTOR%
+
+[walker@ros_smart_terrain_4_walker_kruglov_help_1_start]
+path_walk 											= walker_kruglov_1_walk
+path_look 											= walker_kruglov_1_look
+def_state_standing 									= threat_danger
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info  											= %=play_sound(kruglov_help_1)%
+on_signal 											= sound_end | walker@ros_smart_terrain_4_walker_kruglov_2_go %=scenario_autosave(st_escort_kruglov_to_yantar)%
+
+[walker@ros_smart_terrain_4_walker_kruglov_2_go]
+path_walk 											= walker_kruglov_2_walk
+path_look 											= walker_kruglov_2_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info  											= %=play_sound(kruglov_help_6)%
+on_signal 											= sound_end | walker@ros_smart_terrain_4_walker_kruglov_3_go
+
+[walker@ros_smart_terrain_4_walker_kruglov_3_go]
+path_walk 											= walker_kruglov_3_walk
+path_look 											= walker_kruglov_3_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_timer 											= 7000 | walker@ros_smart_terrain_4_walker_kruglov_3_1_go
+
+[walker@ros_smart_terrain_4_walker_kruglov_3_1_go]
+path_walk 											= walker_kruglov_3_1_walk
+path_look 											= walker_kruglov_3_1_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= sprint
+def_state_moving2 									= sprint
+def_state_moving3 									= sprint
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_timer 											= 8000 | walker@ros_smart_terrain_4_walker_kruglov_3_1_idle %=play_sound(kruglov_help_5)%
+
+[walker@ros_smart_terrain_4_walker_kruglov_3_1_idle]
+path_walk 											= walker_kruglov_3_1_walk
+path_look 											= walker_kruglov_3_1_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info 											= {+ROS_SMART_TERRAIN_5_KILLER_1_SQUAD_DEAD +ROS_SMART_TERRAIN_5_KILLER_2_SQUAD_DEAD} walker@ros_smart_terrain_4_walker_kruglov_4_go %=play_sound(kruglov_help_6)%
+
+[walker@ros_smart_terrain_4_walker_kruglov_4_go]
+path_walk 											= walker_kruglov_4_walk
+path_look 											= walker_kruglov_4_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_timer 											= 10000 | walker@ros_smart_terrain_4_walker_kruglov_5_go
+
+[walker@ros_smart_terrain_4_walker_kruglov_5_go]
+path_walk 											= walker_kruglov_5_walk
+path_look 											= walker_kruglov_5_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_timer 											= 10000 | walker@ros_smart_terrain_4_walker_kruglov_5_1_go
+
+[walker@ros_smart_terrain_4_walker_kruglov_5_1_go]
+path_walk 											= walker_kruglov_5_1_walk
+path_look 											= walker_kruglov_5_1_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= sprint
+def_state_moving2 									= sprint
+def_state_moving3 									= sprint
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info  											= %=play_sound(kruglov_help_5)%
+on_signal 											= sound_end | walker@ros_smart_terrain_4_walker_kruglov_5_1_idle
+
+[walker@ros_smart_terrain_4_walker_kruglov_5_1_idle]
+path_walk 											= walker_kruglov_5_1_walk
+path_look 											= walker_kruglov_5_1_look
+def_state_standing 									= search_corpse
+def_state_moving1 									= sprint
+def_state_moving2 									= sprint
+def_state_moving3 									= sprint
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info 											= {+ROS_SMART_TERRAIN_6_KILLER_1_SQUAD_DEAD} walker@ros_smart_terrain_4_walker_kruglov_6_go %=play_sound(kruglov_help_6)%
+
+[walker@ros_smart_terrain_4_walker_kruglov_6_go]
+path_walk 											= walker_kruglov_6_walk
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_timer 											= 25000 | walker@ros_smart_terrain_4_walker_kruglov_6_1_idle
+
+[walker@ros_smart_terrain_4_walker_kruglov_6_1_idle]
+path_walk 											= walker_kruglov_6_1_walk
+path_look 											= walker_kruglov_6_1_look
+def_state_standing 									= wait
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info 											= {=dist_to_actor_le(2)} walker@ros_smart_terrain_4_walker_kruglov_fireball_1_start
+
+[walker@ros_smart_terrain_4_walker_kruglov_fireball_1_start]
+path_walk 											= walker_kruglov_6_1_walk
+path_look 											= walker_kruglov_6_1_look
+def_state_standing 									= wait
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_info  											= %=play_sound(kruglov_fireball_1)%
+on_signal 											= sound_end | walker@ros_smart_terrain_4_walker_kruglov_7_go
+
+[walker@ros_smart_terrain_4_walker_kruglov_7_go]
+path_walk 											= walker_kruglov_7_walk
+def_state_standing 									= search_corpse
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+on_game_timer 										= 1000 | %=remove_squad(ros_smart_terrain_4_ecolog_kruglov_squad)%
+on_signal 											= path_end | walker@nil %=remove_squad(ros_smart_terrain_4_ecolog_kruglov_squad)%
+
+[walker@nil]
+
+[meet@hello_players]
+close_snd_hello 									= kruglov_help_1
+close_snd_bye   									= kruglov_help_1
+close_anim 											= hello_wpn
+close_victim 										= actor
+far_anim 											= hello_wpn
+far_victim 											= actor
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance 									= 3
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false

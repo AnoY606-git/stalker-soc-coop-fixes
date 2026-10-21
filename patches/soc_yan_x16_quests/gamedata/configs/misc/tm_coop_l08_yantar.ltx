@@ -1,0 +1,344 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест Бармена(Отправится на Янтарь)
+[yan_start_go_to_yantar_quest_task]
+icon 									= ui_inGame2_yan_start_go_to_yantar_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_go_to_yantar_quest_task_name
+descr 									= st_yan_start_go_to_yantar_quest_task_descr
+target 									= yan_smart_terrain_1_ecolog_saharov
+condlist_0 								= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO} complete %=give_task(yan_start_talk_to_the_kruglov_quest_task)%
+
+
+
+;Квест Сахарова(Во имя науки!: Поговорить с профессором Круглов по поводу замеров)
+[yan_start_talk_to_the_kruglov_quest_task]
+icon        = ui_inGame2_yan_start_talk_to_the_kruglov_quest_task
+prior       = 200
+storyline   = true
+title       = st_yan_start_talk_to_the_kruglov_quest_task_name
+descr       = {+YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO +YAN_FIND_SCIENTIST_SEMENOV_START +YAN_SOC_SEM_WOUNDED -YAN_SCIENTIST_RETURN_TO_BUNKER -YAN_SOC_SEM_WOUNDED_GONE -YAN_SCIENTIST_DIE} coop_soc_yan_sem_escort_descr, {+YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO} st_yan_start_talk_to_the_saharov_quest_task_descr, {+YAN_FIND_SCIENTIST_SEMENOV_START +YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO} coop_soc_yan_sem_escort_descr, {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO} st_yan_start_take_measurements_1_quest_task_descr, {+YAN_FIND_SCIENTIST_SEMENOV_START} coop_soc_yan_sem_talk_descr, st_yan_start_talk_to_the_kruglov_quest_task_descr
+target      = {+YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO +YAN_FIND_SCIENTIST_SEMENOV_START +YAN_SOC_SEM_WOUNDED -YAN_SCIENTIST_RETURN_TO_BUNKER -YAN_SOC_SEM_WOUNDED_GONE -YAN_SCIENTIST_DIE} yan_semenov_help, {+YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO +YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO} yan_smart_terrain_1_ecolog_saharov, {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO -YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO} yan_start_take_measurements_1_space_restrictor, {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO -YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO} yan_start_take_measurements_2_space_restrictor, {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO -YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO} yan_start_take_measurements_3_space_restrictor, {+YAN_FIND_SCIENTIST_SEMENOV_START} yan_soc_semenov, yan_smart_terrain_1_ecolog_kruglov
+condlist_0  = {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO} complete
+condlist_1  = {+YAN_SCIENTIST_DIE -YAN_SCIENTIST_RETURN_TO_BUNKER} fail
+
+
+
+;Квест Круглова(Во имя науки!: Провести замеры около туннеля на входе)
+[yan_start_take_measurements_1_quest_task]
+icon 									= ui_inGame2_yan_start_take_measurements_1_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_take_measurements_1_quest_task_name
+descr 									= st_yan_start_take_measurements_1_quest_task_descr
+target 									= yan_start_take_measurements_1_space_restrictor
+condlist_0 								= {+YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO} complete %=give_task(yan_start_take_measurements_2_quest_task)%
+
+;Квест Круглова(Во имя науки!: Провести замеры около туннеля на выходе)
+[yan_start_take_measurements_2_quest_task]
+icon 									= ui_inGame2_yan_start_take_measurements_2_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_take_measurements_2_quest_task_name
+descr 									= st_yan_start_take_measurements_2_quest_task_descr
+target 									= yan_start_take_measurements_2_space_restrictor
+condlist_0 								= {+YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO} complete %=give_task(yan_start_take_measurements_3_quest_task)%
+
+;Квест Круглова(Во имя науки!: Провести замеры около автобуса)
+[yan_start_take_measurements_3_quest_task]
+icon 									= ui_inGame2_yan_start_take_measurements_3_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_take_measurements_3_quest_task_name
+descr 									= st_yan_start_take_measurements_3_quest_task_descr
+target 									= yan_start_take_measurements_3_space_restrictor
+condlist_0 								= {+YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO} complete %=give_task(yan_start_talk_to_the_saharov_quest_task)%
+
+
+
+;Квест Круглова(Во имя науки!: Поговорить с профессором Сахаровым по поводу результатов замеров)
+[yan_start_talk_to_the_saharov_quest_task]
+icon 									= ui_inGame2_yan_start_talk_to_the_saharov_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_talk_to_the_saharov_quest_task_name
+descr 									= st_yan_start_talk_to_the_saharov_quest_task_descr
+target 									= yan_smart_terrain_1_ecolog_saharov
+condlist_0 								= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO} complete
+
+
+;Квест Сахарова(Во имя науки!: Дождаться настройки шлемов и забрать прототипы)
+[yan_start_configuring_helmets_quest_task]
+icon 									= ui_inGame2_yan_start_configuring_helmets_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_configuring_helmets_quest_task_name
+descr 									= st_yan_start_configuring_helmets_quest_task_descr
+target 									= yan_smart_terrain_1_ecolog_saharov
+condlist_0 								= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO} complete %=give_task(yan_start_infiltrate_the_x16_lab_quest_task)%
+
+
+;Квест Сахарова(Во имя науки!: Отправится в лабораторию)
+[yan_start_infiltrate_the_x16_lab_quest_task]
+icon        = ui_inGame2_yan_start_infiltrate_the_x16_lab_quest_task
+prior       = 200
+storyline   = true
+title       = st_yan_start_infiltrate_the_x16_lab_quest_task_name
+descr       = {+YAN_SOC_VASILYEV_FOUND} st_yan_start_infiltrate_the_x16_lab_quest_task_descr, coop_soc_yan_vasilyev_descr
+target      = {+YAN_SOC_VASILYEV_FOUND} yan_x16_level_changer, yan_vasilyev
+condlist_0  = {+YAN_YAN_START_INFILTRATE_THE_X16_LAB_QUEST_TASK_INFO} complete
+
+
+;Квест основной(Поговорить с профессором Сахаровым по поводу лаборатории)
+[yan_start_talk_to_the_saharov_x16_lab_quest_task]
+icon 									= ui_inGame2_yan_start_talk_to_the_saharov_x16_lab_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_talk_to_the_saharov_x16_lab_quest_task_name
+descr 									= st_yan_start_talk_to_the_saharov_x16_lab_quest_task_descr
+target 									= yan_smart_terrain_1_ecolog_saharov
+condlist_0 								= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO} complete
+
+;Квест основной(Поговорить с Барменом)
+[yan_start_talk_to_the_barmen_quest_task]
+icon 									= ui_inGame2_yan_start_talk_to_the_barmen_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_talk_to_the_barmen_quest_task_name
+descr 									= st_yan_start_talk_to_the_barmen_quest_task_descr
+target 									= yan_smart_terrain_1_stalker_barmen
+condlist_0 								= {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_MILITARY_STOP_DIALOG_INFO} complete %=give_task(bar_start_go_to_military_quest_task)%
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест Круглова(Во имя науки!: Дождаться окончания замеров около туннеля на входе)
+[yan_start_wait_for_the_measurements_to_finish_1_quest_task]
+icon 									= ui_inGame2_yan_start_wait_for_the_measurements_to_finish_1_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_wait_for_the_measurements_to_finish_1_quest_task_name
+descr 									= st_yan_start_wait_for_the_measurements_to_finish_1_quest_task_descr
+target 									= yan_start_take_measurements_1_space_restrictor
+condlist_0 								= {+YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_1_QUEST_TASK_INFO} complete
+
+;Квест Круглова(Во имя науки!: Вернуться на место замеров около туннеля на входе)
+[yan_start_return_to_the_measurement_location_1_quest_task]
+icon 									= ui_inGame2_yan_start_return_to_the_measurement_location_1_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_return_to_the_measurement_location_1_quest_task_name
+descr 									= st_yan_start_return_to_the_measurement_location_1_quest_task_descr
+target 									= yan_start_take_measurements_1_space_restrictor
+condlist_0 								= {+YAN_START_RETURN_TO_THE_MEASUREMENT_LOCATION_1_QUEST_TASK_INFO} complete
+
+
+
+;Квест Круглова(Во имя науки!: Дождаться окончания замеров около туннеля на выходе)
+[yan_start_wait_for_the_measurements_to_finish_2_quest_task]
+icon 									= ui_inGame2_yan_start_wait_for_the_measurements_to_finish_2_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_wait_for_the_measurements_to_finish_2_quest_task_name
+descr 									= st_yan_start_wait_for_the_measurements_to_finish_2_quest_task_descr
+target 									= yan_start_take_measurements_2_space_restrictor
+condlist_0 								= {+YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_2_QUEST_TASK_INFO} complete
+
+;Квест Круглова(Во имя науки!: Вернуться на место замеров около туннеля на выходе)
+[yan_start_return_to_the_measurement_location_2_quest_task]
+icon 									= ui_inGame2_yan_start_return_to_the_measurement_location_2_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_return_to_the_measurement_location_2_quest_task_name
+descr 									= st_yan_start_return_to_the_measurement_location_2_quest_task_descr
+target 									= yan_start_take_measurements_2_space_restrictor
+condlist_0 								= {+YAN_START_RETURN_TO_THE_MEASUREMENT_LOCATION_2_QUEST_TASK_INFO} complete
+
+
+
+;Квест Круглова(Во имя науки!: Дождаться окончания замеров около автобуса)
+[yan_start_wait_for_the_measurements_to_finish_3_quest_task]
+icon 									= ui_inGame2_yan_start_wait_for_the_measurements_to_finish_3_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_wait_for_the_measurements_to_finish_3_quest_task_name
+descr 									= st_yan_start_wait_for_the_measurements_to_finish_3_quest_task_descr
+target 									= yan_start_take_measurements_3_space_restrictor
+condlist_0 								= {+YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_2_QUEST_TASK_INFO} complete
+
+;Квест Круглова(Во имя науки!: Вернуться на место замеров около автобуса)
+[yan_start_return_to_the_measurement_location_3_quest_task]
+icon 									= ui_inGame2_yan_start_return_to_the_measurement_location_3_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_yan_start_return_to_the_measurement_location_3_quest_task_name
+descr 									= st_yan_start_return_to_the_measurement_location_3_quest_task_descr
+target 									= yan_start_take_measurements_3_space_restrictor
+condlist_0 								= {+YAN_START_RETURN_TO_THE_MEASUREMENT_LOCATION_3_QUEST_TASK_INFO} complete
+
+
+
+;Квест Сахарова(Найти и принести артефакт "Кристалл")
+[yan_start_sq_art_1_quest_task]
+icon 												= ui_ingame2_yan_start_sq_art_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_art_1_quest_task_name
+descr 												= st_yan_start_sq_art_1_quest_task_descr
+target 												= yan_smart_terrain_1_ecolog_saharov
+condlist_0 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_1_FAIL_INFO} fail
+reward_money 										= 5000
+
+;Квест Сахарова(Найти и принести артефакт "Огненный шар")
+[yan_start_sq_art_2_quest_task]
+icon 												= ui_ingame2_yan_start_sq_art_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_art_2_quest_task_name
+descr 												= st_yan_start_sq_art_2_quest_task_descr
+target 												= yan_smart_terrain_1_ecolog_saharov
+condlist_0 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_2_FAIL_INFO} fail
+reward_money 										= 7000
+
+;Квест Сахарова(Найти и принести артефакт "Глаз")
+[yan_start_sq_art_3_quest_task]
+icon 												= ui_ingame2_yan_start_sq_art_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_art_3_quest_task_name
+descr 												= st_yan_start_sq_art_3_quest_task_descr
+target 												= yan_smart_terrain_1_ecolog_saharov
+condlist_0 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_ART_3_FAIL_INFO} fail
+reward_money 										= 9000
+
+
+
+;Квест Сахарова(Найти и принести "Стопы Снорков")
+[yan_start_sq_mutant_snork_part_1_quest_task]
+icon 												= ui_ingame2_yan_start_sq_mutant_snork_part_1_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_mutant_snork_part_1_quest_task_name
+descr 												= st_yan_start_sq_mutant_snork_part_1_quest_task_descr
+target 												= yan_smart_terrain_1_ecolog_saharov
+condlist_0 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_SNORK_PART_1_FAIL_INFO} fail
+reward_money 										= 5000
+
+;Квест Сахарова(Найти и принести "Щупальца Кровососов")
+[yan_start_sq_mutant_krovosos_part_2_quest_task]
+icon 												= ui_ingame2_yan_start_sq_mutant_krovosos_part_2_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_mutant_krovosos_part_2_quest_task_name
+descr 												= st_yan_start_sq_mutant_krovosos_part_2_quest_task_descr
+target 												= yan_smart_terrain_1_ecolog_saharov
+condlist_0 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_KROVOSOS_PART_2_FAIL_INFO} fail
+reward_money 										= 7000
+
+;Квест Сахарова(Найти и принести "Коготь Химеры")
+[yan_start_sq_mutant_chimera_part_3_quest_task]
+icon 												= ui_ingame2_yan_start_sq_mutant_mutant_chimera_part_3_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_mutant_chimera_part_3_quest_task_name
+descr 												= st_yan_start_sq_mutant_chimera_part_3_quest_task_descr
+target 												= yan_smart_terrain_1_ecolog_saharov
+condlist_0 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_SQ_MUTANT_CHIMERA_PART_3_FAIL_INFO} fail
+reward_money 										= 9000
+
+;Квест Круглова(Убить мутантов на болоте около "Бункера ученных")
+[yan_start_sq_killer_mutants_1_quest_task]
+icon 												= ui_ingame2_yan_start_sq_killer_mutants_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_killer_mutants_1_quest_task_name
+descr 												= st_yan_start_sq_killer_mutants_1_quest_task_descr
+target 												= yan_smart_terrain_4_m_snork_1_squad
+condlist_0 											= {+YAN_SMART_TERRAIN_4_M_SNORK_1_SQUAD_DEAD} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_1_FAIL_INFO} fail
+reward_money 										= 3000
+
+;Квест Круглова(Убить мутантов справа от "Бункера ученных")
+[yan_start_sq_killer_mutants_2_quest_task]
+icon 												= ui_ingame2_yan_start_sq_killer_mutants_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_killer_mutants_2_quest_task_name
+descr 												= st_yan_start_sq_killer_mutants_2_quest_task_descr
+target 												= yan_smart_terrain_5_m_snork_1_squad
+condlist_0 											= {+YAN_SMART_TERRAIN_5_M_SNORK_1_SQUAD_DEAD} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_2_FAIL_INFO} fail
+reward_money 										= 5000
+
+;Квест Круглова(Убить мутанта около "Упавшего вертолёта")
+[yan_start_sq_killer_mutants_3_quest_task]
+icon 												= ui_ingame2_yan_start_sq_killer_mutants_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_yan_start_sq_killer_mutants_3_quest_task_name
+descr 												= st_yan_start_sq_killer_mutants_3_quest_task_descr
+target 												= yan_smart_terrain_12_m_chimera_squad
+condlist_0 											= {+YAN_SMART_TERRAIN_12_M_CHIMERA_SQUAD_DEAD} complete
+condlist_1 											= {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_3_FAIL_INFO} fail
+reward_money 										= 7000
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Original SoC order (patch soc_yan_x16_quests, see its NOTES.md). Objectives of one SoC task are one mod task whose description and
+;-- target change with the story flags. Every task is given to EVERY player by the server tick of coop_soc_yan.script.
+;--   bar_start_go_to_yantar_quest_task (patch bar_soc_quests) is SoC bar_x16_documents; yan_start_go_to_yantar_quest_task is never given
+;--   yan_soc_job_task                              SoC yan_scientist_job ("Help for the scientists")
+;--   yan_start_talk_to_the_kruglov_quest_task      SoC yan_find_scientist (measurements, one escort task)
+;--   yan_start_infiltrate_the_x16_lab_quest_task   SoC yan_find_vasilyev_task
+;--   yan_soc_ghost_task                            SoC yan_find_ghost_task (lab level)
+;--   yan_soc_guide_task                            SoC yan_provodnik_task ("Meet the Guide")
+;-- Never given any more (they stay for old saves and are in coop_hidden_tasks.ltx): yan_start_take_measurements_1..3_quest_task,
+;-- yan_start_talk_to_the_saharov_quest_task, yan_start_configuring_helmets_quest_task (mod only, SoC has no such step),
+;-- yan_start_talk_to_the_saharov_x16_lab_quest_task (now the last objective of x16_start_get_out_of_the_lab_task).
+;--------------------------------------------------------------------------------------------------------------------------------------
+[yan_soc_job_task]
+icon        = ui_inGame2_yan_start_talk_to_the_saharov_quest_task
+prior       = 190
+storyline   = true
+title       = coop_soc_yan_job_name
+descr       = coop_soc_yan_job_descr
+target      = yan_smart_terrain_1_ecolog_saharov
+condlist_0  = {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO} complete
+
+[yan_soc_ghost_task]
+icon        = ui_inGame2_yan_start_infiltrate_the_x16_lab_quest_task
+prior       = 180
+storyline   = true
+title       = coop_soc_yan_ghost_name
+descr       = {+X16_START_FIND_THE_INSTALLATION_QUEST_TASK_INFO} coop_soc_yan_ghost_2_descr, coop_soc_yan_ghost_1_descr
+target      = {+X16_START_FIND_THE_INSTALLATION_QUEST_TASK_INFO} x16_stalker_ghost, x16_yan_1_level_changer
+condlist_0  = {+X16_GHOST_DOCS_TAKEN} complete
+
+[yan_soc_guide_task]
+icon        = ui_inGame2_agru_start_find_the_shooter_hiding_place_task
+prior       = 170
+storyline   = true
+title       = coop_soc_yan_guide_name
+descr       = coop_soc_yan_guide_descr
+target      = esc_smart_terrain_1_stalker_guide
+condlist_0  = {+YAN_SOC_GUIDE_MET} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- soc_yan_semenov: SoC yan_scientist_return_task ("Talk to Sakharov"): the scientist died before the talk at the third site; given by
+;-- coop_soc_yan_semenov.script to every player 4 s after his death while the lab job has not started; done by the prototype (dialog branch 5)
+;--------------------------------------------------------------------------------------------------------------------------------------
+[yan_soc_return_task]
+icon        = ui_inGame2_yan_start_talk_to_the_saharov_quest_task
+prior       = 205
+storyline   = true
+title       = coop_soc_yan_sem_return_name
+descr       = coop_soc_yan_sem_return_descr
+target      = yan_smart_terrain_1_ecolog_saharov
+condlist_0  = {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO} complete

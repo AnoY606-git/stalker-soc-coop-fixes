@@ -1,0 +1,333 @@
+-------------------------------------------------------------------------------------------------------
+-- Army Warehouses (Military) quests in the order of the original Shadow of Chernobyl (patch soc_mil_quests, see its NOTES.md).
+-- SoC chains rebuilt here:
+--  * Freedom, Duty job (mil_lukash_job): Lukash sends the player to Max ("Report to Max"), the Duty group is destroyed ("Destroy the Duty
+--    squad", ONE objective), "Return to Lukash".  Lukash then sends the player to the Barrier (mil_blockpost_job: talk to the outpost
+--    commander, help destroy the Monolith squad, talk to the commander again for the reward).  Lukash pays 4000 for the Barrier.
+--  * Duty (mil_kill_sniper / mil_kill_lukash): Skull gives the tower sniper job (pays 4000), then the assault: three snipers, Lukash,
+--    "Return to the Duty farmstead and receive my fee" (8000).  SoC has 3 snipers after the first one, not 4.
+--  * not in the mod (no NPC, no spawn): the snitch Pavlik (mil_courier_job) and the Bulldog 6 order (mil_freedom_rg6_task).
+-- Everything is driven by SHARED story flags (saved, synced to every player) plus a server tick (1 s):
+--  1. progress(): derives flags (the whole Duty group is dead) and the fallbacks, so a dead NPC never blocks a step
+--  2. every task whose stage is open is given to EVERY living player once (the stock give_task hands a task to the first player only),
+--     so late joiners and respawned players get all open tasks
+-- The dialogs (dialogs_coop_l07_military.xml) set the flags; their phrase preconditions below read the flags only (same on every machine).
+-------------------------------------------------------------------------------------------------------
+
+local F = {
+	LK     = "MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO",     -- Lukash gave the Duty job (SoC mil_lukash_dolg_task)
+	MAXF   = "MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO",       -- reported to Max (SoC mil_max_arrive)
+	CP     = "MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO",   -- Cap gave the Barrier job (SoC mil_fblockpost_quest)
+	MD     = "MIL_SMART_TERRAIN_17_MONOLITH_1_SQUAD_DEAD",                           -- Monolith squad dead (SoC mil_fblockpost_quest_complete)
+	SJ1    = "MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO",                   -- Skull's sniper job accepted (SoC mil_sniper_get_job)
+	SJ2    = "MIL_START_KILL_THE_SNIPER_ON_THE_TOWER_QUEST_TASK_INFO",
+	SD     = "MIL_SMART_TERRAIN_8_FREEDOM_1_SQUAD_DEAD",                             -- tower sniper dead (SoC mil_sniper_dead)
+	ST     = "MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO", -- Skull's assault talk (SoC mil_dolg_skull_talk)
+	KEY    = "MIL_START_TAKE_KEY_POSITIONS_QUEST_TASK_INFO",                         -- the assault job accepted (SoC mil_dolg_final_task)
+	LD     = "MIL_SMART_TERRAIN_16_FREEDOM_1_SQUAD_DEAD",                            -- Lukash dead (SoC mil_lukash_dead)
+	SKULL_DEAD = "MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD",
+	DD     = "MIL_SOC_DUTY_DEAD",                                                    -- derived: the whole Duty group is dead (SoC mil_dolg_dead)
+	DONE   = "MIL_SOC_LUKASH_JOB_DONE",                                              -- Lukash heard the report (SoC mil_lukash_dolg_task_complete)
+	BP     = "MIL_SOC_BLOCKPOST_ACCEPTED",                                           -- Lukash sent the player to the Barrier (SoC mil_lukash_blockpost)
+	END    = "MIL_SOC_FREEDOM_QUESTS_END",                                           -- Lukash paid the Barrier job (SoC mil_freedom_quests_end)
+	CR     = "MIL_SOC_CAP_REWARD",                                                   -- Cap thanked the player (SoC mil_fblockpost_quest_reward)
+	FEE    = "MIL_SOC_DUTY_FEE",                                                     -- Skull paid the fee (SoC mil_dolg_gulag_free)
+	RADIO  = "MIL_START_GO_TO_RADAR_QUEST_TASK_INFO",                                -- set by the Radar level after the Barkeep sent the player there
+	RAD_DONE = "RAD_START_GO_TO_RADAR_QUEST_TASK_INFO",
+	CAP_FAIL = "MIL_START_TALK_TO_THE_CAP_QUEST_TASK_FAIL_INFO",
+}
+local DUTY = { "MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD", "MIL_SMART_TERRAIN_14_DUTY_2_SQUAD_DEAD", "MIL_SMART_TERRAIN_14_DUTY_3_SQUAD_DEAD",
+	"MIL_SMART_TERRAIN_14_DUTY_4_SQUAD_DEAD", "MIL_SMART_TERRAIN_14_DUTY_5_SQUAD_DEAD", "MIL_SMART_TERRAIN_14_DUTY_6_SQUAD_DEAD",
+	"MIL_SMART_TERRAIN_14_DUTY_7_SQUAD_DEAD", "MIL_SMART_TERRAIN_14_DUTY_8_SQUAD_DEAD", "MIL_SMART_TERRAIN_14_DUTY_9_SQUAD_DEAD" }
+local SNIPER = { "MIL_SMART_TERRAIN_6_FREEDOM_1_SQUAD_DEAD", "MIL_SMART_TERRAIN_5_FREEDOM_1_SQUAD_DEAD", "MIL_SMART_TERRAIN_4_FREEDOM_1_SQUAD_DEAD" }
+local NPC = { lukash = "mil_smart_terrain_3_freedom_lukash", max = "mil_smart_terrain_15_freedom_max",
+	cap = "mil_smart_terrain_12_1_freedom_cap", skull = "mil_smart_terrain_18_duty_skull" }
+
+-- SoC payments: dialogs_military.mil_dolg_payment 4000 (once, shared by the Duty sniper job and the Lukash Barrier reward),
+-- mil_dolg_payment2 8000 (the Duty fee), commander_transfer (half of the commander's money; the mod's Cap has no fixed purse: fallback)
+local PAY_R1, PAY_R2, PAY_CAP_FALLBACK = 4000, 8000, 2000
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCMIL " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCMIL " .. tostring(s)) end
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[SM] " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has(f) then
+		pcall(story_flags.give_flag, f)
+		qlog("FLAG " .. f)
+	end
+end
+
+-- story character dead? (tests can force it with the global table SOCMIL_FORCE_DEAD)
+local function npc_dead(story)
+	local fd = rawget(_G, "SOCMIL_FORCE_DEAD")
+	if type(fd) == "table" and fd[story] then return true end
+	local ok, r = pcall(function()
+		local id = get_story_object_id(story)
+		if id == nil then return false end
+		local so = alife():object(id)
+		if so == nil or so.alive == nil then return false end
+		return so:alive() == false
+	end)
+	return ok and r == true
+end
+
+local function all_of(list)
+	for _, f in ipairs(list) do
+		if not has(f) then return false end
+	end
+	return true
+end
+
+function duty_dead()
+	return has(F.DD) or all_of(DUTY)
+end
+
+local function sj() return has(F.SJ1) or has(F.SJ2) end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. dialog states (phrase preconditions, flags only)
+-------------------------------------------------------------------------------------------------------
+-- Lukash: new (the Duty farmstead), wait (sent to Max), report (Duty dead), offer (Barrier job not taken), capwait, paid, default
+function lukash_state()
+	if has(F.END) then return "default" end
+	if has(F.BP) or has(F.CP) then
+		if has(F.MD) then return "paid" end
+		return "capwait"
+	end
+	if has(F.DONE) then return "offer" end
+	if has(F.LK) then
+		if duty_dead() then return "report" end
+		return "wait"
+	end
+	return "new"
+end
+
+function lu_st_hub(a, b) local s = lukash_state(); return s == "new" or s == "offer" end
+function lu_st_wait(a, b) return lukash_state() == "wait" end
+function lu_st_report(a, b) return lukash_state() == "report" end
+function lu_st_capwait(a, b) return lukash_state() == "capwait" end
+function lu_st_paid(a, b) return lukash_state() == "paid" end
+function lu_st_default(a, b) return lukash_state() == "default" end
+function lu_new_alive(a, b) return lukash_state() == "new" and not duty_dead() end
+function lu_new_dead(a, b) return lukash_state() == "new" and duty_dead() end
+function lu_offer(a, b) return lukash_state() == "offer" end
+
+-- Max (SoC mil_max_dialog): nojob, job (Lukash sent the player), dd (the Duty is dead, report to Lukash first), busy (the counterattack), after
+function max_state()
+	if has(F.DONE) then return "after" end
+	if not has(F.LK) then return "nojob" end
+	if duty_dead() then return "dd" end
+	if not has(F.MAXF) then return "job" end
+	return "busy"
+end
+
+function mx_st_nojob(a, b) return max_state() == "nojob" end
+function mx_st_job(a, b) return max_state() == "job" end
+function mx_st_dd(a, b) return max_state() == "dd" end
+function mx_st_busy(a, b) return max_state() == "busy" end
+function mx_st_after(a, b) return max_state() == "after" end
+
+-- paid-once flag of the talking player (per player name: the flags are shared, a listen host runs a dialog action on both roles)
+local function paid_flag(kind, la)
+	return "MIL_SOC_PAID_" .. kind .. "_" .. (string.gsub(string.upper(tostring(la:name())), "[^A-Z0-9]", "_"))
+end
+
+local function paid(kind)
+	local la = getLocalActor()
+	if la == nil then return false end
+	return has(paid_flag(kind, la))
+end
+
+-- Skull: new, job (sniper job accepted), pay1 (sniper dead, not paid yet), pay2 (paid), alt (sniper died, no job), assault, after, done
+function skull_state()
+	if has(F.FEE) then return "done" end
+	if has(F.LD) then return "after" end
+	if has(F.ST) then return "assault" end
+	if has(F.SD) then
+		if sj() then
+			if paid("R1") then return "pay2" end
+			return "pay1"
+		end
+		return "alt"
+	end
+	if sj() then return "job" end
+	return "new"
+end
+
+function sk_st_new(a, b) return skull_state() == "new" end
+function sk_st_job(a, b) return skull_state() == "job" end
+function sk_st_pay1(a, b) return skull_state() == "pay1" end
+function sk_st_pay2(a, b) return skull_state() == "pay2" end
+function sk_st_alt(a, b) return skull_state() == "alt" end
+function sk_st_assault(a, b) return skull_state() == "assault" end
+function sk_st_after(a, b) return skull_state() == "after" end
+function sk_st_done(a, b) return skull_state() == "done" end
+
+-- Cap: new (job offer), wait (the Monolith attack), reward, done
+function cap_state()
+	if has(F.CR) then return "done" end
+	if has(F.CP) then
+		if has(F.MD) then return "reward" end
+		return "wait"
+	end
+	return "new"
+end
+
+function cp_st_new(a, b) return cap_state() == "new" end
+function cp_st_wait(a, b) return cap_state() == "wait" end
+function cp_st_reward(a, b) return cap_state() == "reward" end
+function cp_st_done(a, b) return cap_state() == "done" end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. payments (the talking player only, once per player name and kind; client role only)
+-------------------------------------------------------------------------------------------------------
+local function pay_once(kind, amount, a, b)
+	if not OnClient() then return end
+	local la = getLocalActor()
+	if la == nil then return end
+	local pf = paid_flag(kind, la)
+	if has(pf) then return end
+	give(pf)
+	pcall(function() dialogs.relocate_money_to_actor(a, b, amount) end)
+	qlog("PAID " .. kind .. " " .. tostring(amount) .. " to " .. tostring(la:name()))
+end
+
+function pay_member(a, b) pay_once("R1", PAY_R1, a, b) end        -- Lukash: Barrier job done (mil_dolg_payment)
+function pay_sniper(a, b) pay_once("R1", PAY_R1, a, b) end        -- Skull: the tower sniper (the same SoC payment, once)
+function pay_fee(a, b) pay_once("R2", PAY_R2, a, b) end           -- Skull: the fee (mil_dolg_payment2)
+
+-- Cap: half of his money (SoC commander_transfer); the purse of the mod's Cap is not known on the client, so a fixed sum is the fallback
+function pay_cap(a, b)
+	local amount = PAY_CAP_FALLBACK
+	pcall(function()
+		local npc = dialogs.who_is_npc(a, b)
+		local m = npc ~= nil and npc:money() or 0
+		if m ~= nil and m >= 2 then amount = math.floor(m / 2) end
+	end)
+	pay_once("R3", amount, a, b)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. progress: derived flags and fallbacks (server tick)
+-------------------------------------------------------------------------------------------------------
+function progress()
+	if all_of(DUTY) then give(F.DD) end
+	-- Max dead before the report: the report is done (his men march without him)
+	if has(F.LK) and not has(F.MAXF) and npc_dead(NPC.max) then give(F.MAXF) end
+	-- Lukash dead: the job can not be reported to him
+	if has(F.LK) and not has(F.DONE) and (has(F.LD) or npc_dead(NPC.lukash)) then give(F.DONE) end
+	-- Cap dead: the talk steps of the Barrier job are done
+	local capdead = npc_dead(NPC.cap)
+	if capdead and (has(F.BP)) and not has(F.CP) then give(F.CP) end
+	if capdead and has(F.CP) and has(F.MD) and not has(F.CR) then give(F.CR) end
+	-- Skull dead: "Return to Skull" and the fee can not be done
+	local skdead = has(F.SKULL_DEAD) or npc_dead(NPC.skull)
+	if skdead and sj() and has(F.SD) and not has(F.ST) then give(F.ST) end
+	if skdead and has(F.KEY) and has(F.LD) and not has(F.FEE) then give(F.FEE) end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 4. the stages: task id, open while ...
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	-- Freedom: SoC mil_lukash_job (Report to Max / Destroy the Duty squad / Return to Lukash)
+	{ id = "mil_start_report_to_max_quest_task", open = function() return has(F.LK) and not has(F.MAXF) and not duty_dead() end },
+	{ id = "mil_start_kill_skull_quest_task", open = function() return has(F.MAXF) and not duty_dead() end },
+	{ id = "mil_soc_return_lukash_task", open = function() return has(F.LK) and duty_dead() and not has(F.DONE) end },
+	-- Freedom: SoC mil_blockpost_job (talk to the commander / help destroy the Monolith squad / talk to the commander for the reward)
+	{ id = "mil_start_talk_to_the_cap_quest_task", open = function() return has(F.BP) and not has(F.CP) and not has(F.CAP_FAIL) end },
+	{ id = "mil_start_protect_the_barrier_quest_task", open = function() return has(F.CP) and not has(F.MD) end },
+	{ id = "mil_soc_cap_reward_task", open = function() return has(F.CP) and has(F.MD) and not has(F.CR) end },
+	-- Duty: SoC mil_kill_sniper (the tower sniper, return to Skull)
+	{ id = "mil_start_kill_the_sniper_on_the_tower_quest_task", open = function() return sj() and not has(F.SD) end },
+	{ id = "mil_start_talk_to_skull_about_the_assault_quest_task", open = function() return sj() and has(F.SD) and not has(F.ST) end },
+	-- Duty: SoC mil_kill_lukash (three snipers at once, Lukash, return for the fee)
+	{ id = "mil_start_kill_the_snipers_1_quest_task", open = function() return has(F.KEY) and not has(SNIPER[1]) end },
+	{ id = "mil_start_kill_the_snipers_2_quest_task", open = function() return has(F.KEY) and not has(SNIPER[2]) end },
+	{ id = "mil_start_kill_the_snipers_3_quest_task", open = function() return has(F.KEY) and not has(SNIPER[3]) end },
+	{ id = "mil_start_kill_lukash_quest_task", open = function() return has(F.KEY) and not has(F.LD) end },
+	{ id = "mil_soc_duty_fee_task", open = function() return has(F.KEY) and has(F.LD) and not has(F.FEE) end },
+	-- the Radar task used to come from the completion of the removed "go to the Radar" step of this level
+	{ id = "rad_start_go_to_radar_quest_task", open = function() return has(F.RADIO) and not has(F.RAD_DONE) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	local okp, errp = pcall(progress)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what
+function reset_given()
+	given = {}
+end
+
+function status()
+	return string.format("lk=%s maxf=%s dd=%s done=%s bp=%s cp=%s md=%s cr=%s end=%s sj=%s sd=%s st=%s key=%s ld=%s fee=%s",
+		tostring(has(F.LK)), tostring(has(F.MAXF)), tostring(duty_dead()), tostring(has(F.DONE)), tostring(has(F.BP)), tostring(has(F.CP)),
+		tostring(has(F.MD)), tostring(has(F.CR)), tostring(has(F.END)), tostring(sj()), tostring(has(F.SD)), tostring(has(F.ST)),
+		tostring(has(F.KEY)), tostring(has(F.LD)), tostring(has(F.FEE)))
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

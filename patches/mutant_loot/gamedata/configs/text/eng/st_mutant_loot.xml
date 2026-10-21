@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <string_table>
 	<string id="st_mutant_loot_tip"><text>Search</text></string>
-	<string id="st_mutant_loot_title"><text>Mutant corpse</text></string>
+	<string id="st_mutant_loot_found"><text>Found:</text></string>
 	<string id="st_mutant_loot_empty"><text>Nothing useful on the body</text></string>
-	<string id="st_mutant_loot_take"><text>Take</text></string>
-	<string id="st_mutant_loot_close"><text>Close</text></string>
 </string_table>

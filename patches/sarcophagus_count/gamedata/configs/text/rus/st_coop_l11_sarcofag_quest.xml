@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_sar_start_get_to_the_monolith_quest_task_name">
-		<text>Тайна Зоны</text>
+		<text>Исполнитель желаний</text>
 	</string>
 	<string id="st_sar_start_get_to_the_monolith_quest_task_descr">
-		<text>Добраться до "Монолита"</text>	
+		<text>Прийти к Монолиту\n\nЯ слышал зов Монолита. Он звал меня к себе. Следует пойти к нему и получить ответы на все вопросы.</text>	
 	</string>
 
 
@@ -25,9 +25,9 @@
 
 
 	<string id="st_sar_start_open_the_door_to_monolith_management_quest_task_name">
-		<text>Пора со всем покончить!</text>
+		<text>Секретная лаборатория</text>
 	</string>
 	<string id="st_sar_start_open_the_door_to_monolith_management_quest_task_descr">
-		<text>Применить декодер и открыть дверь в Управление "Монолитом"</text>	
+		<text>Открыть ее с помощью декодера</text>	
 	</string>
 </string_table>

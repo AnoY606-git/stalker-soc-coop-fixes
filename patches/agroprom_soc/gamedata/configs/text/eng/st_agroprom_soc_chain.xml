@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="coop_soc_agr_help_stalkers_name">
+		<text>Help the stalkers</text>
+	</string>
+	<string id="coop_soc_agr_help_stalkers_descr">
+		<text>Help the stalkers fight off the soldiers\n\nSOS, the army is killing a fellow stalker! Guys, if you can hear me - help!</text>
+	</string>
+	<string id="coop_soc_agr_ghost_name">
+		<text>Find out what happened to Ghost</text>
+	</string>
+	<string id="coop_soc_agr_ghost_descr">
+		<text>Find out what happened to Ghost\n\n...found out that one of Strelok's guys is called Ghost. At least some hint. If I can find the Ghost - I'll be able to find Strelok too.</text>
+	</string>
+	<string id="coop_soc_agru_flash_descr">
+		<text>Find information about Strelok in the stash</text>
+	</string>
+</string_table>

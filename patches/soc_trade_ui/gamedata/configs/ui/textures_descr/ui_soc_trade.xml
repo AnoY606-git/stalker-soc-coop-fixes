@@ -1,0 +1,13 @@
+<w>
+	<!-- Shadow of Chernobyl trade skin. Art: GSC Game World (S.T.A.L.K.E.R.: Shadow of Chernobyl), recomposed by tools/gen_soc_trade.py -->
+	<file name="ui\ui_soc_trade">
+		<texture id="ui_soc_trade_col_wide_full" x="0" y="0" width="528" height="810" />
+		<texture id="ui_soc_trade_col_wide" x="0" y="111" width="528" height="699" />
+		<texture id="ui_soc_trade_col_4x3_full" x="528" y="0" width="321" height="675" />
+		<texture id="ui_soc_trade_col_4x3" x="528" y="93" width="321" height="582" />
+		<texture id="ui_soc_trade_btn_e" x="849" y="0" width="152" height="28" />
+		<texture id="ui_soc_trade_btn_t" x="849" y="60" width="152" height="28" />
+		<texture id="ui_soc_trade_btn_d" x="849" y="90" width="152" height="28" />
+		<texture id="ui_soc_trade_btn_h" x="849" y="30" width="152" height="28" />
+	</file>
+</w>

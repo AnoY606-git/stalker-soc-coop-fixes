@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_pri_start_go_to_cnpp_quest_task_name">
+		<text>Reach the power plant</text>
+	</string>
+	<string id="st_pri_start_go_to_cnpp_quest_task_descr">
+		<text>Find the path to the Chernobyl NPP</text>	
+	</string>
+
+
+	<string id="st_pri_start_meet_a_group_of_stalkers_quest_task_name">
+		<text>Meet the group of stalkers</text>
+	</string>
+	<string id="st_pri_start_meet_a_group_of_stalkers_quest_task_descr">
+		<text>Meet the group of stalkers</text>	
+	</string>
+	<string id="st_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task_name">
+		<text>Meet the group of stalkers</text>
+	</string>
+	<string id="st_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task_descr">
+		<text>Follow the group of stalkers</text>	
+	</string>
+</string_table>

@@ -1,10 +1,12 @@
 [logic]
 active 												= sr_idle@x18_start_get_out_of_the_lab_quest_task_idle
 
+; Original SoC: the raid (val_raid_start) begins when the X18 documents are found (bar_darklab_documents2, objective 1); the mod used to wait
+; for a dead poltergeist. The tasks come from coop_soc_dv.script (every player), not from this logic.
 [sr_idle@x18_start_get_out_of_the_lab_quest_task_idle]
-on_info  											= {+X18_SMART_TERRAIN_5_M_POLTERGEIST_TELE_1_SQUAD_DEAD} sr_idle@x18_start_get_out_of_the_lab_quest_task_end
+on_info  											= {+BAR_DARKLAB_DOCUMENT_GAIN} sr_idle@x18_start_get_out_of_the_lab_quest_task_end
 
 [sr_idle@x18_start_get_out_of_the_lab_quest_task_end]
-on_any_player_inside 									= sr_idle@nil %+X18_START_GET_OUT_OF_THE_LAB_QUEST_TASK_INFO =create_squad(val_smart_terrain_17_military_1_squad:val_smart_terrain_17) =create_squad(val_smart_terrain_17_military_2_squad:val_smart_terrain_17) =create_squad(val_smart_terrain_17_military_3_squad:val_smart_terrain_17) =give_task(val_start_take_the_documents_to_the_barmen_quest_task) =send_tip(st_val_monolith_trader_pda1:all_players_message_from_sidorovich) =give_task(val_start_get_out_via_south_gate_quest_task) +VAL_RAID_START% 
+on_any_player_inside 									= sr_idle@nil %+X18_START_GET_OUT_OF_THE_LAB_QUEST_TASK_INFO =create_squad(val_smart_terrain_17_military_1_squad:val_smart_terrain_17) =create_squad(val_smart_terrain_17_military_2_squad:val_smart_terrain_17) =create_squad(val_smart_terrain_17_military_3_squad:val_smart_terrain_17) =send_tip(st_val_monolith_trader_pda1:all_players_message_from_sidorovich) +VAL_RAID_START%
 
 [sr_idle@nil]

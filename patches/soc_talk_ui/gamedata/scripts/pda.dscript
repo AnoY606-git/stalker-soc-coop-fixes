@@ -1,0 +1,18 @@
+-- Appended to pda.script (xrMPE .dscript). The engine calls pda.actor_menu_mode(10) when the talk window opens and (11) when it
+-- closes, which land in dialog_wnd_showed / dialog_wnd_closed. soc_talk_ui.script draws the Shadow of Chernobyl decoration.
+local stu_orig_dialog_wnd_showed = dialog_wnd_showed
+local stu_orig_dialog_wnd_closed = dialog_wnd_closed
+
+function dialog_wnd_showed()
+	stu_orig_dialog_wnd_showed()
+	if soc_talk_ui ~= nil then
+		soc_talk_ui.on_show()
+	end
+end
+
+function dialog_wnd_closed()
+	stu_orig_dialog_wnd_closed()
+	if soc_talk_ui ~= nil then
+		soc_talk_ui.on_hide()
+	end
+end

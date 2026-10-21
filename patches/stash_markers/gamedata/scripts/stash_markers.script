@@ -11,10 +11,14 @@
 --   give_treasure(id)     SoC stash id (esc_secret_*...) -> give()
 -- Corpse search: motivator_binder.use_callback is wrapped once; the first search of a dead stalker rolls SoC's treasure
 -- table (35 percent, rank / level / community weights from SoC treasure_manager.ltx).
+-- Safe-zone storage boxes (same server tick, data in safe_box_data.script): every inventory_box without preset loot inside the
+-- safe zones of Cordon (Sidorovich's bunker, rookie village), the Bar, Yantar and the Freedom base gets a permanent spot of type
+-- safe_box_location (SoC's personal-box icon) from the start of the game; never removed (opening or emptying the box changes nothing).
 -- Server-only logic: everything returns at once when not OnServer().
 -------------------------------------------------------------------------------------------------------
 local S = { box_id = {}, box_by_id = {}, items = {}, pend = {}, seen = {}, processed = {}, by_id = nil, by_box = nil,
-	installed = false, gen = 0, last_tick = 0, hooked = false, shown = {}, log_n = 0 }
+	installed = false, gen = 0, last_tick = 0, hooked = false, shown = {}, log_n = 0,
+	safe_id = {}, safe_by_name = nil }
 
 local function slog(msg)
 	if S.log_n > 400 then return end
@@ -65,6 +69,13 @@ function on_register(se)
 		ensure()
 		return
 	end
+	safe_index()
+	local sb = S.safe_by_name[se:name()]
+	if sb then
+		S.safe_id[sb.name] = se.id
+		ensure()
+		return
+	end
 	local par = se.parent_id
 	if par ~= nil and par ~= 65535 and par ~= -1 then
 		local it = S.items[par]
@@ -91,8 +102,8 @@ local function box_items(box)
 end
 
 -- ---------------------------------------------------------------------------------------------- map spots
-local function has_spot(id)
-	local ok, r = pcall(level.map_has_object_spot, id, "treasure")
+local function has_spot(id, typ)
+	local ok, r = pcall(level.map_has_object_spot, id, typ or "treasure")
 	return ok and r ~= nil and r ~= false and r ~= 0
 end
 
@@ -178,10 +189,73 @@ function spot_present(id)
 	return b ~= nil and has_spot(b)
 end
 
+-- ---------------------------------------------------------------------------------------------- safe-zone storage boxes
+function safe_index()
+	if S.safe_by_name then return end
+	S.safe_by_name = {}
+	for _, b in ipairs(safe_box_data.boxes) do S.safe_by_name[b.name] = b end
+end
+
+local function safe_here(b, id)
+	local ok, here = pcall(level.name)
+	return ok and here == b.lvl and alife():object(id) ~= nil
+end
+
+-- server tick: put the spot on every safe box of the CURRENT level (a level's boxes get theirs when the party gets there).
+-- map_add_object_spot_ser keeps it in the savegame; the guard avoids a second (duplicate) spot.
+local function safe_reconcile()
+	safe_index()
+	for name, id in pairs(S.safe_id) do
+		local b = S.safe_by_name[name]
+		if b and safe_here(b, id) and not has_spot(id, safe_box_data.spot) then
+			pcall(level.map_add_object_spot_ser, id, safe_box_data.spot, "safe_box_hint_" .. b.key)
+			pcall(function() level.map_sync_spot(id, safe_box_data.spot, SV_OBJECT_ID) end)
+			slog("safe box spot added " .. name .. " id " .. tostring(id))
+		end
+	end
+end
+
+local function safe_send(gameID)
+	safe_index()
+	for name, id in pairs(S.safe_id) do
+		local b = S.safe_by_name[name]
+		if b and safe_here(b, id) and has_spot(id, safe_box_data.spot) then
+			pcall(function() level.map_sync_spot(id, safe_box_data.spot, gameID) end)
+		end
+	end
+end
+
+-- test helpers: boxes of the current level that this (server) VM knows -> { {name, key, id, x, y, z, spot}, ... }
+function safe_boxes()
+	safe_index()
+	local out = {}
+	if not OnServer() then return out end
+	for name, id in pairs(S.safe_id) do
+		local b = S.safe_by_name[name]
+		if b and safe_here(b, id) then
+			out[#out + 1] = { name = name, key = b.key, id = id, x = b.x, y = b.y, z = b.z, spot = has_spot(id, safe_box_data.spot) }
+		end
+	end
+	table.sort(out, function(a, c) return a.name < c.name end)
+	return out
+end
+
+-- number of safe boxes the data lists for a level
+function safe_expected(lvl)
+	safe_index()
+	local n = 0
+	for _, b in pairs(S.safe_by_name) do
+		if b.lvl == lvl then n = n + 1 end
+	end
+	return n
+end
+
 -- ---------------------------------------------------------------------------------------------- reconcile (server tick)
 function reconcile()
 	if not OnServer() then return end
 	index()
+	local okS, eS = pcall(safe_reconcile)
+	if not okS then slog("SAFEERR " .. tostring(eS)) end
 	for box, st in pairs(S.box_by_id) do
 		local boxid = box
 		local fg, fd = flag("G", st.id), flag("D", st.id)
@@ -200,6 +274,7 @@ end
 
 function send_map_locations(gameID)
 	if not OnServer() then return end
+	pcall(safe_send, gameID)
 	for box, st in pairs(S.box_by_id) do
 		if flag("G", st.id) and not flag("D", st.id) and has_spot(box) then
 			pcall(function() level.map_sync_spot(box, "treasure", gameID) end)

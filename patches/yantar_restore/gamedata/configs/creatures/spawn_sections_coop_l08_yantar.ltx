@@ -32,3 +32,39 @@ inv_grid_width		= 2
 inv_grid_height		= 1
 inv_grid_x			= 18
 inv_grid_y			= 20
+
+;--- soc_yan_x16_quests: Vasiliev (SoC yan_ecolog_vasilyev, dead ecologist in the swamp) and his PDA (SoC article yan_vasilyev_info) -----
+; created by coop_soc_yan.script when the lab job starts; the corpse has the story id the task marker needs
+[yan_vasilyev]:stalker
+character_profile			= sim_default_ecolog_1
+spec_rank					= veteran
+community					= ecolog
+story_id					= yan_vasilyev
+
+[yan_vasilyev_pda]:quest_item_base
+$spawn 				= "quest_items\yan_vasilyev_pda"
+visual				= dynamics\devices\dev_pda\dev_pda.ogf
+description			= coop_soc_yan_vasilyev_pda_descr
+inv_name			= coop_soc_yan_vasilyev_pda_name
+inv_name_short		= coop_soc_yan_vasilyev_pda_name
+cost 				= 0
+inv_grid_x			= 6
+inv_grid_y			= 13
+
+;--- soc_yan_semenov: Semenov (SoC yan_Semenov, spawn yantar_semenov) and the wounded scientist; created by scripts\coop_soc_yan_semenov.script
+[yan_soc_semenov]:stalker
+$spawn						= "respawn\yan_soc_semenov"
+character_profile			= yan_soc_semenov
+spec_rank					= veteran
+community					= ecolog
+story_id					= yan_soc_semenov
+custom_data					= scripts\coop_l08_yantar\yan_soc_semenov.ltx
+
+; the same man wounded at the third measurement site; the story id is the one of the SoC task markers (yan_semenov_help)
+[yan_soc_semenov_wounded]:stalker
+$spawn						= "respawn\yan_soc_semenov_wounded"
+character_profile			= yan_soc_semenov
+spec_rank					= veteran
+community					= ecolog
+story_id					= yan_semenov_help
+custom_data					= scripts\coop_l08_yantar\yan_soc_semenov_wounded.ltx

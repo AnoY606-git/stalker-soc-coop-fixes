@@ -88,3 +88,8 @@ Real-movie playback note: ticks keep running while a movie or the credits play (
   in the listen test only the local player was real (0/0). The 2-client run used faked stats; remote values are UNVERIFIED.
 - Players can be attacked during a 50 to 106 s movie (pause is off for MP safety). The Monolith room is normally cleared at that point.
 - The ending stops being "once": a new game needs fresh flags (`SCN_END_WISH_PLAYED`, `SCN_CREDITS_PLAYED` live in the save).
+
+## Freeplay (2026-10-21, patch freeplay)
+`end_peace.on_end` now asks `coop_scn_freeplay.credits_variant()`; with the host setting `[freeplay] enabled = true` (default) the credits are requested with the variant `freeplay`: their steps end with
+`ui_on` (no `main_menu`, no disconnect) and the scene `freeplay` then moves the party to the Cordon rookie village. `false`, a missing patch or the wish-granter / join endings keep the old end (credits, main menu).
+Details and tests: `patches\freeplay\NOTES.md`.

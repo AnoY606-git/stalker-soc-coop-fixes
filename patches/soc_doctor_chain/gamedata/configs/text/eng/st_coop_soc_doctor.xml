@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="coop_soc_doc_g_0"><text>Guide, I need to see Doctor.</text></string>
+	<string id="coop_soc_doc_g_1"><text>Well, look at that. How do you know about Doctor?</text></string>
+	<string id="coop_soc_doc_g_2"><text>Ghost sent me. Help me get in touch with Doctor. It's urgent.</text></string>
+	<string id="coop_soc_doc_g_3"><text>Well, why didn't you say so! Doctor is in Strelok's hiding place. If you are who you say you are, you probably know where it is.</text></string>
+	<string id="coop_soc_doc_g_4"><text>Thank you.</text></string>
+	<string id="coop_soc_doc_d_h11"><text>Strelok! Where the hell have you been??? I haven't seen you or the guys since the last raid! I was getting worried!</text></string>
+	<string id="coop_soc_doc_d_h21"><text>So, you feeling better? You thinking clearly?</text></string>
+	<string id="coop_soc_doc_d_0"><text>Strelok???</text></string>
+	<string id="coop_soc_doc_d_1"><text>Yeah, you're Strelok! Who else would you be? I'm Doc, don't you recognize me? What happened to you, friend? You don't look well. We went into the Zone together for 2 years. You really don't remember me?</text></string>
+	<string id="coop_soc_doc_d_11"><text>No, I don't.</text></string>
+	<string id="coop_soc_doc_d_2"><text>You don't??? Strelok, what the...? You're not joking around, are you? Man... What about the guys, our guys? Fang, Ghost? You remember them, don't you?</text></string>
+	<string id="coop_soc_doc_d_21"><text>I don't remember Fang, and Ghost is dead - I found his body in Yantar.</text></string>
+	<string id="coop_soc_doc_d_3"><text>Ghost!!?!?! Dead??!!! Dammit, how could that happen?! They... they were the best. What happened to you?</text></string>
+	<string id="coop_soc_doc_d_31"><text>I don't know what happened, I don't remember.</text></string>
+	<string id="coop_soc_doc_d_4"><text>Wait, I need to calm down. That's some shitty news man. I think it's all linked with your last trip into the Zone. When we saw each other the last time, you left me the key from the stash at Pripyat and the map of how to find it. I've managed to keep it - hid it from the Mercs. Here, take it, hide it well. Perhaps you'll find somthing there. You were saying that there's some trick with the Monolith. But I don't understand what it was about, and you didn't either.</text></string>
+	<string id="coop_soc_doc_name"><text>Doc</text></string>
+	<string id="coop_soc_doc_bio"><text>Doc.</text></string>
+	<string id="coop_soc_doc_meet_name"><text>Meet with Doctor.</text></string>
+	<string id="coop_soc_doc_meet_descr"><text>Meet with Doctor at Strelok's hiding place\n\nDoctor: I will be waiting for a man who comes from Strelok to the hiding place used by Strelok and his men. If he's our man, he'll know the place.</text></string>
+	<string id="coop_soc_doc_stash_name"><text>Secret stash at Pripyat</text></string>
+	<string id="coop_soc_doc_stash_descr"><text>Find the secret stash of the Shooter at Pripyat\n\nDoctor: When we last met, you left me the key from the secret stash at Pripyat and the diagram which showed how to find it...I managed to save them...the Mercs didn't find them...Here...Maybe you'll find something else there....And also you kept on mumbling that there was something shady with Monolith...That's for sure...</text></string>
+	<string id="coop_soc_doc_pda_name"><text>Guide's PDA</text></string>
+	<string id="coop_soc_doc_pda_text"><text>OK, I'll meet with Ghost's man. I will be waiting for him in Strelok's hiding place. If he's one of our own, he will know where to look for me. Doctor.</text></string>
+	<string id="coop_soc_doc_concl_name"><text>Meeting with the Doctor</text></string>
+	<string id="coop_soc_doc_concl_text"><text>I don't know what to say..Should I be happy or sad? I found out that I am the Shooter. A Shooter who lost his memory in one of the last passages leading to the center of the Zone. A Shooter who lost all of his friends except for the Doctor. A Shooter who found out something that made him be followed. What did I find out? Next question. The Doctor managed to save the key and the location of the secret stash of our group at Pripyat. It's located in one of the rooms of the old hotel in the center. He says that there must be something there that will shed some light on the "Granter of Wishes" or Monolith. He knows only one thing: after the second to last scouting expedition to the Cherbobyl NPP I kept on saying that there's something shady with Monolith. Well Monolith, we're going to try and deal with you. Who are you and what are you?</text></string>
+</string_table>

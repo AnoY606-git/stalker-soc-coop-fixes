@@ -1,64 +1,48 @@
 -------------------------------------------------------------------------------------------------------
 -- Scene package "opening" (WP1): the original Shadow of Chernobyl start of the game.
 --   intro        the opening movie for every player (skip by majority vote), new game only
---   sidor_intro  the Marked One wakes up in Sidorovich's bunker; his voiced monologue with subtitles
+--   sidor_intro  the Marked One wakes up in Sidorovich's bunker; his voiced monologue (no subtitles)
 --   sidor_greet  Sidorovich's hello / bye lines when a player comes close / walks away (esc_trader scheme)
---   hints        the newbie hint pop-ups (jump, crouch, sprint, binoculars, relations)
---   pda_tutorial Sidorovich's voiced PDA walkthrough (offered once after his intro, yes / no)
--- All playback goes through the Scene Director (coop_scenes). Voice lines and the movie come from the
--- player's own S.T.A.L.K.E.R. install (see NOTES.md); a missing file only degrades that line to subtitles.
+-- All playback goes through the Scene Director (coop_scenes). The steps are built on EACH client, so every player hears the voice
+-- language he chose (setting `voice_language = auto | rus | eng` in the [client] section of his own coop_settings.ltx, see
+-- coop_soc_opening.voice_lang). A line with no recording in the chosen language stays silent; the movie comes from the player's own
+-- S.T.A.L.K.E.R. install (see NOTES.md). There are no on-screen subtitles, no newbie hint pop-ups and no PDA tutorial offer
+-- (the SoC "experienced" branch skips the tutorial).
 -------------------------------------------------------------------------------------------------------
 
 local MAP = "coop_l01_escape"
 local FLESH_FLAG = "ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO"
-local MAIN_SECTION = "actor_the_main_character"
 
 -- Sidorovich (m_trader, story id 3) in the Cordon bunker, from the original all.spawn
 local TRADER = { x = -244.69, y = -24.96, z = -133.96 }
--- where the Marked One stands when the game starts (in front of the desk, facing Sidorovich)
-BUNKER = { x = -247.30, y = -24.96, z = -133.40 }
--- the bunker door (original esc_tutorial_trigger / esc_trader_sound_zone): newbie hints start here
-local DOOR = { x = -251.97, y = -19.57, z = -126.92, r = 2.5 }
+-- where the Marked One stands when the game starts: the room in front of Sidorovich's counter (an AI node there; the four
+-- co-op spawn points of level.game are in the same room, see tools\gen_level_game.py)
+BUNKER = { x = -246.40, y = -24.80, z = -134.40 }
 
 -- trader_monolog2 (the Strelok briefing) is unused in the original game; the owner asked for it, so it
 -- plays after trader_monolog1. Set to false for the strict original sequence.
 PLAY_MONOLOG2 = true
--- show the "walk me through the PDA" yes / no box at the end of Sidorovich's intro
-OFFER_PDA_TUTORIAL = true
 
--- voice lines: sound path (relative to gamedata\sounds, no extension), length in ms.
--- The subtitle block of line <key> is the tutorial "scn_opening_sub_<key>" (generated, see tools/).
+-- voice lines: sound path (relative to gamedata\sounds, no extension) and length in ms (ogg granule position + 300 ms, tools\ogg_ms.py),
+-- per language. rus = the Russian SoC recording at the stock path, eng = the English Steam SoC recording under the parallel eng\ folder.
 local V = "script_replics\\trader\\"
-local P = "characters_voice\\scenario\\trader\\"
+local VE = "script_replics\\trader\\eng\\"
+local function line(name, rus_ms, eng_ms)
+	return { rus = { path = V .. name, ms = rus_ms }, eng = { path = VE .. name, ms = eng_ms } }
+end
 local LINES = {
-	monolog1 = { path = V .. "trader_monolog1", ms = 23400 },
-	monolog2 = { path = V .. "trader_monolog2", ms = 29700 },
-	come1b   = { path = V .. "trader1b", ms = 2800 },
-	come1a   = { path = V .. "trader1a", ms = 2800 },
-	hello1   = { path = V .. "trader_script1a_1", ms = 800 },
-	hello2   = { path = V .. "trader_script1a_2", ms = 700 },
-	hello3   = { path = V .. "trader_script1a_3", ms = 900 },
-	hello4   = { path = V .. "trader_script1a_4", ms = 1200 },
-	hello5   = { path = V .. "trader_script1a_5", ms = 800 },
-	bye1     = { path = V .. "trader3c", ms = 1400 },
-	bye2     = { path = V .. "trader_script1c_5", ms = 1400 },
-	pda1     = { path = P .. "trader_tutorial_pda_1", ms = 13400 },
-	pda2     = { path = P .. "trader_tutorial_pda_2", ms = 3700 },
-	pda3     = { path = P .. "trader_tutorial_pda_3", ms = 5800 },
-	pda4     = { path = P .. "trader_tutorial_pda_4", ms = 4600 },
-	pda5     = { path = P .. "trader_tutorial_pda_5", ms = 4200 },
-	pda6     = { path = P .. "trader_tutorial_pda_6", ms = 3600 },
-	pda7     = { path = P .. "trader_tutorial_pda_7", ms = 6000 },
-	pda9     = { path = P .. "trader_tutorial_pda_9", ms = 7200 },
-	pda11    = { path = P .. "trader_tutorial_pda_11", ms = 21700 },
-	pda12    = { path = P .. "trader_tutorial_pda_12", ms = 16400 },
-	pda13    = { path = P .. "trader_tutorial_pda_13", ms = 13900 },
-	pda14    = { path = P .. "trader_tutorial_pda_14", ms = 16400 },
-	pda14_1  = { path = P .. "trader_tutorial_pda_14_1", ms = 5000 },
-	pda15    = { path = P .. "trader_tutorial_pda_15", ms = 9400 },
-	pda15_1  = { path = P .. "trader_tutorial_pda_15_1", ms = 28200 },
+	monolog1 = line("trader_monolog1", 26669, 23674),
+	monolog2 = line("trader_monolog2", 47671, 29992),
+	come1b   = line("trader1b", 3538, 3102),
+	come1a   = line("trader1a", 3512, 3057),
+	hello1   = line("trader_script1a_1", 1270, 1052),
+	hello2   = line("trader_script1a_2", 1305, 968),
+	hello3   = line("trader_script1a_3", 1681, 1122),
+	hello4   = line("trader_script1a_4", 1777, 1398),
+	hello5   = line("trader_script1a_5", 1287, 1068),
+	bye1     = line("trader3c", 2241, 1610),
+	bye2     = line("trader_script1c_5", 3373, 1631),
 }
-local PDA_ORDER = { "pda1", "pda2", "pda3", "pda4", "pda5", "pda6", "pda7", "pda9", "pda11", "pda12", "pda13", "pda14", "pda14_1", "pda15", "pda15_1" }
 
 -------------------------------------------------------------------------------------------------------
 -- helpers (both server and client)
@@ -74,24 +58,23 @@ local function sound_exists(path)
 	return ok and r and true or false
 end
 
--- steps that show the subtitle block of a line and play its voice (or, without the audio file, just
--- keep the subtitles on screen for the nominal length)
+-- steps that play the voice of a line in the language this player chose (the steps are built on each client). No recording in that
+-- language: nothing is played and nothing waits (there are no subtitles to keep on screen).
 local function say(steps, key)
-	local L = LINES[key]
-	local have = sound_exists(L.path)
-	steps[#steps + 1] = { ["do"] = "fn", fn = function(e) olog("SAY " .. key .. " audio=" .. tostring(have)) end }
-	steps[#steps + 1] = { ["do"] = "tutorial", name = "scn_opening_sub_" .. key, wait = false }
+	local lang = coop_soc_opening.voice_lang()
+	local L = LINES[key][lang]
+	local have = L ~= nil and sound_exists(L.path)
+	steps[#steps + 1] = { ["do"] = "fn", fn = function(e)
+		olog("SAY " .. key .. " lang=" .. tostring(lang) .. " audio=" .. tostring(have) .. (L and (" path=" .. L.path) or ""))
+	end }
 	if have then
 		steps[#steps + 1] = { ["do"] = "snd2d", path = L.path, wait = true, cap_ms = L.ms + 4000 }
-	else
-		steps[#steps + 1] = { ["do"] = "wait", ms = L.ms }
 	end
-	steps[#steps + 1] = { ["do"] = "tutorial_stop" }
 end
 
 local function place_marked_one(env)
 	local a = env.actor
-	if a == nil or a:section() ~= MAIN_SECTION then return end
+	if a == nil or not coop_soc_opening.is_story(a) then return end
 	local tr = vector():set(TRADER.x, TRADER.y, TRADER.z)
 	local me = vector():set(BUNKER.x, BUNKER.y, BUNKER.z)
 	-- the Cordon co-op spawn points are inside the bunker now (patch level.game): only move a player who is far from it
@@ -176,7 +159,7 @@ coop_scenes.register{
 
 -- the story character: remember who still needs Sidorovich's intro (once per player name, persisted by the core)
 coop_scenes.on_first_spawn(function(actor, ctx)
-	if actor:section() == MAIN_SECTION then
+	if coop_soc_opening.is_story(actor) then
 		pending[actor:id()] = true
 		olog("PENDING actor=" .. tostring(actor:id()) .. " name=" .. actor:name())
 	end
@@ -205,20 +188,15 @@ local function build_sidor_intro(env)
 		steps[#steps + 1] = { ["do"] = "wait", ms = 1200 }
 		say(steps, "monolog2")
 	end
-	steps[#steps + 1] = { ["do"] = "tutorial", name = "scn_opening_tip_talk", wait = false }  -- new_start_intro3
-	steps[#steps + 1] = { ["do"] = "wait", ms = 5000 }
-	steps[#steps + 1] = { ["do"] = "tutorial_stop" }
+	steps[#steps + 1] = { ["do"] = "wait", ms = 1200 }                       -- new_start_intro3 (a hint pop-up in SoC, cut)
 	say(steps, "come1b")                                                     -- new_start_intro4
 	steps[#steps + 1] = { ["do"] = "wait", ms = 2500 }
-	if OFFER_PDA_TUTORIAL then
-		steps[#steps + 1] = { ["do"] = "fn", fn = function(e) offer_pda_tutorial_client() end }
-	end
 	return steps
 end
 
 coop_scenes.register{
 	id = "sidor_intro", kind = "sequence", level = MAP, once = false, skip = "none",
-	length_ms = 80000, grace_ms = 20000, settle_ms = 3000,
+	length_ms = 90000, grace_ms = 20000, settle_ms = 3000,
 	steps = function(var, env) return build_sidor_intro(env) end,
 	trigger = function(ctx)
 		if ctx.flag(FLESH_FLAG) then pending = {}; return false end
@@ -278,77 +256,6 @@ coop_scenes.register{
 		return false
 	end,
 }
-
--------------------------------------------------------------------------------------------------------
--- 4. newbie hints (esc_tutorial.ltx): jump, crouch, sprint, binoculars, relations
--------------------------------------------------------------------------------------------------------
-coop_scenes.register{
-	id = "hints", kind = "sequence", level = MAP, once = false, skip = "none",
-	length_ms = 72000, grace_ms = 20000, settle_ms = 3000,
-	steps = function(var, env)
-		return {
-			{ at = 1000,  ["do"] = "tutorial", name = "scn_opening_hint_jump", wait = true },
-			{ at = 8000,  ["do"] = "tutorial", name = "scn_opening_hint_crouch", wait = true },
-			{ at = 15000, ["do"] = "tutorial", name = "scn_opening_hint_sprint", wait = true },
-			{ at = 35000, ["do"] = "tutorial", name = "scn_opening_hint_binoc", wait = true },
-			{ at = 55000, ["do"] = "tutorial", name = "scn_opening_hint_relations", wait = true },
-		}
-	end,
-	trigger = function(ctx)
-		if not coop_scenes.played("intro") then return false end
-		local dv = vector():set(DOOR.x, DOOR.y, DOOR.z)
-		for _, a in ipairs(ctx.players()) do
-			local f = "COOP_OPENING_HINTS_" .. nm(a)
-			if not ctx.flag(f) and a:position():distance_to(dv) <= DOOR.r then
-				story_flags.give_flag(f)
-				coop_scenes.request("hints", nil, { target = a:id() })
-				olog("HINTS_REQ actor=" .. tostring(a:id()))
-				return false
-			end
-		end
-		return false
-	end,
-}
-
--------------------------------------------------------------------------------------------------------
--- 5. Sidorovich's PDA walkthrough (voiced pages + subtitles; the original PDA highlight windows are SoC UI)
--------------------------------------------------------------------------------------------------------
-coop_scenes.register{
-	id = "pda_tutorial", kind = "sequence", level = MAP, once = false, skip = "any",
-	length_ms = 175000, grace_ms = 20000, settle_ms = 1000,
-	steps = function(var, env)
-		local steps = {}
-		for _, k in ipairs(PDA_ORDER) do
-			say(steps, k)
-			steps[#steps + 1] = { ["do"] = "wait", ms = 300 }
-		end
-		return steps
-	end,
-}
-
--- client: the yes / no box (same pattern as coop_map_vote.prompt_client)
-local offered = false
-function offer_pda_tutorial_client()
-	if offered or test_no_offer then return end
-	offered = true
-	local ok, err = pcall(function()
-		ui_test_dialog.show_callbacks("message_box_yes_no", game.translate_string("scn_opening_pda_offer"),
-			function() game_cl.executeFunctionOnServer("coop_opening_pda_yes") end,
-			function() end)
-	end)
-	if not ok then olog("OFFERERR " .. tostring(err)) end
-end
-
--- server: the player said yes
-function on_pda_yes(initiator_id)
-	if initiator_id == nil then return end
-	local ok = coop_scenes.request("pda_tutorial", nil, { target = initiator_id })
-	olog("PDA_YES actor=" .. tostring(initiator_id) .. " queued=" .. tostring(ok))
-end
-
-pcall(function()
-	game_sv.coop_opening_pda_yes = function(i) coop_scn_opening.on_pda_yes(i) end
-end)
 
 -- start task chain for every player + SoC start dialog glue (coop_soc_opening.script)
 pcall(function() coop_soc_opening.install() end)

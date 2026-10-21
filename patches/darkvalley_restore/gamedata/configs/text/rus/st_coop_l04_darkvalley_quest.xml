@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_val_start_sneak_into_the_x_18_lab_1_quest_task_name">
-		<text>Пробраться в лабораторию X-18</text>
+		<text>Найти документы в Х-18</text>
 	</string>
 	<string id="st_val_start_sneak_into_the_x_18_lab_1_quest_task_descr">
-		<text>Проникнуть в заброшенную лабораторию и найти любые документы.</text>
+		<text>Найти документы\n\nНеобходимо найти документы об исследованиях, проводившихся в лаборатории X-18. Они могут пролить свет на "выжигатель мозгов".</text>
 	</string>	
 	
 	
 	<string id="st_val_start_take_the_documents_to_the_barmen_quest_task_name">
-		<text>Возвращение к Бармену</text>
+		<text>Найти документы в Х-18</text>
 	</string>
 	<string id="st_val_start_take_the_documents_to_the_barmen_quest_task_descr">
-		<text>Покинуть лабораторию и передать документы Бармену. Наверняка, он будет доволен.</text>
+		<text>Принести документу бармену</text>
 	</string>
 	
 
@@ -47,23 +47,23 @@
 
 
 	<string id="st_val_start_follow_the_bullet_quest_task_name">
-		<text>Пленник поневоле</text>
+		<text>Отбить долговца</text>
 	</string>
 	<string id="st_val_start_follow_the_bullet_quest_task_descr">
-		<text>Следовать за Пулей</text>
+		<text>Следовать за Пулей к месту засады\n\nДолговец Пуля просит помочь ему освободить напарника, попавшего в плен к бандитам. Его должны скоро конвоировать на заброшенную фабрику.</text>
 	</string>
 
 	<string id="st_val_start_save_the_prisoner_quest_task_name">
-		<text>Пленник поневоле</text>
+		<text>Отбить долговца</text>
 	</string>
 	<string id="st_val_start_save_the_prisoner_quest_task_descr">
-		<text>Дождаться бандитов и спасти пленника</text>
+		<text>Уничтожить бандитов и спасти долговца</text>
 	</string>	
 	<string id="st_val_start_get_out_via_south_gate_quest_task_name">
-		<text>Выбраться из Тёмной Долины</text>
+		<text>Выбраться из Темной Долины</text>
 	</string>
 	<string id="st_val_start_get_out_via_south_gate_quest_task_descr">
-		<text>Военные перекрыли выход на Свалку. Выбраться из Тёмной Долины можно по старой дороге через южные ворота, она ведёт на Кордон.</text>
+		<text>Выбраться через южные ворота</text>
 	</string>
 	<string id="st_val_start_show_documents_to_sidorovich_quest_task_name">
 		<text>Показать документы торговцу</text>

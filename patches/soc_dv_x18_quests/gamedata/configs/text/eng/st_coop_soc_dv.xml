@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="coop_soc_barman_2"><text>Hey, Marked One! Have you brought the documents from the Institute?</text></string>
+	<string id="coop_soc_barman_21"><text>No, I haven't got the docs from the Institute yet.</text></string>
+	<string id="coop_soc_barman_211"><text>That ain't good, Marked One, ain't good at all... You understand how much we need 'em, don'tcha? We need 'em bad, believe me. The Brain Scorcher is right under our noses but we don't even know what it is! Go get the documents right now - we'll talk after that.</text></string>
+	<string id="coop_soc_barman_2111"><text>I think I understand.</text></string>
+	<string id="coop_soc_barman_22"><text>Here are the documents from the Institute.</text></string>
+	<string id="coop_soc_barman_221"><text>Great work, Marked One! We have the documents at last. I need to have a look at them now and maybe I’ll work out how to get North. While I do that, if you have problems with money, you can fight at the Arena. The owner of the Arena is Arni, I've uploaded his coordinates.</text></string>
+	<string id="coop_soc_barman_2211"><text>OK.</text></string>
+	<string id="coop_soc_barman_151"><text>OK, the documents you brought from the Institute make some things a little clearer but we’re still missing the info we need to get a full picture. A lab designated X18 is mentioned and its description matches the abandoned underground vaults in the Dark Valley. Looks like you’ll have to go there and get the info we need. The lab is closed and you’ll need two electronic keys to get inside. I’ll give you one but you’ll have to get the other one from Boar in the Dark Valley.</text></string>
+	<string id="coop_soc_barman_1511"><text>Go on.</text></string>
+	<string id="coop_soc_barman_15111"><text>All you have to do is acquire the second key to Lab X18, get inside and retrieve the second batch of documents. Don’t forget to get yourself a protective suit or you won’t have a chance in hell of getting to the lab. So, will you do it?</text></string>
+	<string id="coop_soc_barman_15112"><text>I'll try.</text></string>
+	<string id="coop_soc_barman_15113"><text>Great! I'll be waiting.</text></string>
+	<string id="coop_soc_barman_15114"><text>No, I don't want to do it yet.</text></string>
+	<string id="coop_soc_barman_15115"><text>Up to you but remember: this is the only way that can help us open the road to the North.</text></string>
+	<string id="coop_soc_barman_171"><text>So, Marked One, you brought the documents from X18?</text></string>
+	<string id="coop_soc_barman_172"><text>Yeah. Here.</text></string>
+	<string id="coop_soc_barman_173"><text>No.</text></string>
+	<string id="coop_soc_barman_1731"><text>What are you wasting time for? Go get those damn documents or we won't make any progress!</text></string>
+	<string id="coop_soc_barman_1721"><text>Good, the situation is becoming clearer. As I expected this Brain Scorcher is man-made. It’s a Kaymanov experimental emitter and its components were made exactly in X18. These documents refer to lab X16 where they sent some components. According to this, X16 is located in the production complex area by Lake Yantar. The scientists have set up a mobile lab around there so maybe they can help.</text></string>
+	<string id="coop_soc_barman_17211"><text>Go on.</text></string>
+	<string id="coop_soc_barman_17212"><text>It ain’t simple. You need to get to the scientists and find out where X16 is so you can get the missing documents. So, you up for it?</text></string>
+	<string id="coop_soc_barman_17213"><text>Yeah.</text></string>
+	<string id="coop_soc_barman_17214"><text>No, I'm not ready yet.</text></string>
+	<string id="coop_soc_barman_172131"><text>Great! I'll be waiting.</text></string>
+	<string id="coop_soc_barman_172141"><text>Well get ready real quick Marked One! This sort of business can't wait.</text></string>
+	<string id="coop_soc_barman_181"><text>What do you want, Marked One?</text></string>
+	<string id="st_soc_darklab_name"><text>Find the documents in the underground lab</text></string>
+	<string id="st_soc_darklab_1_descr"><text>Sneak into the base\n\nBarkeep: "According to the documents you brought from Agroprom, things are starting to clear up, but some data is missing. There is evidence to suggest the presence of a Brain Scorcher which blocks the road to the North, but no one knows exactly what it is. Also, there is mention of Lab X18 whose description matches that of abandoned underground structures in the Dark Valley. Its present activity is unknown and besides, bandits have now set up their base in the Dark Valley.\n Several Duty scouts went there very recently, but so far there is no news from them.\n To get inside the lab, you will need two electronic keys; I will give you one, but the second one you will have to take from Borov, the bandit leader. \n\n So, you need to take the second key to the lab from Borov, then sneak inside the lab and get the documents.</text></string>
+	<string id="st_soc_darklab_2_descr"><text>Take the key to the lab from Borov</text></string>
+	<string id="st_soc_darklab_3_descr"><text>Get out of the bandit base</text></string>
+	<string id="st_soc_darklab_4_descr"><text>Find the entrance to the lab</text></string>
+	<string id="st_soc_prisoner_name"><text>Free the Dutyer from prison</text></string>
+	<string id="st_soc_prisoner_descr"><text>Free the Duty member from the bandit prison\n\nDutyer: "They have another one of ours: Serega. They're keeping him in the cellar...there's a large building there...not finished...Help him out, okay? Or they'll put an end to him too..."</text></string>
+	<string id="st_soc_codedoor_1_open_name"><text>Find the codelocked door</text></string>
+	<string id="st_soc_codedoor_1_open_descr"><text>Open the door using the code</text></string>
+	<string id="st_soc_codedoor_2_open_name"><text>Open the door to the control center</text></string>
+	<string id="st_soc_codedoor_2_open_descr"><text>Open the door using the code</text></string>
+</string_table>

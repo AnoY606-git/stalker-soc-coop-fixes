@@ -9,6 +9,9 @@
 --                       gives the task and re-creates the target squads itself.
 --   generated (kind = gen_kill | gen_camp | gen_defend | gen_find): this script spawns the targets (generic simulation squads
 --                       or an item) when the dialog sets the accept flag, watches them, and sets the done / fail flag.
+--   fetch (kind = gen_fetch): bring an artifact / a mutant part. Nothing is spawned and there is no map spot; the task is given, the hand-in dialog
+--                       (coop_rq_dialogs.script) takes the item from the talking player, pays that player and sets the done flag.
+-- The mod's own sq_* quests (generic task menu "I need work") are no longer offered or refreshed: their entries were removed from the ltx.
 
 cooldown_override_min = nil   -- tests only
 local TICK_MS = 2000
@@ -19,6 +22,7 @@ local ini = nil
 quests = nil
 known_actors = nil            -- module level so tests can forget an actor
 local epoch = nil
+local reward_synced = false
 local SPOT = {gen_kill = "red_location", gen_camp = "red_location", gen_defend = "red_location", gen_find = "green_location"}
 
 -- The host's coop_settings.ltx (patch host_settings, section repeat_quests: cooldown_min, timeout_mult, item_rewards) overrides the db values; server only.
@@ -31,6 +35,7 @@ end
 -- drops the cached settings (coop_host_cfg.reload, tests)
 function host_reload()
 	quests = nil
+	reward_synced = false
 end
 
 local function load_cfg()
@@ -131,6 +136,7 @@ end
 
 -- can the quest be (re)started on this level?
 local function can_spawn(q)
+	if q.kind == "gen_fetch" then return true end
 	if q.kind ~= nil then
 		if q.site ~= nil then return true end
 		return q.smart ~= nil and smart_obj(q.smart) ~= nil
@@ -217,11 +223,36 @@ local function create_squad_at(board, site, sec, id)
 		squad.board:setup_squad_and_group(k.object)
 	end
 	sim_squad_scripted_cl_manager.get_squad_manager():add_squad_sv(squad)
+	squad.rq_stay = true
 	return squad
+end
+
+-- Job squads stay at their site: sim_board:get_squad_target gives a squad without a smart terrain a simulation target when one exists (predatory mutant
+-- squads hunt vegetarian squads on the level, bandits chase an actor within 10 m); for a squad flagged rq_stay it answers the squad itself, which is the
+-- existing "nothing to do" result (the squad stays where it is). Installed once per level on the server, every call is guarded.
+local stay_installed = false
+local function install_stay()
+	if stay_installed then return end
+	stay_installed = true
+	local ok, err = pcall(function()
+		local cls = sim_board.sim_board
+		local orig = cls.get_squad_target
+		if orig == nil then return end
+		cls.get_squad_target = function(self, squad)
+			if squad ~= nil and squad.rq_stay == true then return squad end
+			return orig(self, squad)
+		end
+	end)
+	printf_msg("[RQ] stay-put hook installed=%s %s", tostring(ok), tostring(err))
 end
 
 -- spawn the targets of a generated job; returns true when something exists to hunt / find
 local function spawn_generated(q)
+	if q.kind == "gen_fetch" then
+		-- nothing to spawn: the job only needs its start time (timeout) and the task
+		set_flag(q.key .. "_T" .. now_min())
+		return true
+	end
 	local site = site_info(q)
 	local smart = smart_obj(q.smart)
 	local where = site or smart
@@ -291,13 +322,15 @@ end
 
 -- running generated job: done when every spawned squad is dead, failed on timeout
 local function monitor(q)
-	if q.kind == "gen_find" then
+	if q.kind == "gen_find" or q.kind == "gen_fetch" then
 		-- done flag is set by the hand-in dialog
 	else
 		local sids = find_nums(q.key .. "_S")
 		if #sids > 0 then
 			local all_dead = true
 			for _, sid in ipairs(sids) do
+				local so = alife():object(sid)
+				if so ~= nil then so.rq_stay = true end   -- also after a load (the flag is not saved)
 				if not squad_dead(sid) then all_dead = false break end
 			end
 			if all_dead then
@@ -429,6 +462,17 @@ local function catch_up()
 	end
 end
 
+-- the host setting item_rewards is read on the server only; clients (hand-in dialog of the fetch jobs) see it as this story flag
+local function sync_reward_flag()
+	local ok, r = pcall(function() return coop_host_cfg.bool("repeat_quests", "item_rewards", true) end)
+	local off = ok and r == false
+	if off then
+		if not has("RQ_NO_ITEM_REWARDS") then set_flag("RQ_NO_ITEM_REWARDS") end
+	elseif has("RQ_NO_ITEM_REWARDS") then
+		clr_flag("RQ_NO_ITEM_REWARDS")
+	end
+end
+
 function update()
 	if not OnServer() then return end
 	local t = time_global()
@@ -436,6 +480,11 @@ function update()
 	last_tick = t
 	if db.mp_actors == nil or next(db.mp_actors) == nil then return end
 	load_cfg()
+	install_stay()
+	if not reward_synced then
+		reward_synced = true
+		pcall(sync_reward_flag)
+	end
 	if t - (last_clock or 0) > 30000 then
 		last_clock = t
 		local ok, tf = pcall(level.get_time_factor)

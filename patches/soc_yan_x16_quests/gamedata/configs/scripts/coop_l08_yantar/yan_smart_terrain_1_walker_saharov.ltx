@@ -1,0 +1,74 @@
+[logic@yan_smart_terrain_1_walker_saharov]
+suitable 											= {=check_npc_name(yan_smart_terrain_1_ecolog_saharov)} true
+prior 												= 300
+trade 												= misc\trade\yan_smart_terrain_1_ecolog_saharov.ltx
+can_select_weapon 									= false
+level_spot 											= trader
+active 												= walker@yan_smart_terrain_1_walker_saharov
+
+[walker@yan_smart_terrain_1_walker_saharov]
+path_walk 											= walker_saharov_1_walk
+path_look 											= walker_saharov_1_look
+meet 												= meet@hello_players
+invulnerable 										= true
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+;(patch soc_yan_x16_quests) the walk to the room for the helmet is gone: SoC hands the helmet over in the dialog
+
+[walker@yan_smart_terrain_1_walker_saharov_psi_protection_helmet_idle]
+path_walk 											= walker_saharov_2_walk
+path_look 											= walker_saharov_2_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= zat_b22_medic_turn_idle
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_timer 											= 50000 | walker@yan_smart_terrain_1_walker_saharov_psi_protection_helmet_out
+
+[walker@yan_smart_terrain_1_walker_saharov_psi_protection_helmet_out]
+path_walk 											= walker_saharov_2_walk
+path_look 											= walker_saharov_2_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= zat_b22_medic_turn_idle
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_timer 											= 4000 | walker@yan_smart_terrain_1_walker_saharov_idle %=scenario_autosave(st_configuring_helmets)%
+
+[walker@yan_smart_terrain_1_walker_saharov_idle]
+path_walk 											= walker_saharov_1_walk
+path_look 											= walker_saharov_1_look
+meet 												= meet@hello_players
+invulnerable 										= true
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+
+[meet@hello_players]
+close_snd_hello 									= yan_sakharov_meet
+close_snd_bye   									= yan_sakharov_meet_bye
+close_anim 											= nil
+close_victim 										= actor
+far_anim 											= nil
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= true
+
+;================================================

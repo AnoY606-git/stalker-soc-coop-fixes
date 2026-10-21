@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_x16_start_find_the_installation_quest_task_name">
+		<text>Отключить пси-излучение</text>
+	</string>
+	<string id="st_x16_start_find_the_installation_quest_task_descr">
+		<text>Отключить пси-излучение\n\nСахаров: "Молодец, Меченый, ты таки добрался до лаборатории. Для нас крайне важно изучить установку, которая там находится. Попробуй ее отключить, чтобы мы смогли ее исследовать.\n\n Послушай, Меченый, прототип не сможет долго защищать от сильного излучения. Я предусмотрел такой случай, поэтому, когда ты попадешь под сильное воздействие, включится таймер. Когда время истечет, прототип перестанет тебя защищать. Будь осторожней, и не забывай про таймер."</text>
+	</string>	
+	
+
+	<string id="st_x16_start_turn_off_the_switch_1_task_name">
+		<text>Отключить пси-излучение</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_1_task_descr">
+		<text>Отключить 1-ый блок управления</text>
+	</string>
+	
+	<string id="st_x16_start_turn_off_the_switch_2_task_name">
+		<text>Отключить пси-излучение</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_2_task_descr">
+		<text>Отключить 2-ой блок управления</text>
+	</string>
+	
+	<string id="st_x16_start_turn_off_the_switch_3_task_name">
+		<text>Отключить пси-излучение</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_3_task_descr">
+		<text>Отключить 3-ий блок управления</text>
+	</string>
+	
+	<string id="st_x16_start_turn_off_the_switch_4_task_name">
+		<text>Отключить пси-излучение</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_4_task_descr">
+		<text>Отключить питание установки</text>
+	</string>
+	
+	
+	<string id="st_x16_start_get_out_of_the_lab_task_name">
+		<text>Выбраться из лаборатории</text>
+	</string>
+	<string id="st_x16_start_get_out_of_the_lab_task_descr">
+		<text>Выбраться из лаборатории\n\nУстановка отключена. Осталось дело за малым - выбраться живым.</text>
+	</string>	
+</string_table>

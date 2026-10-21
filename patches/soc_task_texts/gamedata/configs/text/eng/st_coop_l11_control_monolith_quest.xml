@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_con_start_sneak_into_the_control_room_quest_task_name">
+		<text>The Monolith's secret.</text>
+	</string>
+	<string id="st_con_start_sneak_into_the_control_room_quest_task_descr">
+		<text>Infiltrate the secret lab.\n\nDoctor: "Everything that you said about Monolith is right - it's just an illusion created by a laboratory near the Sarcophagus...judging by everything, it's the only way to penetrate to the real secret of the Zone...Which you were always trying to figure out."</text>	
+	</string>
+
+
+	<string id="st_con_start_destroy_the_monolith_installation_quest_task_name">
+		<text>The Monolith's secret.</text>
+	</string>
+	<string id="st_con_start_destroy_the_monolith_installation_quest_task_descr">
+		<text>Solve the Monolith's secret.</text>	
+	</string>
+
+
+	<string id="st_con_start_talk_to_the_representative_awareness_quest_task_name">
+		<text>The Zone's secret.</text>
+	</string>
+	<string id="st_con_start_talk_to_the_representative_awareness_quest_task_descr">
+		<text>Meet whoever is behind the Monolith.</text>	
+	</string>
+	
+	<string id="st_con_start_kill_all_representatives_of_awareness_quest_task_name">
+		<text>Time to end it all!</text>
+	</string>
+	<string id="st_con_start_kill_all_representatives_of_awareness_quest_task_descr">
+		<text>Find and kill all representatives of "C-Consciousness"</text>	
+	</string>
+</string_table>

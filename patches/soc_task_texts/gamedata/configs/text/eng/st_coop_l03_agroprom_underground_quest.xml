@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_agru_start_find_the_shooter_hiding_place_task_name">
+		<text>Find Strelok's group's stash</text>
+	</string>	
+	<string id="st_agru_start_find_the_shooter_hiding_place_task_descr">
+		<text>Find the stash</text>	
+	</string>
+	
+	
+	<string id="st_agru_start_return_to_the_surface_task_name">
+		<text>Find Strelok's group's stash</text>
+	</string>
+	<string id="st_agru_start_return_to_the_surface_task_descr">
+		<text>Find the way out of the underground</text>	
+	</string>
+</string_table>

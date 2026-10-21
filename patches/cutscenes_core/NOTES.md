@@ -54,3 +54,12 @@ REQUEST/GO/CLIENT_START/CLIENT_END/ACK/END, PLAYED set, second request ignored),
 150 ms) / none (ignored), ack-blocked timeout (4.0 s), watchdog (7.0 s), asset-probe fallback, queue order, targeted run, variant flow,
 baseline reset (no replay), input back (player moves).
 Not tested: save/load and level reload (T3), a second real client (T13), disconnect after credits (`main_menu` step), real media (T11).
+
+## Game start: xrMPE intro instead of the old logo videos (v1.4.2)
+FOSTER: "cut out the introductory videos and add the intro from xrMPE".
+- Cause: the mod's `configs\ui\game_tutorials.xml` is the stock Call of Pripyat file. Its `<intro_logo>` block (the movies the engine plays at start, unless `-nointro`) plays GSC Game World, GSC World Publishing (Russian), ATI and AMD logos in a 1024x768 window. It replaced xrMPE's own `<intro_logo>`, which plays one movie, `video\whole_intro` (sound) + `intro\whole_intro` (video, 16 MB).
+- Fix: the `<intro_logo>` block in our copy of the file is now byte for byte xrMPE's. The movie lives in xrMPE's own archive (`patches\xrmpe_textures_ui.db`, `xrmpe_sounds.db`), so nothing is shipped. The old logo movies are no longer referenced.
+- Not touched: `<intro_game>` (the Call of Pripyat new-game movie; not played in co-op), the main menu video (`soc_main_menu`), all in-game scenes.
+- Note: a start with `-nointro` (the test harness) plays no intro at all; this only changes what a normal start plays.
+
+RU: при запуске игры больше не играют старые ролики-логотипы CoP (GSC, GSC World Publishing, ATI, AMD). Блок `<intro_logo>` в `game_tutorials.xml` возвращён в вид xrMPE (ролик `whole_intro` уже лежит в архивах xrMPE, в патч ничего не добавлено). Меню SoC не затронуто.

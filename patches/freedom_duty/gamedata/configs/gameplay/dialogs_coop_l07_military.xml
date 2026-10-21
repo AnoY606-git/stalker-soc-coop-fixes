@@ -1,39 +1,5 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <game_dialogs>
-    <dialog id="mil_smart_terrain_18_duty_skull_start_dialog">
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_start_dialog_0</action>
-
-                <text>mil_smart_terrain_18_duty_skull_start_dialog_0</text>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog">
-        <dont_has_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_1</action>
-
-                <text>mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_2</action>
-
-                <text>mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_2</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO</give_flag>
-                <give_flag>MIL_START_KILL_THE_SNIPER_ON_THE_TOWER_QUEST_TASK_INFO</give_flag>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_0</action>
-
-                <text>mil_smart_terrain_18_duty_skull_kill_freedom_sniper_start_dialog_0</text>
-                <next>1</next>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog">
         <dont_has_flag>MIL_SMART_TERRAIN_16_FREEDOM_MISER_THE_VILLAGE_OF_BLOODSUCKERS_STOP_DIALOG_INFO</dont_has_flag>
         <phrase_list>
@@ -66,60 +32,6 @@
 
                 <text>mil_smart_terrain_16_freedom_miser_the_village_of_bloodsuckers_start_dialog_0</text>
                 <next>1</next>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_3_freedom_lukash_start_dialog">
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_start_dialog_0</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_start_dialog_0</text>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog">
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_1</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_1</text>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_0</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_no_problem_start_dialog_0</text>
-                <next>1</next>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog">
-        <dont_has_flag>MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_1</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_3</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_3</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO</give_flag>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_0</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_2</action>
-
-                <text>mil_smart_terrain_3_freedom_lukash_help_freedom_start_dialog_2</text>
-                <next>3</next>
             </phrase>
         </phrase_list>
     </dialog>
@@ -164,159 +76,8 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="mil_smart_terrain_15_freedom_max_start_dialog">
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_start_dialog_0</action>
-
-                <text>mil_smart_terrain_15_freedom_max_start_dialog_0</text>
-            </phrase>
-        </phrase_list>
-    </dialog>	
-    <dialog id="mil_smart_terrain_15_freedom_max_help_freedom_start_dialog">
-        <has_flag>MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO</has_flag>
-        <dont_has_flag>MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_1</action>
-
-                <text>mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_2</action>
-
-                <text>mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_0</action>
-
-                <text>mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_3</action>
-
-                <text>mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_4</action>
-
-                <text>mil_smart_terrain_15_freedom_max_help_freedom_start_dialog_4</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO</give_flag>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_12_1_freedom_cap_start_dialog">
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_12_1_freedom_cap_start_dialog_0</action>
-
-                <text>mil_smart_terrain_12_1_freedom_cap_start_dialog_0</text>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog">
-        <has_flag>MIL_CAP_PDA_1_STOP_INFO</has_flag>
-        <dont_has_flag>MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_1</action>
-
-                <text>mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_2</action>
-
-                <text>mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_3</action>
-
-                <text>mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_0</action>
-
-                <text>mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_4</action>
-
-                <text>mil_smart_terrain_12_1_freedom_cap_protect_the_barrier_dialog_4</text>
-                <give_flag>MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO</give_flag>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog">
-        <has_flag>MIL_SMART_TERRAIN_8_FREEDOM_1_SQUAD_DEAD</has_flag>
-        <dont_has_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_1</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_2</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_3</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_3</text>
-                <next>4</next>
-                <next>5</next>
-            </phrase>
-            <phrase id="7">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_7</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_7</text>
-            </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_6</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_6</text>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_0</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_0</text>
-                <action>dialogs_money.give_money_to_actor_2000</action>
-                <next>1</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_4</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_4</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO</give_flag>
-                <next>6</next>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_5</action>
-
-                <text>mil_smart_terrain_18_duty_skull_talk_to_skull_about_the_assault_start_dialog_5</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO</give_flag>
-                <give_flag>MIL_START_TAKE_KEY_POSITIONS_QUEST_TASK_INFO</give_flag>
-                <next>7</next>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="mil_smart_terrain_15_freedom_max_flash_offer_dialog">
-        <has_flag>MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO</has_flag>
-        <has_flag>MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD</has_flag>
+        <has_flag>MIL_SOC_LUKASH_JOB_DONE</has_flag>
         <dont_has_flag>MIL_MAX_FLASH_JOB_INFO</dont_has_flag>
         <phrase_list>
             <phrase id="0">
@@ -400,6 +161,1232 @@
             <phrase id="1">
                 <text>mil_max_flash_w_already</text>
                 <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_lukash_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>90001</next>
+                <next>90002</next>
+                <next>90003</next>
+                <next>90004</next>
+                <next>90005</next>
+                <next>90006</next>
+                <next>90007</next>
+                <next>90008</next>
+                <next>90009</next>
+                <next>90010</next>
+            </phrase>
+            <phrase id="90001">
+                <text />
+                <precondition>coop_soc_milc.lu_hub</precondition>
+                <next>1001</next>
+            </phrase>
+            <phrase id="90002">
+                <text />
+                <precondition>coop_soc_milc.lu_wait</precondition>
+                <next>2001</next>
+            </phrase>
+            <phrase id="90003">
+                <text />
+                <precondition>coop_soc_milc.lu_report</precondition>
+                <next>3001</next>
+            </phrase>
+            <phrase id="90004">
+                <text />
+                <precondition>coop_soc_milc.lu_capwait</precondition>
+                <next>9001</next>
+            </phrase>
+            <phrase id="90005">
+                <text />
+                <precondition>coop_soc_milc.lu_paid</precondition>
+                <next>10001</next>
+            </phrase>
+            <phrase id="90006">
+                <text />
+                <precondition>coop_soc_milc.lu_default</precondition>
+                <next>6001</next>
+            </phrase>
+            <phrase id="1001">
+                <action>coop_soc_mil_say.say_lu_1001</action>
+                <text>coop_soc_mil_lu_1001</text>
+                <next>1100</next>
+                <next>1200</next>
+                <next>14001</next>
+                <next>10011</next>
+            </phrase>
+            <phrase id="1100">
+                <action>coop_soc_mil_say.say_lu_1100</action>
+                <text>coop_soc_mil_lu_1100</text>
+                <precondition>coop_soc_mil.lu_new_alive</precondition>
+                <next>1101</next>
+            </phrase>
+            <phrase id="1101">
+                <action>coop_soc_mil_say.say_lu_1101</action>
+                <text>coop_soc_mil_lu_1101</text>
+                <next>11011</next>
+            </phrase>
+            <phrase id="11011">
+                <action>coop_soc_mil_say.say_lu_11011</action>
+                <text>coop_soc_mil_lu_11011</text>
+                <give_flag>MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO</give_flag>
+                <next>11012</next>
+            </phrase>
+            <phrase id="11012">
+                <action>coop_soc_mil_say.say_lu_11012</action>
+                <text>coop_soc_mil_lu_11012</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1200">
+                <action>coop_soc_mil_say.say_lu_1200</action>
+                <text>coop_soc_mil_lu_1200</text>
+                <precondition>coop_soc_mil.lu_new_dead</precondition>
+                <next>1210</next>
+            </phrase>
+            <phrase id="1210">
+                <action>coop_soc_mil_say.say_lu_1210</action>
+                <text>coop_soc_mil_lu_1210</text>
+                <next>1221</next>
+            </phrase>
+            <phrase id="1221">
+                <action>coop_soc_mil_say.say_lu_1221</action>
+                <text>coop_soc_mil_lu_1221</text>
+                <give_flag>MIL_SOC_LUKASH_JOB_DONE</give_flag>
+                <next>1222</next>
+            </phrase>
+            <phrase id="14001">
+                <action>coop_soc_mil_say.say_lu_14001</action>
+                <text>coop_soc_mil_lu_14001</text>
+                <precondition>coop_soc_mil.lu_offer</precondition>
+                <next>7003</next>
+            </phrase>
+            <phrase id="10011">
+                <action>coop_soc_mil_say.say_lu_10011</action>
+                <text>coop_soc_mil_lu_10011</text>
+                <next>10012</next>
+            </phrase>
+            <phrase id="10012">
+                <action>coop_soc_mil_say.say_lu_10012</action>
+                <text>coop_soc_mil_lu_10012</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="2001">
+                <action>coop_soc_mil_say.say_lu_2001</action>
+                <text>coop_soc_mil_lu_2001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3001">
+                <action>coop_soc_mil_say.say_lu_3001</action>
+                <text>coop_soc_mil_lu_3001</text>
+                <next>3002</next>
+            </phrase>
+            <phrase id="3002">
+                <action>coop_soc_mil_say.say_lu_3002</action>
+                <text>coop_soc_mil_lu_3002</text>
+                <give_flag>MIL_SOC_LUKASH_JOB_DONE</give_flag>
+                <next>30021</next>
+            </phrase>
+            <phrase id="7003">
+                <action>coop_soc_mil_say.say_lu_7003</action>
+                <text>coop_soc_mil_lu_7003</text>
+                <next>7004</next>
+                <next>7006</next>
+            </phrase>
+            <phrase id="7004">
+                <action>coop_soc_mil_say.say_lu_7004</action>
+                <text>coop_soc_mil_lu_7004</text>
+                <give_flag>MIL_SOC_BLOCKPOST_ACCEPTED</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="7006">
+                <action>coop_soc_mil_say.say_lu_7006</action>
+                <text>coop_soc_mil_lu_7006</text>
+                <next>7007</next>
+            </phrase>
+            <phrase id="7007">
+                <action>coop_soc_mil_say.say_lu_7007</action>
+                <text>coop_soc_mil_lu_7007</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="9001">
+                <action>coop_soc_mil_say.say_lu_9001</action>
+                <text>coop_soc_mil_lu_9001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="10001">
+                <action>coop_soc_mil_say.say_lu_10001</action>
+                <text>coop_soc_mil_lu_10001</text>
+                <action>coop_soc_mil.pay_member</action>
+                <give_flag>MIL_SOC_FREEDOM_QUESTS_END</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="6001">
+                <action>coop_soc_mil_say.say_lu_6001</action>
+                <text>coop_soc_mil_lu_6001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="90007">
+                <text />
+                <precondition>coop_soc_milc.lu_coffer</precondition>
+                <next>13001</next>
+            </phrase>
+            <phrase id="90008">
+                <text />
+                <precondition>coop_soc_milc.lu_cwait</precondition>
+                <next>4001</next>
+            </phrase>
+            <phrase id="90009">
+                <text />
+                <precondition>coop_soc_milc.lu_cpay</precondition>
+                <next>5001</next>
+            </phrase>
+            <phrase id="90010">
+                <text />
+                <precondition>coop_soc_milc.lu_cfail</precondition>
+                <next>7001</next>
+            </phrase>
+            <phrase id="1222">
+                <action>coop_soc_milc_say.say_lu_1222</action>
+                <text>coop_soc_milc_lu_1222</text>
+                <next>1223</next>
+            </phrase>
+            <phrase id="30021">
+                <action>coop_soc_milc_say.say_lu_30021</action>
+                <text>coop_soc_milc_lu_30021</text>
+                <next>1223</next>
+            </phrase>
+            <phrase id="1223">
+                <action>coop_soc_milc_say.say_lu_1223</action>
+                <text>coop_soc_milc_lu_1223</text>
+                <next>1300</next>
+            </phrase>
+            <phrase id="1300">
+                <action>coop_soc_milc_say.say_lu_1300</action>
+                <text>coop_soc_milc_lu_1300</text>
+                <next>1301</next>
+                <next>1391</next>
+            </phrase>
+            <phrase id="1301">
+                <action>coop_soc_milc_say.say_lu_1301</action>
+                <text>coop_soc_milc_lu_1301</text>
+                <next>1500</next>
+            </phrase>
+            <phrase id="1391">
+                <action>coop_soc_milc_say.say_lu_1391</action>
+                <text>coop_soc_milc_lu_1391</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1500">
+                <action>coop_soc_milc_say.say_lu_1500</action>
+                <text>coop_soc_milc_lu_1500</text>
+                <next>1501</next>
+            </phrase>
+            <phrase id="1501">
+                <action>coop_soc_milc_say.say_lu_1501</action>
+                <text>coop_soc_milc_lu_1501</text>
+                <give_flag>MIL_SOC_COURIER_START</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="13001">
+                <action>coop_soc_milc_say.say_lu_13001</action>
+                <text>coop_soc_milc_lu_13001</text>
+                <next>13002</next>
+            </phrase>
+            <phrase id="13002">
+                <action>coop_soc_milc_say.say_lu_13002</action>
+                <text>coop_soc_milc_lu_13002</text>
+                <next>30021</next>
+            </phrase>
+            <phrase id="4001">
+                <action>coop_soc_milc_say.say_lu_4001</action>
+                <text>coop_soc_milc_lu_4001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="5001">
+                <action>coop_soc_milc_say.say_lu_5001</action>
+                <text>coop_soc_milc_lu_5001</text>
+                <action>coop_soc_milc.pay_courier</action>
+                <give_flag>MIL_SOC_COURIER_DONE</give_flag>
+                <next>5002</next>
+            </phrase>
+            <phrase id="5002">
+                <action>coop_soc_milc_say.say_lu_5002</action>
+                <text>coop_soc_milc_lu_5002</text>
+                <next>7003</next>
+            </phrase>
+            <phrase id="7001">
+                <action>coop_soc_milc_say.say_lu_7001</action>
+                <text>coop_soc_milc_lu_7001</text>
+                <next>7002</next>
+            </phrase>
+            <phrase id="7002">
+                <action>coop_soc_milc_say.say_lu_7002</action>
+                <text>coop_soc_milc_lu_7002</text>
+                <next>7003</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_max_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>90001</next>
+                <next>90002</next>
+                <next>90003</next>
+                <next>90004</next>
+                <next>90005</next>
+            </phrase>
+            <phrase id="90001">
+                <text />
+                <precondition>coop_soc_mil.mx_st_nojob</precondition>
+                <next>2001</next>
+            </phrase>
+            <phrase id="90002">
+                <text />
+                <precondition>coop_soc_mil.mx_st_job</precondition>
+                <next>1001</next>
+            </phrase>
+            <phrase id="90003">
+                <text />
+                <precondition>coop_soc_mil.mx_st_dd</precondition>
+                <next>9100</next>
+            </phrase>
+            <phrase id="90004">
+                <text />
+                <precondition>coop_soc_mil.mx_st_busy</precondition>
+                <next>10001</next>
+            </phrase>
+            <phrase id="90005">
+                <text />
+                <precondition>coop_soc_mil.mx_st_after</precondition>
+                <next>31</next>
+            </phrase>
+            <phrase id="2001">
+                <action>coop_soc_mil_say.say_mx_2001</action>
+                <text>coop_soc_mil_mx_2001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1001">
+                <action>coop_soc_mil_say.say_mx_1001</action>
+                <text>coop_soc_mil_mx_1001</text>
+                <next>1200</next>
+            </phrase>
+            <phrase id="1200">
+                <action>coop_soc_mil_say.say_mx_1200</action>
+                <text>coop_soc_mil_mx_1200</text>
+                <next>1201</next>
+            </phrase>
+            <phrase id="1201">
+                <action>coop_soc_mil_say.say_mx_1201</action>
+                <text>coop_soc_mil_mx_1201</text>
+                <next>1210</next>
+                <next>1220</next>
+                <next>1100</next>
+            </phrase>
+            <phrase id="1210">
+                <action>coop_soc_mil_say.say_mx_1210</action>
+                <text>coop_soc_mil_mx_1210</text>
+                <next>1101</next>
+            </phrase>
+            <phrase id="1220">
+                <action>coop_soc_mil_say.say_mx_1220</action>
+                <text>coop_soc_mil_mx_1220</text>
+                <next>1101</next>
+            </phrase>
+            <phrase id="1100">
+                <action>coop_soc_mil_say.say_mx_1100</action>
+                <text>coop_soc_mil_mx_1100</text>
+                <next>1101</next>
+            </phrase>
+            <phrase id="1101">
+                <action>coop_soc_mil_say.say_mx_1101</action>
+                <text>coop_soc_mil_mx_1101</text>
+                <next>1102</next>
+            </phrase>
+            <phrase id="1102">
+                <action>coop_soc_mil_say.say_mx_1102</action>
+                <text>coop_soc_mil_mx_1102</text>
+                <give_flag>MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="9100">
+                <action>coop_soc_mil_say.say_mx_9100</action>
+                <text>coop_soc_mil_mx_9100</text>
+                <next>9101</next>
+            </phrase>
+            <phrase id="9101">
+                <action>coop_soc_mil_say.say_mx_9101</action>
+                <text>coop_soc_mil_mx_9101</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="10001">
+                <action>coop_soc_mil_say.say_mx_10001</action>
+                <text>coop_soc_mil_mx_10001</text>
+                <next>10002</next>
+            </phrase>
+            <phrase id="10002">
+                <action>coop_soc_mil_say.say_mx_10002</action>
+                <text>coop_soc_mil_mx_10002</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="31">
+                <action>coop_pda_phrases.say__mil_smart_terrain_15_freedom_max_start_dialog_0</action>
+                <text>mil_smart_terrain_15_freedom_max_start_dialog_0</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_skull_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>90001</next>
+                <next>90002</next>
+                <next>90003</next>
+                <next>90004</next>
+                <next>90005</next>
+                <next>90006</next>
+                <next>90007</next>
+                <next>90008</next>
+            </phrase>
+            <phrase id="90001">
+                <text />
+                <precondition>coop_soc_mil.sk_st_new</precondition>
+                <next>100</next>
+            </phrase>
+            <phrase id="90002">
+                <text />
+                <precondition>coop_soc_mil.sk_st_job</precondition>
+                <next>300</next>
+            </phrase>
+            <phrase id="90003">
+                <text />
+                <precondition>coop_soc_mil.sk_st_pay1</precondition>
+                <next>400</next>
+            </phrase>
+            <phrase id="90004">
+                <text />
+                <precondition>coop_soc_mil.sk_st_pay2</precondition>
+                <next>451</next>
+            </phrase>
+            <phrase id="90005">
+                <text />
+                <precondition>coop_soc_mil.sk_st_alt</precondition>
+                <next>501</next>
+            </phrase>
+            <phrase id="90006">
+                <text />
+                <precondition>coop_soc_mil.sk_st_assault</precondition>
+                <next>601</next>
+            </phrase>
+            <phrase id="90007">
+                <text />
+                <precondition>coop_soc_mil.sk_st_after</precondition>
+                <next>200</next>
+            </phrase>
+            <phrase id="90008">
+                <text />
+                <precondition>coop_soc_mil.sk_st_done</precondition>
+                <next>701</next>
+            </phrase>
+            <phrase id="100">
+                <action>coop_soc_mil_say.say_sk_100</action>
+                <text>coop_soc_mil_sk_100</text>
+                <next>101</next>
+                <next>1001</next>
+            </phrase>
+            <phrase id="101">
+                <action>coop_soc_mil_say.say_sk_101</action>
+                <text>coop_soc_mil_sk_101</text>
+                <next>102</next>
+            </phrase>
+            <phrase id="102">
+                <action>coop_soc_mil_say.say_sk_102</action>
+                <text>coop_soc_mil_sk_102</text>
+                <next>103</next>
+            </phrase>
+            <phrase id="103">
+                <action>coop_soc_mil_say.say_sk_103</action>
+                <text>coop_soc_mil_sk_103</text>
+                <next>104</next>
+            </phrase>
+            <phrase id="104">
+                <action>coop_soc_mil_say.say_sk_104</action>
+                <text>coop_soc_mil_sk_104</text>
+                <next>105</next>
+                <next>1041</next>
+            </phrase>
+            <phrase id="105">
+                <action>coop_soc_mil_say.say_sk_105</action>
+                <text>coop_soc_mil_sk_105</text>
+                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO</give_flag>
+                <give_flag>MIL_START_KILL_THE_SNIPER_ON_THE_TOWER_QUEST_TASK_INFO</give_flag>
+                <next>1051</next>
+            </phrase>
+            <phrase id="1051">
+                <action>coop_soc_mil_say.say_sk_1051</action>
+                <text>coop_soc_mil_sk_1051</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1041">
+                <action>coop_soc_mil_say.say_sk_1041</action>
+                <text>coop_soc_mil_sk_1041</text>
+                <next>1042</next>
+            </phrase>
+            <phrase id="1042">
+                <action>coop_soc_mil_say.say_sk_1042</action>
+                <text>coop_soc_mil_sk_1042</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1001">
+                <action>coop_soc_mil_say.say_sk_1001</action>
+                <text>coop_soc_mil_sk_1001</text>
+                <next>1002</next>
+            </phrase>
+            <phrase id="1002">
+                <action>coop_soc_mil_say.say_sk_1002</action>
+                <text>coop_soc_mil_sk_1002</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="300">
+                <action>coop_soc_mil_say.say_sk_300</action>
+                <text>coop_soc_mil_sk_300</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="400">
+                <action>coop_soc_mil_say.say_sk_400</action>
+                <text>coop_soc_mil_sk_400</text>
+                <action>coop_soc_mil.pay_sniper</action>
+                <next>450</next>
+            </phrase>
+            <phrase id="450">
+                <action>coop_soc_mil_say.say_sk_450</action>
+                <text>coop_soc_mil_sk_450</text>
+                <next>451</next>
+            </phrase>
+            <phrase id="451">
+                <action>coop_soc_mil_say.say_sk_451</action>
+                <text>coop_soc_mil_sk_451</text>
+                <next>401</next>
+                <next>411</next>
+            </phrase>
+            <phrase id="401">
+                <action>coop_soc_mil_say.say_sk_401</action>
+                <text>coop_soc_mil_sk_401</text>
+                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO</give_flag>
+                <give_flag>MIL_START_TAKE_KEY_POSITIONS_QUEST_TASK_INFO</give_flag>
+                <next>402</next>
+            </phrase>
+            <phrase id="402">
+                <action>coop_soc_mil_say.say_sk_402</action>
+                <text>coop_soc_mil_sk_402</text>
+                <next>403</next>
+            </phrase>
+            <phrase id="403">
+                <action>coop_soc_mil_say.say_sk_403</action>
+                <text>coop_soc_mil_sk_403</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="411">
+                <action>coop_soc_mil_say.say_sk_411</action>
+                <text>coop_soc_mil_sk_411</text>
+                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO</give_flag>
+                <next>412</next>
+            </phrase>
+            <phrase id="412">
+                <action>coop_soc_mil_say.say_sk_412</action>
+                <text>coop_soc_mil_sk_412</text>
+                <next>413</next>
+            </phrase>
+            <phrase id="413">
+                <action>coop_soc_mil_say.say_sk_413</action>
+                <text>coop_soc_mil_sk_413</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="501">
+                <action>coop_soc_mil_say.say_sk_501</action>
+                <text>coop_soc_mil_sk_501</text>
+                <next>502</next>
+            </phrase>
+            <phrase id="502">
+                <action>coop_soc_mil_say.say_sk_502</action>
+                <text>coop_soc_mil_sk_502</text>
+                <give_flag>MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO</give_flag>
+                <give_flag>MIL_START_KILL_THE_SNIPER_ON_THE_TOWER_QUEST_TASK_INFO</give_flag>
+                <next>503</next>
+            </phrase>
+            <phrase id="503">
+                <action>coop_soc_mil_say.say_sk_503</action>
+                <text>coop_soc_mil_sk_503</text>
+                <action>coop_soc_mil.pay_sniper</action>
+                <next>504</next>
+            </phrase>
+            <phrase id="504">
+                <action>coop_soc_mil_say.say_sk_504</action>
+                <text>coop_soc_mil_sk_504</text>
+                <next>451</next>
+            </phrase>
+            <phrase id="601">
+                <action>coop_soc_mil_say.say_sk_601</action>
+                <text>coop_soc_mil_sk_601</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="200">
+                <action>coop_soc_mil_say.say_sk_200</action>
+                <text>coop_soc_mil_sk_200</text>
+                <next>201</next>
+            </phrase>
+            <phrase id="201">
+                <action>coop_soc_mil_say.say_sk_201</action>
+                <text>coop_soc_mil_sk_201</text>
+                <action>coop_soc_mil.pay_fee</action>
+                <give_flag>MIL_SOC_DUTY_FEE</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="701">
+                <action>coop_soc_mil_say.say_sk_701</action>
+                <text>coop_soc_mil_sk_701</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cap_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>90001</next>
+                <next>90002</next>
+                <next>90003</next>
+                <next>90004</next>
+            </phrase>
+            <phrase id="90001">
+                <text />
+                <precondition>coop_soc_mil.cp_st_new</precondition>
+                <next>4003</next>
+            </phrase>
+            <phrase id="90002">
+                <text />
+                <precondition>coop_soc_mil.cp_st_wait</precondition>
+                <next>2001</next>
+            </phrase>
+            <phrase id="90003">
+                <text />
+                <precondition>coop_soc_mil.cp_st_reward</precondition>
+                <next>3001</next>
+            </phrase>
+            <phrase id="90004">
+                <text />
+                <precondition>coop_soc_mil.cp_st_done</precondition>
+                <next>3003</next>
+            </phrase>
+            <phrase id="4003">
+                <action>coop_soc_mil_say.say_cp_4003</action>
+                <text>coop_soc_mil_cp_4003</text>
+                <next>1004</next>
+            </phrase>
+            <phrase id="1004">
+                <action>coop_soc_mil_say.say_cp_1004</action>
+                <text>coop_soc_mil_cp_1004</text>
+                <give_flag>MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO</give_flag>
+                <next>1005</next>
+            </phrase>
+            <phrase id="1005">
+                <action>coop_soc_mil_say.say_cp_1005</action>
+                <text>coop_soc_mil_cp_1005</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="2001">
+                <action>coop_soc_mil_say.say_cp_2001</action>
+                <text>coop_soc_mil_cp_2001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3001">
+                <action>coop_soc_mil_say.say_cp_3001</action>
+                <text>coop_soc_mil_cp_3001</text>
+                <next>3002</next>
+            </phrase>
+            <phrase id="3002">
+                <action>coop_soc_mil_say.say_cp_3002</action>
+                <text>coop_soc_mil_cp_3002</text>
+                <action>coop_soc_mil.pay_cap</action>
+                <give_flag>MIL_SOC_CAP_REWARD</give_flag>
+                <next>3003</next>
+            </phrase>
+            <phrase id="3003">
+                <action>coop_soc_mil_say.say_cp_3003</action>
+                <text>coop_soc_mil_cp_3003</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cap_lore_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_mil_say.say_cl_0</action>
+                <text>coop_soc_mil_cl_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_mil_say.say_cl_1</action>
+                <text>coop_soc_mil_cl_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_mil_say.say_cl_2</action>
+                <text>coop_soc_mil_cl_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_mil_say.say_cl_3</action>
+                <text>coop_soc_mil_cl_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_mil_say.say_cl_4</action>
+                <text>coop_soc_mil_cl_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_mil_say.say_cl_5</action>
+                <text>coop_soc_mil_cl_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_mil_say.say_cl_6</action>
+                <text>coop_soc_mil_cl_6</text>
+                <next>7</next>
+            </phrase>
+            <phrase id="7">
+                <action>coop_soc_mil_say.say_cl_7</action>
+                <text>coop_soc_mil_cl_7</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_start_0</action>
+                <text>coop_soc_milc_ck_start_0</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common1">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_1</dont_has_flag>
+        <phrase_list>
+            <phrase id="101">
+                <action>coop_soc_milc_say.say_ck_common1_101</action>
+                <text>coop_soc_milc_ck_common1_101</text>
+                <next>102</next>
+            </phrase>
+            <phrase id="102">
+                <action>coop_soc_milc_say.say_ck_common1_102</action>
+                <text>coop_soc_milc_ck_common1_102</text>
+                <next>103</next>
+            </phrase>
+            <phrase id="103">
+                <action>coop_soc_milc_say.say_ck_common1_103</action>
+                <text>coop_soc_milc_ck_common1_103</text>
+                <next>104</next>
+            </phrase>
+            <phrase id="104">
+                <action>coop_soc_milc_say.say_ck_common1_104</action>
+                <text>coop_soc_milc_ck_common1_104</text>
+                <next>105</next>
+            </phrase>
+            <phrase id="105">
+                <action>coop_soc_milc_say.say_ck_common1_105</action>
+                <text>coop_soc_milc_ck_common1_105</text>
+                <next>106</next>
+            </phrase>
+            <phrase id="106">
+                <action>coop_soc_milc_say.say_ck_common1_106</action>
+                <text>coop_soc_milc_ck_common1_106</text>
+                <next>107</next>
+            </phrase>
+            <phrase id="107">
+                <action>coop_soc_milc_say.say_ck_common1_107</action>
+                <text>coop_soc_milc_ck_common1_107</text>
+                <next>108</next>
+            </phrase>
+            <phrase id="108">
+                <action>coop_soc_milc_say.say_ck_common1_108</action>
+                <text>coop_soc_milc_ck_common1_108</text>
+                <next>109</next>
+            </phrase>
+            <phrase id="109">
+                <action>coop_soc_milc_say.say_ck_common1_109</action>
+                <text>coop_soc_milc_ck_common1_109</text>
+                <next>110</next>
+            </phrase>
+            <phrase id="110">
+                <action>coop_soc_milc_say.say_ck_common1_110</action>
+                <text>coop_soc_milc_ck_common1_110</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_1</give_flag>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_milc_say.say_ck_common1_111</action>
+                <text>coop_soc_milc_ck_common1_111</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common1_0</action>
+                <text>coop_soc_milc_ck_common1_0</text>
+                <next>101</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common2">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_2</dont_has_flag>
+        <phrase_list>
+            <phrase id="201">
+                <action>coop_soc_milc_say.say_ck_common2_201</action>
+                <text>coop_soc_milc_ck_common2_201</text>
+                <next>202</next>
+            </phrase>
+            <phrase id="202">
+                <action>coop_soc_milc_say.say_ck_common2_202</action>
+                <text>coop_soc_milc_ck_common2_202</text>
+                <next>203</next>
+            </phrase>
+            <phrase id="203">
+                <action>coop_soc_milc_say.say_ck_common2_203</action>
+                <text>coop_soc_milc_ck_common2_203</text>
+                <next>204</next>
+            </phrase>
+            <phrase id="204">
+                <action>coop_soc_milc_say.say_ck_common2_204</action>
+                <text>coop_soc_milc_ck_common2_204</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_2</give_flag>
+                <next>205</next>
+            </phrase>
+            <phrase id="205">
+                <action>coop_soc_milc_say.say_ck_common2_205</action>
+                <text>coop_soc_milc_ck_common2_205</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common2_0</action>
+                <text>coop_soc_milc_ck_common2_0</text>
+                <next>201</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common3">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_3</dont_has_flag>
+        <phrase_list>
+            <phrase id="301">
+                <action>coop_soc_milc_say.say_ck_common3_301</action>
+                <text>coop_soc_milc_ck_common3_301</text>
+                <next>302</next>
+            </phrase>
+            <phrase id="302">
+                <action>coop_soc_milc_say.say_ck_common3_302</action>
+                <text>coop_soc_milc_ck_common3_302</text>
+                <next>303</next>
+            </phrase>
+            <phrase id="303">
+                <action>coop_soc_milc_say.say_ck_common3_303</action>
+                <text>coop_soc_milc_ck_common3_303</text>
+                <next>304</next>
+            </phrase>
+            <phrase id="304">
+                <action>coop_soc_milc_say.say_ck_common3_304</action>
+                <text>coop_soc_milc_ck_common3_304</text>
+                <next>305</next>
+            </phrase>
+            <phrase id="305">
+                <action>coop_soc_milc_say.say_ck_common3_305</action>
+                <text>coop_soc_milc_ck_common3_305</text>
+                <next>306</next>
+            </phrase>
+            <phrase id="306">
+                <action>coop_soc_milc_say.say_ck_common3_306</action>
+                <text>coop_soc_milc_ck_common3_306</text>
+                <next>307</next>
+            </phrase>
+            <phrase id="307">
+                <action>coop_soc_milc_say.say_ck_common3_307</action>
+                <text>coop_soc_milc_ck_common3_307</text>
+                <next>308</next>
+            </phrase>
+            <phrase id="308">
+                <action>coop_soc_milc_say.say_ck_common3_308</action>
+                <text>coop_soc_milc_ck_common3_308</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_3</give_flag>
+                <next>309</next>
+            </phrase>
+            <phrase id="309">
+                <action>coop_soc_milc_say.say_ck_common3_309</action>
+                <text>coop_soc_milc_ck_common3_309</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common3_0</action>
+                <text>coop_soc_milc_ck_common3_0</text>
+                <next>301</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common4">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_4</dont_has_flag>
+        <phrase_list>
+            <phrase id="401">
+                <action>coop_soc_milc_say.say_ck_common4_401</action>
+                <text>coop_soc_milc_ck_common4_401</text>
+                <next>402</next>
+            </phrase>
+            <phrase id="402">
+                <action>coop_soc_milc_say.say_ck_common4_402</action>
+                <text>coop_soc_milc_ck_common4_402</text>
+                <next>403</next>
+            </phrase>
+            <phrase id="403">
+                <action>coop_soc_milc_say.say_ck_common4_403</action>
+                <text>coop_soc_milc_ck_common4_403</text>
+                <next>404</next>
+            </phrase>
+            <phrase id="404">
+                <action>coop_soc_milc_say.say_ck_common4_404</action>
+                <text>coop_soc_milc_ck_common4_404</text>
+                <next>405</next>
+            </phrase>
+            <phrase id="405">
+                <action>coop_soc_milc_say.say_ck_common4_405</action>
+                <text>coop_soc_milc_ck_common4_405</text>
+                <next>406</next>
+            </phrase>
+            <phrase id="406">
+                <action>coop_soc_milc_say.say_ck_common4_406</action>
+                <text>coop_soc_milc_ck_common4_406</text>
+                <next>407</next>
+            </phrase>
+            <phrase id="407">
+                <action>coop_soc_milc_say.say_ck_common4_407</action>
+                <text>coop_soc_milc_ck_common4_407</text>
+                <next>408</next>
+            </phrase>
+            <phrase id="408">
+                <action>coop_soc_milc_say.say_ck_common4_408</action>
+                <text>coop_soc_milc_ck_common4_408</text>
+                <next>409</next>
+            </phrase>
+            <phrase id="409">
+                <action>coop_soc_milc_say.say_ck_common4_409</action>
+                <text>coop_soc_milc_ck_common4_409</text>
+                <next>410</next>
+            </phrase>
+            <phrase id="410">
+                <action>coop_soc_milc_say.say_ck_common4_410</action>
+                <text>coop_soc_milc_ck_common4_410</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_4</give_flag>
+                <next>411</next>
+            </phrase>
+            <phrase id="411">
+                <action>coop_soc_milc_say.say_ck_common4_411</action>
+                <text>coop_soc_milc_ck_common4_411</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common4_0</action>
+                <text>coop_soc_milc_ck_common4_0</text>
+                <next>401</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common5">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_5</dont_has_flag>
+        <phrase_list>
+            <phrase id="501">
+                <action>coop_soc_milc_say.say_ck_common5_501</action>
+                <text>coop_soc_milc_ck_common5_501</text>
+                <next>502</next>
+            </phrase>
+            <phrase id="502">
+                <action>coop_soc_milc_say.say_ck_common5_502</action>
+                <text>coop_soc_milc_ck_common5_502</text>
+                <next>503</next>
+            </phrase>
+            <phrase id="503">
+                <action>coop_soc_milc_say.say_ck_common5_503</action>
+                <text>coop_soc_milc_ck_common5_503</text>
+                <next>504</next>
+            </phrase>
+            <phrase id="504">
+                <action>coop_soc_milc_say.say_ck_common5_504</action>
+                <text>coop_soc_milc_ck_common5_504</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_5</give_flag>
+                <next>505</next>
+            </phrase>
+            <phrase id="505">
+                <action>coop_soc_milc_say.say_ck_common5_505</action>
+                <text>coop_soc_milc_ck_common5_505</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common5_0</action>
+                <text>coop_soc_milc_ck_common5_0</text>
+                <next>501</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common6">
+        <has_flag>MIL_SOC_COOK_RG6_4</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_6</dont_has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common6_0</action>
+                <text>coop_soc_milc_ck_common6_0</text>
+                <next>601</next>
+            </phrase>
+            <phrase id="601">
+                <action>coop_soc_milc_say.say_ck_common6_601</action>
+                <text>coop_soc_milc_ck_common6_601</text>
+                <next>602</next>
+            </phrase>
+            <phrase id="602">
+                <action>coop_soc_milc_say.say_ck_common6_602</action>
+                <text>coop_soc_milc_ck_common6_602</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_6</give_flag>
+                <next>603</next>
+            </phrase>
+            <phrase id="603">
+                <action>coop_soc_milc_say.say_ck_common6_603</action>
+                <text>coop_soc_milc_ck_common6_603</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drink_for_rg6_1">
+        <precondition>coop_soc_milc.has_vodka</precondition>
+        <has_flag>MIL_SOC_COOK_DIALOG_5</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_1</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_2</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_3</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_4</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_1</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_1</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_2</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_4</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_5</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_6</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_6</text>
+                <action>coop_soc_milc.take_vodka</action>
+                <give_flag>MIL_SOC_COOK_DRINK_1</give_flag>
+                <give_flag>MIL_SOC_COOK_DIALOG_1</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_3</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_0</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drink_for_rg6_2">
+        <precondition>coop_soc_milc.has_vodka</precondition>
+        <has_flag>MIL_SOC_COOK_DRINK_1</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_2</dont_has_flag>
+        <phrase_list>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_4</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_5</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_1</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_2</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_6</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_6</text>
+                <action>coop_soc_milc.take_vodka</action>
+                <give_flag>MIL_SOC_COOK_DRINK_2</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_3</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_0</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drink_for_rg6_3">
+        <precondition>coop_soc_milc.has_vodka</precondition>
+        <has_flag>MIL_SOC_COOK_DRINK_1</has_flag>
+        <has_flag>MIL_SOC_COOK_DRINK_2</has_flag>
+        <has_flag>MIL_SOC_COOK_RG6_2</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_3</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_3</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_1</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_2</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_2</text>
+                <action>coop_soc_milc.take_vodka</action>
+                <give_flag>MIL_SOC_COOK_DRINK_3</give_flag>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_3</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_3</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_0</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drunk_question_about_rg6_1">
+        <has_flag>MIL_SOC_COOK_DRINK_1</has_flag>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_2</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_1</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_1</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_2</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_4</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_5</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_6</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_6</text>
+                <give_flag>MIL_SOC_COOK_RG6_1</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_0</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_3</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_3</text>
+                <next>4</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drunk_question_about_rg6_2">
+        <has_flag>MIL_SOC_COOK_DRINK_2</has_flag>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_2</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_3</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_1</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_2</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_3</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_4</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_4</text>
+                <give_flag>MIL_SOC_COOK_RG6_2</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_0</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drunk_question_about_rg6_3">
+        <has_flag>MIL_SOC_COOK_DRINK_3</has_flag>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_3</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_4</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_3_1</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_3_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_3_2</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_3_2</text>
+                <give_flag>MIL_SOC_COOK_RG6_1</give_flag>
+                <give_flag>MIL_SOC_COOK_RG6_4</give_flag>
+                <give_flag>MIL_SOC_RG6_ASK</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_3_0</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_3_0</text>
+                <next>1</next>
             </phrase>
         </phrase_list>
     </dialog>

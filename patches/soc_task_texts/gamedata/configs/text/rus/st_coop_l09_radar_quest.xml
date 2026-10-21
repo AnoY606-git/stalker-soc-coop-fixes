@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_rad_start_go_to_radar_quest_task_name">
+		<text>Отключить Выжигатель Мозгов</text>
+	</string>
+	<string id="st_rad_start_go_to_radar_quest_task_descr">
+		<text>Найти вход в бункер управления</text>	
+	</string>
+</string_table>

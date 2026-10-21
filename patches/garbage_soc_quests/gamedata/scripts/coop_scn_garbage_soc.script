@@ -1,0 +1,367 @@
+-------------------------------------------------------------------------------------------------------
+-- Garbage quests in the order of the original Shadow of Chernobyl (patch garbage_soc_quests, see its NOTES.md).
+-- The file name starts with coop_scn_ so that the Scene Director (cutscenes_core) loads it on every level; it only installs a server tick.
+--
+-- 1. every task of the Garbage chain is handed to EVERY player (the stock xr_effects.give_task, used by restrictors, walkers and task
+--    completions, gives a task to the first player only and returns), once per player and level load, while its stage is open. A late
+--    joiner gets the tasks of the stage that is open now. A stage closes with the same condition that completes the task, so a task a
+--    player already finished is never given again after a reload.
+--      * "Meet with Seriy" (SoC garbage_meet_stalker): the Fox talk on Cordon (the mod's Fox dialog ends with the Fox flag) or, as a
+--        fallback, the arrival on the Garbage. One task; its text follows the objective (tm_coop_l02_garbage.ltx).
+--      * "Get information about Strelok" (SoC agr_meet_krot_band, objective 0): Seriy's talk (his dialog gives GRAY_DONE).
+--      * "Respond to the call for help" (SoC gar_car_graveyard_quest): on arrival. "Repel the bandit raid" (SoC gar_help_dymon): Bes's dialog
+--        answer (DEVIL_HELP). "Talk to Bes": the ambush squads are dead.
+--      * "Help the Duty checkpoint" (SoC gar_kill_boars): objective 1 "Kill the boars" (the wave started: by the Duty zone, a player near the
+--        checkpoint, or the commander's favor), objective 2 "Talk with the Duty commander" (REPORT, given by the commander's dialog).
+-- 2. fallbacks (nothing may soft-lock):
+--      * the Duty wave starts when a player stays near the checkpoint zone for a few seconds and nothing started it (the zone logic is
+--        client / host only)
+--      * Seriy / Bes / the Duty commander dead (cannot happen with their invulnerable logic, but a script kill or a mod can): the flags their
+--        dialogs would give are given, the commander's death also opens the gate (GAR_FREE_PASS of patch garbage_duty)
+--      * all four boar squads dead and no boar killed by a player (SoC "gar_actor_looser"): the commander task is never given, nobody has to talk
+-- 3. dialog helpers for dialogs_coop_l02_garbage.xml: the PDA archive lines of the SoC phrases, the Duty favor, the Duty report with the
+--    reward (money goes to the talking player only, like the Cordon hand-in).
+-------------------------------------------------------------------------------------------------------
+
+local MAP = "coop_l02_garbage"
+
+local F = {
+	FOX        = "ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO",                -- Cordon: Fox told the player about his brother
+	ARRIVE     = "GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO",                                  -- first player on the Garbage (restrictor)
+	DEVIL_HELP = "GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_STOP_DIALOG_INFO",                       -- Bes: "alright, let's do it" (SoC gar_hellcar_help)
+	DEVIL_DONE = "GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO",               -- Bes paid, talk over
+	AMB1       = "GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD",
+	AMB2       = "GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD",
+	GRAY_DONE  = "GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO",                        -- Seriy's talk is over (SoC garbage_meetstalker_done + agr_krot_band_start)
+	AGR1       = "AGR_STALKER_HELP_1_INFO",                                                       -- first player at the Agroprom gate
+	DUTY_START = "GAR_START_HELP_FIGHT_OFF_THE_MUTANTS_QUEST_TASK_INFO",                          -- the boar wave started (zone, near the checkpoint, favor)
+	REPORT     = "GAR_SOC_DUTY_REPORT_INFO",                                                      -- the commander's report talk was held (SoC gar_kill_boars_request)
+	PASS       = "GAR_FREE_PASS",                                                                 -- patch garbage_duty: the Duty gate is open
+}
+local BOAR_SQUADS = { "GAR_SMART_TERRAIN_8_M_BOAR_1_SQUAD_DEAD", "GAR_SMART_TERRAIN_8_M_BOAR_2_SQUAD_DEAD",
+                      "GAR_SMART_TERRAIN_8_M_BOAR_3_SQUAD_DEAD", "GAR_SMART_TERRAIN_8_M_BOAR_4_SQUAD_DEAD" }
+local BOARS = 8                          -- GAR_DUTY_BOAR_KILLED_1..8 (patch garbage_duty: a boar died by a player's hand)
+local WIN_KILLS = 1                      -- SoC gar_boars_counter: one kill by a player is enough
+local REWARD = 1500                      -- the money of the level maker's boar task, now paid by the commander's dialog
+local DUTY_ZONE = { x = 29.8, y = 0.5, z = 234.1 }       -- gar_duty_rush_space_restrictor
+local DUTY_RADIUS = 25.0
+local DUTY_DWELL_MS = 6000
+
+local GRAY, DEVIL, PRAPOR = "gar_smart_terrain_2_stalker_gray", "gar_smart_terrain_4_stalker_devil", "gar_smart_terrain_8_duty_prapor"
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCGAR " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCGAR " .. tostring(s)) end
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[SG] " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if has(f) then return end
+	pcall(story_flags.give_flag, f)
+	qlog("FLAG " .. f)
+end
+
+-- how many boars died by a player's hand (shared story flags, the same on every machine)
+function kills()
+	local n = 0
+	for i = 1, BOARS do
+		if has("GAR_DUTY_BOAR_KILLED_" .. i) then n = n + 1 end
+	end
+	return n
+end
+
+function boars_dead()
+	for _, f in ipairs(BOAR_SQUADS) do
+		if not has(f) then return false end
+	end
+	return true
+end
+
+-- story character dead? (tests can force it with the global table GARSOC_FORCE_DEAD)
+local function npc_dead(story)
+	local fd = rawget(_G, "GARSOC_FORCE_DEAD")
+	if type(fd) == "table" and fd[story] then return true end
+	local ok, r = pcall(function()
+		local id = get_story_object_id(story)
+		if id == nil then return false end
+		local so = alife():object(id)
+		if so == nil or so.alive == nil then return false end
+		return so:alive() == false
+	end)
+	return ok and r == true
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. the task chain: task id, level (nil = any level), open while ...
+-------------------------------------------------------------------------------------------------------
+local CHAIN = {
+	-- SoC garbage_meet_stalker: given by Fox on Cordon, or on the arrival (fallback); over with Seriy's talk
+	{ id = "gar_start_talk_to_gray_quest_task", map = nil,
+	  open = function() return (has(F.FOX) or has(F.ARRIVE)) and not has(F.GRAY_DONE) end },
+	-- SoC agr_meet_krot_band objective 0: Seriy's dialog; over at the Agroprom gate
+	{ id = "gar_start_go_to_the_agroprom_quest_task", map = nil,
+	  open = function() return has(F.GRAY_DONE) and not has(F.AGR1) end },
+	-- SoC gar_car_graveyard_quest: on the arrival, over with Bes's answer
+	{ id = "gar_start_talk_to_devil_quest_task", map = nil,
+	  open = function() return has(F.ARRIVE) and not has(F.DEVIL_HELP) end },
+	-- SoC gar_help_dymon: Bes's dialog answer, over when both ambush squads are dead
+	{ id = "gar_start_help_to_repel_the_bandits_attack_quest_task", map = nil,
+	  open = function() return has(F.DEVIL_HELP) and not (has(F.AMB1) and has(F.AMB2)) end },
+	{ id = "gar_start_talk_to_devil_1_quest_task", map = nil,
+	  open = function() return has(F.AMB1) and has(F.AMB2) and not has(F.DEVIL_DONE) end },
+	-- SoC gar_kill_boars objective 1 (kill the boars)
+	{ id = "gar_start_help_fight_off_the_mutants_quest_task", map = nil,
+	  open = function() return has(F.DUTY_START) and not boars_dead() end },
+	-- SoC gar_kill_boars objective 2 (talk with the Duty commander)
+	{ id = "gar_soc_duty_report_task", map = nil,
+	  open = function() return boars_dead() and kills() >= WIN_KILLS and not has(F.REPORT) end },
+}
+
+local given = {}      -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+
+local function each_player(fn)
+	if db == nil or db.mp_actors == nil then return end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil then
+			local okalive, alive = pcall(function() return a:alive() end)
+			if okalive and alive then fn(pid, a) end
+		end
+	end
+end
+
+local function players_near(pos, r)
+	local near = false
+	each_player(function(pid, a)
+		local ok, d = pcall(function()
+			local p = a:position()
+			local dx, dy, dz = p.x - pos.x, p.y - pos.y, p.z - pos.z
+			return math.sqrt(dx * dx + dy * dy + dz * dz)
+		end)
+		if ok and d ~= nil and d <= r then near = true end
+	end)
+	return near
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. fallbacks of the Garbage level
+-------------------------------------------------------------------------------------------------------
+local near_since = nil
+local alone_since = nil
+local ARRIVE_DWELL_MS = 4000
+
+-- The talking player of a dialog action, or nil when this machine is not his. A dialog action may run on several machines / contexts (a listen
+-- host runs it in its server and its client context, and also for a remote player's talk), so the old "OnClient()" gate was false for the HOST
+-- player (nobody paid) and could not tell a remote talker from the host. Rule (same as the opening's `say`): this machine's own actor must be
+-- one of the two speakers. Dedicated server: no local actor, pays nobody. Both speakers nil (test harness, the helper is called directly):
+-- the local player counts as the talker.
+local function talker(a, b)
+	local la = getLocalActor()
+	if la == nil then return nil end
+	if a == nil and b == nil then return la end
+	local lid = nil
+	pcall(function() lid = la:id() end)
+	local function same(o)
+		if o == nil then return false end
+		local ok, i = pcall(function() return o:id() end)
+		return ok and i == lid
+	end
+	if same(a) or same(b) then return la end
+	return nil
+end
+
+-- pays money to the talking player exactly once per player name and reward kind: the story flag pf is given BEFORE the payment (the second run of
+-- the same action on a listen host, or a repeated phrase, finds it and pays nothing). The call is the one of patch repeatable_quests
+-- (dialogs.relocate_money_to_actor: it picks the player speaker itself and works from both contexts), no OnClient() gate.
+local function pay_to_talker(pf, a, b, amount, what)
+	if has(pf) then return false end
+	give(pf)
+	local ok = pcall(function() dialogs.relocate_money_to_actor(a, b, amount) end)
+	qlog(what .. " reward " .. amount .. " paid ok=" .. tostring(ok))
+	return true
+end
+
+local function garbage_side(now)
+	-- the arrival: the restrictor gives the flag, but only when a player stands inside it. A player on the level for a few seconds
+	-- without it (arrived by another way, restrictor logic not running) gets it from here, so Bes's and Seriy's tasks never stall.
+	if not has(F.ARRIVE) then
+		local any = false
+		each_player(function() any = true end)
+		if any then
+			alone_since = alone_since or now
+			if now - alone_since >= ARRIVE_DWELL_MS then
+				qlog("arrival: a player is on the Garbage, the arrival flag is given")
+				give(F.ARRIVE)
+			end
+		else
+			alone_since = nil
+		end
+	end
+	-- the Duty wave: a player stays near the checkpoint zone and nothing started it
+	if not has(F.DUTY_START) then
+		if players_near(DUTY_ZONE, DUTY_RADIUS) then
+			near_since = near_since or now
+			if now - near_since >= DUTY_DWELL_MS then
+				qlog("Duty wave: a player stayed near the checkpoint zone")
+				give(F.DUTY_START)
+			end
+		else
+			near_since = nil
+		end
+	end
+	-- story characters that are dead
+	if not has(F.GRAY_DONE) and npc_dead(GRAY) then
+		qlog("Seriy is dead: his talk flag is given")
+		give(F.GRAY_DONE)
+	end
+	if not has(F.DEVIL_DONE) and npc_dead(DEVIL) then
+		qlog("Bes is dead: his talk flags are given")
+		give(F.DEVIL_HELP)
+		give(F.DEVIL_DONE)
+	end
+	if not has(F.REPORT) and npc_dead(PRAPOR) then
+		qlog("the Duty commander is dead: the report flag and the pass are given")
+		give(F.REPORT)
+		give(F.PASS)
+	end
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	if db == nil or db.mp_actors == nil then return end
+	local lvl = level.name()
+	if lvl == MAP then pcall(garbage_side, now) end
+	for _, st in ipairs(CHAIN) do
+		if st.map == nil or st.map == lvl then
+			local ok, isopen = pcall(st.open)
+			if ok and isopen then
+				each_player(function(pid, a)
+					if given[st.id] == nil or not given[st.id][pid] then
+						local ready = true
+						pcall(function() ready = IsActorNetReady(pid) end)
+						if ready then
+							given[st.id] = given[st.id] or {}
+							given[st.id][pid] = true
+							local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+							qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						end
+					end
+				end)
+			end
+		end
+	end
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	local okn, ln = pcall(function() return level.name() end)
+	qlog("INSTALL gen=" .. my .. " level=" .. tostring(okn and ln or "?"))
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. dialog helpers (they run on the machine of the talking player; the flags are shared)
+-------------------------------------------------------------------------------------------------------
+local SPEAKER = {
+	gar_seriy_start_22 = "npc", gar_seriy_start_221 = "actor", gar_seriy_start_2211 = "npc", gar_seriy_start_2212 = "actor",
+	gar_seriy_start_222 = "actor", gar_seriy_start_2221 = "npc", gar_seriy_start_2222 = "actor",
+	gar_dolg_blokpost_1111212 = "actor", gar_dolg_blokpost_11112121 = "npc", gar_dolg_blokpost_111121211 = "actor",
+	gar_dolg_blokpost_1111212111 = "npc", gar_dolg_blokpost_1231 = "npc", gar_dolg_blokpost_12311 = "actor",
+}
+
+-- PDA archive line of a SoC phrase (same helper calls as coop_soc_cordon.emit)
+local function emit(tid, first, second)
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = SPEAKER[tid] end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+end
+
+function say_seriy_22(a, b) emit("gar_seriy_start_22", a, b) end
+function say_seriy_221(a, b) emit("gar_seriy_start_221", a, b) end
+function say_seriy_2211(a, b) emit("gar_seriy_start_2211", a, b) end
+function say_seriy_2212(a, b) emit("gar_seriy_start_2212", a, b) end
+function say_seriy_222(a, b) emit("gar_seriy_start_222", a, b) end
+function say_seriy_2221(a, b) emit("gar_seriy_start_2221", a, b) end
+function say_seriy_2222(a, b) emit("gar_seriy_start_2222", a, b) end
+function say_duty_1111212(a, b) emit("gar_dolg_blokpost_1111212", a, b) end
+function say_duty_11112121(a, b) emit("gar_dolg_blokpost_11112121", a, b) end
+function say_duty_111121211(a, b) emit("gar_dolg_blokpost_111121211", a, b) end
+function say_duty_1111212111(a, b) emit("gar_dolg_blokpost_1111212111", a, b) end
+function say_duty_1231(a, b) emit("gar_dolg_blokpost_1231", a, b) end
+function say_duty_12311(a, b) emit("gar_dolg_blokpost_12311", a, b) end
+
+-- "What's the favor?" is offered until the boar wave has started
+function favor_open(a, b)
+	return not has(F.DUTY_START)
+end
+
+-- "Deal.": the boars come (the restrictor logic of the checkpoint spawns the four squads), the task goes to every player
+function favor_start(a, b)
+	give(F.DUTY_START)
+	qlog("Duty favor accepted")
+end
+
+local function paid_flag(la)
+	return "GAR_SOC_DUTY_PAID_" .. (string.gsub(string.upper(tostring(la:name())), "[^A-Z0-9]", "_"))
+end
+
+-- the wave is over, a player killed at least one boar, and the talking player was not thanked yet
+function report_open(a, b)
+	local la = getLocalActor()
+	if la == nil then return false end
+	return boars_dead() and kills() >= WIN_KILLS and not has(paid_flag(la))
+end
+
+-- "Thanks!": the report flag completes the task for everybody; the reward goes to the talking player (once per player name)
+function report_pay(a, b)
+	give(F.REPORT)
+	local la = talker(a, b)
+	if la == nil then return end
+	pay_to_talker(paid_flag(la), a, b, REWARD, "Duty")
+end
+
+-- SoC pays Seriy's 2500 (seryi_payment) and Bes's 2000 (hellcar_payment) in the last phrase of their dialogs, to the talking player only
+-- (the level maker's tm reward_money, 5000 to every player, is gone). Once per player name: a listen host runs the action twice; paid on the
+-- talker's own machine only, from either context (no OnClient() gate: it is false for the host player of a listen host).
+local PAY = { SERIY = 2500, BES = 2000 }
+
+local function pay_once(kind, a, b)
+	local la = talker(a, b)
+	if la == nil then return end
+	local pf = "GAR_SOC_PAID_" .. kind .. "_" .. (string.gsub(string.upper(tostring(la:name())), "[^A-Z0-9]", "_"))
+	pay_to_talker(pf, a, b, PAY[kind], kind)
+end
+
+function pay_seriy(a, b) pay_once("SERIY", a, b) end
+function pay_bes(a, b) pay_once("BES", a, b) end
+
+-- test helpers
+function given_to(task_id, pid)
+	return given[task_id] ~= nil and given[task_id][pid] == true
+end
+
+function status()
+	return string.format("fox=%s arrive=%s gray_done=%s devil_help=%s devil_done=%s duty=%s boars_dead=%s kills=%d report=%s pass=%s",
+		tostring(has(F.FOX)), tostring(has(F.ARRIVE)), tostring(has(F.GRAY_DONE)), tostring(has(F.DEVIL_HELP)), tostring(has(F.DEVIL_DONE)),
+		tostring(has(F.DUTY_START)), tostring(boars_dead()), kills(), tostring(has(F.REPORT)), tostring(has(F.PASS)))
+end
+
+-- loaded by the Scene Director on every level (once per Lua VM)
+pcall(function() install() end)

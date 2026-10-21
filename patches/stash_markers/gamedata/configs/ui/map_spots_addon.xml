@@ -1,0 +1,23 @@
+        <alife_presentation_smart_target>
+                <level_map spot="alife_presentation_smart_target_spot"                pointer="quest_pointer"/>
+				<mini_map spot="alife_presentation_smart_target_spot_minimap" pointer="quest_pointer"/>
+        </alife_presentation_smart_target>
+		
+        <alife_presentation_smart_target_spot  width="10" height="10" alignment="c" scale="1" scale_min="1" scale_max="2" stretch = "1">
+                <texture x="725" y="575" width="50" height="50">ui\ui_common</texture>
+        </alife_presentation_smart_target_spot>
+		
+        <alife_presentation_smart_target_spot_minimap  width="20" height="20" alignment="c" scale="3" scale_min="3" scale_max="3" stretch = "1">
+                <texture x="725" y="575" width="50" height="50">ui\ui_common</texture>
+        </alife_presentation_smart_target_spot_minimap>
+
+        <safe_box_location hint="safe_box_hint" layer="10">
+                <level_map spot="safe_box_location_spot"/>
+                <mini_map spot="safe_box_location_mini_spot"/>
+        </safe_box_location>
+        <safe_box_location_spot width="22" height="16" stretch="1" alignment="c" location_level="-1">
+                <texture>ui_common_player_box_spot</texture>
+        </safe_box_location_spot>
+        <safe_box_location_mini_spot width="22" height="16" stretch="1" alignment="c" location_level="-1">
+                <texture>ui_common_player_box_spot</texture>
+        </safe_box_location_mini_spot>

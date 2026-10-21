@@ -104,7 +104,7 @@
 		<text>Готовы ли Вы покинуть Зону? Обратного пути не будет.</text>
 	</string>
 	<string id="st_test_text_yes_no">
-		<text>Готовы ли Вы отправиться в Центр Зоны? Обратного пути не будет.</text>
+		<text>Готовы ли Вы отправиться к Радару?</text>
 	</string>
 	<string id="st_question_space_restrictor_text_yes_no">
 		<text>Готовы ли Вы отправиться дальше?</text>

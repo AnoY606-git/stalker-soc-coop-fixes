@@ -741,3 +741,7 @@ Not original / limitations (all UNTESTED, nothing was run):
 - Tools run: check_conflicts.py (only that known overlap), check_lua_escapes.py (no hit in the new script), lint_configs.py (new sections only show the same
   "MISSING PARENT quest_item_base/online_offline_group" noise as the existing entries because the lint input was a partial extraction). XML files parse.
 Max dying in the counterattack (see section above) simply removes the offer: no Max, no dialog, no flash drive quest, as in SoC.
+
+Lukash (Freedom leader) also carries the two repeatable_quests dialogs `rq_fre_dialog` ("Do you have any work for me?", the SoC Freedom boar leg order) and `rq_fre_handin`: two `<actor_dialog>` lines in this patch's character_desc_coop_l07_military.xml, the dialogs themselves are in patch repeatable_quests.
+
+Phase 2 of "the quests must match the original SoC" (patch `soc_mil_quests`, see its NOTES.md) edits three files of this patch: `dialogs_coop_l07_military.xml` (the mod's Lukash / Max / Skull / Cap dialogs are replaced by the SoC dialogs; the flash drive offer is gated on the report to Lukash), `character_desc_coop_l07_military.xml` (the four NPCs start with them), `tm_coop_l07_military.ltx` (SoC task chain, no task rewards, three new steps), and adds two copies of the mod's logic files here (`mil_smart_terrain_14_walker_skull.ltx` with the flag fix, `space_restrictors\mil_cap_pda_1_space_restrictor.ltx` without `give_task`). `tools\apply_logic.py` of that patch re-applies all of it.

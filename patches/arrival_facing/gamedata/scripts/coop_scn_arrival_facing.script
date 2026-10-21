@@ -3,7 +3,8 @@
 -- so every changer whose dest_direction was meant to look into the level makes the players look back at the changer.
 -- Generic fix without touching all.spawn: on every client, shortly after arrival, if the player stands near a changer of this
 -- level and looks towards it, turn them to the opposite direction (once). Loaded by the Scene Director (coop_scn_*.script).
--- Positions of the level changers per level come from the mod's all.spawn (plus val_esc_level_changer of darkvalley_restore).
+-- Positions of the level changers per level come from the mod's all.spawn (plus val_esc_level_changer of darkvalley_restore and the way back
+-- from the Radar and Pripyat of level_back).
 
 local LC = {
 	["coop_l01_escape"] = {{"esc_gar_level_changer",26.1,16.6,685.7}},
@@ -17,9 +18,9 @@ local LC = {
 	["coop_l07_military"] = {{"mil_bar_level_changer",-340.5,-25.3,38.8}, {"mil_rad_level_changer",75.6,-13.7,401.8}},
 	["coop_l08_x16"] = {{"x16_yan_1_level_changer",150.2,39.9,-13.3}, {"x16_yan_2_level_changer",-120.6,16.4,-17.2}},
 	["coop_l08_yantar"] = {{"yan_ros_level_changer",213.8,6.5,-247.0}, {"yan_x16_level_changer",2.1,-5.1,-14.0}},
-	["coop_l09_radar"] = {{"rad_level_changer_1",147.6,-9.3,-34.2}, {"rad_level_changer_2",382.1,-33.6,160.0}},
+	["coop_l09_radar"] = {{"rad_level_changer_1",147.6,-9.3,-34.2}, {"rad_level_changer_2",382.1,-33.6,160.0}, {"rad_mil_level_changer",562.4,-53.8,-421.8}},
 	["coop_l09_x10"] = {{"x10_level_changer",-0.4,-7.5,-86.5}},
-	["coop_l10_pripyat"] = {{"pri_level_changer",31.1,1.1,420.4}},
+	["coop_l10_pripyat"] = {{"pri_level_changer",31.1,1.1,420.4}, {"pri_rad_level_changer",14.0,-2.4,-304.5}},
 	["coop_l11_stancia_1"] = {{"aes_1_level_changer",367.9,-1.3,36.7}},
 	["coop_l11_sarcofag"] = {{"sar_level_changer",71.1,16.8,28.4}},
 	["coop_l11_control_monolith"] = {{"con_level_changer",36.4,-34.6,20.6}},

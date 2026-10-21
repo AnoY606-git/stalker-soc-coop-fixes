@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_yan_start_go_to_yantar_quest_task_name">
+		<text>Find the documents in X16 lab</text>
+	</string>
+	<string id="st_yan_start_go_to_yantar_quest_task_descr">
+		<text>Talk to the scientists\n\nBarkeep: "You need to get through to the scientists and find out where Lab X16 is located to find the missing documents."</text>	
+	</string>
+	
+	
+	<string id="st_yan_start_talk_to_the_kruglov_quest_task_name">
+		<text>Take radiation measurements</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_kruglov_quest_task_descr">
+		<text>Talk to Kruglov\n\nSakharov: "If you can take the measurements together with our associate, I will give you a calibrated prototype that will let you get inside the laboratory."</text>	
+	</string>
+
+
+	<string id="st_yan_start_take_measurements_1_quest_task_name">
+		<text>Take radiation measurements</text>
+	</string>
+	<string id="st_yan_start_take_measurements_1_quest_task_descr">
+		<text>Escort Kruglov to the measurement site</text>	
+	</string>	
+
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_1_quest_task_name">
+		<text>"Measurements started!"</text>
+	</string>
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_1_quest_task_descr">
+		<text>Wait for the measurements to finish near the tunnel at the entrance.</text>	
+	</string>
+	
+	<string id="st_yan_start_return_to_the_measurement_location_1_quest_task_name">
+		<text>"Measurements interrupted!"</text>
+	</string>
+	<string id="st_yan_start_return_to_the_measurement_location_1_quest_task_descr">
+		<text>Return to the measurement site near the tunnel at the entrance.</text>	
+	</string>
+	
+	
+	<string id="st_yan_start_take_measurements_2_quest_task_name">
+		<text>Take radiation measurements</text>
+	</string>
+	<string id="st_yan_start_take_measurements_2_quest_task_descr">
+		<text>Escort Kruglov to the measurement site</text>	
+	</string>	
+
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_2_quest_task_name">
+		<text>"Measurements started!"</text>
+	</string>
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_2_quest_task_descr">
+		<text>Wait for the measurements to finish near the tunnel at the exit.</text>	
+	</string>
+	
+	<string id="st_yan_start_return_to_the_measurement_location_2_quest_task_name">
+		<text>"Measurements interrupted!"</text>
+	</string>
+	<string id="st_yan_start_return_to_the_measurement_location_2_quest_task_descr">
+		<text>Return to the measurement site near the tunnel at the exit.</text>	
+	</string>
+	
+	
+	<string id="st_yan_start_take_measurements_3_quest_task_name">
+		<text>Take radiation measurements</text>
+	</string>
+	<string id="st_yan_start_take_measurements_3_quest_task_descr">
+		<text>Escort Kruglov to the measurement site</text>	
+	</string>
+	
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_3_quest_task_name">
+		<text>"Measurements started!"</text>
+	</string>
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_3_quest_task_descr">
+		<text>Wait for the measurements to finish near the bus.</text>	
+	</string>
+	
+	<string id="st_yan_start_return_to_the_measurement_location_3_quest_task_name">
+		<text>"Measurements interrupted!"</text>
+	</string>
+	<string id="st_yan_start_return_to_the_measurement_location_3_quest_task_descr">
+		<text>Return to the measurement site near the bus.</text>	
+	</string>		
+	
+	
+	<string id="st_yan_start_talk_to_the_saharov_quest_task_name">
+		<text>Take radiation measurements</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_saharov_quest_task_descr">
+		<text>Bring the results to Sakharov</text>	
+	</string>
+
+
+	<string id="st_yan_start_configuring_helmets_quest_task_name">
+		<text>In the Name of Science!</text>
+	</string>
+	<string id="st_yan_start_configuring_helmets_quest_task_descr">
+		<text>Wait for the helmets to be calibrated and pick up the prototypes.</text>	
+	</string>
+
+
+	<string id="st_yan_start_infiltrate_the_x16_lab_quest_task_name">
+		<text>Get inside the lab</text>
+	</string>
+	<string id="st_yan_start_infiltrate_the_x16_lab_quest_task_descr">
+		<text>Get inside the lab</text>	
+	</string>
+
+
+	<string id="st_yan_start_talk_to_the_saharov_x16_lab_quest_task_name">
+		<text>Get out of the lab</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_saharov_x16_lab_quest_task_descr">
+		<text>Talk to Sakharov</text>	
+	</string>
+
+	<string id="st_yan_start_talk_to_the_barmen_quest_task_name">
+		<text>Work for Barkeep</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_barmen_quest_task_descr">
+		<text>Ask Barkeep for a job</text>	
+	</string>
+
+
+	<string id="st_yan_start_sq_art_1_quest_task_name">
+		<text>Order for "Crystal"</text>
+	</string>
+	<string id="st_yan_start_sq_art_1_quest_task_descr">
+		<text>Find and bring the "Crystal" artifact.</text>
+	</string>	
+	<string id="st_yan_start_sq_art_2_quest_task_name">
+		<text>Order for "Fireball"</text>
+	</string>
+	<string id="st_yan_start_sq_art_2_quest_task_descr">
+		<text>Find and bring the "Fireball" artifact.</text>
+	</string>
+	<string id="st_yan_start_sq_art_3_quest_task_name">
+		<text>Order for "Eye"</text>
+	</string>
+	<string id="st_yan_start_sq_art_3_quest_task_descr">
+		<text>Find and bring the "Eye" artifact.</text>
+	</string>	
+	
+	<string id="st_yan_start_sq_mutant_snork_part_1_quest_task_name">
+		<text>Order for "Snork Foot"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_snork_part_1_quest_task_descr">
+		<text>Find and bring 4 "Snork Feet".</text>
+	</string>	
+	<string id="st_yan_start_sq_mutant_krovosos_part_2_quest_task_name">
+		<text>Order for "Bloodsucker Tentacles"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_krovosos_part_2_quest_task_descr">
+		<text>Find and bring 3 "Bloodsucker Tentacles".</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_chimera_part_3_quest_task_name">
+		<text>Order for "Chimera Claw"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_chimera_part_3_quest_task_descr">
+		<text>Find and bring 1 "Chimera Claw".</text>
+	</string>
+	
+	<string id="st_yan_start_sq_killer_mutants_1_quest_task_name">
+		<text>Order for mutants "On the swamp near the Scientists' Bunker"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_1_quest_task_descr">
+		<text>Kill the mutants on the swamp near the "Scientists' Bunker".</text>
+	</string>	
+	<string id="st_yan_start_sq_killer_mutants_2_quest_task_name">
+		<text>Order for mutants "To the right of the Scientists' Bunker"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_2_quest_task_descr">
+		<text>Kill the mutants to the right of the "Scientists' Bunker".</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_3_quest_task_name">
+		<text>Order for mutants "Near the Crashed Helicopter"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_3_quest_task_descr">
+		<text>Kill the mutant near the "Crashed Helicopter".</text>
+	</string>
+</string_table>

@@ -1,0 +1,386 @@
+-------------------------------------------------------------------------------------------------------
+-- Radar / X-10 / Pripyat / CNPP / Sarcophagus / Control Monolith chain, original Shadow of Chernobyl (patch soc_aes_quests).
+-- SoC chain (tasks_radar.xml, tasks_deadcity.xml, tasks_sarcofag.xml, info_l11pripyat.xml, info_l12u_sarcofag.xml):
+--   bar_radar_deactivate (find and deactivate the Brain Scorcher) -> rad_get_to_aes (reach the power plant: meet the group of stalkers,
+--   follow them, find the path to the CNPP, find the entrance to the sarcophagus) -> sar_monolith (get to the Monolith, sneak in to the
+--   sarcophagus, find the Wish Granter) and, in parallel, cit_doctor_task (hotel at Pripyat, the room, the stash with the DECODER) ->
+--   sar_secret_lab (secret bunker, hidden door, open it with the decoder, find out what is behind it) -> sar_monolith_destroy ("The Monolith's
+--   secret": infiltrate the lab, solve the secret) -> sar_warlab (meet whoever is behind the Monolith: SoC only talks to them).
+--
+-- Everything is driven by SHARED story flags (saved, synced to every player) plus a server tick (1 s):
+--  1. progress(): derives the SoC infos from the world (positions of the players, items in their inventories, flags that the level logic
+--     sets) and makes the chain monotonic (a later flag also sets every earlier one, so a skipped step never blocks anything)
+--  2. every task whose stage is open is given to EVERY living player once (stock xr_effects.give_task hands a task to the first player
+--     only), so late joiners and respawned players get all open tasks; the engine ignores a task a player already has
+--  3. the DECODER: it lies in the Pripyat hotel room (SoC pri_decoder, same position) instead of coming from the mod-only Preacher. If
+--     nobody found it, the Sarcophagus spawns it at the Preacher's old place (sar_smart_terrain_17_spawn_squad restrictor, flag below), and a
+--     replacement is spawned next to a player when the one who held it is gone (no soft lock).
+-- A dead NPC never blocks anything: every wait is a flag or a position, no step needs a living NPC.
+-------------------------------------------------------------------------------------------------------
+
+local L = {
+	RADAR = "coop_l09_radar", X10 = "coop_l09_x10", PRI = "coop_l10_pripyat", CNPP = "coop_l11_stancia_1",
+	SAR = "coop_l11_sarcofag", CON = "coop_l11_control_monolith",
+}
+
+local F = {
+	-- set by the mod's own level logic (read only here)
+	RAD       = "RAD_START_GO_TO_RADAR_QUEST_TASK_INFO",                    -- the Radar step is over (X-10 entered; SoC bar_radar_deactivate objective 3)
+	SW1       = "X10_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO",
+	SW2       = "X10_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO",                -- the Brain Scorcher is off
+	ARR_PRI   = "PRI_FOLLOWERS_LEADER_PHRASE1_1_INFO",                       -- a player reached the stalkers' meeting place (Pripyat restrictor)
+	IDLE      = "PRI_SMART_TERRAIN_1_WALKER_LEADER_IDLE_INFO",               -- the leader has spoken (SoC pri_followers_leader_phrase1_end)
+	P19_1     = "PRI_SMART_TERRAIN_19_ORDINARY_MONOLITH_1_SQUAD_DEAD",
+	P19_2     = "PRI_SMART_TERRAIN_19_ORDINARY_MONOLITH_2_SQUAD_DEAD",       -- the parking ambush is beaten (SoC pri_aes_mapspot / pri_wave7_end)
+	CNPP      = "PRI_START_GO_TO_CNPP_QUEST_TASK_INFO",                      -- the party is on CNPP-1 (restrictor of that level)
+	SAR_ARR   = "AES_1_START_GO_TO_SARCOFAG_QUEST_TASK_INFO",                -- the party is in the Sarcophagus (restrictor at the arrival point; it also does an autosave)
+	WISH      = "SAR_MONOLITH_WISH_SPACE_RESTRICTOR_INFO",                   -- a player reached the Wish Granter (SoC sar_monolith_go)
+	OPENED    = "LOCKED_START_OPEN_INFO",                                    -- the decoder was used on the door (door logic)
+	CON_SW    = "CON_LAB_PRIMARY_SWITCHER_DEACTIVATE_INFO",                  -- the control room is open
+	STOP      = "CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_6_DIALOG_STOP_INFO", -- the C-Consciousness talk is over (refused)
+	-- SoC infos derived here (names of the SoC info portions)
+	PRI_ARR   = "SOC_AES_PRI_ARRIVED",                                       -- a player is on Pripyat (the Doctor's task is handed out)
+	CNPPV     = "SOC_AES_CNPP_ARRIVED",                                      -- a player is on CNPP-1 (own flag: the mod's one is set by the level restrictor)
+	SARV      = "SOC_AES_SAR_ARRIVED",                                       -- a player is in the Sarcophagus (own flag: the mod's one has an autosave in its restrictor)
+	HOTEL     = "PRI_ACTOR_IN_HOTEL",
+	ROOM      = "PRI_ACTOR_IN_HIDING_PLACE",
+	GOT       = "PRI_MONOLITH_DECODER_GOT",                                  -- the decoder is in a player's inventory (it never goes back)
+	FIND      = "SAR_MONOLITH_FIND",                                         -- a player is inside the sarcophagus (SoC sar_monolith_find zone)
+	BUNKER    = "SAR_SOC_BUNKER",                                            -- a player with the decoder is in the secret bunker corridor
+	DOORF     = "SAR_SECRET_DOOR_FIND",                                      -- a player with the decoder stands at the hidden door
+	CC        = "SAR_ENTER_COMMAND_CENTER",                                  -- a player is on the Control Monolith level
+	-- bookkeeping
+	SPAWNED   = "SOC_AES_DECODER_SPAWNED",
+	INS       = "SOC_AES_DECODER_REPLACED",
+}
+local GENS = { "CON_MONOLITH_GENERATOR_1_INFO", "CON_MONOLITH_GENERATOR_2_INFO", "CON_MONOLITH_GENERATOR_3_INFO",
+	"CON_MONOLITH_GENERATOR_4_INFO", "CON_MONOLITH_GENERATOR_5_INFO", "CON_MONOLITH_GENERATOR_6_INFO" }
+
+-- boxes (centre, full size) of the SoC zones, the levels have the same coordinates as the original
+local BOX = {
+	hotel   = { x = 104.08, y = 7.87,  z = 134.33, sx = 12.2,  sy = 30.57, sz = 48.05 },  -- pri_hotel_zone
+	room    = { x = 100.98, y = 4.83,  z = 127.14, sx = 1.96,  sy = 1.81,  sz = 2.45  },  -- pri_hiding_place_zone (the room with the stash)
+	sneak   = { x = 34.38,  y = 13.22, z = -15.98, sx = 26.24, sy = 8.66,  sz = 7.46  },  -- sar_monolith_find
+	bunker  = { x = 27.03,  y = 18.2,  z = 28.7,  sx = 59.13, sy = 5.19,  sz = 7.31  },  -- sar_secret_room (the secret bunker corridor)
+	door    = { x = 48.77,  y = 17.99, z = 27.11, sx = 11.65, sy = 3.22,  sz = 10.31 },  -- sar_decoding_rest (in front of the hidden door)
+}
+-- SoC pri_decoder: the item lies in the hotel room; level vertex 215353 / game vertex 2210 are the AI node and graph vertex of that room
+local STASH = { section = "dev_decoder", x = 99.65, y = 4.9, z = 123.0, lvid = 215353, gvid = 2210 }
+local SPOT, SPOT_HINT = "treasure", "coop_soc_aes_stash_hint"
+local REPLACE_AFTER_MS = 120000     -- nobody holds the decoder for this long on the Sarcophagus: a replacement is spawned
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has(f) then pcall(story_flags.give_flag, f) end
+end
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCAES " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCAES " .. tostring(s)) end
+end
+
+local function actors()
+	local t = {}
+	if db == nil or db.mp_actors == nil then return t end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then t[#t + 1] = a end
+	end
+	return t
+end
+
+-- the item (object) a living player holds, or nil (the same check as xr_conditions.any_actor_has_item, which the stock task conditions use)
+local function held(section)
+	for _, a in ipairs(actors()) do
+		local ok, o = pcall(function() return a:object(section) end)
+		if ok and o ~= nil then return o end
+	end
+	return nil
+end
+
+local function in_box(a, b)
+	local p = a:position()
+	return math.abs(p.x - b.x) <= b.sx / 2 and math.abs(p.y - b.y) <= b.sy / 2 and math.abs(p.z - b.z) <= b.sz / 2
+end
+
+local function any_in(b)
+	for _, a in ipairs(actors()) do
+		if in_box(a, b) then return true end
+	end
+	return false
+end
+
+local function at_cnpp() return has(F.CNPP) or has(F.CNPPV) or has(F.SAR_ARR) or has(F.SARV) end
+local function at_sar() return has(F.SAR_ARR) or has(F.SARV) end
+
+local function all_gens()
+	for _, g in ipairs(GENS) do
+		if not has(g) then return false end
+	end
+	return true
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the stash decoder
+-------------------------------------------------------------------------------------------------------
+local function spot_all(id, on)
+	if id == nil then return end
+	if on then
+		pcall(level.map_add_object_spot_ser, id, SPOT, SPOT_HINT)
+	else
+		pcall(level.map_remove_object_spot, id, SPOT)
+	end
+	for _, a in ipairs(actors()) do
+		pcall(function() level.map_sync_spot(id, SPOT, a:id()) end)
+	end
+end
+
+stash_id = nil     -- server id of the decoder in the hotel (this Lua VM)
+
+local function spawn_stash()
+	local ok, obj = pcall(function()
+		return alife():create(STASH.section, vector():set(STASH.x, STASH.y, STASH.z), STASH.lvid, STASH.gvid)
+	end)
+	if ok and obj ~= nil then
+		give(F.SPAWNED)
+		stash_id = obj.id
+		spot_all(stash_id, true)
+		qlog("STASH decoder spawned id=" .. tostring(stash_id))
+		return true
+	end
+	qlog("STASH spawn failed " .. tostring(obj))
+	return false
+end
+
+-- a replacement next to a living player when the decoder is gone with its holder (Sarcophagus, door not opened yet)
+local no_dec_since = nil
+local function insurance(now)
+	if level.name() ~= L.SAR or not has(F.GOT) or has(F.OPENED) or has(F.INS) then no_dec_since = nil return end
+	local acts = actors()
+	if #acts == 0 or held(STASH.section) ~= nil then no_dec_since = nil return end
+	if no_dec_since == nil then no_dec_since = now end
+	if now - no_dec_since < REPLACE_AFTER_MS then return end
+	local a = acts[1]
+	local ok, obj = pcall(function()
+		return alife():create(STASH.section, a:position(), a:level_vertex_id(), a:game_vertex_id())
+	end)
+	if ok and obj ~= nil then
+		give(F.INS)
+		qlog("INSURANCE replacement decoder next to " .. tostring(a:name()))
+	end
+	no_dec_since = nil
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. progress: the SoC infos
+-------------------------------------------------------------------------------------------------------
+local function cascade()
+	if has(F.OPENED) then give(F.DOORF); give(F.GOT) end
+	if has(F.DOORF) then give(F.BUNKER) end
+	if has(F.BUNKER) then give(F.GOT) end
+	if has(F.WISH) then give(F.FIND) end
+	if has(F.GOT) then give(F.ROOM) end
+	if has(F.ROOM) then give(F.HOTEL) end
+end
+
+function progress()
+	local lvl = level.name()
+	local acts = actors()
+	-- the arrival on a level is a SoC info on its own (zones / restrictors can be skipped by a teleport)
+	if #acts > 0 then
+		if lvl == L.PRI then give(F.PRI_ARR) end
+		if lvl == L.CNPP then give(F.CNPPV) end
+		if lvl == L.SAR then give(F.SARV) end
+		if lvl == L.CON then give(F.CC) end
+	end
+	-- the decoder: spawned in the hotel the first time the party is on Pripyat, found when a player holds it
+	if lvl == L.PRI and #acts > 0 and not has(F.SPAWNED) then spawn_stash() end
+	if not has(F.GOT) then
+		local o = held(STASH.section)
+		if o ~= nil then
+			give(F.GOT)
+			spot_all(stash_id or o:id(), false)
+			qlog("DECODER found by a player")
+		end
+	end
+	-- the zones
+	if lvl == L.PRI then
+		if any_in(BOX.hotel) then give(F.HOTEL) end
+		if any_in(BOX.room) then give(F.ROOM); give(F.HOTEL) end
+	elseif lvl == L.SAR then
+		if any_in(BOX.sneak) then give(F.FIND) end
+		if has(F.GOT) and any_in(BOX.bunker) then give(F.BUNKER) end
+		if has(F.GOT) and any_in(BOX.door) then give(F.DOORF); give(F.BUNKER) end
+	end
+	cascade()
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the stages: task id, open while ...
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	-- Radar / X-10: SoC bar_radar_deactivate objective 3, then rad_get_to_aes objective 0 with the Barkeep's briefing
+	{ id = "x10_start_turn_off_the_radar_quest_task", open = function()
+		return has(F.RAD) and not has(F.SW2) and not has(F.ARR_PRI) end },
+	{ id = "x10_start_leave_the_bunker_and_go_to_pripyat_quest_task", open = function()
+		return has(F.SW2) and not has(F.ARR_PRI) end },
+	-- Pripyat: SoC pripyat_task_1 / rad_get_to_aes objectives 1..3
+	{ id = "pri_start_meet_a_group_of_stalkers_quest_task", open = function()
+		return has(F.ARR_PRI) and not has(F.IDLE) and not at_cnpp() end },
+	{ id = "pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task", open = function()
+		return has(F.IDLE) and not (has(F.P19_1) and has(F.P19_2)) and not at_cnpp() end },
+	{ id = "pri_start_go_to_cnpp_quest_task", open = function()
+		return has(F.ARR_PRI) and not at_cnpp() end },
+	-- SoC cit_doctor_task: hotel, the room, the stash (the decoder)
+	{ id = "pri_soc_stash_1_task", open = function()
+		return has(F.PRI_ARR) and not has(F.HOTEL) and not has(F.GOT) and not at_cnpp() end },
+	{ id = "pri_soc_stash_2_task", open = function()
+		return has(F.HOTEL) and not has(F.ROOM) and not has(F.GOT) and not at_cnpp() end },
+	{ id = "pri_soc_stash_3_task", open = function()
+		return has(F.ROOM) and not has(F.GOT) and not at_cnpp() end },
+	-- CNPP: SoC rad_get_to_aes objective 4
+	{ id = "aes_1_start_go_to_sarcofag_quest_task", open = function()
+		return at_cnpp() and not at_sar() end },
+	-- Sarcophagus: SoC sar_monolith (get to the Monolith / sneak in / find the Wish Granter)
+	{ id = "sar_start_get_to_the_monolith_quest_task", open = function()
+		return at_sar() and not has(F.WISH) and not has(F.CC) end },
+	{ id = "sar_soc_sneak_in_task", open = function()
+		return at_sar() and not has(F.FIND) and not has(F.CC) end },
+	{ id = "sar_soc_find_wish_task", open = function()
+		return has(F.FIND) and not has(F.WISH) and not has(F.CC) end },
+	-- Sarcophagus: SoC sar_secret_lab (given when the decoder is got): bunker, hidden door, open it with the decoder, what is behind it
+	{ id = "sar_soc_lab_1_task", open = function()
+		return has(F.GOT) and not has(F.BUNKER) and not has(F.CC) end },
+	{ id = "sar_soc_lab_2_task", open = function()
+		return has(F.BUNKER) and not has(F.DOORF) and not has(F.CC) end },
+	{ id = "sar_start_open_the_door_to_monolith_management_quest_task", open = function()
+		return has(F.DOORF) and not has(F.OPENED) and not has(F.CC) end },
+	{ id = "sar_soc_lab_4_task", open = function()
+		return has(F.OPENED) and not has(F.CC) end },
+	-- Control Monolith: SoC sar_monolith_destroy (infiltrate the lab, solve the Monolith's secret) and sar_warlab (meet whoever is behind the Monolith)
+	{ id = "con_start_sneak_into_the_control_room_quest_task", open = function()
+		return has(F.CC) and not has(F.CON_SW) end },
+	{ id = "con_start_destroy_the_monolith_installation_1_quest_task", open = function()
+		return has(F.CON_SW) and not all_gens() end },
+	{ id = "con_start_talk_to_the_representative_awareness_quest_task", open = function()
+		return all_gens() and not has(F.STOP) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv, t_cl = 0, 0
+local gen = 0
+last = ""
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	local okp, errp = pcall(progress)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+						last = st.id .. " -> " .. tostring(pid)
+						-- the map spot of the stash goes to every player that gets a stash step (late joiners, respawned players)
+						if stash_id ~= nil and string.sub(st.id, 1, 13) == "pri_soc_stash" and not has(F.GOT) then
+							pcall(function() level.map_sync_spot(stash_id, SPOT, pid) end)
+						end
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+	local ok, err = pcall(insurance, now)
+	if not ok then qlog("INSURANCEERR " .. tostring(err)) end
+end
+
+-- client: the diary line of the stash (SoC article "Pripyat stash"), once per player
+news_shown = false
+local function player_flag()
+	local a = getLocalActor()
+	if a == nil then return nil end
+	return "SOC_AES_NEWS_" .. (string.gsub(string.upper(tostring(a:name())), "[^A-Z0-9]", "_"))
+end
+
+local function tick_client(now)
+	if now - t_cl < 2000 then return end
+	t_cl = now
+	if news_shown or not has(F.GOT) then return end
+	local a = getLocalActor()
+	if a == nil then return end
+	local pf = player_flag()
+	if pf == nil then return end
+	news_shown = true
+	if has(pf) then return end
+	give(pf)
+	pcall(function()
+		a:give_game_news(game.translate_string("coop_soc_aes_stash_news_name"), game.translate_string("coop_soc_aes_stash_news_text"),
+			"ui_iconsTotal_grouping", 0, 15000, 0)
+	end)
+	qlog("NEWS stash text shown to " .. tostring(a:name()))
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+function given_to(task_id, pid)
+	return given[task_id] ~= nil and given[task_id][pid] == true
+end
+
+-- tests: forget who got what
+function reset_given()
+	given = {}
+end
+
+function status()
+	local keys = { "RAD", "SW2", "ARR_PRI", "IDLE", "CNPP", "CNPPV", "PRI_ARR", "HOTEL", "ROOM", "GOT", "SAR_ARR", "SARV", "FIND", "WISH", "BUNKER", "DOORF", "OPENED", "CC", "CON_SW", "STOP", "SPAWNED", "INS" }
+	local t = {}
+	for _, k in ipairs(keys) do t[#t + 1] = k .. "=" .. tostring(has(F[k])) end
+	return table.concat(t, " ") .. " gens=" .. tostring(all_gens()) .. " stash=" .. tostring(stash_id)
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			local now = time_global()
+			if OnServer() then
+				local ok, err = pcall(tick_server, now)
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			if OnClient() then
+				local ok, err = pcall(tick_client, now)
+				if not ok then qlog("CLIENTTICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

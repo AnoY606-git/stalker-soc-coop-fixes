@@ -1,0 +1,201 @@
+-------------------------------------------------------------------------------------------------------
+-- Agroprom and Agroprom underground, original Shadow of Chernobyl order (patch agroprom_soc, see its NOTES.md).
+-- The file name starts with coop_scn_ so that the Scene Director (cutscenes_core) loads it on every level; it only installs a server tick.
+--
+-- 1. every task of the chain is handed to EVERY player (the stock xr_effects.give_task, used by restrictors and walkers, gives a task to the first
+--    player only and returns), once per player and level load, while its stage is open. A late joiner gets the tasks of the stage that is open now.
+--    A stage closes with the same condition that completes the task, so a task a player already finished is never given again after a reload.
+-- 2. the fallbacks of the chain (nothing may soft-lock):
+--      * Mole dead (squad flag of squad_descr_coop_l03_agroprom.ltx) before he gave the stash route: the route flag is given, as if the flash
+--        drive of his body had been read (SoC: Mole's flash drive). The chain goes on to the underground.
+--      * the case with the military documents in a player's inventory sets AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO (the task
+--        description / marker of Cordon's "Find the militaries' documents" follow it; it used to be set by the Agroprom documents task)
+--      * underground: a player near the stash box sets AGRU_SOC_STASH_FOUND (SoC objective "find the stash" done); a player carrying the
+--        Strelok flash drive (dev_flash_agru) sets AGRU_START_FIND_THE_SHOOTER_HIDING_PLACE_TASK_INFO (objective "take the information", starts the
+--        Ghost task) even when the task itself did not run on his machine
+-------------------------------------------------------------------------------------------------------
+
+local MAP_AGR  = "coop_l03_agroprom"
+local MAP_AGRU = "coop_l03_agroprom_underground"
+
+local F = {
+	HELP1     = "AGR_STALKER_HELP_1_INFO",                                                          -- first player at the Garbage gate (alarm stalker calls for help)
+	CAT       = "AGR_THE_ORDER_TO_KILL_STALKER_SPACE_RESTRICTOR_INFO",                              -- the call of Mole (camera flight) started
+	YARD      = "AGR_THE_ORDER_TO_KILL_MOLE_SPACE_RESTRICTOR_INFO",                                 -- a player reached the yard where Mole is held
+	M1        = "AGR_SMART_TERRAIN_5_MILITARY_1_SQUAD_DEAD",
+	M2        = "AGR_SMART_TERRAIN_5_MILITARY_2_SQUAD_DEAD",
+	MOLE_DEAD = "AGR_SMART_TERRAIN_4_STALKER_MOLE_SQUAD_DEAD",
+	MOLE_TALK = "AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO",       -- Mole gave the stash route (SoC agr_krot_secret_info)
+	GO_UNDER  = "AGR_START_GO_TO_THE_AGROPROM_UNDERGROUND_QUEST_TASK_INFO",                         -- a player arrived in the underground
+	DOCS      = "AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO",                             -- the case with the documents was taken
+	FOUND     = "AGRU_SOC_STASH_FOUND",
+	FLASH     = "AGRU_START_FIND_THE_SHOOTER_HIDING_PLACE_TASK_INFO",                               -- the flash drive of the stash was taken
+	SURFACE   = "AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO",                                   -- back on the Agroprom surface
+	GHOST     = "X16_GHOST_DOCS_TAKEN",                                                             -- Yantar: the Ghost documents were taken (patch yantar_restore)
+	SAHAROV   = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO",     -- Yantar main chain done (fallback)
+}
+
+local CASE_SECTION  = "agr_safe_container_1"
+local FLASH_SECTION = "dev_flash_agru"
+-- the stash: inventory box agru_equipment_rucksack_01_case_0000 of the underground (story id of the same name), holds dev_flash_agru
+local STASH = { x = -69.8, y = -5.7, z = -64.9, r = 7.0 }
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCAGR " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCAGR " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if has(f) then return end
+	pcall(story_flags.give_flag, f)
+	qlog("FLAG " .. f)
+end
+
+-- task id, level (nil = any level), open while ...
+local CHAIN = {
+	-- SoC agr_meet_krot_band (objectives 1 and 2: the description changes with AGR_START_FOLLOW_THE_STALKER_MOLE_QUEST_TASK_THE_AND_INFO)
+	{ id = "agr_start_follow_the_stalker_mole_quest_task", map = MAP_AGR,
+	  open = function() return has(F.HELP1) and not has(F.MOLE_TALK) end },
+	-- SoC agr_help_stalkers
+	{ id = "agr_soc_help_stalkers_task", map = MAP_AGR,
+	  open = function() return has(F.HELP1) and not (has(F.M1) or has(F.M2) or has(F.MOLE_TALK)) end },
+	-- SoC agr_help_krot: the call of Mole (camera flight), or the yard, or the first soldiers fell; over when both squads are dead or Mole is
+	{ id = "agr_start_save_the_stalker_mole_quest_task", map = MAP_AGR,
+	  open = function()
+		return (has(F.CAT) or has(F.YARD) or has(F.M1) or has(F.M2)) and not (has(F.M1) and has(F.M2))
+			and not has(F.MOLE_DEAD) and not has(F.MOLE_TALK) end },
+	-- SoC agroprom_find_gunslinger_cache objective 0 on the surface: Mole gave the route, go down
+	{ id = "agr_start_go_to_the_agroprom_underground_quest_task", map = MAP_AGR,
+	  open = function() return has(F.MOLE_TALK) and not has(F.GO_UNDER) end },
+	-- SoC agroprom_find_gunslinger_cache objectives 1 to 3 (find the stash, take the information, way out): one task, text and marker follow the flags
+	{ id = "agru_start_find_the_shooter_hiding_place_task", map = MAP_AGRU,
+	  open = function() return not has(F.SURFACE) end },
+	-- SoC agr_find_ghost: the flash drive of the stash, until Ghost's documents were found on Yantar
+	{ id = "agr_soc_find_ghost_task", map = nil,
+	  open = function() return has(F.FLASH) and not (has(F.GHOST) or has(F.SAHAROV)) end },
+}
+
+local given = {}      -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+
+local function each_player(fn)
+	if db == nil or db.mp_actors == nil then return end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil then
+			local okalive, alive = pcall(function() return a:alive() end)
+			if okalive and alive then fn(pid, a) end
+		end
+	end
+end
+
+local function player_has(a, section)
+	local ok, r = pcall(function() return a:object(section) ~= nil end)
+	return ok and r and true or false
+end
+
+-- fallbacks of the surface level
+local function agr_side()
+	-- Mole is dead: SoC keeps his flash drive on the body; the route is given so the chain goes on
+	if has(F.MOLE_DEAD) and not has(F.MOLE_TALK) then
+		qlog("MOLE DEAD before the talk: route flag given")
+		give(F.MOLE_TALK)
+	end
+end
+
+-- the case with the documents (any level: the old task checked the inventory on whatever level the player was; Garbage Duty and the repeatable
+-- jobs read the flag too)
+local function docs_side()
+	if not has(F.DOCS) then
+		each_player(function(pid, a)
+			if player_has(a, CASE_SECTION) then
+				qlog("case with the documents in the inventory of player " .. tostring(pid))
+				give(F.DOCS)
+			end
+		end)
+	end
+end
+
+-- fallbacks of the underground
+local function agru_side()
+	if not has(F.FOUND) then
+		each_player(function(pid, a)
+			local ok, d = pcall(function() return a:position():distance_to(vector():set(STASH.x, STASH.y, STASH.z)) end)
+			if ok and d ~= nil and d <= STASH.r then
+				qlog("stash found by player " .. tostring(pid) .. " d=" .. string.format("%.1f", d))
+				give(F.FOUND)
+			end
+		end)
+	end
+	if not has(F.FLASH) then
+		each_player(function(pid, a)
+			if player_has(a, FLASH_SECTION) then
+				qlog("flash drive in the inventory of player " .. tostring(pid))
+				give(F.FOUND)
+				give(F.FLASH)
+			end
+		end)
+	end
+	if has(F.FLASH) and not has(F.FOUND) then give(F.FOUND) end
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	if db == nil or db.mp_actors == nil then return end
+	local lvl = level.name()
+	if lvl == MAP_AGR then pcall(agr_side) elseif lvl == MAP_AGRU then pcall(agru_side) end
+	pcall(docs_side)
+	for _, st in ipairs(CHAIN) do
+		if st.map == nil or st.map == lvl then
+			local ok, isopen = pcall(st.open)
+			if ok and isopen then
+				each_player(function(pid, a)
+					if given[st.id] == nil or not given[st.id][pid] then
+						local ready = true
+						pcall(function() ready = IsActorNetReady(pid) end)
+						if ready then
+							given[st.id] = given[st.id] or {}
+							given[st.id][pid] = true
+							local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+							qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						end
+					end
+				end)
+			end
+		end
+	end
+end
+
+-- test hook: how many players got the task (server side)
+function served(id)
+	local n = 0
+	for _ in pairs(given[id] or {}) do n = n + 1 end
+	return n
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	local okn, ln = pcall(function() return level.name() end)
+	qlog("INSTALL gen=" .. my .. " level=" .. tostring(okn and ln or "?"))
+end
+
+-- loaded by the Scene Director on every level (once per Lua VM)
+pcall(function() install() end)

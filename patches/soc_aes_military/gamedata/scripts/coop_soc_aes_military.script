@@ -1,0 +1,480 @@
+-------------------------------------------------------------------------------------------------------
+-- CNPP-1, "Operation Monolith" of the original Shadow of Chernobyl (patch soc_aes_military).
+-- SoC (tasks_aes.xml, storyline_info_aes.xml, level.spawn of l12_stancia): the army assaults the power plant against the Monolith. A wounded soldier
+-- at the entrance holds the "Military action plan" (info aes_get_soldier_map, article "Situation"), the task aes_military_task marks the gate, the two
+-- Monolith fortifications, the sarcophagus and the army groups Sapsan, Korshun, Yastreb, Pustelga, Sokol, Grif, Sova and Lun, and a radio keeps
+-- reporting the battle (sound restrictors "aes_space_restrictor_sound_*", characters_voice\scenario\aes).
+--
+-- What the mod already has on coop_l11_stancia_1 and this patch does NOT touch: 12 army squads (smart terrains 4, 5, 7, 9, 11, squad_descr_coop_l11_
+-- stancia_1.ltx, created by the spawn_squad restrictors, hostile to the Monolith) and 8 helicopters (aes_1_heli_attack_*). So nothing is spawned here.
+-- What is added:
+--  1. the plan: found when a player stands where the SoC soldier lay (the dead soldiers of the mod are boxes next to that spot), or when the party passes
+--     the SoC "actor_ready" line (no player can miss it); shows the SoC article "Situation" once per player (game news)
+--  2. the task: given to EVERY living player on CNPP-1 once the plan is found (late joiners and respawned players too), stays until the sarcophagus
+--     (SoC aes_found_sarcofag). Steps follow the party: gate -> Monolith 1 -> Monolith 2 -> sarcophagus, by shared story flags
+--  3. the markers (green_location, hints from SoC): the first living soldier of each of the 8 groups (a squad of the mod, by its story id), the gate,
+--     the two fortifications and the sarcophagus. Server side map spots, synced to every player
+--  4. the radio: the SoC voice lines, played per player when HE crosses the SoC trigger zone of the line (same coordinates as the original level), in the
+--     voice language of that player (English = the Steam SoC recording, Russian = the Russian SoC recording; the two are different recordings)
+-- A dead NPC never blocks anything: no step needs a living soldier, the task only follows positions, the radio is cosmetic.
+-------------------------------------------------------------------------------------------------------
+
+local L = { CNPP = "coop_l11_stancia_1", SAR = "coop_l11_sarcofag" }
+
+local F = {
+	SAR_ARR = "AES_1_START_GO_TO_SARCOFAG_QUEST_TASK_INFO",   -- set by the Sarcophagus restrictor (read only)
+	SARV    = "SOC_AES_SAR_ARRIVED",                          -- set by soc_aes_quests when a player is in the Sarcophagus (read only)
+	PLAN    = "SOC_AESM_PLAN",                                -- the military action plan was found (SoC aes_get_soldier_map)
+	GATE    = "SOC_AESM_GATE",                                -- a player is at / beyond the gate
+	MONO1   = "SOC_AESM_MONO1",                               -- a player is at / beyond the first Monolith fortification
+	MONO2   = "SOC_AESM_MONO2",                               -- a player is at / beyond the second Monolith fortification
+	FOUND   = "SOC_AESM_FOUND",                               -- the sarcophagus is found (SoC aes_found_sarcofag)
+}
+
+-- SoC positions (the mod's level has the same coordinates as the original)
+local BODY  = { x = 919.4, y = -0.1, z = -217.3, r = 6.0 }    -- aes_stalker_0000 (the wounded soldier with the plan), SoC level.spawn
+local SARC  = { x = 387.6, y = 0.2,  z = -0.9,   r = 8.0 }    -- aes_space_restrictor_task_0000 (aes_found_sarcofag, sphere 2.7 m in SoC)
+local GATEX, MONO1X, MONO2X = 859.3, 726.4, 630.6              -- the road runs from x 919 (arrival) to x 387 (sarcophagus): progress = lowest x
+
+-- SoC trigger zones (space_restrictor boxes of l12_stancia; sx / sy / sz are full sizes, ox / oy / oz the shape offsets; spheres have r)
+local ZONE = {
+	actor_ready  = { x = 926.0, y = -0.1, z = -170.6, shapes = { { sx = 110.0, sy = 3.9, sz = 5.8, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	zabor        = { x = 920.9, y = -0.1, z = -67.5, shapes = { { sx = 98.6, sy = 3.5, sz = 6.4, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	btr          = { x = 924.1, y = 0.8, z = -62.9, shapes = { { sx = 106.1, sy = 6.8, sz = 22.1, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	gate         = { x = 859.3, y = -1.7, z = -42.9, shapes = { { sx = 21.6, sy = 6.9, sz = 48.3, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	momsters     = { x = 821.0, y = 0.0, z = -127.9, shapes = { { sx = 100.2, sy = 8.7, sz = 77.7, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	heli1        = { x = 781.8, y = 0.0, z = -162.2, shapes = { { sx = 42.3, sy = 8.8, sz = 42.3, ox = 0.0, oy = 0.0, oz = 0.0 }, { sx = 33.4, sy = 1.0, sz = 33.4, ox = 48.8, oy = -0.1, oz = 50.1 }, { sx = 45.9, sy = 1.0, sz = 45.9, ox = 135.8, oy = 0.0, oz = 137.7 }, { sx = 35.4, sy = 1.0, sz = 35.4, ox = 139.5, oy = -0.1, oz = 63.6 }, { sx = 89.4, sy = 2.8, sz = 16.7, ox = 134.5, oy = 0.0, oz = 18.7 } } },
+	ambush5      = { x = 724.0, y = 0.0, z = -23.9, shapes = { { sx = 23.4, sy = 10.5, sz = 194.9, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	bridge       = { x = 641.1, y = 5.1, z = -138.9, shapes = { { sx = 9.2, sy = 1.9, sz = 9.2, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	ambush1      = { x = 629.0, y = 0.0, z = -95.9, shapes = { { sx = 20.0, sy = 10.5, sz = 239.1, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	road2        = { x = 573.8, y = 2.9, z = -99.0, shapes = { { sx = 20.0, sy = 25.0, sz = 300.0, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	ambush2      = { x = 606.6, y = 6.2, z = -190.3, shapes = { { sx = 28.9, sy = 15.5, sz = 28.9, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	btr_ambush   = { x = 459.7, y = 0.0, z = -120.3, shapes = { { sx = 10.0, sy = 12.7, sz = 254.2, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	road_sound1  = { x = 473.1, y = 1.0, z = -203.4, shapes = { { sx = 10.0, sy = 10.0, sz = 90.0, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+	actor_sound  = { x = 404.4, y = -0.1, z = -107.7, shapes = { { r = 15.8, ox = 0.0, oy = 0.0, oz = 0.0 } } },
+}
+
+-- the radio: trigger -> SoC voice lines (characters_voice\scenario\aes\<eng|rus>\<line>, aes2\ in a sub folder), in the order of the SoC sound
+-- restrictors (sound_0000 .. sound_0052). The SoC infos that NPCs set (waves, helicopters) are mapped to the nearest zone of the road. "arrive" = the
+-- first moment on the level (SoC aes_first_sound). Every line ships twice (English from the Steam SoC, Russian from the Russian SoC), so the patch
+-- keeps the lines that fit its 3 MB: the SoC lines that are not here (and the triggers that would have only them: "road", "road_sound2") are listed
+-- in NOTES.md.
+RADIO = {
+	{ key = "ARR",  zone = nil,           lines = { "aes_chopers_begin_1" } },
+	{ key = "RDY",  zone = "actor_ready", lines = { "aes_chopers_begin_2" } },
+	{ key = "BTR",  zone = "btr",         lines = { "aes_choper_hunt_1", "aes_third_desant_wave" } },
+	{ key = "ZAB",  zone = "zabor",       lines = { "aes_desant_proceed_part_2", "aes_desant_proceed_part_3", "aes_desant_proceed_part_4" } },
+	{ key = "MON",  zone = "momsters",    lines = { "aes_monsters", "aes_desant_more_1" } },
+	{ key = "HE1",  zone = "heli1",       lines = { "aes_chopers_begin_3" } },
+	{ key = "GAT",  zone = "gate",        lines = { "aes_desant_gate" } },
+	{ key = "AM5",  zone = "ambush5",     lines = { "aes2\\aes_seven_desant_wave" } },
+	{ key = "BRG",  zone = "bridge",      lines = { "aes2\\aes_bridge_ambush_1", "aes2\\aes_rpg_1" } },
+	{ key = "AM1",  zone = "ambush1",     lines = { "aes2\\aes_road_battle_2" } },
+	{ key = "RD2",  zone = "road2",       lines = { "aes2\\aes_road_battle_3" } },
+	{ key = "AM2",  zone = "ambush2",     lines = { "aes2\\aes_road_battle_5" } },
+	{ key = "BAM",  zone = "btr_ambush",  lines = { "aes2\\aes_road_battle_4" } },
+	{ key = "RS1",  zone = "road_sound1", lines = { "aes2\\aes_road_battle_7" } },
+	{ key = "HNT",  zone = "actor_sound", lines = { "aes2\\aes_actor_hunt", "aes2\\aes_enter_battle_1" } },
+}
+local RADIO_DIR = "characters_voice\\scenario\\aes\\"   -- + eng\\ or rus\\ + the line
+local RADIO_GAP_MS = 2500      -- silence between two lines
+local RADIO_QUEUE_MAX = 6      -- older lines are dropped when the player runs ahead of the radio
+
+-- the markers: SoC objective texts (hints), carriers are server objects of the mod. group = story id of the army squad whose first living soldier carries it
+local SPOT = "green_location"
+local SPOTS = {
+	{ key = "gate",    hint = "coop_soc_aesm_gate",   smart = "aes_1_smart_terrain_1",  show = function() return not has_flag(F.GATE) end },
+	{ key = "mono1",   hint = "coop_soc_aesm_mono1",  smart = "aes_1_smart_terrain_2",  show = function() return not has_flag(F.MONO1) end },
+	{ key = "mono2",   hint = "coop_soc_aesm_mono2",  obj = "aes_1_smart_terrain_8_10_attack_space_restrictor", show = function() return not has_flag(F.MONO2) end },
+	{ key = "sarc",    hint = "coop_soc_aesm_sarc",   smart = "aes_1_smart_terrain_10", show = function() return true end },
+	{ key = "sapsan",  hint = "coop_soc_aesm_g_sapsan",  squad = "aes_1_smart_terrain_4_ordinary_military_1_squad", show = function() return true end },
+	{ key = "korshun", hint = "coop_soc_aesm_g_korshun", squad = "aes_1_smart_terrain_4_ordinary_military_2_squad", show = function() return true end },
+	{ key = "yastreb", hint = "coop_soc_aesm_g_yastreb", squad = "aes_1_smart_terrain_5_ordinary_military_1_squad", show = function() return true end },
+	{ key = "pustelga", hint = "coop_soc_aesm_g_pustelga", squad = "aes_1_smart_terrain_5_ordinary_military_2_squad", show = function() return true end },
+	{ key = "sokol",   hint = "coop_soc_aesm_g_sokol",   squad = "aes_1_smart_terrain_9_ordinary_military_1_squad", show = function() return true end },
+	{ key = "grif",    hint = "coop_soc_aesm_g_grif",    squad = "aes_1_smart_terrain_9_ordinary_military_2_squad", show = function() return true end },
+	{ key = "sova",    hint = "coop_soc_aesm_g_sova",    squad = "aes_1_smart_terrain_11_ordinary_military_1_squad", show = function() return true end },
+	{ key = "lun",     hint = "coop_soc_aesm_g_lun",     squad = "aes_1_smart_terrain_7_ordinary_military_1_squad", show = function() return true end },
+}
+
+local TASK_ID = "aes_military_task"
+local NEWS_FLAG_PREFIX = "SOC_AESM_NEWS_"
+
+function has_flag(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has_flag(f) then pcall(story_flags.give_flag, f) end
+end
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCAESM " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCAESM " .. tostring(s)) end
+end
+
+local function actors()
+	local t = {}
+	if db == nil or db.mp_actors == nil then return t end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then t[#t + 1] = a end
+	end
+	return t
+end
+
+-- is a point inside one box shape / sphere of a zone (axis aligned: the SoC restrictors have no rotation)
+local function in_shape(zone, s, p)
+	local cx, cy, cz = zone.x + s.ox, zone.y + s.oy, zone.z + s.oz
+	if s.r ~= nil then
+		local dx, dy, dz = p.x - cx, p.y - cy, p.z - cz
+		return dx * dx + dy * dy + dz * dz <= s.r * s.r
+	end
+	return math.abs(p.x - cx) <= s.sx / 2 and math.abs(p.y - cy) <= s.sy / 2 and math.abs(p.z - cz) <= s.sz / 2
+end
+
+local function in_zone(name, p)
+	local z = ZONE[name]
+	if z == nil then return false end
+	for _, s in ipairs(z.shapes) do
+		if in_shape(z, s, p) then return true end
+	end
+	return false
+end
+
+local function near(p, c)
+	local dx, dz = p.x - c.x, p.z - c.z
+	return dx * dx + dz * dz <= c.r * c.r and math.abs(p.y - c.y) <= 12
+end
+
+local function on_cnpp(acts)
+	return level.name() == L.CNPP and #acts > 0
+end
+
+local function at_sar()
+	return level.name() == L.SAR or has_flag(F.SAR_ARR) or has_flag(F.SARV)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. progress: the story flags, derived from the positions of the players (a teleport cannot skip a step: a later flag sets the earlier ones)
+-------------------------------------------------------------------------------------------------------
+local function cascade()
+	if has_flag(F.FOUND) then give(F.MONO2) end
+	if has_flag(F.MONO2) then give(F.MONO1) end
+	if has_flag(F.MONO1) then give(F.GATE) end
+	if has_flag(F.GATE) then give(F.PLAN) end
+end
+
+function progress()
+	local acts = actors()
+	if at_sar() and #acts > 0 then give(F.FOUND) end
+	if on_cnpp(acts) then
+		for _, a in ipairs(acts) do
+			local p = a:position()
+			if near(p, BODY) or in_zone("actor_ready", p) then give(F.PLAN) end
+			if in_zone("gate", p) or p.x <= GATEX then give(F.GATE) end
+			if p.x <= MONO1X then give(F.MONO1) end
+			if p.x <= MONO2X then give(F.MONO2) end
+			if near(p, SARC) then give(F.FOUND) end
+		end
+	end
+	cascade()
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the task: to EVERY living player on CNPP-1 once, while it is open
+-------------------------------------------------------------------------------------------------------
+local given = {}        -- player id -> true
+local t_srv, t_cl = 0, 0
+local gen = 0
+last = ""
+
+local function task_open()
+	return has_flag(F.PLAN) and not has_flag(F.FOUND)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. the markers (server): a map spot on a server object, synced to every player
+-------------------------------------------------------------------------------------------------------
+local spots = {}        -- key -> { id = carrier id, synced = { pid = true } }
+
+local function se_alive(se)
+	local ok, r = pcall(function() return se:alive() end)
+	if not ok then return true end
+	return r and true or false
+end
+
+-- the carrier of a marker: server id of a smart terrain, a named object or the first living soldier of an army squad
+local function carrier(def)
+	if def.squad ~= nil then
+		local sid = nil
+		pcall(function() sid = get_story_object_id(def.squad) end)
+		if sid == nil then return nil end
+		local sq = nil
+		pcall(function() sq = alife():object(sid) end)
+		if sq == nil then return nil end
+		local found = nil
+		pcall(function()
+			for m in sq:squad_members() do
+				local se = alife():object(m.id)
+				if se ~= nil and se_alive(se) then found = m.id break end
+			end
+		end)
+		return found
+	elseif def.smart ~= nil then
+		local sm = nil
+		pcall(function() sm = sim_board.get_sim_board():get_smart_by_name(def.smart) end)
+		if sm == nil then return nil end
+		return sm.id
+	elseif def.obj ~= nil then
+		local se = nil
+		pcall(function() se = alife():object(def.obj) end)
+		if se == nil then return nil end
+		return se.id
+	end
+	return nil
+end
+
+local function spot_remove(key)
+	local s = spots[key]
+	if s == nil then return end
+	pcall(level.map_remove_object_spot, s.id, SPOT)
+	spots[key] = nil
+end
+
+local function spots_off()
+	for key, _ in pairs(spots) do spot_remove(key) end
+end
+
+-- one pass of the markers; returns the number of spots that are on
+function spots_step()
+	local acts = actors()
+	if not task_open() or not on_cnpp(acts) then
+		spots_off()
+		return 0
+	end
+	local n = 0
+	for _, def in ipairs(SPOTS) do
+		local want = nil
+		if def.show() then want = carrier(def) end
+		local cur = spots[def.key]
+		if cur ~= nil and cur.id ~= want then spot_remove(def.key); cur = nil end
+		if want ~= nil then
+			if cur == nil then
+				pcall(level.map_add_object_spot_ser, want, SPOT, def.hint)
+				cur = { id = want, synced = {} }
+				spots[def.key] = cur
+			end
+			for _, a in ipairs(acts) do
+				local pid = a:id()
+				if not cur.synced[pid] then
+					cur.synced[pid] = true
+					pcall(function() level.map_sync_spot(want, SPOT, pid) end)
+				end
+			end
+			n = n + 1
+		end
+	end
+	return n
+end
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	local okp, errp = pcall(progress)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	local acts = actors()
+	if task_open() and on_cnpp(acts) then
+		for pid, a in pairs(db.mp_actors) do
+			if a ~= nil and a:alive() and not given[pid] then
+				local ready = true
+				pcall(function() ready = IsActorNetReady(pid) end)
+				if ready then
+					given[pid] = true
+					local ok2, err = pcall(function() GiveTaskToClient(TASK_ID, pid) end)
+					qlog("GIVE_TASK " .. TASK_ID .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+					out[#out + 1] = TASK_ID .. "|" .. tostring(pid)
+					last = TASK_ID .. " -> " .. tostring(pid)
+				end
+			end
+		end
+	end
+	local oks, errs = pcall(spots_step)
+	if not oks then qlog("SPOTSERR " .. tostring(errs)) end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 4. client: the "Situation" article once per player, and the radio
+-------------------------------------------------------------------------------------------------------
+local news_shown = false
+local fired = {}               -- trigger key -> true (this Lua VM)
+local queue = {}               -- SoC lines waiting for the radio
+local keep_snd = nil
+local idle_since = nil
+played = ""                    -- tests / logs: the last path handed to the sound engine
+played_n = 0
+
+local function pname()
+	local a = getLocalActor()
+	if a == nil then return nil end
+	return (string.gsub(string.upper(tostring(a:name())), "[^A-Z0-9]", "_"))
+end
+
+local function radio_flag(key)
+	local n = pname()
+	if n == nil then return nil end
+	return "SOC_AESM_R_" .. n .. "_" .. key
+end
+
+-- "rus" or "eng": the voice language of THIS player (voice_language auto | rus | eng of his own coop_settings.ltx, read by patch cutscenes_pkg_opening;
+-- without it the language of the game texts decides)
+local function voice_lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	local ok2, t = pcall(function() return game.translate_string("st_opt_windowed") end)
+	if ok2 and type(t) == "string" then
+		for i = 1, string.len(t) do
+			if string.byte(t, i) >= 168 then return "rus" end
+		end
+	end
+	return "eng"
+end
+
+local function enqueue(lines)
+	for _, l in ipairs(lines) do
+		queue[#queue + 1] = l
+	end
+	while #queue > RADIO_QUEUE_MAX do table.remove(queue, 1) end
+end
+
+local function play_line(now)
+	if #queue == 0 then return end
+	local la = getLocalActor()
+	if la == nil then return end
+	if keep_snd ~= nil then
+		local busy = false
+		pcall(function() busy = keep_snd:playing() end)
+		if busy then idle_since = nil return end
+		-- the gap is counted from the moment the previous line was seen to be over
+		if idle_since == nil then idle_since = now end
+		if now - idle_since < RADIO_GAP_MS then return end
+	end
+	local name = table.remove(queue, 1)
+	local v = RADIO_DIR .. voice_lang() .. "\\" .. name
+	idle_since = nil
+	local present = false
+	pcall(function() present = getFS():exist("$game_sounds$", v .. ".ogg") and true or false end)
+	if not present then qlog("NORADIO " .. v) return end
+	local ok = pcall(function()
+		keep_snd = sound_object(v)
+		keep_snd:play(la, 0, sound_object.s2d)
+	end)
+	if ok then
+		played = v
+		played_n = played_n + 1
+		qlog("RADIO " .. v)
+	end
+end
+
+local function radio_triggers(now)
+	local la = getLocalActor()
+	if la == nil or level.name() ~= L.CNPP or not la:alive() then return end
+	local p = la:position()
+	for _, tr in ipairs(RADIO) do
+		if not fired[tr.key] then
+			local hit = false
+			if tr.zone == nil then hit = true else hit = in_zone(tr.zone, p) end
+			if hit then
+				fired[tr.key] = true
+				local f = radio_flag(tr.key)
+				if f ~= nil and not has_flag(f) then
+					give(f)
+					enqueue(tr.lines)
+					qlog("RADIO_TRIGGER " .. tr.key)
+				end
+			end
+		end
+	end
+end
+
+local function tick_client(now)
+	if now - t_cl < 500 then return end
+	t_cl = now
+	local a = getLocalActor()
+	if a == nil then return end
+	pcall(radio_triggers, now)
+	pcall(play_line, now)
+	-- the article "Situation" (SoC info aes_get_soldier_map), once per player, when the plan is found and he is on CNPP-1
+	if not news_shown and has_flag(F.PLAN) and level.name() == L.CNPP then
+		news_shown = true
+		local pf = NEWS_FLAG_PREFIX .. tostring(pname())
+		if not has_flag(pf) then
+			give(pf)
+			pcall(function()
+				a:give_game_news(game.translate_string("coop_soc_aesm_news_name"), game.translate_string("coop_soc_aesm_news_text"),
+					"ui_iconsTotal_grouping", 0, 20000, 0)
+			end)
+			qlog("NEWS plan shown to " .. tostring(a:name()))
+		end
+	end
+end
+
+-- tests: the player ids that got the task from this tick (server side)
+function given_to(pid)
+	return given[pid] == true
+end
+
+function reset_given()
+	given = {}
+end
+
+function spot_ids()
+	local t = {}
+	for key, s in pairs(spots) do t[key] = s.id end
+	return t
+end
+
+function radio_fired(key)
+	return fired[key] == true
+end
+
+function radio_queue_len()
+	return #queue
+end
+
+function status()
+	local keys = { "PLAN", "GATE", "MONO1", "MONO2", "FOUND" }
+	local t = {}
+	for _, k in ipairs(keys) do t[#t + 1] = k .. "=" .. tostring(has_flag(F[k])) end
+	return table.concat(t, " ")
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			local now = time_global()
+			if OnServer() then
+				local ok, err = pcall(tick_server, now)
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			if OnClient() then
+				local ok, err = pcall(tick_client, now)
+				if not ok then qlog("CLIENTTICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

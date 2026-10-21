@@ -37,6 +37,8 @@ After a patch update that adds new settings, old lines keep working and the new 
 | `[ammo]` | ammo_per_extra_player, max_players | `coop_balance.cfg()` | same |
 | `[enemy_scaling]` | enabled, human_extra_per_player, mutant_extra_per_player, max_factor, max_extra_members, extra_squads_per_player, reinforce_cooldown_s, reinforce_first_delay_s, reinforce_min_distance, skip_levels, log | `player_scaling.cfg()` (player_scaling) | `player_scaling.ltx` |
 | `[box_loot]` | enabled, fallback_breakable, fallback_inventory, wood_chance, metal_chance, inventory_chance, items_per_roll, ammo_min, ammo_max | `stash_loot.config()` (stash_loot) | `misc\box_loot.ltx` `[settings]` |
+| `[garbage]` | duty_gate (true = the Garbage exit to the Bar is closed until the group has a pass; it opens by itself once the story is past the Garbage) | `coop_scn_garbage_duty` (garbage_duty) | script default true |
+| `[freeplay]` | enabled | `coop_scn_freeplay.enabled()` (freeplay) | script default true: true = after the true ending the party plays on at the Cordon rookie village (inventory and story flags kept), false = credits and main menu as before |
 | `[box_loot_items]` | bread, kolbasa, conserva, vodka, bandage, medkit, antirad, ammo (weights, 0 = never) | same | `[consumables]` |
 | `[repeat_quests]` | cooldown_min, timeout_mult, item_rewards | `coop_repeat_quests.load_cfg()` (repeatable_quests) | `misc\coop_repeat_quests.ltx` `[defaults]` (the last two are new, defaults 1 and true) |
 | `[mutant_loot]` | the 12 `mutant_*_part` chances, take_distance | `mutant_loot.chance_for()` / `take()` (mutant_loot) | `misc\mutant_loot.ltx` |
@@ -88,3 +90,23 @@ Last line of the hook: `HC done` in `qa_events.log`. Any `FAIL` line fails the t
 при первом запуске со всеми настройками, значениями по умолчанию и комментариями EN/RU. Остальным игрокам файл не нужен, отпечаток аддона не меняется. Неверное или отсутствующее значение
 = значение из db. Файл читается заново при каждой смене локации. В лог пишется строка `[HOSTCFG]` со всеми действующими значениями (из файла помечены `(file)`).
 В db остаётся всё, что должно совпадать у всех (награды деньгами, структура заданий, UI, текстуры) и опасные пределы (слоты смарт-терренов).
+
+
+## Personal `[client]` section (2026-10-21): the one part every player reads
+The file above is for the host. One section is different: `[client]` holds PER-PLAYER settings that are read on EVERY machine, also on a client that only joins a game, from that machine's own `coop_settings.ltx` (`_appdata_` of the player). Server behaviour is unchanged: `num` / `bool` / `str` still return the default at once on a non-server machine and never touch the file; `damage`, `ammo` ... are still read by the host only.
+
+| Section | Key | Values | Default | Consumer |
+|---|---|---|---|---|
+| `[client]` | `voice_language` | `auto`, `rus`, `eng` | `auto` | `coop_soc_opening.voice_lang()` (patch cutscenes_pkg_opening): voice of Sidorovich's opening speech and start dialog. `auto` = follow the game language; a line with no recording in the chosen language is silent. |
+
+- API: `coop_host_cfg.client_str(key, default)`. On the server (a host who also plays) it reads the normal parsed file; on any other machine it reads its own file by itself.
+- Writing: the first server start writes the full file including `[client]` (the group is the first one in the file, EN + RU comment lines). A machine that is not the server and has no file gets a small file with just the header and the `[client]` section. An existing file (also an older v1.4 test file) without `voice_language` gets the `[client]` block APPENDED (its other lines are untouched); a section appended on the host is parsed at the next read (next level start). Log lines: `[HOSTCFG] client settings coop_settings.ltx [file created | file read | file read, [client] section appended]: path=...` (`logs\host_cfg.log`).
+- Values are trimmed, case does not matter, `;` starts a comment; the consumer accepts `russian` / `ru` and `english` / `en` as well and treats anything else as `auto` (logged once as `SOCOPEN VOICE bad voice_language`).
+- `reload()` also drops the client state. The setting count in the start line is now 58 (was 57).
+- Offline: `tests/host_cfg_mock_test.py` has the new cases (client with and without file, appended section, BOM / case / comment, host with an old file, fresh file); all pass together with the old ones.
+
+### Кратко (RU)
+Раздел `[client]` в coop_settings.ltx личный: его читает КАЖДЫЙ игрок из своего файла (в том числе тот, кто только подключается). Сейчас там один ключ `voice_language = auto | rus | eng` (язык озвучки вступления Сидоровича, по умолчанию auto = язык игры). Файл или раздел создаётся при первом запуске (старый файл дополняется в конце, остальные строки не трогаются). Остальные разделы по-прежнему читает только хост.
+
+### Свободная игра (2026-10-21)
+Новый раздел `[freeplay]` (ключ `enabled`, по умолчанию true): после истинной концовки группа возвращается на Кордон и играет дальше; false = титры и главное меню, как раньше (патч freeplay).

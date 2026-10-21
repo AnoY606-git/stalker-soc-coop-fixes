@@ -1,0 +1,35 @@
+; Semenov, the second scientist of the original SoC (profile yan_Semenov, spawn yantar_semenov, story id 905), patch soc_yan_semenov.
+; Created by scripts\coop_soc_yan_semenov.script (custom_data of the spawn section [yan_soc_semenov]) at the SoC spawn point next to Sakharov's bunker.
+; SoC logic: stands at the bunker (walker@scientist_offline: path offline_walk, look ucheniy_talk_look, wounded = ignore); he cannot be hurt
+; until the escort trip (then the tick replaces him by the wounded one, see yan_soc_semenov_wounded.ltx).
+[logic]
+active = remark@yan_soc_semenov
+
+[remark@yan_soc_semenov]
+anim = wait
+; looks at Sakharov's place (SoC path ucheniy_talk_look is 5 m further west; the mod keeps the point of Sakharov's idle walker)
+target = path|yan_smart_terrain_1_walker_saharov_1_walk,0
+meet = meet@yan_soc_semenov
+invulnerable = true
+can_select_weapon = false
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+use_camp = false
+
+[meet@yan_soc_semenov]
+close_snd_hello = nil
+close_snd_bye = nil
+close_anim = hello_wpn
+close_victim = actor
+far_anim = nil
+far_victim = nil
+close_distance = 2
+far_distance = 0
+close_snd_distance = 0
+abuse = false
+use = {=actor_enemy} false, true
+allow_break = true
+meet_on_talking = true

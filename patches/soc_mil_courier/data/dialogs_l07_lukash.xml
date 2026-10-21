@@ -1,0 +1,264 @@
+    <dialog id="mil_soc_lukash_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>90001</next>
+                <next>90002</next>
+                <next>90003</next>
+                <next>90004</next>
+                <next>90005</next>
+                <next>90006</next>
+                <next>90007</next>
+                <next>90008</next>
+                <next>90009</next>
+                <next>90010</next>
+            </phrase>
+            <phrase id="90001">
+                <text />
+                <precondition>coop_soc_milc.lu_hub</precondition>
+                <next>1001</next>
+            </phrase>
+            <phrase id="90002">
+                <text />
+                <precondition>coop_soc_milc.lu_wait</precondition>
+                <next>2001</next>
+            </phrase>
+            <phrase id="90003">
+                <text />
+                <precondition>coop_soc_milc.lu_report</precondition>
+                <next>3001</next>
+            </phrase>
+            <phrase id="90004">
+                <text />
+                <precondition>coop_soc_milc.lu_capwait</precondition>
+                <next>9001</next>
+            </phrase>
+            <phrase id="90005">
+                <text />
+                <precondition>coop_soc_milc.lu_paid</precondition>
+                <next>10001</next>
+            </phrase>
+            <phrase id="90006">
+                <text />
+                <precondition>coop_soc_milc.lu_default</precondition>
+                <next>6001</next>
+            </phrase>
+            <phrase id="1001">
+                <action>coop_soc_mil_say.say_lu_1001</action>
+                <text>coop_soc_mil_lu_1001</text>
+                <next>1100</next>
+                <next>1200</next>
+                <next>14001</next>
+                <next>10011</next>
+            </phrase>
+            <phrase id="1100">
+                <action>coop_soc_mil_say.say_lu_1100</action>
+                <text>coop_soc_mil_lu_1100</text>
+                <precondition>coop_soc_mil.lu_new_alive</precondition>
+                <next>1101</next>
+            </phrase>
+            <phrase id="1101">
+                <action>coop_soc_mil_say.say_lu_1101</action>
+                <text>coop_soc_mil_lu_1101</text>
+                <next>11011</next>
+            </phrase>
+            <phrase id="11011">
+                <action>coop_soc_mil_say.say_lu_11011</action>
+                <text>coop_soc_mil_lu_11011</text>
+                <give_flag>MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO</give_flag>
+                <next>11012</next>
+            </phrase>
+            <phrase id="11012">
+                <action>coop_soc_mil_say.say_lu_11012</action>
+                <text>coop_soc_mil_lu_11012</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1200">
+                <action>coop_soc_mil_say.say_lu_1200</action>
+                <text>coop_soc_mil_lu_1200</text>
+                <precondition>coop_soc_mil.lu_new_dead</precondition>
+                <next>1210</next>
+            </phrase>
+            <phrase id="1210">
+                <action>coop_soc_mil_say.say_lu_1210</action>
+                <text>coop_soc_mil_lu_1210</text>
+                <next>1221</next>
+            </phrase>
+            <phrase id="1221">
+                <action>coop_soc_mil_say.say_lu_1221</action>
+                <text>coop_soc_mil_lu_1221</text>
+                <give_flag>MIL_SOC_LUKASH_JOB_DONE</give_flag>
+                <next>1222</next>
+            </phrase>
+            <phrase id="14001">
+                <action>coop_soc_mil_say.say_lu_14001</action>
+                <text>coop_soc_mil_lu_14001</text>
+                <precondition>coop_soc_mil.lu_offer</precondition>
+                <next>7003</next>
+            </phrase>
+            <phrase id="10011">
+                <action>coop_soc_mil_say.say_lu_10011</action>
+                <text>coop_soc_mil_lu_10011</text>
+                <next>10012</next>
+            </phrase>
+            <phrase id="10012">
+                <action>coop_soc_mil_say.say_lu_10012</action>
+                <text>coop_soc_mil_lu_10012</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="2001">
+                <action>coop_soc_mil_say.say_lu_2001</action>
+                <text>coop_soc_mil_lu_2001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3001">
+                <action>coop_soc_mil_say.say_lu_3001</action>
+                <text>coop_soc_mil_lu_3001</text>
+                <next>3002</next>
+            </phrase>
+            <phrase id="3002">
+                <action>coop_soc_mil_say.say_lu_3002</action>
+                <text>coop_soc_mil_lu_3002</text>
+                <give_flag>MIL_SOC_LUKASH_JOB_DONE</give_flag>
+                <next>30021</next>
+            </phrase>
+            <phrase id="7003">
+                <action>coop_soc_mil_say.say_lu_7003</action>
+                <text>coop_soc_mil_lu_7003</text>
+                <next>7004</next>
+                <next>7006</next>
+            </phrase>
+            <phrase id="7004">
+                <action>coop_soc_mil_say.say_lu_7004</action>
+                <text>coop_soc_mil_lu_7004</text>
+                <give_flag>MIL_SOC_BLOCKPOST_ACCEPTED</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="7006">
+                <action>coop_soc_mil_say.say_lu_7006</action>
+                <text>coop_soc_mil_lu_7006</text>
+                <next>7007</next>
+            </phrase>
+            <phrase id="7007">
+                <action>coop_soc_mil_say.say_lu_7007</action>
+                <text>coop_soc_mil_lu_7007</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="9001">
+                <action>coop_soc_mil_say.say_lu_9001</action>
+                <text>coop_soc_mil_lu_9001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="10001">
+                <action>coop_soc_mil_say.say_lu_10001</action>
+                <text>coop_soc_mil_lu_10001</text>
+                <action>coop_soc_mil.pay_member</action>
+                <give_flag>MIL_SOC_FREEDOM_QUESTS_END</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="6001">
+                <action>coop_soc_mil_say.say_lu_6001</action>
+                <text>coop_soc_mil_lu_6001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="90007">
+                <text />
+                <precondition>coop_soc_milc.lu_coffer</precondition>
+                <next>13001</next>
+            </phrase>
+            <phrase id="90008">
+                <text />
+                <precondition>coop_soc_milc.lu_cwait</precondition>
+                <next>4001</next>
+            </phrase>
+            <phrase id="90009">
+                <text />
+                <precondition>coop_soc_milc.lu_cpay</precondition>
+                <next>5001</next>
+            </phrase>
+            <phrase id="90010">
+                <text />
+                <precondition>coop_soc_milc.lu_cfail</precondition>
+                <next>7001</next>
+            </phrase>
+            <phrase id="1222">
+                <action>coop_soc_milc_say.say_lu_1222</action>
+                <text>coop_soc_milc_lu_1222</text>
+                <next>1223</next>
+            </phrase>
+            <phrase id="30021">
+                <action>coop_soc_milc_say.say_lu_30021</action>
+                <text>coop_soc_milc_lu_30021</text>
+                <next>1223</next>
+            </phrase>
+            <phrase id="1223">
+                <action>coop_soc_milc_say.say_lu_1223</action>
+                <text>coop_soc_milc_lu_1223</text>
+                <next>1300</next>
+            </phrase>
+            <phrase id="1300">
+                <action>coop_soc_milc_say.say_lu_1300</action>
+                <text>coop_soc_milc_lu_1300</text>
+                <next>1301</next>
+                <next>1391</next>
+            </phrase>
+            <phrase id="1301">
+                <action>coop_soc_milc_say.say_lu_1301</action>
+                <text>coop_soc_milc_lu_1301</text>
+                <next>1500</next>
+            </phrase>
+            <phrase id="1391">
+                <action>coop_soc_milc_say.say_lu_1391</action>
+                <text>coop_soc_milc_lu_1391</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1500">
+                <action>coop_soc_milc_say.say_lu_1500</action>
+                <text>coop_soc_milc_lu_1500</text>
+                <next>1501</next>
+            </phrase>
+            <phrase id="1501">
+                <action>coop_soc_milc_say.say_lu_1501</action>
+                <text>coop_soc_milc_lu_1501</text>
+                <give_flag>MIL_SOC_COURIER_START</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="13001">
+                <action>coop_soc_milc_say.say_lu_13001</action>
+                <text>coop_soc_milc_lu_13001</text>
+                <next>13002</next>
+            </phrase>
+            <phrase id="13002">
+                <action>coop_soc_milc_say.say_lu_13002</action>
+                <text>coop_soc_milc_lu_13002</text>
+                <next>30021</next>
+            </phrase>
+            <phrase id="4001">
+                <action>coop_soc_milc_say.say_lu_4001</action>
+                <text>coop_soc_milc_lu_4001</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="5001">
+                <action>coop_soc_milc_say.say_lu_5001</action>
+                <text>coop_soc_milc_lu_5001</text>
+                <action>coop_soc_milc.pay_courier</action>
+                <give_flag>MIL_SOC_COURIER_DONE</give_flag>
+                <next>5002</next>
+            </phrase>
+            <phrase id="5002">
+                <action>coop_soc_milc_say.say_lu_5002</action>
+                <text>coop_soc_milc_lu_5002</text>
+                <next>7003</next>
+            </phrase>
+            <phrase id="7001">
+                <action>coop_soc_milc_say.say_lu_7001</action>
+                <text>coop_soc_milc_lu_7001</text>
+                <next>7002</next>
+            </phrase>
+            <phrase id="7002">
+                <action>coop_soc_milc_say.say_lu_7002</action>
+                <text>coop_soc_milc_lu_7002</text>
+                <next>7003</next>
+            </phrase>
+        </phrase_list>
+    </dialog>

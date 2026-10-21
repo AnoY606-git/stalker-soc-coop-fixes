@@ -1,0 +1,240 @@
+-------------------------------------------------------------------------------------------------------
+-- Dark Valley / lab X18 / Barkeep job chain, original Shadow of Chernobyl (patch soc_dv_x18_quests).
+-- SoC chain: Barkeep job "Find the documents in the underground lab" (bar_darklab_documents: sneak into the base, take Borov's key,
+-- get out of the base, find the lab entrance) -> "Find the documents in X18" (bar_darklab_documents2, started on entering the lab:
+-- find the documents, bring them to the BARKEEP) with the code doors (dar_codedoor_1/2: discover the code, open the door using the code)
+-- -> the raid (val_come_to_trader) -> Barkeep X16 job. Also val_captive_help (Bullet) and val_prisoner_help (Serega).
+--
+-- Everything is driven by SHARED story flags (saved, synced to every player) plus a server tick (1 s):
+--  1. progress(): derives the SoC infos from the world (position of the players, items in their inventories, flags set by the
+--     level logic) and makes the chain monotonic: a later flag also sets every earlier one, so a skipped step never blocks the chain
+--  2. every task whose stage is open is given to EVERY living player once (stock xr_effects.give_task hands a task to the first player only),
+--     so late joiners get all open tasks too; the engine ignores a task a player already has
+-- A dead NPC never blocks anything: every wait is a flag, and each task has a fail / done flag of its own.
+-------------------------------------------------------------------------------------------------------
+
+local DV = "coop_l04_darkvalley"
+
+-- the bandit base in the north east of the level (Borov's house 28/-84, prison 47/-58, base door 38/-54): "sneak into the base" is
+-- a player within R_IN of its middle, "get out of the base" is every player on the level farther than R_OUT from it
+local BASE = { x = 36.0, z = -70.0 }
+local R_IN = 30.0
+local R_OUT = 75.0
+
+local F = {
+	JOB       = "ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO",                      -- Sidorovich gave the Agroprom documents job
+	AGR_DONE  = "BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO",          -- Agroprom documents handed to the Barkeep
+	GO        = "BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_DARKVALLEY_STOP_DIALOG_INFO",               -- the Barkeep job was accepted (SoC bar_darklab_document_start)
+	GO_AUTOSV = "BAR_START_SNEAK_INTO_THE_X_18_LAB_QUEST_TASK_INFO",                                   -- old name, the Borov autosave of the level logic reads it
+	BASE      = "VAL_ACTOR_ON_BANDITS_BASE",
+	BOROV_DEAD = "VAL_SMART_TERRAIN_12_BANDIT_1_SQUAD_DEAD",
+	KEY       = "VAL_ACTOR_HAS_BOROV_KEY",
+	LEAVE     = "VAL_ACTOR_LEAVE_BANDITS_BASE",
+	LAB       = "VAL_START_SNEAK_INTO_THE_X_18_LAB_1_QUEST_TASK_INFO",                                 -- a player entered the lab (set by the lab restrictor)
+	DOOR      = "VAL_X18_DOOR_OPEN",
+	RUN       = "DAR_RUN_QUEST",
+	GAIN      = "BAR_DARKLAB_DOCUMENT_GAIN",
+	DONE      = "BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO",     -- documents handed to the Barkeep (SoC bar_darklab_document_done)
+	RAID      = "VAL_RAID_START",
+	RETURN    = "ESC_RETURN_FROM_DV_INFO",
+	YANTAR    = "BAR_START_GO_TO_YANTAR_QUEST_TASK_INFO",
+	ESCORT    = "VAL_ESCORT_TASK_START",                                                               -- Bullet asks for help (set by his logic)
+	AMBUSH    = "VAL_SMART_TERRAIN_19_SPAWN_SQUAD_SPACE_RESTRICTOR_INFO",
+	BULLET_DEAD = "VAL_SMART_TERRAIN_18_DUTY_BULLET_SQUAD_DEAD",
+	CAPTOR_DEAD = "VAL_SMART_TERRAIN_19_BANDIT_1_SQUAD_DEAD",
+	CAPTIVE_DEAD = "VAL_SMART_TERRAIN_19_DUTY_1_SQUAD_DEAD",
+	PRISONER  = "VAL_ESCORT_HELP_PRISONER_TASK",
+	CELL_OPEN = "VAL_VAL_DOOR_METAL_2_OPEN_INFO",
+	SEREGA_DEAD = "VAL_SMART_TERRAIN_20_DUTY_1_SQUAD_DEAD",
+	DOOR1     = "DAR_DOOR1_CLOSED",
+	DOOR2     = "DAR_DOOR2_CLOSED",
+	OPEN1     = "X18_CODEDOOR_1_OPEN_INFO",
+	OPEN2     = "X18_CODEDOOR_2_OPEN_INFO",
+}
+local DOCF = { "X18_START_GO_TO_X18_DOC_1_TASK_INFO", "X18_START_GO_TO_X18_DOC_2_TASK_INFO", "X18_START_GO_TO_X18_DOC_3_TASK_INFO" }
+local DOCS = { "dev_document_1_x18", "dev_document_2_x18", "dev_document_3_x18" }
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has(f) then pcall(story_flags.give_flag, f) end
+end
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCDV " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCDV " .. tostring(s)) end
+end
+
+-- any living player holds the item (the same check as xr_conditions.any_actor_has_item, which the stock task conditions use on the server)
+local function any_has(section)
+	if db.mp_actors == nil then return false end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then
+			local ok, o = pcall(function() return a:object(section) end)
+			if ok and o ~= nil then return true end
+		end
+	end
+	return false
+end
+
+local function dist2d(a)
+	local p = a:position()
+	local dx, dz = p.x - BASE.x, p.z - BASE.z
+	return math.sqrt(dx * dx + dz * dz)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. progress: the SoC infos
+-------------------------------------------------------------------------------------------------------
+local function cascade()
+	if has(F.GAIN) or has(F.LAB) then give(F.DOOR); give(F.RUN) end   -- documents in hand / lab entered: SoC door info + start info of bar_darklab_documents2
+	if has(F.DOOR) then give(F.LEAVE) end
+	if has(F.LEAVE) then give(F.KEY) end
+	if has(F.BOROV_DEAD) then give(F.KEY) end                       -- no soft-lock: a dead Borov (killed by anybody) also ends "take the key"
+	if has(F.KEY) then give(F.BASE) end
+end
+
+function progress()
+	-- the X18 documents: the SoC "find the documents" ends when the party holds all of them (the mod has three, SoC one)
+	local all = true
+	for i = 1, 3 do
+		if not has(DOCF[i]) then
+			if any_has(DOCS[i]) then give(DOCF[i]) else all = false end
+		end
+	end
+	if all or has(F.DONE) then give(F.GAIN) end
+	if has(F.GO) then give(F.GO_AUTOSV) end
+	-- Serega: Bullet's rescue is over, now the Duty prisoner of the bandit base
+	if has(F.CAPTOR_DEAD) then give(F.PRISONER) end
+
+	cascade()
+	-- the Dark Valley zones (positions of the players on this level)
+	if level.name() == DV and db.mp_actors ~= nil then
+		local inside, outside, n = false, 0, 0
+		for pid, a in pairs(db.mp_actors) do
+			if a ~= nil and a:alive() then
+				n = n + 1
+				local d = dist2d(a)
+				if d < R_IN then inside = true end
+				if d > R_OUT then outside = outside + 1 end
+			end
+		end
+		if inside then give(F.BASE) end
+		if has(F.KEY) and has(F.BASE) and n > 0 and outside == n then give(F.LEAVE) end
+	end
+	cascade()
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the stages: task id, open while ...
+-------------------------------------------------------------------------------------------------------
+local function fin_darklab() return has(F.DOOR) end
+
+STAGES = {
+	-- Bullet / captive (SoC val_captive_help, two objectives)
+	{ id = "val_start_follow_the_bullet_quest_task", open = function()
+		return has(F.ESCORT) and not has(F.AMBUSH) and not has(F.BULLET_DEAD) end },
+	{ id = "val_start_save_the_prisoner_quest_task", open = function()
+		return has(F.AMBUSH) and not has(F.CAPTOR_DEAD) and not has(F.CAPTIVE_DEAD) and not has(F.BULLET_DEAD) end },
+	-- Serega in the bandit prison (SoC val_prisoner_help)
+	{ id = "val_soc_prisoner_task", open = function()
+		return has(F.PRISONER) and not has(F.CELL_OPEN) and not has(F.SEREGA_DEAD) end },
+	-- Barkeep job (SoC bar_darklab_documents, four objectives in this order)
+	{ id = "val_soc_darklab_1_task", open = function()
+		return has(F.GO) and not has(F.BASE) end },
+	{ id = "val_soc_darklab_2_task", open = function()
+		return has(F.GO) and has(F.BASE) and not has(F.KEY) end },
+	{ id = "val_soc_darklab_3_task", open = function()
+		return has(F.GO) and has(F.KEY) and not has(F.LEAVE) end },
+	{ id = "val_soc_darklab_4_task", open = function()
+		return has(F.GO) and has(F.LEAVE) and not fin_darklab() end },
+	-- code doors (SoC dar_codedoor_1 / 2: discover the code, then open the door using the code)
+	{ id = "x18_soc_codedoor_1_code_task", open = function()
+		return has(F.DOOR1) and not has(DOCF[1]) and not has(F.OPEN1) end },
+	{ id = "x18_soc_codedoor_1_open_task", open = function()
+		return has(F.DOOR1) and has(DOCF[1]) and not has(F.OPEN1) end },
+	{ id = "x18_soc_codedoor_2_code_task", open = function()
+		return has(F.DOOR2) and not has(DOCF[2]) and not has(F.OPEN2) end },
+	{ id = "x18_soc_codedoor_2_open_task", open = function()
+		return has(F.DOOR2) and has(DOCF[2]) and not has(F.OPEN2) end },
+	-- documents (SoC bar_darklab_documents2, started on entering the lab; its second objective is the Barkeep, not Sidorovich)
+	{ id = "val_start_sneak_into_the_x_18_lab_1_quest_task", open = function()
+		return has(F.RUN) and not has(F.GAIN) and not has(F.DONE) end },
+	{ id = "val_start_take_the_documents_to_the_barmen_quest_task", open = function()
+		return has(F.GAIN) and not has(F.DONE) end },
+	-- SoC val_come_to_trader: the raid, "Get out of the Dark Valley"; fails when the documents are done at the Barkeep
+	{ id = "val_start_get_out_via_south_gate_quest_task", open = function()
+		return has(F.RAID) and not has(F.RETURN) and not has(F.DONE) end },
+	-- the Yantar line (SoC bar_x16_documents) is given when the player ACCEPTS the X16 job in the Barkeep dialog: patch bar_soc_quests (coop_soc_barros.script)
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+last = ""
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	local okp, errp = pcall(progress)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db.mp_actors == nil then return out end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+						last = st.id .. " -> " .. tostring(pid)
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what
+function reset_given()
+	given = {}
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

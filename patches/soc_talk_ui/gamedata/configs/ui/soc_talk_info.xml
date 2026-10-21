@@ -1,0 +1,74 @@
+<w>
+	<!-- Decoration of the talk window, built by scripts/soc_talk_info (soc_talk_ui.script). Same anchor and size as talk.xml main. -->
+	<info anchor="mid-center" x="0" y="0" width="1920" height="1080"/>
+	<top_bg x="0" y="0" width="0" height="0" stretch="1">
+		<!-- shade stripe removed (FOSTER); the node stays because the script creates it by name -->
+	</top_bg>
+	<bot_bg x="0" y="1035" width="0" height="0" stretch="1">
+		<!-- shade stripe removed (FOSTER); the node stays because the script creates it by name -->
+	</bot_bg>
+	<header1 x="538" y="59" width="844" height="105" stretch="1">
+		<texture>ui_talk_dialogue_b</texture>
+	</header1>
+	<header2 x="538" y="682" width="844" height="138" stretch="1">
+		<texture>ui_talk_dialogue2_b</texture>
+	</header2>
+	<title_npc x="573" y="63" width="525" height="31" stretch="1">
+		<text font="graffiti22" color="ui_7" complex_mode="0" align="l"/>
+	</title_npc>
+	<title_actor x="573" y="766" width="525" height="31" stretch="1">
+		<text font="graffiti22" color="ui_7" complex_mode="0" align="l"/>
+	</title_actor>
+	<l_panel x="28" y="45" width="281" height="307" stretch="1">
+		<texture>ui_soc_talk_charinfo_left</texture>
+	</l_panel>
+	<l_name x="60" y="55" width="215" height="31" stretch="1">
+		<text font="graffiti22" color="ui_7" complex_mode="0" align="l"/>
+	</l_name>
+	<l_icon x="53" y="94" width="232" height="152" stretch="1">
+	</l_icon>
+	<l_rank_c x="60" y="256" width="215" height="21">
+		<text font="letterica16" color="ui_8" align="l" complex_mode="0">ui_st_rank</text>
+	</l_rank_c>
+	<l_rank_v x="60" y="256" width="215" height="21">
+		<text font="letterica16" color="ui_6" align="r" complex_mode="0"/>
+	</l_rank_v>
+	<l_comm_c x="60" y="276" width="215" height="21">
+		<text font="letterica16" color="ui_8" align="l" complex_mode="0">ui_st_community</text>
+	</l_comm_c>
+	<l_comm_v x="60" y="276" width="215" height="21">
+		<text font="letterica16" color="ui_6" align="r" complex_mode="0"/>
+	</l_comm_v>
+	<l_rel_c x="60" y="294" width="215" height="21">
+		<text font="letterica16" color="ui_8" align="l" complex_mode="0">ui_st_relation</text>
+	</l_rel_c>
+	<l_rel_v x="60" y="294" width="215" height="21">
+		<text font="letterica16" color="ui_6" align="r" complex_mode="0"/>
+	</l_rel_v>
+	<r_panel x="1611" y="45" width="281" height="307" stretch="1">
+		<texture>ui_soc_talk_charinfo_right</texture>
+	</r_panel>
+	<r_name x="1643" y="55" width="215" height="31" stretch="1">
+		<text font="graffiti22" color="ui_7" complex_mode="0" align="l"/>
+	</r_name>
+	<r_icon x="1636" y="94" width="232" height="152" stretch="1">
+	</r_icon>
+	<r_rank_c x="1643" y="256" width="215" height="21">
+		<text font="letterica16" color="ui_8" align="l" complex_mode="0">ui_st_rank</text>
+	</r_rank_c>
+	<r_rank_v x="1643" y="256" width="215" height="21">
+		<text font="letterica16" color="ui_6" align="r" complex_mode="0"/>
+	</r_rank_v>
+	<r_comm_c x="1643" y="276" width="215" height="21">
+		<text font="letterica16" color="ui_8" align="l" complex_mode="0">ui_st_community</text>
+	</r_comm_c>
+	<r_comm_v x="1643" y="276" width="215" height="21">
+		<text font="letterica16" color="ui_6" align="r" complex_mode="0"/>
+	</r_comm_v>
+	<r_rel_c x="1643" y="294" width="215" height="21">
+		<text font="letterica16" color="ui_8" align="l" complex_mode="0">ui_st_relation</text>
+	</r_rel_c>
+	<r_rel_v x="1643" y="294" width="215" height="21">
+		<text font="letterica16" color="ui_6" align="r" complex_mode="0"/>
+	</r_rel_v>
+</w>

@@ -1,0 +1,2 @@
+-- loaded by the Scene Director like every coop_scn_*.script: starts the tick of the snitch / Bulldog 6 jobs (coop_soc_milc.script)
+pcall(function() coop_soc_milc.install() end)

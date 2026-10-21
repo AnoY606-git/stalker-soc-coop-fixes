@@ -1,0 +1,35 @@
+[logic]
+active = ph_door@locked_idle
+
+[ph_door@locked_idle]
+locked = true
+closed = true
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_use = ph_door@locked_start_quest %+DAR_DOOR1_CLOSED%
+
+[ph_door@locked_start_quest]
+locked = true
+closed = true
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_info = {+X18_CODEDOOR_1_OPEN_INFO} ph_door@open
+
+[ph_door@near]
+locked 												= false
+closed 												= true
+snd_open_start 										= metal_small_open
+snd_close_start 									= metal_small_close_start
+snd_close_stop 										= metal_small_close_stop
+on_use 												= ph_door@open
+
+
+[ph_door@open]
+locked = false
+closed = false
+snd_open_start = metal_small_open
+snd_close_start = metal_small_close_start
+snd_close_stop = metal_small_close_stop
+on_use 												= ph_door@near

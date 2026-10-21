@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="coop_soc_yan_sem_s_21113"><text>OK, I agree.</text></string>
+	<string id="coop_soc_yan_sem_s_211131"><text>Excellent! Talk to Semenov and get going. He's got everything you will need.</text></string>
+	<string id="coop_soc_yan_sem_s_211132"><text>OK.</text></string>
+	<string id="coop_soc_yan_sem_s_51"><text>Why did he die? Weren't you supposed to protect him?!</text></string>
+	<string id="coop_soc_yan_sem_s_511"><text>Semenov got shot by the zombies... I couldn't help it, there were too many of them.</text></string>
+	<string id="coop_soc_yan_sem_s_5111"><text>Oh, man...how could this happen? How could this happen??! Damn it, everything is going wrong again. Now we'll have to call for more people... We've got enough problems as it is... Damn...</text></string>
+	<string id="coop_soc_yan_sem_s_51111"><text>Listen... Semenov is gone, but I'm alive. Give me the prototype. I will fight my way inside X16.</text></string>
+	<string id="coop_soc_yan_sem_s_511111"><text>Here is a prototype, be careful with it. It's not calibrated properly, but that's your fault - you failed to save our colleague. The device won't provide maximum protection, but at least it will lower the emission's intensity. So, stalker, you'll have to move fast on your way to the source.</text></string>
+	<string id="coop_soc_yan_sem_s_5111111"><text>How does one get inside Lab X16? Where exactly is the entrance?</text></string>
+	<string id="coop_soc_yan_sem_s_511111111"><text>Vasiliev was working on the lab issue. About a week ago he and a stalker called Ghost tried to get inside. A couple of hours later we felt a major tremor, and after another hour we picked up a signal from Vasiliev coming from the swamp, but it died away. And Vasiliev died away with it, it would seem. Try to find his corpse. He had the exact information on the lab and the way to get into it. There may even be info on deactivating that source of the emission. I've uploaded you all the data we have.</text></string>
+	<string id="coop_soc_yan_sem_s_51112"><text>Ahem...It would be very interesting to take a look at these documents. So, you think Vasiliev has them?</text></string>
+	<string id="coop_soc_yan_sem_s_51113"><text>Perhaps. At any rate, you must start by finding Vasiliev's body - that is the only chance of obtaining accurate information about the lab's location. The body of your colleague, Ghost, must be somewhere there as well. You know, it seemed to me like he knew a lot more about X16 than he admitted to us. Had he somehow survived... Well, it's no use holding on to that hope, of course.</text></string>
+	<string id="coop_soc_yan_sem_s_51114"><text>OK, I'll try.</text></string>
+	<string id="coop_soc_yan_sem_m_61"><text>I'm sorry, I have no time for this right now.</text></string>
+	<string id="coop_soc_yan_sem_m_51"><text>Yes, Marked One?</text></string>
+	<string id="coop_soc_yan_sem_m_511"><text>Professor asked me to take a trip to the measurement site.</text></string>
+	<string id="coop_soc_yan_sem_m_512"><text>Now you're talking business! Let's move out immediately. It was no use getting there alone, but with you it's different... I think we'll manage quickly - just make sure not to let those cadavers too close to you. So, you ready?</text></string>
+	<string id="coop_soc_yan_sem_m_513"><text>Yeah.</text></string>
+	<string id="coop_soc_yan_sem_m_514"><text>You know what... Why don't you go first. You've got a whole lot of experience, unlike me. And those cadavers are starting to move again...</text></string>
+	<string id="coop_soc_yan_sem_m_515"><text>OK.</text></string>
+	<string id="coop_soc_yan_sem_m_101"><text>There's no time...</text></string>
+	<string id="coop_soc_yan_sem_m_71"><text>Hey, Marked One! How's life?</text></string>
+	<string id="coop_soc_yan_sem_w_11"><text>Yipe!. Ouch... argh..</text></string>
+	<string id="coop_soc_yan_sem_w_111"><text>You alive? C'mon, get up... Get up slowly. It's all over. It's behind us now.</text></string>
+	<string id="coop_soc_yan_sem_w_211"><text>Done! Pack the camera, time to get going!</text></string>
+	<string id="coop_soc_yan_sem_w_31"><text>Hey, Marked One! How's life?</text></string>
+	<string id="coop_soc_yan_sem_name"><text>Assistant Semenov</text></string>
+	<string id="coop_soc_yan_sem_bio"><text>Research assistant at the mobile lab. No details available.</text></string>
+	<string id="coop_soc_yan_sem_return_name"><text>Talk to Sakharov</text></string>
+	<string id="coop_soc_yan_sem_tip_1"><text>What happened? Is he dead? Come back immediately!</text></string>
+	<string id="coop_soc_yan_sem_tip_2"><text>What happened? Is he dead? Take the samples and come back immediately!</text></string>
+	<string id="coop_soc_yan_sem_talk_descr"><text>Talk to Semenov\n\nSakharov: "If you can take the measurements together with our associate, I will give you a calibrated prototype that will let you get inside the laboratory."</text></string>
+	<string id="coop_soc_yan_sem_escort_descr"><text>Escort Semenov to the measurement site</text></string>
+	<string id="coop_soc_yan_sem_return_descr"><text>Talk to Sakharov\n\nSakharov: "What happened??? He's dead??? Take the measurements and return immediately!!!"</text></string>
+</string_table>

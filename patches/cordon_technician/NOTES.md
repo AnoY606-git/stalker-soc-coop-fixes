@@ -102,3 +102,23 @@ No level crash in any Cordon run of this session (eight listen census runs, Cord
 ### Кратко
 Механик перенесён в подвал деревни (бункер Сидоровича, x -246.4 y -24.8 z -133.7, узел 204839, рядом со шкафом-верстаком). Тест: создан, жив, логика
 `remark` активна, диалог открывается (`is_talking = true`). Старые сохранения оставляют его в доме.
+
+
+## Moved to the village cellar (2026-10-21, maintainer FOSTER's second report)
+FOSTER did not mean Sidorovich's bunker. He meant the cellar under a rookie village house (reached through a broken wall hole, wooden floor, an iron bed, a wall lamp; in his screenshot a hooded stalker sits on that bed). The technician now STANDS there.
+
+How the cellar was found (offline, level files of the mod Cordon): the AI map has exactly one more underground area in the village besides the bunker, at x -216 to -203 / z -134 to -120, floor y -23.2 (surface above y -19.9). Its objects in `all.spawn` fit the description and the technician's job: the tech-material items `esc_jup_b200_tech_materials_*` (acetone, transistor, wire at -215.0, -22.6, -121.3), the guide's space restrictor and the covers `esc_smart_terrain_1_animpoint_4`, `_5`, `_6` (all three are `sit_normal`; 5 and 6 sit beside the beds on the west wall). Collision mesh slice (`level.cform`): the room is x -215.7 to -211.0, z -127.7 to -120.4 (4.7 x 7.3 m); the entrance is a 1.1 m gap in its south wall (x -212.0 to -210.9, z -127.7) that leads to a corridor (z -128 to -132.6) with a ramp (AI nodes at x -211.4, floor -23.1 rising to -19.9 at z -136) up to the street; a second passage leads east (z -126.4 to -129.6) into an open pit. I could not see textures, so "iron bed" and "wall lamp" are matched by position only (the beds are the thick objects along the west wall at x -215.7 to -214.8; the lamp is not an `all.spawn` object).
+
+Who the hooded sitter on the bed is: not a generic extra. All generic village animpoints (`esc_smart_terrain_1_animpoint_1..11`) are already switched off by the `campfires` patch (`skip_animpoints`). What remains in that cellar is the level GUIDE `esc_smart_terrain_1_stalker_guide` (exclusive job `esc_smart_terrain_1_animpoint_guide`, cover 4 at -213.1, -23.2, -121.9, `animpoint_sit_normal`, `level_spot = guider`, invulnerable, `meet_on_talking`). He is the Cordon guide whose dialog gives the "to Bar / Val / Sarcophagus..." flags that the party vote uses (stalker.md section 4), so he is NOT removed. He stays on his seat at the north end; the technician stands 2.9 m from him.
+
+What changed:
+- `coop_scn_esc_technician.script`: `SPOT = { x = -212.1, y = -23.2, z = -124.6 }` (AI node of the cellar floor, open floor in the middle of the room, 1.1 m from the east wall, clear of the table at x -213.6 to -212.6 and the beds). `find_node` uses the y of the spot so the engine picks the cellar node, not the surface node above it; if the picked node is more than 1.5 m off the floor the server logs `WARNING the node y ...`.
+- `esc_rookie_technician.ltx`: `target = path|esc_smart_terrain_1_guard_6_walk,0` (was `nil`): the remark scheme turns him toward the street point 11 m south of the room, i.e. toward the entrance gap (the pattern `target = path|name,point` is the stock one, see xr_remark). Still standing (`anim = ward_noweap`, arms folded), invulnerable, no weapon.
+- Everything else (profile, dialogs, upgrades, once-only creation, game vertex) unchanged. Saves that already hold him keep him where he was.
+
+### Test (listen mode, one process): `tests/tech_cellar.lua` (replaces `tech_basement.lua`)
+Asserts: online position inside x -215.7..-211.0, z -127.7..-120.4, y -23.8..-22.6; scheme `remark@esc_rookie_technician`; direction z < -0.5 (faces south) 6 s after the player arrived; `is_talk_enabled`; after `run_talk_dialog` the player `is_talking()` is true. Logs `TECH ...` including the guide's position and his distance to the technician. Not run yet (the coordinator runs all game tests).
+Open point to confirm on a screenshot: that this room is the one in FOSTER's picture (the east pit passage is the other candidate for the "broken wall hole"); the position constant is one line (`SPOT`) and the look point one line (`target`).
+
+### Кратко (RU)
+Механик теперь СТОИТ в подвале под домом деревни (комната x -215.7 to -211.0, z -127.7 to -120.4, пол y -23.2, вход через проём в южной стене), лицом ко входу, а не в бункере Сидоровича. "Капюшонный сталкер на кровати" в том подвале это проводник Кордона (esc_smart_terrain_1_stalker_guide, ковёр animpoint_4): он нужен для перехода на другие локации, поэтому не удалён; обычные ковры-сидельцы уже отключены патчем campfires.

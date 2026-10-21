@@ -135,6 +135,22 @@ coop_scenes.register {
 local SLEEP_POS = { x = 174.65, y = -7.80, z = -99.65 }   -- SoC way yan_scientist_wait_walk_3 (research stop)
 local SLEEP_R   = 10.0
 
+local DREAM_DIR = "characters_voice\\scenario\\yantar\\"
+
+-- sound folder of the dream voices for this player: Russian = stock path, English = subfolder eng. Same rule as the dialogs:
+-- coop_soc_opening.voice_lang() (voice_language auto | rus | eng of his coop_settings.ltx, auto = game language); without that function the
+-- game language decides
+local function dream_voice_dir()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if not (ok and (l == "rus" or l == "eng")) then
+		l = "eng"
+		local ok2, t = pcall(function() return game.translate_string("scn_yantar_card") end)
+		if ok2 and type(t) == "string" and string.find(t, "[\192-\255]") then l = "rus" end
+	end
+	if l == "eng" then return DREAM_DIR .. "eng\\" end
+	return DREAM_DIR
+end
+
 local function build_sleep(var, env)
 	local st = {}
 	local function add(t) st[#st + 1] = t end
@@ -147,8 +163,11 @@ local function build_sleep(var, env)
 	if wake then add { ["do"] = "pp", name = wake, id = 9043, at = 5500 } end
 	add { ["do"] = "ui_off", at = 5500 }
 	add { ["do"] = "fn", fn = function(e) loop_cam_start(e, "dream", 9044) end }
-	add { ["do"] = "snd2d", path = "characters_voice\\scenario\\yantar\\dream_talk_l" }
-	add { ["do"] = "snd2d", path = "characters_voice\\scenario\\yantar\\dream_talk_r" }
+	-- the dream voices in the language of THIS player (the steps are built on each client): Russian = the stock SoC path (patch soc_ru_voices),
+	-- English = the same files under eng\\ (Steam SoC); a missing file stays silent
+	local vp = dream_voice_dir()
+	if ex_snd(vp .. "dream_talk_l") then add { ["do"] = "snd2d", path = vp .. "dream_talk_l" } end
+	if ex_snd(vp .. "dream_talk_r") then add { ["do"] = "snd2d", path = vp .. "dream_talk_r" } end
 	-- 20.5 s: dream ends, prison_0.anm looped
 	add { ["do"] = "fn", fn = function(e) loop_cam_stop(e, 9044) end, at = 20500 }
 	add { ["do"] = "pp_stop", id = 9043 }

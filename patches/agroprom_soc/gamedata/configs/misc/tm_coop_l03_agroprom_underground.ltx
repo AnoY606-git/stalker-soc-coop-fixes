@@ -1,0 +1,43 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест основной(Отыскать тайник Стрелка)
+[agru_start_find_the_shooter_hiding_place_task]
+icon        = ui_inGame2_agru_start_find_the_shooter_hiding_place_task
+prior       = 450
+storyline   = true
+title       = st_agru_start_find_the_shooter_hiding_place_task_name
+descr       = {+AGRU_START_FIND_THE_SHOOTER_HIDING_PLACE_TASK_INFO} st_agru_start_return_to_the_surface_task_descr, {+AGRU_SOC_STASH_FOUND} coop_soc_agru_flash_descr, st_agru_start_find_the_shooter_hiding_place_task_descr
+target      = {+AGRU_START_FIND_THE_SHOOTER_HIDING_PLACE_TASK_INFO} change_level_agroprom, agru_equipment_rucksack_01_case_0000
+condlist_0  = {+AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO} complete
+
+;Квест основной(Возвращение на поверхность)
+[agru_start_return_to_the_surface_task]
+icon 									= ui_inGame2_agru_start_return_to_the_surface_task
+prior 									= 200
+storyline 								= true
+title 									= st_agru_start_return_to_the_surface_task_name
+descr 									= st_agru_start_return_to_the_surface_task_descr
+target 									= change_level_agroprom
+condlist_0 								= {+AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Original SoC (patch agroprom_soc): the flash drive from the stash starts "Find out what happened to Ghost" (SoC agr_find_ghost, article
+;-- storyline_gunslinger_flash_info), which leads to Yantar, where Ghost lies dead in the X16 lab (patch yantar_restore sets X16_GHOST_DOCS_TAKEN).
+;-- agru_start_find_the_shooter_hiding_place_task now carries SoC objectives 1, 2 and 3 of agroprom_find_gunslinger_cache; the old second task
+;-- (agru_start_return_to_the_surface_task) is no longer given (it stays for old saves).
+;-- Given to EVERY player by the server tick of coop_scn_agroprom_soc.script (any level).
+;--------------------------------------------------------------------------------------------------------------------------------------
+[agr_soc_find_ghost_task]
+icon        = ui_inGame2_agru_start_find_the_shooter_hiding_place_task
+prior       = 100
+storyline   = true
+title       = coop_soc_agr_ghost_name
+descr       = coop_soc_agr_ghost_descr
+target      = nil
+condlist_0  = {+X16_GHOST_DOCS_TAKEN} complete
+condlist_1  = {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO} complete

@@ -1,0 +1,31 @@
+-- loaded by the Scene Director like every coop_scn_*.script: starts the Semenov tick (coop_soc_yan_semenov.script) and registers the two PDA tips
+-- of Sakharov that SoC shows when the scientist died (yantar_professor_spam_1 / _2, strings general_ecolog_tip_1 / _2)
+pcall(function() coop_soc_yan_semenov.install() end)
+
+local function tip_scene(id, flag, text_id)
+	pcall(function()
+		coop_scenes.register {
+			id        = id,
+			kind      = "sequence",
+			once      = true,
+			skip      = "none",
+			length_ms = 2500,
+			grace_ms  = 20000,
+			settle_ms = 2000,
+			trigger   = function(ctx) return ctx.flag(flag) end,
+			steps     = function(var, env)
+				return {
+					{ ["do"] = "fn", fn = function(e)
+						pcall(function()
+							e.actor:give_game_news(game.translate_string("st_tip"), game.translate_string(text_id), "ui_inGame2_saharov", 0, 8000, 0)
+						end)
+					end },
+					{ ["do"] = "wait", ms = 1000 },
+				}
+			end,
+		}
+	end)
+end
+
+tip_scene("yan_semenov_tip_1", "YAN_SOC_SEM_TIP_1", "coop_soc_yan_sem_tip_1")
+tip_scene("yan_semenov_tip_2", "YAN_SOC_SEM_TIP_2", "coop_soc_yan_sem_tip_2")

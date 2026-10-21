@@ -1,0 +1,97 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;-------------------------------------------------------------------------------------------------------------------------------------
+;Квест Крота(Загнанный в угол: спасти Крота от военных)
+[agr_start_save_the_stalker_mole_quest_task]
+icon        = ui_inGame2_agr_start_save_the_stalker_mole_quest_task
+prior       = 455
+storyline   = true
+title       = st_agr_start_save_the_stalker_mole_quest_task_name
+descr       = st_agr_start_save_the_stalker_mole_quest_task_descr
+target      = agr_smart_terrain_7_stalker_mole
+condlist_0  = {+AGR_SMART_TERRAIN_5_MILITARY_1_SQUAD_DEAD +AGR_SMART_TERRAIN_5_MILITARY_2_SQUAD_DEAD} complete
+condlist_1  = {+AGR_SMART_TERRAIN_4_STALKER_MOLE_SQUAD_DEAD} fail
+condlist_2  = {+AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO} complete
+;condlist_1 								= {+all_agr_smart_terrain_7_stalker_1_squad_dead} fail
+
+;Квест Крота(Загнанный в угол: следовать за Кротом)
+[agr_start_follow_the_stalker_mole_quest_task]
+icon        = ui_inGame2_agr_start_follow_the_stalker_mole_quest_task
+prior       = 465
+storyline   = true
+title       = st_agr_start_follow_the_stalker_mole_quest_task_name
+descr       = {+AGR_START_FOLLOW_THE_STALKER_MOLE_QUEST_TASK_THE_AND_INFO} st_agr_start_talk_to_the_stalker_mole_quest_task_descr, st_agr_start_follow_the_stalker_mole_quest_task_descr
+target      = agr_smart_terrain_7_stalker_mole
+condlist_0  = {+AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO} complete
+;condlist_1 								= {+all_agr_smart_terrain_7_stalker_1_squad_dead} fail
+
+;Квест Крота(Загнанный в угол: поговорить с Кротом)
+[agr_start_talk_to_the_stalker_mole_quest_task]
+icon 									= ui_inGame2_agr_start_talk_to_the_stalker_mole_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_agr_start_talk_to_the_stalker_mole_quest_task_name
+descr 									= st_agr_start_talk_to_the_stalker_mole_quest_task_descr
+target 									= agr_smart_terrain_7_stalker_mole
+condlist_0 								= {+AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO} complete %=give_task(agr_start_go_to_the_agroprom_underground_quest_task)%
+;condlist_1 								= {+all_agr_smart_terrain_7_stalker_1_squad_dead} fail
+
+;Квест Крота(Спуститься в подземелье агропрома)
+[agr_start_go_to_the_agroprom_underground_quest_task]
+icon        = ui_inGame2_agr_start_go_to_the_agroprom_underground_quest_task
+prior       = 450
+storyline   = true
+title       = st_agr_start_go_to_the_agroprom_underground_quest_task_name
+descr       = st_agr_start_go_to_the_agroprom_underground_quest_task_descr
+target      = agr_agru_level_changer
+condlist_0  = {+AGR_START_GO_TO_THE_AGROPROM_UNDERGROUND_QUEST_TASK_INFO} complete
+
+
+;Квест основной(Вломиться на базу военных)
+[agr_start_break_into_a_military_base_quest_task]
+icon 									= ui_inGame2_agr_start_break_into_a_military_base_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_agr_start_break_into_a_military_base_quest_task_name
+descr 									= st_agr_start_break_into_a_military_base_quest_task_descr
+target 									= agr_smart_terrain_666_box_3
+condlist_0 								= {=actor_has_item(agr_safe_container_1)} complete %=give_task(agr_start_the_destination_is_a_bar_quest_task) +AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO%
+condlist_1 								= {+AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO} complete %=give_task(agr_start_the_destination_is_a_bar_quest_task)%
+
+
+;Квест основной(Пункт назначения - Бар)
+[agr_start_the_destination_is_a_bar_quest_task]
+icon 									= ui_inGame2_agr_start_the_destination_is_a_bar_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_agr_start_the_destination_is_a_bar_quest_task_name
+descr 									= st_agr_start_the_destination_is_a_bar_quest_task_descr
+target 									= bar_smart_terrain_1_stalker_barmen
+condlist_0 								= {+BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Original SoC order (patch agroprom_soc, see its NOTES.md). Objectives of one SoC task are one mod task whose description and target
+;-- change with the story flags (descr / target condlists, evaluated per player like SoC objectives).
+;--   agr_soc_help_stalkers_task                    SoC agr_help_stalkers  ("Help the stalkers")
+;--   agr_start_save_the_stalker_mole_quest_task    SoC agr_help_krot      ("Save Mole")
+;--   agr_start_follow_the_stalker_mole_quest_task  SoC agr_meet_krot_band objectives 1 and 2 (meet the group, get the info)
+;--   agr_start_go_to_the_agroprom_underground...   SoC agroprom_find_gunslinger_cache objective 0 (the route from Mole)
+;-- The documents task is the Cordon one (esc_soc_military_documents_task, patch cordon): its objectives follow the flags below.
+;-- agr_start_talk_to_the_stalker_mole_quest_task, agr_start_break_into_a_military_base_quest_task and agr_start_the_destination_is_a_bar_quest_task
+;-- are no longer given by anything (they stay for old saves).
+;-- Every task here is given to EVERY player by the server tick of coop_scn_agroprom_soc.script.
+;--------------------------------------------------------------------------------------------------------------------------------------
+[agr_soc_help_stalkers_task]
+icon        = ui_inGame2_agr_start_save_the_stalker_mole_quest_task
+prior       = 460
+storyline   = true
+title       = coop_soc_agr_help_stalkers_name
+descr       = coop_soc_agr_help_stalkers_descr
+target      = agr_smart_terrain_7_stalker_mole
+condlist_0  = {+AGR_SMART_TERRAIN_5_MILITARY_1_SQUAD_DEAD} complete
+condlist_1  = {+AGR_SMART_TERRAIN_5_MILITARY_2_SQUAD_DEAD} complete
+condlist_2  = {+AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO} complete

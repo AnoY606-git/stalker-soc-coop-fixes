@@ -1,0 +1,610 @@
+-------------------------------------------------------------------------------------------------------
+-- Bar Duty / Freedom line of the original Shadow of Chernobyl (patch soc_bar_duty_line, see its NOTES.md).
+-- SoC chain rebuilt here (dialogs_bar.xml, tasks_bar.xml, bar_dialogs.script, tasks_military.xml):
+--  * Join Duty (bar_dolg_community_quest): the gate commander sells the pass for 1000 (flags BAR_DOLG_BASE_PASS / _COMMUNITY_START), Captain
+--    Ivantsov's test (bar_dolg_test_quest: win the pseudodog fight on the Arena, report), Voronin's Bulldog 6 job (mil_freedom_rg6_task: the
+--    RG-6 lies in the Freedom village stash of the Army Warehouses), the oath (the party member joins Duty).
+--  * The Barkeep's two Duty jobs (bar_bar_barmen_jobs): kill the mad veterans' leader Lucky (bar_crazy_veterans_quest) and Tyran of the Mercs
+--    (bar_dolg_svoboda_ambush_quest), each ends with his PDA handed to the Barkeep.
+--  * Voronin's war with Freedom (bar_dolg_svoboda_leader_kill_quest): kill Lukash (Army Warehouses), report to Voronin.
+-- NPCs the mod lacks are created by the server with alife():create at the SoC positions (the technician pattern of patch cordon_technician):
+--  the gate commander and Ivantsov on the Bar, Lucky with two veterans and (while the Tyran job is open) Tyran with four Mercs on the Wild Territory.
+-- Everything is driven by SHARED story flags (saved, synced to every player) plus a server tick (1 s):
+--  1. progress(): derives flags from the world (items held, NPCs dead, the Arena fight won) and the fallbacks, so a dead NPC never blocks anything
+--  2. every task whose stage is open is given to EVERY living player once (the stock give_task hands a task to the first player only),
+--     so late joiners and respawned players get all open tasks
+--  3. NPC / item upkeep (create once, hostile relation to every player, logic start, replacement of a lost quest item)
+-- The dialogs (dialogs_coop_soc_duty.xml) set the flags; their phrase preconditions below read the flags only (same on every machine).
+-------------------------------------------------------------------------------------------------------
+
+local F = {
+	PASS = "BAR_DOLG_BASE_PASS", CSTART = "BAR_DOLG_COMMUNITY_START", CLEAD = "BAR_DOLG_COMMUNITY_LEADER",
+	TSTART = "BAR_DOLG_VETERAN_START", ARENA = "BAR_ARENA_PSEUDODOG_DEFEATED", TDONE = "BAR_DOLG_VETERAN_DONE",
+	RSTART = "BAR_SVOBODA_RG6_START", RGAIN = "MIL_SVOBODA_RG6_GAIN", RDONE = "BAR_SVOBODA_RG6_DONE", OATH = "BAR_DOLG_COMMUNITY_LEADER_DONE",
+	KSTART = "BAR_KILL_SVOBODA_LEADER_START", KKILLED = "MIL_KILL_SVOBODA_LEADER_KILLED", KDONE = "BAR_KILL_SVOBODA_LEADER_DONE",
+	VSTART = "BAR_KILL_VETERAN_START", VKILLED = "BAR_KILL_VETERAN_KILLED", VDONE = "BAR_KILL_VETERAN_DONE",
+	ASTART = "BAR_KILL_SVOBODA_AMBUSH_START", AKILLED = "BAR_KILL_SVOBODA_AMBUSH_KILLED", ADONE = "BAR_KILL_SVOBODA_AMBUSH_DONE",
+	LPDA = "SOC_DUTY_LUCKY_PDA_MADE", TPDA = "SOC_DUTY_TIRAN_PDA_MADE", RMADE = "SOC_DUTY_RG6_MADE",
+	AGR_DONE = "BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO",
+	LUKASH_DEAD = "MIL_SMART_TERRAIN_16_FREEDOM_1_SQUAD_DEAD",
+}
+-- the pseudodog fight of the Arena (patch arena / the mod's arena logic): these flags are pulses of a restrictor (set, then cleared at once),
+-- so they are polled on every frame
+local ARENA_PULSE = { "BAR_ARNY_ARENA_SMART_TERRAIN_PSEUDODOG_SQUAD_DEAD", "BAR_ARNY_ARENA_SMART_TERRAIN_DTT_PSEUDODOG_SQUAD_DEAD" }
+
+local DEPOSIT, PAY_LUCKY, PAY_TYRAN = 1000, 5000, 8000
+local RG6_ITEM, OUTFIT = "wpn_rg-6", "dolg_scientific_outfit"
+local RG6_STORY = "Mil_RG6"
+local PDA = {
+	lucky = { section = "bar_lucky_pda", flag = F.LPDA, taken = "SOC_DUTY_LUCKY_PDA_TAKEN", killed = F.VKILLED, npc = "bar_crazy_veterans_leader", story = "soc_duty_lucky_pda" },
+	tyran = { section = "bar_tiran_pda", flag = F.TPDA, taken = "SOC_DUTY_TIRAN_PDA_TAKEN", killed = F.AKILLED, npc = "bar_svoboda_ambush_tiran", story = "soc_duty_tiran_pda" },
+}
+local NPC = { lucky = "bar_crazy_veterans_leader", tyran = "bar_svoboda_ambush_tiran", lukash = "mil_smart_terrain_3_freedom_lukash",
+	ivancov = "bar_dolg_captain_ivancov", commander = "bar_dolg_guard_commander", voronin = "bar_smart_terrain_4_duty_voronin" }
+
+-- NPCs created by the server (position = SoC position, see NOTES.md). need = a flag that must be set before they are created.
+local NPCS = {
+	{ key = "commander", level = "coop_l05_bar", section = "soc_duty_guard_commander", story = "bar_dolg_guard_commander", x = 191.87, y = 0.0, z = 104.53, hostile = false },
+	{ key = "ivancov", level = "coop_l05_bar", section = "soc_duty_ivancov", story = "bar_dolg_captain_ivancov", x = 192.91, y = 0.0, z = 117.22, hostile = false },
+	{ key = "lucky", level = "coop_l06_rostok", section = "soc_vet_lucky", story = "bar_crazy_veterans_leader", x = -250.7, y = 1.2, z = 14.7, hostile = true },
+	{ key = "vet1", level = "coop_l06_rostok", section = "soc_vet_1", story = nil, x = -247.3, y = 0.0, z = 7.0, hostile = true },
+	{ key = "vet2", level = "coop_l06_rostok", section = "soc_vet_2", story = nil, x = -245.3, y = 0.0, z = 15.4, hostile = true },
+	{ key = "tyran", level = "coop_l06_rostok", section = "soc_tyran", story = "bar_svoboda_ambush_tiran", x = -234.3, y = 9.36, z = 49.0, hostile = true, need = F.ASTART },
+	{ key = "merc1", level = "coop_l06_rostok", section = "soc_merc_1", story = nil, x = -231.5, y = 9.36, z = 47.5, hostile = true, need = F.ASTART },
+	{ key = "merc2", level = "coop_l06_rostok", section = "soc_merc_2", story = nil, x = -237.0, y = 9.36, z = 51.0, hostile = true, need = F.ASTART },
+	{ key = "amb1", level = "coop_l06_rostok", section = "soc_merc_3", story = nil, x = -204.0, y = 0.0, z = 63.7, hostile = true, need = F.ASTART },
+	{ key = "amb2", level = "coop_l06_rostok", section = "soc_merc_4", story = nil, x = -187.7, y = 0.0, z = 139.7, hostile = true, need = F.ASTART },
+}
+local RG6_POS = { level = "coop_l07_military", x = -274.55, y = -27.47, z = 245.41 }
+local LOGIC = { soc_duty_guard_commander = "scripts\\coop_l05_bar\\soc_duty_stand.ltx", soc_duty_ivancov = "scripts\\coop_l05_bar\\soc_duty_stand.ltx" }
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCDUTY " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCDUTY " .. tostring(s)) end
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[SD] " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has(f) then
+		pcall(story_flags.give_flag, f)
+		qlog("FLAG " .. f)
+	end
+end
+
+-- patch soc_mil_courier (the Chef, vodka, its own Bulldog 6 job and hand-in at Voronin) is installed: it owns the Bulldog 6 step, this patch only
+-- reads its done flag (one job, one rifle, one suit)
+local function courier_on()
+	local ok, r = pcall(function() return system_ini():section_exist("mil_soc_cook") end)
+	return ok and r == true
+end
+
+-- story character dead? (tests can force it with the global table SOCDUTY_FORCE_DEAD)
+local function npc_dead(story)
+	local fd = rawget(_G, "SOCDUTY_FORCE_DEAD")
+	if type(fd) == "table" and fd[story] then return true end
+	local ok, r = pcall(function()
+		local id = get_story_object_id(story)
+		if id == nil then return false end
+		local so = alife():object(id)
+		if so == nil or so.alive == nil then return false end
+		return so:alive() == false
+	end)
+	return ok and r == true
+end
+
+local function actors()
+	local t = {}
+	if db == nil or db.mp_actors == nil then return t end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then t[#t + 1] = a end
+	end
+	return t
+end
+
+-- any living player holds the item (same check as xr_conditions.any_actor_has_item)
+local function any_has(section)
+	for _, a in ipairs(actors()) do
+		local ok, o = pcall(function() return a:object(section) end)
+		if ok and o ~= nil then return true end
+	end
+	return false
+end
+
+-- the talking player (dialog preconditions run on his machine; first_speaker is not always the player, see dialogs.who_is_npc)
+local function actor_of(a, b)
+	local ok, npc, act = pcall(function() return dialogs.who_is_npc(a, b) end)
+	if ok and act ~= nil then return act end
+	return a
+end
+
+local function npc_of(a, b)
+	local ok, npc = pcall(function() return dialogs.who_is_npc(a, b) end)
+	if ok and npc ~= nil then return npc end
+	return b
+end
+
+local function holds(a, b, section)
+	local act = actor_of(a, b)
+	if act == nil then return false end
+	local ok, o = pcall(function() return act:object(section) end)
+	return ok and o ~= nil
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. dialog states (phrase preconditions, flags only)
+-------------------------------------------------------------------------------------------------------
+-- the Duty member / pass states shared by the gate commander, Petrenko and Ivantsov (SoC: bar_dolg_community_start / _leader_done)
+function gc_st_member(a, b) return has(F.OATH) end
+function gc_st_pass(a, b) return (has(F.CSTART) or has(F.PASS)) and not has(F.OATH) end
+function gc_st_default(a, b) return not has(F.CSTART) and not has(F.PASS) and not has(F.OATH) end
+
+-- the Bulldog 6 hand-in: the talking player holds it; no soft-lock: the party took it once (flag) and nobody carries it any more
+local function rg6_ready(a, b)
+	if holds(a, b, RG6_ITEM) then return true end
+	return has(F.RGAIN) and not any_has(RG6_ITEM)
+end
+
+function vo_state(a, b)
+	if has(F.KDONE) then return "kdone" end
+	if has(F.KKILLED) then return "kkilled" end
+	if has(F.KSTART) then return "kwait" end
+	if has(F.OATH) then
+		if has(F.ADONE) then return "koffer" end
+		return "member"
+	end
+	if has(F.RDONE) then return "oath" end
+	if not courier_on() and has(F.RSTART) and rg6_ready(a, b) then return "rg6" end
+	return "hub"
+end
+function vo_st_kdone(a, b) return vo_state(a, b) == "kdone" end
+function vo_st_kkilled(a, b) return vo_state(a, b) == "kkilled" end
+function vo_st_kwait(a, b) return vo_state(a, b) == "kwait" end
+function vo_st_koffer(a, b) return vo_state(a, b) == "koffer" end
+function vo_st_member(a, b) return vo_state(a, b) == "member" end
+function vo_st_oath(a, b) return vo_state(a, b) == "oath" end
+function vo_st_rg6(a, b) return vo_state(a, b) == "rg6" end
+function vo_st_hub(a, b) return vo_state(a, b) == "hub" end
+
+function vj_ok(a, b) return not courier_on() and not has(F.RSTART) and not has(F.OATH) end                     -- SoC: dont_has_info bar_svoboda_rg6_start
+function vp_ok(a, b) return has(F.RDONE) and has(F.TDONE) and not has(F.OATH) end         -- SoC: has rg6_done, no leader_done; here also Ivantsov's reference
+function vr_ok(a, b) return not courier_on() and has(F.RSTART) and not has(F.RDONE) and rg6_ready(a, b) end    -- SoC: bar_dialogs.have_rg6 + has rg6_start, no rg6_done
+function vb_ok(a, b) return has(F.OATH) end                                               -- SoC: has_info bar_dolg_community_leader_done
+function ga_ok(a, b) return not has(F.PASS) end                                           -- SoC: dont_has_info bar_dolg_base_pass
+
+-- SoC bar_dialogs.has_dolg_deposite: the talking player has the 1000
+function has_deposit(a, b)
+	local act = actor_of(a, b)
+	if act == nil then return false end
+	local ok, m = pcall(function() return act:money() end)
+	return ok and m ~= nil and m >= DEPOSIT
+end
+
+-- Ivantsov: the test offer (pass bought, test not started) and the report (the Arena fight is won, not reported)
+function iv_offer(a, b) return (has(F.CSTART) or has(F.PASS)) and not has(F.TSTART) and not has(F.TDONE) and not has(F.OATH) end
+function iv_report(a, b) return has(F.TSTART) and has(F.ARENA) and not has(F.TDONE) end
+
+-- Barkeep jobs (SoC bar_bar_barmen_jobs; the SoC gate "agroprom_military_case_done" is the Agroprom hand-in of patch soc_dv_x18_quests)
+function bj_ok(a, b) return has(F.AGR_DONE) end
+function bj_vet_offer(a, b) return not has(F.VSTART) and not has(F.VDONE) end
+function bj_vet_busy(a, b) return has(F.VSTART) and not has(F.VDONE) end
+function bj_amb_offer(a, b) return has(F.VDONE) and not has(F.ASTART) and not has(F.ADONE) end
+function bj_none(a, b) return has(F.VDONE) and (has(F.ASTART) or has(F.ADONE)) end
+
+-- the PDA hand-ins (SoC bar_dialogs.have_lucky_pda / have_bar_tiran_pda are missing in the retail scripts): the talker holds the PDA, or a player
+-- held it once (flag) and nobody carries it any more (the script also replaces a lost one, see ensure_pda)
+local function pda_ready(a, b, kind)
+	local p = PDA[kind]
+	if holds(a, b, p.section) then return true end
+	return has(p.taken) and not any_has(p.section)
+end
+function bv_ok(a, b) return has(F.VSTART) and not has(F.VDONE) and pda_ready(a, b, "lucky") end
+function ba_ok(a, b) return has(F.ASTART) and not has(F.ADONE) and pda_ready(a, b, "tyran") end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. dialog actions (client side, the talking player)
+-------------------------------------------------------------------------------------------------------
+local function take_item(a, b, section)
+	if holds(a, b, section) then
+		pcall(function() dialogs.relocate_item_section_from_actor(a, b, section) end)
+	end
+end
+
+function take_deposit(a, b)
+	pcall(function() dialogs.relocate_money(npc_of(a, b), DEPOSIT, "out") end)           -- SoC bar_dialogs.give_dolg_deposite
+end
+function take_rg6(a, b) take_item(a, b, RG6_ITEM) end                                    -- SoC bar_dialogs.give_rg6
+function give_outfit(a, b)                                                               -- SoC bar_dialogs.enter_to_dolg: the Duty scientific suit
+	pcall(function() dialogs.relocate_item_section_to_actor(a, b, OUTFIT, 1) end)
+end
+function set_dolg(a, b)                                                                  -- SoC dialogs.actor_set_dolg
+	pcall(function() dialogs.actor_set_dolg(a, b) end)
+end
+function take_lucky_pda(a, b) take_item(a, b, PDA.lucky.section) end
+function take_tyran_pda(a, b) take_item(a, b, PDA.tyran.section) end
+
+local function pay(amount, a, b)
+	if not OnClient() then return end
+	pcall(function() dialogs.relocate_money_to_actor(a, b, amount) end)
+	qlog("PAID " .. tostring(amount))
+end
+function pay_lucky(a, b) pay(PAY_LUCKY, a, b) end
+function pay_tyran(a, b) pay(PAY_TYRAN, a, b) end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. NPCs and items created by the server
+-------------------------------------------------------------------------------------------------------
+local made = {}              -- npc key -> entity id (this session)
+local tries = {}             -- npc key -> failed creations
+local idle_seen = {}         -- entity id -> ticks without an active logic scheme
+local rel_t = 0
+local gv_cache = {}          -- level name -> game vertex table
+
+local function valid_node(v) return v ~= nil and v >= 0 and v < 4000000000 end
+
+-- nearest valid AI node of the wanted point (the technician pattern): returns position, node id
+local function find_node(x, y, z)
+	local pos = vector():set(x, y, z)
+	local lv = level.vertex_id(pos)
+	if valid_node(lv) then return level.vertex_position(lv), lv end
+	for r = 0.5, 6.0, 0.5 do
+		for k = 0, 11 do
+			local an = k * math.pi / 6
+			local p = vector():set(x + math.cos(an) * r, y, z + math.sin(an) * r)
+			lv = level.vertex_id(p)
+			if valid_node(lv) then return level.vertex_position(lv), lv end
+		end
+	end
+	return pos, nil
+end
+
+-- game vertex that belongs to the spot: the nearest vertex of this level's game graph (level id taken from a player standing on the level)
+local function game_vertex(pos, pl)
+	local best
+	pcall(function()
+		local gg = game_graph()
+		local lid = gg:vertex(pl:game_vertex_id()):level_id()
+		local best_d
+		for i = 0, 8191 do
+			if gg:valid_vertex_id(i) then
+				local v = gg:vertex(i)
+				if v:level_id() == lid then
+					local d = pos:distance_to(v:level_point())
+					if best_d == nil or d < best_d then best, best_d = i, d end
+				end
+			end
+		end
+	end)
+	return best or pl:game_vertex_id()
+end
+
+local function story_of(def) return def.story or ("soc_duty_" .. def.key) end
+
+local born = {}                  -- npc key -> time of the creation (this session)
+-- the NPC was created by this patch earlier, and neither a story id nor an entity is left (the body was released): it cannot come back
+local function npc_gone(key, story)
+	if not has("SOC_DUTY_NPC_" .. string.upper(key)) then return false end
+	if born[key] ~= nil and time_global() - born[key] < 5000 then return false end
+	local id
+	pcall(function() id = get_story_object_id(story) end)
+	if id == nil then return true end
+	local so = nil
+	pcall(function() so = alife():object(id) end)
+	return so == nil
+end
+
+-- id of the live entity of the NPC or nil (drops a stale registry entry)
+local function find_npc(def)
+	local id
+	pcall(function() id = get_story_object_id(story_of(def)) end)
+	if id ~= nil then
+		local so = nil
+		pcall(function() so = alife():object(id) end)
+		if so ~= nil then return id end
+		pcall(function() unregister_story_id(story_of(def)) end)
+	end
+	return nil
+end
+
+local function ensure_npc(def, pl)
+	if level.name() ~= def.level then return nil end
+	if def.need ~= nil and not has(def.need) then return nil end
+	local id = find_npc(def)
+	if id ~= nil then made[def.key] = id return id end
+	if has("SOC_DUTY_NPC_" .. string.upper(def.key)) then return nil end             -- created before and gone (released): never twice
+	if (tries[def.key] or 0) >= 3 then return nil end
+	local pos, lv = find_node(def.x, def.y, def.z)
+	if not valid_node(lv) then
+		tries[def.key] = (tries[def.key] or 0) + 1
+		qlog("NPC " .. def.key .. ": no AI node near the spot")
+		return nil
+	end
+	local gv = game_vertex(pos, pl)
+	local ok, se = pcall(function() return alife():create(def.section, pos, lv, gv) end)
+	if not ok or se == nil then
+		tries[def.key] = (tries[def.key] or 0) + 1
+		qlog("NPC " .. def.key .. ": create failed " .. tostring(se))
+		return nil
+	end
+	pcall(function() db.spawned_vertex_by_id[se.id] = lv end)
+	if def.story == nil then pcall(function() add_story_object(se.id, story_of(def)) end) end
+	give("SOC_DUTY_NPC_" .. string.upper(def.key))
+	born[def.key] = time_global()
+	made[def.key] = se.id
+	qlog(string.format("NPC %s created id=%s lvid=%s gvid=%s at %.1f %.1f %.1f", def.key, tostring(se.id), tostring(lv), tostring(gv), pos.x, pos.y, pos.z))
+	return se.id
+end
+
+-- the engine starts the logic from the spawn section's custom_data; if it did not (no active scheme on two ticks in a row) it is started from the
+-- file by script, the way xr_logic.initialize_obj does it
+local function ensure_logic(def, id)
+	local file = LOGIC[def.section] or ("scripts\\coop_l06_rostok\\soc_vet_stand.ltx")
+	local st = db.storage[id]
+	if st == nil or st.object == nil then idle_seen[id] = nil return end
+	if st.active_scheme ~= nil then idle_seen[id] = nil return end
+	idle_seen[id] = (idle_seen[id] or 0) + 1
+	if idle_seen[id] < 2 then return end
+	idle_seen[id] = nil
+	local npc = st.object
+	local ini = ini_file(file)
+	ini = xr_logic.configure_schemes(npc, ini, file, modules.stype_stalker, "logic", "")
+	local sect = xr_logic.determine_section_to_activate(npc, ini, "logic", db.actor)
+	xr_logic.activate_by_section(npc, ini, sect, "", false)
+	qlog("logic of " .. def.key .. " started by script, section " .. tostring(sect))
+end
+
+-- hostile NPCs: enemy of every player (every 5 s, online objects only)
+local function set_hostile(id)
+	local o = nil
+	pcall(function() o = level.object_by_id(id) end)
+	if o == nil then return end
+	for _, a in ipairs(actors()) do
+		pcall(function() o:set_relation(game_object.enemy, a) end)
+	end
+end
+
+local function upkeep_npcs(now)
+	local pl = actors()[1]
+	if pl == nil then return end
+	for _, def in ipairs(NPCS) do
+		local ok, id = pcall(ensure_npc, def, pl)
+		if ok and id ~= nil and level.name() == def.level then
+			pcall(ensure_logic, def, id)
+			if def.hostile and now - rel_t >= 5000 then pcall(set_hostile, id) end
+		end
+	end
+	if now - rel_t >= 5000 then rel_t = now end
+end
+
+-- create an item for the party: at a place (server entity) or next to a player. Returns the entity or nil.
+local function create_item(section, x, y, z, pl)
+	local pos, lv
+	if x ~= nil then
+		pos, lv = find_node(x, y, z)
+		if not valid_node(lv) then lv = pl:level_vertex_id() end
+		if pos == nil then pos = vector():set(x, y, z) end
+	else
+		pos, lv = pl:position(), pl:level_vertex_id()
+	end
+	local gv = game_vertex(pos, pl)
+	local ok, se = pcall(function() return alife():create(section, pos, lv, gv) end)
+	if ok and se ~= nil then return se end
+	qlog("ITEM " .. section .. " create failed " .. tostring(se))
+	return nil
+end
+
+local function story_alive(story)
+	local id
+	pcall(function() id = get_story_object_id(story) end)
+	if id == nil then return false end
+	local so = nil
+	pcall(function() so = alife():object(id) end)
+	if so == nil then pcall(function() unregister_story_id(story) end) return false end
+	return true
+end
+
+-- the PDA of a dead leader: made once at his body (or next to a player when he never existed), replaced when it is gone
+local function ensure_pda(kind, pl)
+	local p = PDA[kind]
+	if not has(p.killed) then return end
+	local done = (kind == "lucky" and has(F.VDONE)) or (kind == "tyran" and has(F.ADONE))
+	if done then return end
+	if not has(p.flag) then
+		local se, at_body = nil, false
+		local ok = pcall(function()
+			local id = get_story_object_id(p.npc)
+			local so = id ~= nil and alife():object(id) or nil
+			if so ~= nil then
+				se = alife():create(p.section, so.position, so.m_level_vertex_id, so.m_game_vertex_id)
+				at_body = se ~= nil
+			end
+		end)
+		if se == nil then se = create_item(p.section, nil, nil, nil, pl) end
+		if se ~= nil then
+			pcall(function() add_story_object(se.id, p.story) end)
+			give(p.flag)
+			qlog("PDA " .. kind .. " made id=" .. tostring(se.id) .. (at_body and " at the body" or " next to a player"))
+		end
+		return
+	end
+	if not story_alive(p.story) and not any_has(p.section) then
+		local se = create_item(p.section, nil, nil, nil, pl)
+		if se ~= nil then
+			pcall(function() add_story_object(se.id, p.story) end)
+			qlog("PDA " .. kind .. " replaced id=" .. tostring(se.id))
+		end
+	end
+end
+
+-- Voronin's Bulldog 6: created once at the SoC stash when the job is accepted and the party is on the Army Warehouses; replaced next to a player
+-- when it is gone and nobody holds it
+local function ensure_rg6(pl)
+	if courier_on() then return end
+	if not has(F.RSTART) or has(F.RDONE) then return end
+	if not has(F.RMADE) then
+		if level.name() ~= RG6_POS.level then return end
+		local se = create_item(RG6_ITEM, RG6_POS.x, RG6_POS.y, RG6_POS.z, pl)
+		if se ~= nil then
+			pcall(function() add_story_object(se.id, RG6_STORY) end)
+			give(F.RMADE)
+			qlog("RG6 made id=" .. tostring(se.id))
+		end
+		return
+	end
+	if not story_alive(RG6_STORY) and not any_has(RG6_ITEM) then
+		local se = create_item(RG6_ITEM, nil, nil, nil, pl)
+		if se ~= nil then
+			pcall(function() add_story_object(se.id, RG6_STORY) end)
+			qlog("RG6 replaced id=" .. tostring(se.id))
+		end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 4. progress: derived flags and fallbacks (server tick)
+-------------------------------------------------------------------------------------------------------
+local function arena_poll()
+	if has(F.ARENA) or not has(F.TSTART) then return end
+	for _, f in ipairs(ARENA_PULSE) do
+		if has(f) then give(F.ARENA) return end
+	end
+end
+
+function progress()
+	if has("MIL_SOC_RG6_DONE") then give(F.RDONE) end                                    -- soc_mil_courier delivered the Bulldog 6
+	-- the cascade: a later SoC info also sets the earlier ones, so a skipped step never blocks anything
+	if has(F.OATH) then give(F.RDONE); give(F.TDONE) end
+	if has(F.RDONE) then give(F.RSTART); give(F.RGAIN) end
+	if has(F.TDONE) then give(F.TSTART); give(F.ARENA); give(F.CSTART) end
+	if has(F.RSTART) or has(F.TSTART) then give(F.CSTART) end
+	if has(F.CSTART) then give(F.PASS); give(F.CLEAD) end
+	if has(F.KDONE) then give(F.KKILLED); give(F.KSTART) end
+	if has(F.KKILLED) then give(F.KSTART) end
+	if has(F.VDONE) then give(F.VKILLED); give(F.VSTART) end
+	if has(F.VKILLED) then give(F.VSTART) end
+	if has(F.ADONE) then give(F.AKILLED); give(F.ASTART) end
+	if has(F.AKILLED) then give(F.ASTART) end
+	arena_poll()
+	-- the Bulldog 6 is held by a player (SoC mil_task_rg6_have)
+	if has(F.RSTART) and not has(F.RGAIN) and any_has(RG6_ITEM) then give(F.RGAIN) end
+	-- a player holds a leader's PDA (it never goes back)
+	for _, p in pairs(PDA) do
+		if not has(p.taken) and any_has(p.section) then give(p.taken) end
+	end
+	-- the leaders are dead (SoC: the death of the story character); a leader made earlier whose body is released is dead too (no soft-lock)
+	if has(F.VSTART) and not has(F.VKILLED) and (npc_dead(NPC.lucky) or npc_gone("lucky", NPC.lucky)) then give(F.VKILLED) end
+	if has(F.ASTART) and not has(F.AKILLED) and (npc_dead(NPC.tyran) or npc_gone("tyran", NPC.tyran)) then give(F.AKILLED) end
+	if has(F.KSTART) and not has(F.KKILLED) and (has(F.LUKASH_DEAD) or npc_dead(NPC.lukash)) then give(F.KKILLED) end
+	-- a dead NPC never blocks a step
+	if not has(F.PASS) and npc_dead(NPC.commander) then give(F.PASS); give(F.CSTART); give(F.CLEAD) end                 -- the gate cannot sell the pass any more
+	if has(F.CSTART) and not has(F.TDONE) and npc_dead(NPC.ivancov) then give(F.TDONE) end                                   -- nobody left to test: the reference is given
+	if npc_dead(NPC.voronin) or has("BAR_VORONIN_DEAD") then                                                                                           -- SoC bar_voronin_dead: the Duty line ends
+		give(F.RSTART); give(F.RDONE); give(F.OATH)
+		if has(F.KSTART) then give(F.KDONE) end
+	end
+	-- the Tyran job is closed for good when he is dead and his PDA is made; failing to create the leader (3 tries) counts as dead
+	if has(F.VSTART) and not has(F.VKILLED) and (tries.lucky or 0) >= 3 then give(F.VKILLED) end
+	if has(F.ASTART) and not has(F.AKILLED) and (tries.tyran or 0) >= 3 then give(F.AKILLED) end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 5. the stages: task id, open while ...
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	{ id = "bar_soc_dolg_community_task", open = function() return (has(F.CSTART) or has(F.PASS)) and not has(F.OATH) end },
+	{ id = "bar_soc_dolg_test_task", open = function() return has(F.TSTART) and not has(F.TDONE) end },
+	{ id = "bar_soc_rg6_task", open = function() return has(F.RSTART) and not has(F.RDONE) and not courier_on() end },
+	{ id = "bar_soc_veterans_task", open = function() return has(F.VSTART) and not has(F.VDONE) end },
+	{ id = "bar_soc_ambush_task", open = function() return has(F.ASTART) and not has(F.ADONE) end },
+	{ id = "bar_soc_leader_task", open = function() return has(F.KSTART) and not has(F.KDONE) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	local okp, errp = pcall(progress)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	local pl = actors()[1]
+	if pl ~= nil then
+		pcall(ensure_pda, "lucky", pl)
+		pcall(ensure_pda, "tyran", pl)
+		pcall(ensure_rg6, pl)
+		pcall(upkeep_npcs, time_global())
+	end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what / what was created
+function reset_given()
+	given = {}
+	made = {}
+	tries = {}
+	born = {}
+end
+
+function created(key) return made[key] end
+
+function status()
+	return string.format("pass=%s cstart=%s tstart=%s arena=%s tdone=%s rstart=%s rgain=%s rdone=%s oath=%s kstart=%s kkilled=%s kdone=%s vstart=%s vkilled=%s vdone=%s astart=%s akilled=%s adone=%s",
+		tostring(has(F.PASS)), tostring(has(F.CSTART)), tostring(has(F.TSTART)), tostring(has(F.ARENA)), tostring(has(F.TDONE)), tostring(has(F.RSTART)),
+		tostring(has(F.RGAIN)), tostring(has(F.RDONE)), tostring(has(F.OATH)), tostring(has(F.KSTART)), tostring(has(F.KKILLED)), tostring(has(F.KDONE)),
+		tostring(has(F.VSTART)), tostring(has(F.VKILLED)), tostring(has(F.VDONE)), tostring(has(F.ASTART)), tostring(has(F.AKILLED)), tostring(has(F.ADONE)))
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+				pcall(arena_poll)                                    -- the arena flags are one-frame pulses: poll on every frame
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

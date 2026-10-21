@@ -1,0 +1,31 @@
+; Bar Duty line (patch soc_bar_duty_line): the gate commander and Captain Ivantsov stand where they stood in the original SoC.
+; Started by their spawn section (custom_data) or, if the engine did not read it, by coop_soc_duty.script ensure_logic().
+[logic]
+active = remark@soc_duty_stand
+
+[remark@soc_duty_stand]
+anim = guard
+target = nil
+meet = meet@soc_duty_stand
+invulnerable = true
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+use_camp = false
+
+[meet@soc_duty_stand]
+close_snd_hello = nil
+close_snd_bye = nil
+close_anim = nil
+close_victim = nil
+far_anim = nil
+far_victim = nil
+close_distance = 0
+far_distance = 0
+close_snd_distance = 3
+abuse = false
+use = {=actor_enemy} false, true
+allow_break = true
+meet_on_talking = true

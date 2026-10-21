@@ -12,8 +12,8 @@ invulnerable 										= true
 meet 												= no_meet
 combat_ignore_cond 									= true
 combat_ignore_keep_when_attacked 					= true
-on_info 											= {-GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO +GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO} walker@gar_smart_terrain_7_walker_gray_grey_grey_1 %=scenario_autosave(st_help_the_gray_to_fight_off_the_bandits)%
-on_info2 											= {+GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO +GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO} kamp@gar_smart_terrain_7_animpoint_1_no_meet
+on_info = {-GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO +GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO} walker@gar_smart_terrain_7_walker_gray_idle %=scenario_autosave(st_help_the_gray_to_fight_off_the_bandits)%
+on_info2 = {+GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO} kamp@gar_smart_terrain_7_animpoint_1_no_meet
 
 [walker@gar_smart_terrain_7_walker_gray_grey_grey_1]
 path_walk 											= walker_gray_walk

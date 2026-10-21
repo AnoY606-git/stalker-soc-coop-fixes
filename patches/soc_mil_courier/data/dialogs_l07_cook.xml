@@ -1,0 +1,525 @@
+    <dialog id="mil_soc_cook_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_start_0</action>
+                <text>coop_soc_milc_ck_start_0</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common1">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_1</dont_has_flag>
+        <phrase_list>
+            <phrase id="101">
+                <action>coop_soc_milc_say.say_ck_common1_101</action>
+                <text>coop_soc_milc_ck_common1_101</text>
+                <next>102</next>
+            </phrase>
+            <phrase id="102">
+                <action>coop_soc_milc_say.say_ck_common1_102</action>
+                <text>coop_soc_milc_ck_common1_102</text>
+                <next>103</next>
+            </phrase>
+            <phrase id="103">
+                <action>coop_soc_milc_say.say_ck_common1_103</action>
+                <text>coop_soc_milc_ck_common1_103</text>
+                <next>104</next>
+            </phrase>
+            <phrase id="104">
+                <action>coop_soc_milc_say.say_ck_common1_104</action>
+                <text>coop_soc_milc_ck_common1_104</text>
+                <next>105</next>
+            </phrase>
+            <phrase id="105">
+                <action>coop_soc_milc_say.say_ck_common1_105</action>
+                <text>coop_soc_milc_ck_common1_105</text>
+                <next>106</next>
+            </phrase>
+            <phrase id="106">
+                <action>coop_soc_milc_say.say_ck_common1_106</action>
+                <text>coop_soc_milc_ck_common1_106</text>
+                <next>107</next>
+            </phrase>
+            <phrase id="107">
+                <action>coop_soc_milc_say.say_ck_common1_107</action>
+                <text>coop_soc_milc_ck_common1_107</text>
+                <next>108</next>
+            </phrase>
+            <phrase id="108">
+                <action>coop_soc_milc_say.say_ck_common1_108</action>
+                <text>coop_soc_milc_ck_common1_108</text>
+                <next>109</next>
+            </phrase>
+            <phrase id="109">
+                <action>coop_soc_milc_say.say_ck_common1_109</action>
+                <text>coop_soc_milc_ck_common1_109</text>
+                <next>110</next>
+            </phrase>
+            <phrase id="110">
+                <action>coop_soc_milc_say.say_ck_common1_110</action>
+                <text>coop_soc_milc_ck_common1_110</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_1</give_flag>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_milc_say.say_ck_common1_111</action>
+                <text>coop_soc_milc_ck_common1_111</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common1_0</action>
+                <text>coop_soc_milc_ck_common1_0</text>
+                <next>101</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common2">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_2</dont_has_flag>
+        <phrase_list>
+            <phrase id="201">
+                <action>coop_soc_milc_say.say_ck_common2_201</action>
+                <text>coop_soc_milc_ck_common2_201</text>
+                <next>202</next>
+            </phrase>
+            <phrase id="202">
+                <action>coop_soc_milc_say.say_ck_common2_202</action>
+                <text>coop_soc_milc_ck_common2_202</text>
+                <next>203</next>
+            </phrase>
+            <phrase id="203">
+                <action>coop_soc_milc_say.say_ck_common2_203</action>
+                <text>coop_soc_milc_ck_common2_203</text>
+                <next>204</next>
+            </phrase>
+            <phrase id="204">
+                <action>coop_soc_milc_say.say_ck_common2_204</action>
+                <text>coop_soc_milc_ck_common2_204</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_2</give_flag>
+                <next>205</next>
+            </phrase>
+            <phrase id="205">
+                <action>coop_soc_milc_say.say_ck_common2_205</action>
+                <text>coop_soc_milc_ck_common2_205</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common2_0</action>
+                <text>coop_soc_milc_ck_common2_0</text>
+                <next>201</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common3">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_3</dont_has_flag>
+        <phrase_list>
+            <phrase id="301">
+                <action>coop_soc_milc_say.say_ck_common3_301</action>
+                <text>coop_soc_milc_ck_common3_301</text>
+                <next>302</next>
+            </phrase>
+            <phrase id="302">
+                <action>coop_soc_milc_say.say_ck_common3_302</action>
+                <text>coop_soc_milc_ck_common3_302</text>
+                <next>303</next>
+            </phrase>
+            <phrase id="303">
+                <action>coop_soc_milc_say.say_ck_common3_303</action>
+                <text>coop_soc_milc_ck_common3_303</text>
+                <next>304</next>
+            </phrase>
+            <phrase id="304">
+                <action>coop_soc_milc_say.say_ck_common3_304</action>
+                <text>coop_soc_milc_ck_common3_304</text>
+                <next>305</next>
+            </phrase>
+            <phrase id="305">
+                <action>coop_soc_milc_say.say_ck_common3_305</action>
+                <text>coop_soc_milc_ck_common3_305</text>
+                <next>306</next>
+            </phrase>
+            <phrase id="306">
+                <action>coop_soc_milc_say.say_ck_common3_306</action>
+                <text>coop_soc_milc_ck_common3_306</text>
+                <next>307</next>
+            </phrase>
+            <phrase id="307">
+                <action>coop_soc_milc_say.say_ck_common3_307</action>
+                <text>coop_soc_milc_ck_common3_307</text>
+                <next>308</next>
+            </phrase>
+            <phrase id="308">
+                <action>coop_soc_milc_say.say_ck_common3_308</action>
+                <text>coop_soc_milc_ck_common3_308</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_3</give_flag>
+                <next>309</next>
+            </phrase>
+            <phrase id="309">
+                <action>coop_soc_milc_say.say_ck_common3_309</action>
+                <text>coop_soc_milc_ck_common3_309</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common3_0</action>
+                <text>coop_soc_milc_ck_common3_0</text>
+                <next>301</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common4">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_4</dont_has_flag>
+        <phrase_list>
+            <phrase id="401">
+                <action>coop_soc_milc_say.say_ck_common4_401</action>
+                <text>coop_soc_milc_ck_common4_401</text>
+                <next>402</next>
+            </phrase>
+            <phrase id="402">
+                <action>coop_soc_milc_say.say_ck_common4_402</action>
+                <text>coop_soc_milc_ck_common4_402</text>
+                <next>403</next>
+            </phrase>
+            <phrase id="403">
+                <action>coop_soc_milc_say.say_ck_common4_403</action>
+                <text>coop_soc_milc_ck_common4_403</text>
+                <next>404</next>
+            </phrase>
+            <phrase id="404">
+                <action>coop_soc_milc_say.say_ck_common4_404</action>
+                <text>coop_soc_milc_ck_common4_404</text>
+                <next>405</next>
+            </phrase>
+            <phrase id="405">
+                <action>coop_soc_milc_say.say_ck_common4_405</action>
+                <text>coop_soc_milc_ck_common4_405</text>
+                <next>406</next>
+            </phrase>
+            <phrase id="406">
+                <action>coop_soc_milc_say.say_ck_common4_406</action>
+                <text>coop_soc_milc_ck_common4_406</text>
+                <next>407</next>
+            </phrase>
+            <phrase id="407">
+                <action>coop_soc_milc_say.say_ck_common4_407</action>
+                <text>coop_soc_milc_ck_common4_407</text>
+                <next>408</next>
+            </phrase>
+            <phrase id="408">
+                <action>coop_soc_milc_say.say_ck_common4_408</action>
+                <text>coop_soc_milc_ck_common4_408</text>
+                <next>409</next>
+            </phrase>
+            <phrase id="409">
+                <action>coop_soc_milc_say.say_ck_common4_409</action>
+                <text>coop_soc_milc_ck_common4_409</text>
+                <next>410</next>
+            </phrase>
+            <phrase id="410">
+                <action>coop_soc_milc_say.say_ck_common4_410</action>
+                <text>coop_soc_milc_ck_common4_410</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_4</give_flag>
+                <next>411</next>
+            </phrase>
+            <phrase id="411">
+                <action>coop_soc_milc_say.say_ck_common4_411</action>
+                <text>coop_soc_milc_ck_common4_411</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common4_0</action>
+                <text>coop_soc_milc_ck_common4_0</text>
+                <next>401</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common5">
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_5</dont_has_flag>
+        <phrase_list>
+            <phrase id="501">
+                <action>coop_soc_milc_say.say_ck_common5_501</action>
+                <text>coop_soc_milc_ck_common5_501</text>
+                <next>502</next>
+            </phrase>
+            <phrase id="502">
+                <action>coop_soc_milc_say.say_ck_common5_502</action>
+                <text>coop_soc_milc_ck_common5_502</text>
+                <next>503</next>
+            </phrase>
+            <phrase id="503">
+                <action>coop_soc_milc_say.say_ck_common5_503</action>
+                <text>coop_soc_milc_ck_common5_503</text>
+                <next>504</next>
+            </phrase>
+            <phrase id="504">
+                <action>coop_soc_milc_say.say_ck_common5_504</action>
+                <text>coop_soc_milc_ck_common5_504</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_5</give_flag>
+                <next>505</next>
+            </phrase>
+            <phrase id="505">
+                <action>coop_soc_milc_say.say_ck_common5_505</action>
+                <text>coop_soc_milc_ck_common5_505</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common5_0</action>
+                <text>coop_soc_milc_ck_common5_0</text>
+                <next>501</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_common6">
+        <has_flag>MIL_SOC_COOK_RG6_4</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DIALOG_6</dont_has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_common6_0</action>
+                <text>coop_soc_milc_ck_common6_0</text>
+                <next>601</next>
+            </phrase>
+            <phrase id="601">
+                <action>coop_soc_milc_say.say_ck_common6_601</action>
+                <text>coop_soc_milc_ck_common6_601</text>
+                <next>602</next>
+            </phrase>
+            <phrase id="602">
+                <action>coop_soc_milc_say.say_ck_common6_602</action>
+                <text>coop_soc_milc_ck_common6_602</text>
+                <give_flag>MIL_SOC_COOK_DIALOG_6</give_flag>
+                <next>603</next>
+            </phrase>
+            <phrase id="603">
+                <action>coop_soc_milc_say.say_ck_common6_603</action>
+                <text>coop_soc_milc_ck_common6_603</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drink_for_rg6_1">
+        <precondition>coop_soc_milc.has_vodka</precondition>
+        <has_flag>MIL_SOC_COOK_DIALOG_5</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_1</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_2</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_3</has_flag>
+        <has_flag>MIL_SOC_COOK_DIALOG_4</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_1</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_1</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_2</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_4</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_5</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_6</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_6</text>
+                <action>coop_soc_milc.take_vodka</action>
+                <give_flag>MIL_SOC_COOK_DRINK_1</give_flag>
+                <give_flag>MIL_SOC_COOK_DIALOG_1</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_3</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_1_0</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_1_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drink_for_rg6_2">
+        <precondition>coop_soc_milc.has_vodka</precondition>
+        <has_flag>MIL_SOC_COOK_DRINK_1</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_2</dont_has_flag>
+        <phrase_list>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_4</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_5</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_1</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_2</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_6</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_6</text>
+                <action>coop_soc_milc.take_vodka</action>
+                <give_flag>MIL_SOC_COOK_DRINK_2</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_3</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_2_0</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_2_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drink_for_rg6_3">
+        <precondition>coop_soc_milc.has_vodka</precondition>
+        <has_flag>MIL_SOC_COOK_DRINK_1</has_flag>
+        <has_flag>MIL_SOC_COOK_DRINK_2</has_flag>
+        <has_flag>MIL_SOC_COOK_RG6_2</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_3</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_3</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_1</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_2</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_2</text>
+                <action>coop_soc_milc.take_vodka</action>
+                <give_flag>MIL_SOC_COOK_DRINK_3</give_flag>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_3</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_3</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drink_for_rg6_3_0</action>
+                <text>coop_soc_milc_ck_drink_for_rg6_3_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drunk_question_about_rg6_1">
+        <has_flag>MIL_SOC_COOK_DRINK_1</has_flag>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_2</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_1</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_1</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_2</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_4</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_4</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_5</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_6</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_6</text>
+                <give_flag>MIL_SOC_COOK_RG6_1</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_0</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_1_3</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_1_3</text>
+                <next>4</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drunk_question_about_rg6_2">
+        <has_flag>MIL_SOC_COOK_DRINK_2</has_flag>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_2</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_DRINK_3</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_1</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_2</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_3</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_4</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_4</text>
+                <give_flag>MIL_SOC_COOK_RG6_2</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_2_0</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_2_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_cook_drunk_question_about_rg6_3">
+        <has_flag>MIL_SOC_COOK_DRINK_3</has_flag>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_3</dont_has_flag>
+        <dont_has_flag>MIL_SOC_COOK_RG6_4</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_3_1</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_3_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_3_2</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_3_2</text>
+                <give_flag>MIL_SOC_COOK_RG6_1</give_flag>
+                <give_flag>MIL_SOC_COOK_RG6_4</give_flag>
+                <give_flag>MIL_SOC_RG6_ASK</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_ck_drunk_question_about_rg6_3_0</action>
+                <text>coop_soc_milc_ck_drunk_question_about_rg6_3_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>

@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_mil_start_talk_to_the_cap_quest_task_name">
-		<text>Защита Барьера</text>
+		<text>Оказать помощь блокпосту Свободы "Барьер"</text>
 	</string>
 	<string id="st_mil_start_talk_to_the_cap_quest_task_descr">
-		<text>Поговорить с Кэпом.</text>	
+		<text>Поговорить с командиром блокпоста "Барьер"\n\nНеобходимо помочь защитить "барьер" от атаки со стороны выжигателя мозгов.</text>	
 	</string>
 	<string id="st_mil_start_protect_the_barrier_quest_task_name">
-		<text>Защита Барьера</text>
+		<text>Оказать помощь блокпосту Свободы "Барьер"</text>
 	</string>
 	<string id="st_mil_start_protect_the_barrier_quest_task_descr">
-		<text>Уничтожить отряд Монолита.</text>	
+		<text>Помочь в уничтожении прорывающегося отряда Монолита</text>	
 	</string>
 	
 	<string id="st_mil_start_go_to_radar_quest_task_name">
-		<text>Пора в центр Зоны!</text>
+		<text>Отключить Выжигатель Мозгов</text>
 	</string>
 	<string id="st_mil_start_go_to_radar_quest_task_descr">
-		<text>Отправиться на Радар.</text>	
+		<text>Добраться до антенн</text>	
 	</string>
 	
 	<string id="st_mil_start_kill_the_sniper_on_the_tower_quest_task_name">
-		<text>За Долг!</text>
+		<text>Убить снайпера на вышке</text>
 	</string>
 	<string id="st_mil_start_kill_the_sniper_on_the_tower_quest_task_descr">
-		<text>Убить снайпера на вышке.</text>	
+		<text>Убить снайпера на вышке</text>	
 	</string>
 	<string id="st_mil_start_talk_to_skull_about_the_assault_quest_task_name">
-		<text>За Долг!</text>
+		<text>Убить снайпера на вышке</text>
 	</string>
 	<string id="st_mil_start_talk_to_skull_about_the_assault_quest_task_descr">
-		<text>Поговорить с Черепом.</text>	
+		<text>Вернуться к Черепу</text>	
 	</string>
 	<string id="st_mil_start_kill_lukash_quest_task_name">
-		<text>За Долг!</text>
+		<text>Убить Лукаша</text>
 	</string>
 	<string id="st_mil_start_kill_lukash_quest_task_descr">
-		<text>Убить Лукаша.</text>	
+		<text>Убить Лукаша</text>	
 	</string>
 	<string id="st_mil_start_kill_the_snipers_quest_task_name">
-		<text>За Долг!</text>
+		<text>Убить Лукаша</text>
 	</string>
 	<string id="st_mil_start_kill_the_snipers_quest_task_descr">
-		<text>Убить Снайперов.</text>	
+		<text>Уничтожить снайпера</text>	
 	</string>	
 	
 	<string id="st_mil_start_report_to_max_quest_task_name">
-		<text>За Свободу!</text>
+		<text>Уничтожить группу Долга</text>
 	</string>
 	<string id="st_mil_start_report_to_max_quest_task_descr">
-		<text>Доложить Максу.</text>	
+		<text>Доложить Максу\n\nЛукаш решил нанести контрудар по отряду долга на хуторе. Операцию возглавит Макс - один из ветеранов Свободы. Моя задача - помочь им.</text>	
 	</string>
 	<string id="st_mil_start_kill_skull_quest_task_name">
-		<text>За Свободу!</text>
+		<text>Уничтожить группу Долга</text>
 	</string>
 	<string id="st_mil_start_kill_skull_quest_task_descr">
-		<text>Убить Черепа.</text>	
+		<text>Уничтожить группу</text>	
 	</string>
 	<string id="st_mil_start_kill_the_duty_quest_task_name">
-		<text>За Свободу!</text>
+		<text>Уничтожить группу Долга</text>
 	</string>
 	<string id="st_mil_start_kill_the_duty_quest_task_descr">
-		<text>Убить Долговцев.</text>	
+		<text>Уничтожить группу</text>	
 	</string>
 	<string id="st_mil_start_max_flash_quest_task_name">
-		<text>Флешка сумасшедшего</text>
+		<text>Получить флешку у безумного снайпера</text>
 	</string>
 	<string id="st_mil_start_max_flash_quest_task_descr">
-		<text>Взять флешку у сумасшедшего сталкера</text>
+		<text>Получить флешку у безумного снайпера</text>
 	</string>
 	<string id="st_mil_start_max_flash_return_quest_task_name">
-		<text>Вернуть флешку Максу</text>
+		<text>Получить флешку у безумного снайпера</text>
 	</string>
 	<string id="st_mil_start_max_flash_return_quest_task_descr">
-		<text>Отдать флешку Максу и получить обещанный ствол.</text>
+		<text>Отдать флешку Максу</text>
 	</string>
 </string_table>

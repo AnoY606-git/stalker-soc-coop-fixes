@@ -1,0 +1,540 @@
+-------------------------------------------------------------------------------------------------------
+-- Yantar: the second scientist of the original Shadow of Chernobyl (patch soc_yan_semenov, see its NOTES.md).
+-- SoC: when the professor of the Wild Territory is dead (the helicopter scene, BAR_HELI_SCENE_PROFESSOR_DIE) Sakharov sends the player with
+-- the research assistant SEMENOV instead of Kruglov (task yan_find_scientist_semenov). On the trip the scientist is wounded by the
+-- psi-emission at the third site (his wounded dialog yantar_wounded_scientist). If he dies the Sakharov task yan_scientist_return_task
+-- ("Talk to Sakharov") starts and Sakharov gives the prototype anyway (dialog branch 5).
+--
+-- How it plugs into patch soc_yan_x16_quests (that script is NOT changed): the same shared story flags, the same measurement task (its text
+-- and marker follow YAN_FIND_SCIENTIST_SEMENOV_START, see tools\apply_shared.py), the dialogs call the state functions of THIS module
+-- (st_*), which wrap the ones of coop_soc_yan.
+--
+-- Everything is driven by SHARED story flags plus a server tick (1 s, real time), like coop_soc_yan:
+--  1. progress(): SoC infos (the professor is dead when the party reaches Yantar without having rescued him), the two Semenov NPCs
+--     (bunker, wounded) and their hand-over, the death of the wounded one, the return task
+--  2. the return task is given to EVERY living player once per level load, so late joiners and respawned players get it too
+-- No soft-lock: the wounded scientist is optional (the results go to Sakharov without him), a dead or lost Semenov is a flag, not a wait.
+-------------------------------------------------------------------------------------------------------
+
+local YAN = "coop_l08_yantar"
+
+local F = {
+	RESCUE    = "ROS_SMART_TERRAIN_3_KRUGLOV_HELP_SPACE_RESTRICTOR_INFO",                                -- the professor / Kruglov was rescued at Rostok (SoC bar_rescue_research_done)
+	OFFERED   = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO",           -- Sakharov: help offered (SoC yan_find_scientist_start)
+	PREP      = "YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO",                   -- the scientist agreed (SoC yan_kruglov_after_actor)
+	REPORTED  = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO",  -- results delivered (SoC yan_find_scientist_done)
+	HELMET    = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO",        -- helmet given, lab job started (SoC yan_find_vasilyev_start)
+	PROF_DIE  = "YAN_SOC_PROFESSOR_DIE",                                                                 -- SoC bar_heli_scene_professor_die
+	SEM_START = "YAN_FIND_SCIENTIST_SEMENOV_START",                                                      -- SoC yan_find_scientist_semenov_start (Sakharov's offer, Semenov variant)
+	WOUNDED   = "YAN_SOC_SEM_WOUNDED",                                                                   -- the wounded scientist was put at the third site
+	WGONE     = "YAN_SOC_SEM_WOUNDED_GONE",                                                              -- he went home (the bunker Semenov is back)
+	TALKED    = "YAN_SCIENTIST_RETURN_TO_BUNKER",                                                        -- SoC: the wounded scientist was talked to (set by his dialog)
+	DIE       = "YAN_SCIENTIST_DIE",                                                                     -- SoC: the scientist died (set by his logic and here)
+	RET       = "YAN_SCIENTIST_RETURN_TASK",                                                             -- SoC yan_scientist_return_task
+	TIP1      = "YAN_SOC_SEM_TIP_1",                                                                     -- SoC yantar_professor_spam_1 (PDA tip, shown once by the scene)
+	TIP2      = "YAN_SOC_SEM_TIP_2",                                                                     -- SoC yantar_professor_spam_2
+}
+local MEAS = { "YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO" }
+
+-- the two NPCs. SoC: yantar_semenov (story id 905) stands at (32.78, -11.72, -276.72) next to the bunker; the wounded scientist lies at the
+-- start of the path yan_scientist_wounded_walk (171.98, -7.69, -99.49), 6 m from the third measurement site (the bus). The wounded one
+-- carries the story id yan_semenov_help of the SoC task markers.
+local SEM = { section = "yan_soc_semenov", story = "yan_soc_semenov", pos = { x = 32.78, y = -11.72, z = -276.72 }, name = "bunker",
+	logic = "scripts\\coop_l08_yantar\\yan_soc_semenov.ltx" }
+local WND = { section = "yan_soc_semenov_wounded", story = "yan_semenov_help", pos = { x = 171.98, y = -7.69, z = -99.49 }, name = "wounded",
+	logic = "scripts\\coop_l08_yantar\\yan_soc_semenov_wounded.ltx" }
+
+local HOME_MS = 20000          -- the wounded one stays this long after the talk, then "walks home"
+local DIE_MS = 4000            -- SoC sr_idle@1 on_timer: the PDA tip and the return task come 4 s after his death
+local COOLDOWN_MS = 5000       -- between two create attempts of one NPC
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCSEM " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCSEM " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if has(f) then return end
+	pcall(story_flags.give_flag, f)
+	qlog("FLAG " .. f)
+end
+
+local function meas_all()
+	for i = 1, #MEAS do if not has(MEAS[i]) then return false end end
+	return true
+end
+
+-------------------------------------------------------------------------------------------------------
+-- players
+-------------------------------------------------------------------------------------------------------
+local function each_player(fn)
+	if db == nil or db.mp_actors == nil then return end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil then
+			local okalive, alive = pcall(function() return a:alive() end)
+			if okalive and alive then fn(pid, a) end
+		end
+	end
+end
+
+local function first_player()
+	local fp, fa = nil, nil
+	each_player(function(pid, a) if fa == nil then fp, fa = pid, a end end)
+	return fp, fa
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the NPCs (server): created with alife():create like the Cordon technician (patch cordon_technician, proven in game), story id registry
+-- so a loaded game finds them again, the logic comes from the section line custom_data
+-------------------------------------------------------------------------------------------------------
+local made = { [SEM.section] = { id = nil, t = -COOLDOWN_MS, scanned = false }, [WND.section] = { id = nil, t = -COOLDOWN_MS, scanned = false } }
+wnd_id = nil          -- tests / logs: entity id of the wounded one
+
+local function valid_node(v)
+	return v ~= nil and v >= 0 and v < 4000000000
+end
+
+local function find_node(x, y, z)
+	local pos = vector():set(x, y, z)
+	local lv = level.vertex_id(pos)
+	if valid_node(lv) then return level.vertex_position(lv), lv end
+	for r = 0.5, 4.0, 0.5 do
+		for k = 0, 11 do
+			local a = k * math.pi / 6
+			local p = vector():set(x + math.cos(a) * r, y, z + math.sin(a) * r)
+			lv = level.vertex_id(p)
+			if valid_node(lv) then return level.vertex_position(lv), lv end
+		end
+	end
+	return pos, nil
+end
+
+-- the game-graph vertex of this level that is nearest to the spot (the engine keeps the NPC in the graph under it); nil when unknown
+local function nearest_game_vertex(pos, pl)
+	local best = nil
+	pcall(function()
+		local gg = game_graph()
+		local lid = gg:vertex(pl:game_vertex_id()):level_id()
+		local best_d
+		for i = 0, 8191 do
+			if gg:valid_vertex_id(i) then
+				local v = gg:vertex(i)
+				if v:level_id() == lid then
+					local d = pos:distance_to(v:level_point())
+					if best_d == nil or d < best_d then best, best_d = i, d end
+				end
+			end
+		end
+	end)
+	return best
+end
+
+-- id of the live entity of this NPC or nil (drops a stale registry entry)
+local function find(spec)
+	local sim = alife()
+	if sim == nil then return nil end
+	local id = nil
+	pcall(function() id = get_story_object_id(spec.story) end)
+	if id ~= nil then
+		if sim:object(id) ~= nil then return id end
+		pcall(unregister_story_id, spec.story)
+	end
+	if made[spec.section].id ~= nil and sim:object(made[spec.section].id) ~= nil then return made[spec.section].id end
+	return nil
+end
+
+-- entities of the section (duplicate check independent of the registry; once per session and NPC)
+local function scan(spec)
+	local sim = alife()
+	local ids = {}
+	if sim == nil then return ids end
+	for i = 1, 65534 do
+		local o = sim:object(i)
+		if o ~= nil and o:section_name() == spec.section then ids[#ids + 1] = i end
+	end
+	return ids
+end
+
+-- creates the NPC once; returns the entity id (new or old) or nil
+local function ensure(spec, now)
+	local sim = alife()
+	if sim == nil then return nil end
+	local id = find(spec)
+	if id ~= nil then made[spec.section].id = id return id end
+	local m = made[spec.section]
+	if now - m.t < COOLDOWN_MS then return nil end
+	local pid, pl = first_player()
+	if pl == nil then return nil end
+	if not m.scanned then
+		m.scanned = true
+		local ids = scan(spec)
+		if #ids > 0 then
+			pcall(add_story_object, ids[1], spec.story)
+			m.id = ids[1]
+			qlog("re-registered " .. spec.name .. " id=" .. tostring(ids[1]))
+			return ids[1]
+		end
+	end
+	m.t = now
+	local pos, lv = find_node(spec.pos.x, spec.pos.y, spec.pos.z)
+	if not valid_node(lv) then qlog("no level vertex for " .. spec.name) return nil end
+	local gv = nearest_game_vertex(pos, pl)
+	if gv == nil then gv = pl:game_vertex_id() end
+	local ok, se = pcall(function() return sim:create(spec.section, pos, lv, gv) end)
+	if not ok or se == nil then qlog("create failed " .. spec.name .. " " .. tostring(se)) return nil end
+	pcall(function() db.spawned_vertex_by_id[se.id] = lv end)
+	m.id = se.id
+	qlog(string.format("created %s id=%d lvid=%d gvid=%d at %.1f %.1f %.1f", spec.name, se.id, lv, gv, pos.x, pos.y, pos.z))
+	return se.id
+end
+
+local function release(spec, now)
+	local id = find(spec)
+	if id == nil then return false end
+	local ok, err = pcall(function()
+		local se = alife():object(id)
+		if se ~= nil then alife():release(se, true) end
+	end)
+	made[spec.section].id = nil
+	made[spec.section].t = now
+	qlog("released " .. spec.name .. " id=" .. tostring(id) .. " " .. (ok and "ok" or tostring(err)))
+	return true
+end
+
+-- The logic normally starts by itself: the section line custom_data gives the NPC the file as spawn_ini and xr_logic.initialize_obj runs in
+-- the binder's net_spawn. If the engine did not read that line he stands without logic (active_scheme nil). After two idle ticks in a row start the
+-- same file by script, the way initialize_obj would (same fallback as the Cordon technician).
+local idle_seen = {}
+function ensure_logic(spec, id)
+	local st = db.storage[id]
+	if st == nil or st.object == nil then idle_seen[id] = nil return end
+	if st.active_scheme ~= nil then idle_seen[id] = nil return end
+	idle_seen[id] = (idle_seen[id] or 0) + 1
+	if idle_seen[id] < 2 then return end
+	idle_seen[id] = nil
+	local npc = st.object
+	local pid, pl = first_player()
+	local ini = ini_file(spec.logic)
+	ini = xr_logic.configure_schemes(npc, ini, spec.logic, modules.stype_stalker, "logic", "")
+	local sect = xr_logic.determine_section_to_activate(npc, ini, "logic", pl or db.actor)
+	xr_logic.activate_by_section(npc, ini, sect, "", false)
+	qlog("logic of " .. spec.name .. " started by script, section " .. tostring(sect))
+end
+
+-- true / false when known, nil when the entity is unknown
+local function npc_alive(id)
+	local alive = nil
+	pcall(function()
+		local o = level.object_by_id(id)
+		if o ~= nil then alive = o:alive() end
+	end)
+	if alive == nil then
+		pcall(function()
+			local se = alife():object(id)
+			if se ~= nil then alive = se:alive() end
+		end)
+	end
+	return alive
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. progress
+-------------------------------------------------------------------------------------------------------
+local talked_t = nil
+local die_t = nil
+
+-- the professor is dead = the party reached Yantar without having rescued him (SoC: the restrictor yan_ecolog_spam_space_restrictor sets
+-- bar_heli_scene_professor_die + bar_rescue_research_fail when bar_rescue_research_done is not set)
+function professor_dead()
+	return has(F.PROF_DIE) or not has(F.RESCUE)
+end
+
+local function wounded_active()
+	return has(F.WOUNDED) and not has(F.WGONE) and not has(F.DIE)
+end
+
+local function progress(now)
+	local lvl = level.name()
+	if lvl ~= YAN then return end
+	if not has(F.RESCUE) then give(F.PROF_DIE) end
+	if first_player() == nil then return end
+
+	-- the wounded one died (zombies, a stray bullet): SoC death@scientist (his logic sets the same flag)
+	if has(F.WOUNDED) and not has(F.WGONE) and not has(F.DIE) then
+		local id = made[WND.section].id or find(WND)
+		if id ~= nil and npc_alive(id) == false then give(F.DIE) end
+	end
+
+	-- the bunker Semenov died (he is invulnerable, but a logic that did not start or a stray hit must not leave the chain waiting for a corpse):
+	-- after Sakharov's offer this is the same as the death of the scientist (SoC branch 5: the prototype anyway); otherwise a new one is created
+	local bid = made[SEM.section].id
+	if bid ~= nil and not wounded_active() and not has(F.DIE) and npc_alive(bid) == false then
+		if has(F.SEM_START) and not has(F.REPORTED) and not has(F.HELMET) then
+			give(F.DIE)
+		else
+			release(SEM, now)
+		end
+	end
+
+	-- the trip: after the three measurements the scientist is wounded at the third site (only in the Semenov variant, only while the results
+	-- are not delivered, he is not dead and was not sent home yet)
+	local wanted = has(F.SEM_START) and meas_all() and not has(F.REPORTED) and not has(F.DIE) and not has(F.WGONE)
+	if wanted then
+		local id = ensure(WND, now)
+		if id ~= nil then
+			wnd_id = id
+			pcall(ensure_logic, WND, id)
+			if not has(F.WOUNDED) then give(F.WOUNDED) end
+			release(SEM, now)                                   -- SoC: he is away with the player
+		end
+	end
+
+	-- he gets up after the talk and goes home: the tick removes him (walking back all the way is not reliable in the mod) and puts the bunker one back
+	if wounded_active() then
+		if has(F.REPORTED) then
+			give(F.WGONE); release(WND, now)
+		elseif has(F.TALKED) then
+			talked_t = talked_t or now
+			if now - talked_t >= HOME_MS then give(F.WGONE); release(WND, now) end
+		end
+	end
+
+	-- the bunker Semenov stands next to Sakharov except while the wounded one is out there or after his death
+	if not wounded_active() and not has(F.DIE) then
+		local sid = ensure(SEM, now)
+		if sid ~= nil then pcall(ensure_logic, SEM, sid) end
+	end
+
+	-- SoC sr_idle@1 / @2: 4 s after his death, while the lab job has not started: the PDA tip; without the talk also the return task
+	if has(F.DIE) and not has(F.HELMET) then
+		die_t = die_t or now
+		if now - die_t >= DIE_MS then
+			if has(F.TALKED) then give(F.TIP2) else give(F.TIP1); give(F.RET) end
+		end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the stages: task id, levels, open while ...
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	-- SoC yan_scientist_return_task: "Talk to Sakharov" until he gives the prototype (the lab job starts)
+	{ id = "yan_soc_return_task", maps = { [YAN] = true }, open = function() return has(F.RET) and not has(F.HELMET) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+last = ""
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step(now)
+	now = now or time_global()
+	local out = {}
+	local okp, errp = pcall(progress, now)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	local lvl = level.name()
+	for _, st in ipairs(STAGES) do
+		if st.maps == nil or st.maps[lvl] then
+			local ok, isopen = pcall(st.open)
+			if ok and isopen then
+				each_player(function(pid, a)
+					if given[st.id] == nil or not given[st.id][pid] then
+						local ready = true
+						pcall(function() ready = IsActorNetReady(pid) end)
+						if ready then
+							given[st.id] = given[st.id] or {}
+							given[st.id][pid] = true
+							local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+							qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+							out[#out + 1] = st.id .. "|" .. tostring(pid)
+							last = st.id .. " -> " .. tostring(pid)
+						end
+					end
+				end)
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step(now)
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what and the local state
+function reset_given()
+	given = {}
+	talked_t = nil
+	die_t = nil
+	made[SEM.section] = { id = nil, t = -COOLDOWN_MS, scanned = false }
+	made[WND.section] = { id = nil, t = -COOLDOWN_MS, scanned = false }
+	wnd_id = nil
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. dialog states (dialogs_coop_l08_yantar.xml). Computed from shared flags only (same on every machine); the states of one dialog exclude
+-- each other. The Kruglov states wrap the ones of coop_soc_yan: while the professor is dead Kruglov only says SoC branch 6.
+-------------------------------------------------------------------------------------------------------
+local function base(fn, a, b)
+	local ok, r = pcall(function() return coop_soc_yan[fn](a, b) end)
+	return ok and r and true or false
+end
+
+-- Sakharov
+function st_prof_die(a, b) return professor_dead() end                                           -- SoC 21113: the professor is dead (Semenov goes)
+function st_prof_alive(a, b) return not professor_dead() end                                     -- SoC 21112: Kruglov goes
+function st_s_semdead(a, b)                                                                      -- SoC branch 5: Semenov died, the lab job is not started
+	return has(F.DIE) and not has(F.HELMET) and not has(F.REPORTED)
+end
+function st_s_results(a, b) return base("st_s_results", a, b) and not st_s_semdead(a, b) end
+
+-- Kruglov
+function st_k_meet_r(a, b) return base("st_k_meet_r", a, b) and not professor_dead() end
+function st_k_meet(a, b) return base("st_k_meet", a, b) and not professor_dead() end
+function st_k_talk(a, b) return base("st_k_talk", a, b) and not professor_dead() end
+function st_k_busy(a, b) return base("st_k_busy", a, b) and not professor_dead() end
+function st_k_after(a, b) return base("st_k_after", a, b) and not professor_dead() end
+function st_k_other(a, b) return professor_dead() end                                            -- SoC branch 6: "I'm sorry, I have no time"
+
+-- Semenov (SoC yantar_help_scientist): before the offer "no time", the escort talk, busy, after the results
+function st_m_meet(a, b) return not has(F.SEM_START) end
+function st_m_talk(a, b) return has(F.SEM_START) and not has(F.PREP) end
+function st_m_busy(a, b) return has(F.SEM_START) and has(F.PREP) and not has(F.REPORTED) end
+function st_m_after(a, b) return has(F.SEM_START) and has(F.REPORTED) end
+
+-- the wounded scientist (SoC yantar_wounded_scientist)
+function st_w_first(a, b) return not has(F.TALKED) and not has(F.REPORTED) end
+function st_w_done(a, b) return has(F.TALKED) and not has(F.REPORTED) end
+function st_w_after(a, b) return has(F.REPORTED) end
+
+-------------------------------------------------------------------------------------------------------
+-- PDA archive line + voice (the ORIGINAL recordings of the SoC: English from the Steam SoC under dialogs\eng, Russian from the Russian SoC
+-- under dialogs; the Russian game uses the Russian ones when the voice language is Russian)
+-------------------------------------------------------------------------------------------------------
+-- phrases spoken by the NPC (the others are the player's); kinds: s = Sakharov, m = Semenov, w = the wounded scientist
+local NPC = {
+	s = { ["211131"] = 1, ["51"] = 1, ["5111"] = 1, ["511111"] = 1, ["511111111"] = 1, ["51113"] = 1 },
+	m = { ["61"] = 1, ["51"] = 1, ["512"] = 1, ["514"] = 1, ["101"] = 1, ["71"] = 1 },
+	w = { ["11"] = 1, ["211"] = 1, ["31"] = 1 },
+}
+VOICE_S = { "51", "5111", "511111", "511111111" }
+local VOICE = { s = {}, m = {}, w = {} }
+for _, id in ipairs(VOICE_S) do
+	VOICE.s[id] = { eng = "characters_voice\\dialogs\\eng\\yantar_general_ucheniy_talk_start_" .. id, rus = "characters_voice\\dialogs\\yantar_general_ucheniy_talk_start_" .. id }
+end
+-- SoC phrase 514 has the same words as Kruglov's 111111 ("You know what... Why don't you go first"): the same recording
+VOICE.m["514"] = { eng = "characters_voice\\dialogs\\eng\\yantar_help_scientist_111111", rus = "characters_voice\\dialogs\\yantar_help_scientist_111111" }
+
+local keep_snd = nil
+local lastsay = { key = nil, t = 0 }
+played = ""                           -- tests / logs: the last path handed to the sound engine
+
+local function game_lang()
+	local ok, s = pcall(function() return game.translate_string("st_opt_windowed") end)
+	if ok and s ~= nil then
+		for i = 1, string.len(s) do
+			if string.byte(s, i) >= 168 then return "rus" end
+		end
+	end
+	return "eng"
+end
+
+-- "rus" or "eng": the voice language of THIS player (voice_language auto | rus | eng of his coop_settings.ltx)
+function lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	return game_lang()
+end
+
+function voice_path(kind, id)
+	local v = VOICE[kind] and VOICE[kind][id]
+	if v == nil then return nil end
+	return v[lang()]
+end
+
+local function say(kind, id, first, second)
+	local tid = "coop_soc_yan_sem_" .. kind .. "_" .. id
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = NPC[kind][id] and "npc" or "actor" end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+	if not OnClient() then return end
+	local la = getLocalActor()
+	if la == nil or first == nil or second == nil then return end
+	if first:id() ~= la:id() and second:id() ~= la:id() then return end
+	local now = time_global()
+	local key = kind .. id
+	if lastsay.key == key and now - lastsay.t < 1500 then return end
+	lastsay.key, lastsay.t = key, now
+	local v = voice_path(kind, id)
+	if v == nil then return end                                       -- no recording in this language (or none for the line): silent
+	if not getFS():exist("$game_sounds$", v .. ".ogg") then qlog("NOVOICE " .. v); return end
+	qlog("VOICE_PLAY " .. kind .. id .. " lang=" .. lang() .. " path=" .. v)
+	played = v
+	pcall(function()
+		if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end
+		keep_snd = sound_object(v)
+		keep_snd:play(la, 0, sound_object.s2d)
+	end)
+end
+
+-- Sakharov
+function say_s21113(a, b) say("s", "21113", a, b) end
+function say_s211131(a, b) say("s", "211131", a, b) end
+function say_s211132(a, b) say("s", "211132", a, b) end
+function say_s51(a, b) say("s", "51", a, b) end
+function say_s511(a, b) say("s", "511", a, b) end
+function say_s5111(a, b) say("s", "5111", a, b) end
+function say_s51111(a, b) say("s", "51111", a, b) end
+function say_s511111(a, b) say("s", "511111", a, b) end
+function say_s5111111(a, b) say("s", "5111111", a, b) end
+function say_s511111111(a, b) say("s", "511111111", a, b) end
+function say_s51112(a, b) say("s", "51112", a, b) end
+function say_s51113(a, b) say("s", "51113", a, b) end
+function say_s51114(a, b) say("s", "51114", a, b) end
+-- Semenov
+function say_m61(a, b) say("m", "61", a, b) end
+function say_m51(a, b) say("m", "51", a, b) end
+function say_m511(a, b) say("m", "511", a, b) end
+function say_m512(a, b) say("m", "512", a, b) end
+function say_m513(a, b) say("m", "513", a, b) end
+function say_m514(a, b) say("m", "514", a, b) end
+function say_m515(a, b) say("m", "515", a, b) end
+function say_m101(a, b) say("m", "101", a, b) end
+function say_m71(a, b) say("m", "71", a, b) end
+-- the wounded scientist
+function say_w11(a, b) say("w", "11", a, b) end
+function say_w111(a, b) say("w", "111", a, b) end
+function say_w211(a, b) say("w", "211", a, b) end
+function say_w31(a, b) say("w", "31", a, b) end

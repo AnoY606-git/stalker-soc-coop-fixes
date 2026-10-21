@@ -1,0 +1,50 @@
+{
+ "agr_help_stalkers": {
+  "eng": "Help the stalkers",
+  "rus": "Помочь сталкерам"
+ },
+ "agr_help_stalkers_0": {
+  "eng": "Help the stalkers fight off the soldiers",
+  "rus": "Помочь сталкерам отбиться от военных"
+ },
+ "article_agr_krot_sos": {
+  "eng": "SOS, the army is killing a fellow stalker! Guys, if you can hear me - help!",
+  "rus": "SOS, военные режут нашего брата сталкера, мужики, все кто меня слышат - помогите!"
+ },
+ "agr_find_ghost": {
+  "eng": "Find out what happened to Ghost",
+  "rus": "Узнать о судьбе Призрака"
+ },
+ "agr_find_ghost_descr": {
+  "eng": "...found our that one of Strelok's guys is called Ghost. At least some hint. If I can find the Ghost - I'll be able to find Strelok too.",
+  "rus": "... Узнал, что одного из группы Стрелка зовут Призраком. Хоть какая-то зацепка. Если смогу найти Призрака, смогу найти и Стрелка."
+ },
+ "agroprom_find_gunslinger_cache_2": {
+  "eng": "Find information about Strelok in the stash",
+  "rus": "Найти в тайнике информацию о Стрелке"
+ },
+ "agr_factory_krot_start_0": {
+  "eng": "Thanks for your help, stalker! If you hadn't shown up, I'd be a dead man by now.",
+  "rus": "Спасибо тебе за твою помощь, сталкер! Не приди ты вовремя, я был бы уже покойником."
+ },
+ "agr_factory_krot_start_2": {
+  "eng": "I'm looking for info on Strelok. Seriy told me you know something about him.",
+  "rus": "Я ищу информацию о Стрелке, Серый мне говорил, что ты что-то знаешь."
+ },
+ "agr_krot_actor_met_seriy_100": {
+  "eng": "Seriy? Well, OK, listen. They say Strelok used to sneak around here. On top of that, his stash is somewhere around here below ground. I heard his group even has its base here. We also looked for the stash but we found jack shit. I'll give you the info about the stash, maybe you'll be luckier. This is everything we have on the stash.",
+  "rus": "Серый? Ну хорошо, слушай. Говорят что Стрелок промышлял в этих местах. К тому же где-то в местных подвалах находится тайник Стрелка. Говорили даже, что здесь была база его группировки. Мы тоже искали тайник, только ничего не нашли. Я тебе скину информацию, может тебе повезет. Там вся информация о тайнике, которая у нас есть."
+ },
+ "agr_factory_krot_start_10002": {
+  "eng": "How do I get into the basement?",
+  "rus": "Как мне попасть в эти подвалы?"
+ },
+ "agr_factory_krot_start_1502": {
+  "eng": "This is one of the many exits which will lead you into the interconnected basements. Once you're in there, you're on your own - I don't have a map and the basement network is huge and confusing.",
+  "rus": "Тут один из многих входов, через него ты попадешь в один из соединенных друг с другом подвалов, ну а там смотри сам, карты у меня нет, они очень длинные с множеством комнат и довольно запутаны."
+ },
+ "agr_factory_krot_start_15002": {
+  "eng": "Thanks for the information.",
+  "rus": "Спасибо за информацию."
+ }
+}

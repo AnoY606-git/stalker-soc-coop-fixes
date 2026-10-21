@@ -1,0 +1,84 @@
+    <dialog id="mil_soc_dolg_leader_join">
+        <dont_has_flag>MIL_SOC_RG6_START</dont_has_flag>
+        <phrase_list>
+            <phrase id="11121">
+                <action>coop_soc_milc_say.say_vo_join_11121</action>
+                <text>coop_soc_milc_vo_join_11121</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1112">
+                <action>coop_soc_milc_say.say_vo_join_1112</action>
+                <text>coop_soc_milc_vo_join_1112</text>
+                <next>11121</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_milc_say.say_vo_join_111</action>
+                <text>coop_soc_milc_vo_join_111</text>
+                <next>1111</next>
+                <next>1112</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_milc_say.say_vo_join_11</action>
+                <text>coop_soc_milc_vo_join_11</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="1111">
+                <action>coop_soc_milc_say.say_vo_join_1111</action>
+                <text>coop_soc_milc_vo_join_1111</text>
+                <give_flag>MIL_SOC_RG6_START</give_flag>
+                <next>11111</next>
+            </phrase>
+            <phrase id="11111">
+                <action>coop_soc_milc_say.say_vo_join_11111</action>
+                <text>coop_soc_milc_vo_join_11111</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_vo_join_1</action>
+                <text>coop_soc_milc_vo_join_1</text>
+                <next>11</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_vo_join_0</action>
+                <text>coop_soc_milc_vo_join_0</text>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_dolg_leader_quest_rg6_finish">
+        <precondition>coop_soc_milc.has_rg6</precondition>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_RG6_DONE</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_vo_quest_rg6_finish_1</action>
+                <text>coop_soc_milc_vo_quest_rg6_finish_1</text>
+                <action>coop_soc_milc.give_suit</action>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_vo_quest_rg6_finish_0</action>
+                <text>coop_soc_milc_vo_quest_rg6_finish_0</text>
+                <action>coop_soc_milc.take_rg6</action>
+                <give_flag>MIL_SOC_RG6_DONE</give_flag>
+                <next>1</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_dolg_leader_rg6_late">
+        <precondition>coop_soc_milc.suit_pending</precondition>
+        <has_flag>MIL_SOC_RG6_DONE</has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_vo_late_0</action>
+                <text>coop_soc_milc_vo_late_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_vo_late_1</action>
+                <text>coop_soc_milc_vo_late_1</text>
+                <action>coop_soc_milc.give_suit</action>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>

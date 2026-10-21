@@ -377,3 +377,9 @@ function scene_active(actor, npc, p)
 end
 
 pcall(function() coop_scenes.install() end)
+
+-- false while a scripted voice scene of this NPC plays on this client (talking then would overlap two recordings)
+function coop_sidor_talk_ok(actor, npc)
+	local ok, id = pcall(function() return coop_scenes.client_running() end)
+	return not (ok and (id == "sidor_intro" or id == "sidor_greet"))
+end

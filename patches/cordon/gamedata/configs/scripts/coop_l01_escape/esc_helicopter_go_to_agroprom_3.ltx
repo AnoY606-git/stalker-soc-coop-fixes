@@ -1,0 +1,13 @@
+[logic]
+active = heli_move@idle
+
+; The level maker flew this helicopter over the village after the flash drive (with the task "Looks like something is up" and Sidorovich's
+; "the military choppers" talk). The original game has no such flight, so it never leaves its idle point and removes itself (patch cordon).
+; ESC_HELICOPTER_GO_TO_AGROPROM_INFO is now given silently by the flash drive hand-in dialog.
+[heli_move@idle]
+path_move = esc_helicopter_go_to_agroprom_3_idle_way
+max_velocity = 300
+engine_sound = false
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_timer = 3000 | %=destroy_object%

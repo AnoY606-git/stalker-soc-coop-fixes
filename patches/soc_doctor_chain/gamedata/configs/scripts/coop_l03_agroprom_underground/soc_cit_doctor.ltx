@@ -1,0 +1,33 @@
+; The Doctor of the original SoC (patch soc_doctor_chain). Spawned by scripts\coop_soc_doctor.script (custom_data of the spawn section [soc_cit_doctor]).
+; He waits in Strelok's hiding place of the Agroprom underground, looks at the player (SoC cit_doctor: remark, target actor), cannot be hurt.
+[logic]
+active = remark@soc_cit_doctor
+level_spot = quest_npc
+
+[remark@soc_cit_doctor]
+anim = ward_noweap
+target = actor
+meet = meet@soc_cit_doctor
+invulnerable = true
+can_select_weapon = false
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+use_camp = false
+
+[meet@soc_cit_doctor]
+close_snd_hello = nil
+close_snd_bye = nil
+close_anim = nil
+close_victim = nil
+far_anim = nil
+far_victim = nil
+close_distance = 0
+far_distance = 0
+close_snd_distance = 3
+abuse = false
+use = {=actor_enemy} false, true
+allow_break = true
+meet_on_talking = true

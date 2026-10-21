@@ -1,0 +1,84 @@
+<w>
+	<!-- Shadow of Chernobyl talk window (GSC Game World original layout, see NOTES.md). Header art, titles, portraits: scripts/soc_talk_ui.script + soc_talk_info.xml -->
+	<main anchor="mid-center" x="0" y="0" width="1920" height="1080">
+		<answers_bcg x="538" y="164" width="844" height="518" stretch="1">
+			<texture>ui_talk_dialogue_back</texture>
+		</answers_bcg>
+		<auto_static x="538" y="820" width="844" height="158" stretch="1">
+			<texture>ui_talk_dialogue2_back</texture>
+		</auto_static>
+		<auto_static x="538" y="978" width="844" height="56" stretch="1">
+			<texture>ui_talk_dialogue2_e</texture>
+		</auto_static>
+	</main>
+
+	<button x="850" y="1010" width="220" height="67" stretch="1" hint="ui_st_exit_hint">
+		<texture>ui_button_main01</texture>
+		<text font="graffiti22" align="c">ui_st_trade</text>
+		<text_color>
+			<e r="238" g="153" b="26"/>
+			<t r="255" g="179" b="83"/>
+			<d r="120" g="90" b="40"/>
+			<h r="255" g="179" b="83"/>
+		</text_color>
+	</button>
+
+	<answers_list x="584" y="166" width="765" height="496" always_show_scroll="1"/>
+	<questions_list x="580" y="823" width="770" height="150" always_show_scroll="0"/>
+
+	<question_item x="0" y="0" width="770" height="28" min_height="18">
+		<num_text x="0" y="4" width="15" height="28">
+			<text font="letterica18" color="ui_2"/>
+		</num_text>
+		<content_text x="28" y="3" width="729" height="28">
+			<text font="letterica18" color="ui_2" align="l" complex_mode="1"/>
+			<text_color>
+				<t r="231" g="168" b="12"/>
+				<e color="ui_2"/>
+				<h color="ui_1"/>
+			</text_color>
+		</content_text>
+	</question_item>
+
+	<other_answer_item x="0" y="0" width="765" height="0" min_height="18" bottom_footer="5">
+		<name_caption x="0" y="3" width="748" height="14">
+			<text font="graffiti22" color="ui_7" complex_mode="0"/>
+		</name_caption>
+		<content_text x="32" y="31" width="724" height="14" complex_mode="1">
+			<text font="letterica18" color="ui_8"/>
+		</content_text>
+	</other_answer_item>
+
+	<actor_answer_item x="0" y="0" width="765" height="0" min_height="18" bottom_footer="10">
+		<name_caption x="0" y="3" width="748" height="14">
+			<text font="graffiti22" color="ui_lime" complex_mode="0"/>
+		</name_caption>
+		<content_text x="32" y="31" width="724" height="14" complex_mode="1">
+			<text font="letterica18" color="ui_2"/>
+		</content_text>
+	</actor_answer_item>
+
+	<iconed_answer_item x="0" y="0" width="765" height="0" min_height="42" bottom_footer="5">
+		<name_caption x="0" y="0" width="0" height="0"/>
+		<content_text x="119" y="0" width="675" height="41" complex_mode="1">
+			<text font="letterica18" color="ui_1"/>
+		</content_text>
+		<msg_icon x="32" y="4" width="77" height="41" stretch="1"/>
+	</iconed_answer_item>
+
+	<simple_answer_item x="0" y="0" width="765" height="0" min_height="18" bottom_footer="5">
+		<name_caption x="0" y="0" width="0" height="0"/>
+		<content_text x="94" y="0" width="690" height="41" complex_mode="1">
+			<text font="letterica18" color="ui_1"/>
+		</content_text>
+		<msg_icon x="38" y="4" width="0" height="0"/>
+	</simple_answer_item>
+
+	<iconed_trade_info x="0" y="0" width="765" height="0" min_height="28" bottom_footer="5">
+		<name_caption x="0" y="0" width="0" height="0"/>
+		<content_text x="102" y="3" width="686" height="28" complex_mode="1">
+			<text font="letterica18" color="ui_8"/>
+		</content_text>
+		<msg_icon x="32" y="0" width="53" height="28" stretch="1"/>
+	</iconed_trade_info>
+</w>

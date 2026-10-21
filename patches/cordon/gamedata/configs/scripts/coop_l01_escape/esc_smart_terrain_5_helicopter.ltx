@@ -1,0 +1,13 @@
+[logic]
+active = heli_move@idle
+
+; The level maker flew this helicopter over the village after the Tolik / Petruha talks, before the flash drive hand-in (radio message
+; heli_radio_part_1). The original game has no such flight, so it never leaves its idle point and removes itself (patch cordon; the server
+; releases the object as well, see coop_soc_cordon.tick_heli). It gives no flag and no task: nothing else reads it.
+[heli_move@idle]
+path_move = esc_helicopter_idle_way
+max_velocity = 300
+engine_sound = false
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_timer = 3000 | %=destroy_object%

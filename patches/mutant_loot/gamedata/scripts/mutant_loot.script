@@ -1,26 +1,43 @@
 ---------------------------------------------------------------------------------------------------
--- Mutant corpse loot, the original Shadow of Chernobyl way: search the corpse, take the part.
--- Patch mutant_loot (Shadow of COOP fixes). Own implementation. The idea of a "search" tip + use callback on dead
--- mutants is the one the MSO adaptation (B4rs1k, original MSO by Salaam) shows for xrMPE; the rest is new code.
+-- Mutant corpse loot, the original Shadow of Chernobyl way: search the corpse, take its part.
+-- Patch mutant_loot (Shadow of COOP fixes).
+--
+-- The "Use runs on the SERVER" model comes from the MSO Call of Pripyat Co-op add-on for xrMPE (adapted by B4rs1k,
+-- made by Salaam; the mutant looting code in it is marked fluffy22, credits ARS and TGZ teams): the corpse's use callback
+-- is armed in the SERVER binder, it receives the actor that pressed Use ("who"), and the server gives the part to
+-- that actor. Clients only need the "Search" tip on their copy of the corpse. The loot rules here are our own (SoC).
 --
 -- How it works
 --   * Server, when a mutant dies (bind_monster death callback): ONE roll with the SoC chance (configs\misc\mutant_loot.ltx,
 --     0.2 for the SoC parts). If it succeeds the corpse "carries" the part: the shared story flag MLOOT_<corpse id>_<PART>
 --     is given. Story flags are saved with the game and sent to every player, so all players see the same corpse content.
---   * Every machine: a dead mutant that can carry a part gets the tip "Search" and a use callback (bind_monster).
---   * Player presses Use on the corpse: a small window lists what the corpse carries (the xrMPE engine cannot open the
---     inventory window of a mutant: monsters are no inventory owners there). Take sends "mloot_take_<id>" to the server.
---   * Server: takes the flag away FIRST, then creates the part inside the taker's inventory. A second player (or a
---     second click) finds no flag and gets nothing: one part per corpse, no duplication.
+--   * Every machine: a dead mutant that can carry a part gets the tip "Search" and the use callback (tick_dead, called by
+--     the binders of bind_monster). The callback is re-armed every second.
+--   * Player presses Use on the corpse. The engine runs use_cb where the corpse is bound with a script binder = on the
+--     SERVER (listen host or dedicated) with who = the player's actor, also for remote players. use_cb -> use_server:
+--     takes the flag away FIRST, then creates the part inside that player's inventory. A second player, or a second
+--     press, finds no flag and gets nothing: one part per corpse, no duplicate.
+--   * Feedback ("Found: Dog Tail" / "Nothing useful on the body") goes through a short-lived story flag
+--     MLOOTR_<actor>_<corpse>_<random>_<CODE> that the server gives; the corpse binder of the player's machine sees it and
+--     shows the tip (no game_cl message type needed).
+--   * Fallback: if a client's engine also fires the callback locally (who = local actor), use_client asks the server through
+--     the game function mloot_take_<corpse id> (executeFunctionOnServer). The server ignores a repeat from the same player
+--     and corpse within 1.5 s, so a double fire does nothing twice.
 ---------------------------------------------------------------------------------------------------
 
 local PREFIX = "MLOOT_"
+local FBPREFIX = "MLOOTR_"
 
--- test hooks (tests only): chance override, and a log of the rolls
-test = { chance = nil, rolls = {}, armed = {}, arm_err = {}, takes = {} }
+-- test hooks (tests only): chance override, logs of rolls, arming, uses, takes and shown tips
+test = { chance = nil, rolls = {}, armed = {}, arm_err = {}, takes = {}, uses = {}, tips = {} }
 
 local rolled = {}      -- server: corpse ids rolled in this session
 local armed_fn = {}    -- server: corpse ids that have a game_sv function
+local last_use = {}    -- server: "<actor>_<corpse>" -> time of the last handled use
+local fb_last = {}     -- server: "<actor>_<corpse>" -> last feedback flag
+local fb_swept = false -- server: old feedback flags of a loaded game removed
+local fb_seen = {}     -- client: feedback flags already shown
+local last_tip = { text = nil, t = 0, found_t = -100000 }
 local cfg = nil
 
 local function get_cfg()
@@ -33,6 +50,11 @@ function dbg(s)
 		local f = io.open(getFS():update_path("$logs$", "mutant_loot.log"), "a")
 		if f then f:write(string.format("[%8.1f] %s\n", time_global() / 1000, tostring(s))); f:close() end
 	end)
+end
+
+local function is_server()
+	local ok, a = pcall(alife)
+	return OnServer() and ok and a ~= nil
 end
 
 -- the part section a mutant of this section can carry (PartSpawnName of the add-on's m_*.ltx), or nil
@@ -85,10 +107,11 @@ end
 ---------------------------------------------------------------------------------------------------
 -- server side
 ---------------------------------------------------------------------------------------------------
+-- fallback entry for a client that fires the use callback itself: the game function mloot_take_<corpse id>
 function ensure_fn(id)
 	if armed_fn[id] then return end
 	local ok = pcall(function()
-		game_sv["mloot_take_" .. id] = function(actor_id) mutant_loot.take(actor_id, id) end
+		game_sv["mloot_take_" .. id] = function(actor_id) mutant_loot.use_server(actor_id, id) end
 	end)
 	if ok then armed_fn[id] = true end
 end
@@ -123,12 +146,13 @@ function on_alive_spawn(id)
 	for i = 1, #p do story_flags.disable_flag(flag_name(id, p[i])) end
 end
 
--- the actor <actor_id> takes everything the corpse <id> carries (runs on the server)
+-- the actor <actor_id> takes everything the corpse <id> carries (runs on the server).
+-- returns: number of parts, the first part section, why ("ok" / "empty" / "far" / "none")
 function take(actor_id, id)
-	if not OnServer() then return 0 end
+	if not OnServer() then return 0, nil, "none" end
 	local se_a = alife():object(actor_id)
 	local se_c = alife():object(id)
-	if se_a == nil or se_c == nil then return 0 end
+	if se_a == nil or se_c == nil then return 0, nil, "none" end
 	local c = get_cfg()
 	local maxd = 6
 	if c:section_exist("settings") and c:line_exist("settings", "take_distance") then maxd = c:r_float("settings", "take_distance") end
@@ -140,16 +164,10 @@ function take(actor_id, id)
 	local o_a, o_c = db.mp_actors[actor_id], level.object_by_id(id)
 	if o_a ~= nil and o_c ~= nil then d = o_a:position():distance_to(o_c:position()) end
 	test.last_dist = { se = d_se, obj = d }
-	if o_a ~= nil and o_c ~= nil then
-		local pa, pc = o_a:position(), o_c:position()
-		dbg(string.format("take dist se=%.1f obj=%.1f actor(%.1f %.1f %.1f) corpse(%.1f %.1f %.1f) se_corpse(%.1f %.1f %.1f)", d_se, d, pa.x, pa.y, pa.z, pc.x, pc.y, pc.z, se_c.position.x, se_c.position.y, se_c.position.z))
-	else
-		dbg(string.format("take dist se=%.1f (live objects missing: actor %s corpse %s)", d_se, tostring(o_a ~= nil), tostring(o_c ~= nil)))
-	end
 	if d > maxd then
-		dbg(string.format("take refused actor=%d corpse=%d too far", actor_id, id))
+		dbg(string.format("take refused actor=%d corpse=%d too far (%.1f)", actor_id, id, d))
 		test.takes[#test.takes + 1] = { actor = actor_id, corpse = id, n = 0, why = "far", dist = d }
-		return 0
+		return 0, nil, "far"
 	end
 	local parts = parts_on(id)
 	for i = 1, #parts do
@@ -159,46 +177,168 @@ function take(actor_id, id)
 		alife():create(parts[i], se_a.position, se_a.m_level_vertex_id, se_a.m_game_vertex_id, actor_id)
 		dbg(string.format("take actor=%d corpse=%d part=%s", actor_id, id, parts[i]))
 	end
-	test.takes[#test.takes + 1] = { actor = actor_id, corpse = id, n = #parts, why = (#parts > 0) and "ok" or "empty", dist = d, dist_se = d_se }
-	return #parts
+	local why = (#parts > 0) and "ok" or "empty"
+	test.takes[#test.takes + 1] = { actor = actor_id, corpse = id, n = #parts, why = why, dist = d, dist_se = d_se }
+	return #parts, parts[1], why
 end
 
----------------------------------------------------------------------------------------------------
--- every machine: tip + use callback on dead mutants
----------------------------------------------------------------------------------------------------
-function tick_dead(obj, st)
-	if st.mloot_armed then
-		if OnServer() and not st.mloot_fn and #parts_on(obj:id()) > 0 then
-			st.mloot_fn = true
-			ensure_fn(obj:id())     -- after a load the game_sv function is gone: bring it back
-		end
+-- feedback to the player's machine: a short-lived story flag (see the header)
+local function sweep_feedback()
+	fb_swept = true
+	local sf = story_flags.story_flags
+	if sf == nil then return end
+	local old = {}
+	local n = string.len(FBPREFIX)
+	for k, v in pairs(sf) do
+		if v == true and string.sub(k, 1, n) == FBPREFIX then old[#old + 1] = k end
+	end
+	for i = 1, #old do story_flags.disable_flag(old[i]) end
+end
+
+function notify(actor_id, id, code)
+	if not fb_swept then sweep_feedback() end
+	local key = actor_id .. "_" .. id
+	if fb_last[key] ~= nil then story_flags.disable_flag(fb_last[key]) end
+	local name = string.upper(FBPREFIX .. actor_id .. "_" .. id .. "_" .. math.random(100000, 999999) .. "_" .. code)
+	fb_last[key] = name
+	story_flags.give_flag(name)
+end
+
+-- Use on the corpse <cid> by the actor <wid>: the whole server side of "search the corpse"
+function use_server(wid, cid)
+	if not is_server() then return end
+	if db.mp_actors ~= nil and db.mp_actors[wid] == nil then return end     -- only players use corpses
+	local now = time_global()
+	local key = wid .. "_" .. cid
+	if last_use[key] ~= nil and now - last_use[key] < 1500 then
+		dbg(string.format("use actor=%d corpse=%d repeated within 1.5 s: ignored", wid, cid))
 		return
 	end
-	if obj:alive() then return end
-	if part_of(obj) == nil then return end
-	st.mloot_armed = true
-	local ok, err = pcall(function()
-		obj:set_callback(callback.use_object, mutant_loot.on_use)
-		obj:set_tip_text("st_mutant_loot_tip")
-	end)
-	if ok then test.armed[obj:id()] = true else test.arm_err[obj:id()] = tostring(err) end
+	last_use[key] = now
+	local n, part, why = take(wid, cid)
+	if why == "ok" then
+		notify(wid, cid, "OK_" .. string.upper(part))
+	elseif why == "empty" then
+		notify(wid, cid, "EMPTY")
+	end
 end
 
--- use callback (runs on the machine of the player who pressed Use)
-function on_use(obj, who)
-	if who ~= nil and LocalActor() ~= nil and who:id() ~= LocalActor() then return end
-	dbg("use corpse " .. tostring(obj:id()))
-	ui_mutant_loot.open(obj:id())
+---------------------------------------------------------------------------------------------------
+-- the use callback (set_callback(callback.use_object, mutant_loot.use_cb, binder): called as use_cb(binder, corpse, who))
+---------------------------------------------------------------------------------------------------
+local function tr(id)
+	local ok, s = pcall(game.translate_string, id)
+	if ok and s ~= nil then return s end
+	return id
+end
+
+-- kind "found" or "empty". A repeat of the same text within 1 s is dropped, and "empty" right after "found" is dropped
+-- (a press that reaches the server and the client callbacks must not end with "Nothing useful")
+function show_tip(text, kind)
+	local now = time_global()
+	if last_tip.text == text and now - last_tip.t < 1000 then return end
+	if kind == "empty" and now - last_tip.found_t < 3000 then return end
+	last_tip.text = text
+	last_tip.t = now
+	if kind == "found" then last_tip.found_t = now end
+	test.tips[#test.tips + 1] = text
+	local a = getLocalActor()
+	if a == nil then return end
+	local ok = pcall(function() news_manager.send_tip(a, text, nil, "mutant_hunter", nil, nil) end)
+	if not ok then
+		pcall(function() a:give_game_news(tr("st_tip"), text, "ui_iconsTotal_grouping", 0, 5000, 0) end)
+	end
+end
+
+-- a client machine whose engine fires the callback itself (who = its own actor): ask the server
+function use_client(obj, who)
+	local me = LocalActor()
+	if me == nil or who:id() ~= me then return end
+	local id = obj:id()
+	-- an empty corpse: nothing to ask for (the server callback gives the "Nothing useful" tip when it runs)
+	if #parts_on(id) > 0 then mutant_loot.request_take(id) end
+end
+
+function use_cb(binder, obj, who)
+	if obj == nil or who == nil then return end
+	local srv = is_server()
+	test.uses[#test.uses + 1] = { corpse = obj:id(), who = who:id(), server = srv }
+	dbg(string.format("use corpse=%d by=%d server=%s", obj:id(), who:id(), tostring(srv)))
+	if srv then
+		mutant_loot.use_server(who:id(), obj:id())
+	else
+		mutant_loot.use_client(obj, who)
+	end
 end
 
 function request_take(id)
-	game_cl.executeFunctionOnServer("mloot_take_" .. id)
+	pcall(function() game_cl.executeFunctionOnServer("mloot_take_" .. id) end)
+end
+
+---------------------------------------------------------------------------------------------------
+-- every machine: tip + use callback on dead mutants, feedback tips (called from the binders of bind_monster)
+---------------------------------------------------------------------------------------------------
+local function handle_feedback(code)
+	local part = string.match(code, "^%d+_OK_(.+)$")
+	if part ~= nil then
+		part = string.lower(part)
+		local nm = part
+		pcall(function() nm = tr(system_ini():r_string(part, "inv_name")) end)
+		show_tip(tr("st_mutant_loot_found") .. " " .. nm, "found")
+	elseif string.match(code, "^%d+_EMPTY$") then
+		show_tip(tr("st_mutant_loot_empty"), "empty")
+	end
+end
+
+local function poll_feedback(obj, st)
+	local now = time_global()
+	if st.mloot_fb_t ~= nil and now - st.mloot_fb_t < 250 then return end
+	st.mloot_fb_t = now
+	local me = LocalActor()
+	if me == nil or me == 0 or me == 65535 then return end
+	local a = getLocalActor() or level.object_by_id(me)
+	if a == nil or a:position():distance_to(obj:position()) > 20 then return end
+	local sf = story_flags.story_flags
+	if sf == nil then return end
+	local pre = FBPREFIX .. me .. "_" .. obj:id() .. "_"
+	local n = string.len(pre)
+	local first = not st.mloot_fb_init      -- flags that already exist when this corpse gets its first poll are old news
+	st.mloot_fb_init = true
+	local fresh = {}
+	for k, v in pairs(sf) do
+		if v == true and string.sub(k, 1, n) == pre and not fb_seen[k] then
+			fb_seen[k] = true
+			if not first then fresh[#fresh + 1] = string.sub(k, n + 1) end
+		end
+	end
+	for i = 1, #fresh do handle_feedback(fresh[i]) end
+end
+
+function tick_dead(obj, st)
+	if obj:alive() then return end
+	if st.mloot_part == nil then
+		st.mloot_part = part_of(obj) or false
+	end
+	if st.mloot_part == false then return end
+	local now = time_global()
+	if st.mloot_t == nil or now - st.mloot_t >= 1000 then
+		st.mloot_t = now
+		local ok, err = pcall(function()
+			obj:set_callback(callback.use_object, mutant_loot.use_cb, st)
+			obj:set_tip_text("st_mutant_loot_tip")
+		end)
+		if ok then test.armed[obj:id()] = true else test.arm_err[obj:id()] = tostring(err) end
+		if is_server() and not st.mloot_fn and #parts_on(obj:id()) > 0 then
+			st.mloot_fn = true
+			ensure_fn(obj:id())     -- after a load the game_sv function is gone: bring it back
+		end
+	end
+	poll_feedback(obj, st)
 end
 
 -- client binder for machines that are not the server (the full binder runs on the server only)
 class "mloot_client_binder" (object_binder)
 function mloot_client_binder:__init(obj) super(obj)
-	self.mloot_armed = false
 end
 function mloot_client_binder:update(delta)
 	object_binder.update(self, delta)

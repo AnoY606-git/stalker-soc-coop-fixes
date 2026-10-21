@@ -1,0 +1,229 @@
+-------------------------------------------------------------------------------------------------------
+-- Freeplay after the true ending (patch freeplay). Auto-loaded by the Scene Director (every coop_scn_*.script is).
+--
+--  Old behaviour: end_peace (the true ending, CNPP-2) -> credits -> every player is disconnected to the main menu.
+--  Now (host setting [freeplay] enabled = true, the default): the credits are the same, but afterwards the whole party is moved to the
+--  Cordon rookie village with everything it carries, and the game goes on. Nothing is reset: the story flags (SCN_*_PLAYED, quest infos,
+--  repeatable jobs, traders) stay as they are, so no scene plays again.
+--
+--  Chain:
+--   1. cutscenes_pkg_endings: end_peace.on_end asks coop_scn_freeplay.credits_variant() (SERVER). With freeplay on it gets "freeplay",
+--      gives the shared flag COOP_FREEPLAY_PENDING and requests the credits scene with that variant: the credits then end without the
+--      main_menu step and without the disconnect (the variant reaches every client through the director's own flag).
+--   2. this file: scene "freeplay" (level CNPP-2, once). Trigger (server, 500 ms poll): PENDING and the credits scene is over.
+--      on_go opens the exit (flag COOP_FREEPLAY_OPEN: every machine switches the level changer on, see apply()), the clients get a news line.
+--      on_end (all acked or timeout): the server teleports every alive player into the exit (teleport_actor_sv, the same call the Cordon guide
+--      uses to push the party into a level changer). The engine then changes the level to the Cordon rookie village for the party.
+--   3. watchdog: if the level has not changed 25 s after the teleport, the shared flag COOP_FREEPLAY_FAILED sends everybody to the main
+--      menu (the old behaviour), so a broken exit never leaves the party stuck at the end of the game.
+--
+--  The exit is the level changer aes_2_esc_freeplay_level_changer (patches/level_back/tools/add_level_changers.py): it stands in the far south
+--  east corner of CNPP-2, far from every route, and apply() keeps it switched off (enable_level_changer(false)) on every machine until
+--  COOP_FREEPLAY_OPEN exists, so nobody can walk into it before the ending. After the party has arrived on the Cordon the server takes the
+--  OPEN flag away again, so the exit is closed for good.
+--
+--  Host switch: coop_host_cfg [freeplay] enabled (default true). false = credits_variant() returns nil and everything is as before.
+--  Tests: patches/freeplay/tests (mock test and in-game hook). Notes: patches/freeplay/NOTES.md
+-------------------------------------------------------------------------------------------------------
+
+local LEVEL    = "coop_l11_stancia_2"
+local CHANGER  = "aes_2_esc_freeplay_level_changer"
+local EXIT     = { x = 981.7, y = 0.0, z = 337.7 }     -- used only when the server object cannot be found by name
+local PENDING  = "COOP_FREEPLAY_PENDING"
+local OPEN     = "COOP_FREEPLAY_OPEN"
+local DONE     = "COOP_FREEPLAY_DONE"
+local FAILED   = "COOP_FREEPLAY_FAILED"
+local WATCH_MS = 25000
+
+local G = { gen = 0, last = 0, applied = nil, at = 0, ok = false, err = nil, left = false, wd = false }
+
+local function dbg(s)
+	pcall(printf_msg, "FREEPLAY %s", tostring(s))
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[FP] " .. tostring(s)) end
+end
+
+local function has(name)
+	local ok, r = pcall(function() return story_flags.has_flag(name) end)
+	return ok and r == true
+end
+
+local function later(ms, fn)
+	local at = time_global() + ms
+	pcall(level.add_call, function()
+		if time_global() < at then return false end
+		pcall(fn)
+		return true
+	end, function() end)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- host switch and the credits variant (SERVER, called by coop_scn_endings)
+-------------------------------------------------------------------------------------------------------
+function enabled()
+	local ok, v = pcall(function() return coop_host_cfg.bool("freeplay", "enabled", true) end)
+	if ok and v == false then return false end
+	return true
+end
+
+-- "freeplay" when the credits must lead back into the game, nil for the old end (main menu)
+function credits_variant()
+	if not OnServer() then return nil end
+	if not enabled() then
+		dbg("switched off by the host ([freeplay] enabled = false): the credits end in the main menu")
+		return nil
+	end
+	story_flags.give_flag(PENDING)
+	dbg("true ending: the credits lead into freeplay")
+	return "freeplay"
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the exit: closed on every machine until OPEN, opened for the scene
+-------------------------------------------------------------------------------------------------------
+local function apply(now)
+	local want = has(OPEN)
+	if G.applied == want and now - G.at < 15000 then return end
+	local lc = nil
+	pcall(function() lc = level.object(CHANGER) end)
+	if lc == nil then return end
+	local ok, e = pcall(function() lc:enable_level_changer(want) end)
+	G.ok = ok
+	if not ok then G.err = tostring(e) end
+	G.applied = want
+	G.at = now
+	dbg("exit open=" .. tostring(want) .. " ok=" .. tostring(ok))
+end
+
+-- the party is on the Cordon (or anywhere but CNPP-2) and the exit is still open: close it for good (server)
+local function server_tick()
+	if has(DONE) and has(OPEN) and level.name() ~= LEVEL then
+		pcall(function() story_flags.disable_flag(OPEN) end)
+		dbg("arrived on " .. tostring(level.name()) .. ": exit closed again")
+	end
+end
+
+-- the exit did not move the party: old behaviour (main menu), same timing as the credits (clients first, host last)
+local function leave_to_menu()
+	if G.left then return end
+	G.left = true
+	dbg("exit failed, disconnect actor=" .. tostring(LocalActor()))
+	later(OnServer() and 5000 or 2000, function()
+		get_console():execute("disconnect")
+	end)
+end
+
+local function install()
+	G.gen = G.gen + 1
+	local gen = G.gen
+	pcall(function()
+		level.add_call(function()
+			if gen ~= G.gen then return true end
+			local now = time_global()
+			if now - G.last < 1000 then return false end
+			G.last = now
+			if OnServer() then
+				local oks, es = pcall(server_tick)
+				if not oks then G.err = tostring(es) end
+			end
+			if level.name() == LEVEL then
+				local ok, e = pcall(apply, now)
+				if not ok then G.err = tostring(e) end
+				if has(FAILED) then pcall(leave_to_menu) end
+			else
+				G.applied = nil
+			end
+			return false
+		end, function() end)
+	end)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the scene
+-------------------------------------------------------------------------------------------------------
+local function exit_position()
+	local p = nil
+	pcall(function()
+		local se = alife():object(CHANGER)
+		if se ~= nil then p = se.position end
+	end)
+	if p ~= nil then return p end
+	return vector():set(EXIT.x, EXIT.y, EXIT.z)
+end
+
+local function notice()
+	local a = nil
+	pcall(function() a = getLocalActor() end)
+	if a == nil then a = db.actor end
+	if a == nil then return end
+	local ok, err = pcall(function()
+		a:give_game_news(game.translate_string("scn_freeplay_caption"), game.translate_string("scn_freeplay_msg"),
+			"ui_iconsTotal_grouping", 0, 6000, 0)
+	end)
+	if not ok then dbg("NEWSERR " .. tostring(err)) end
+end
+
+-- SERVER: move every alive player into the exit. Idempotent (DONE).
+function transfer(ctx)
+	if has(DONE) then
+		dbg("transfer ignored: DONE already exists")
+		return 0
+	end
+	story_flags.give_flag(DONE)
+	local pos = exit_position()
+	local dir = vector():set(0, 0, 1)
+	local n = 0
+	for _, a in ipairs(ctx.players()) do
+		local ok, err = pcall(function() teleport_actor_sv(a:id(), pos, dir) end)
+		if ok then n = n + 1 else dbg("teleport error " .. tostring(err)) end
+	end
+	dbg(string.format("%d player(s) sent into the exit", n))
+	later(WATCH_MS, function()
+		if level.name() == LEVEL then
+			story_flags.give_flag(FAILED)
+			dbg("the level did not change within " .. WATCH_MS .. " ms: FAILED, everybody goes to the main menu")
+		end
+	end)
+	return n
+end
+
+coop_scenes.register{
+	id        = "freeplay",
+	kind      = "sequence",
+	level     = LEVEL,
+	once      = true,
+	skip      = "none",
+	length_ms = 5000,
+	grace_ms  = 15000,
+	settle_ms = 1500,
+
+	-- SERVER: the true ending asked for freeplay and its credits are over
+	trigger = function(ctx)
+		if has(DONE) or not has(PENDING) then return false end
+		local ok, played = pcall(function() return coop_scenes.played("credits") end)
+		return ok and played == true
+	end,
+
+	on_go = function(ctx, var)
+		story_flags.give_flag(OPEN)
+		dbg("GO: the exit is opened on every machine")
+	end,
+
+	steps = function(var, env)
+		return {
+			{ ["do"] = "fn", fn = function(e) notice() end },
+			{ ["do"] = "wait", ms = 4000 },
+		}
+	end,
+
+	on_end = function(ctx, var, reason)
+		dbg("END reason=" .. tostring(reason) .. ": moving the party")
+		transfer(ctx)
+	end,
+}
+
+function status()
+	return string.format("enabled=%s pending=%s open=%s done=%s failed=%s applied=%s changer_ok=%s level=%s err=%s", tostring(enabled()), tostring(has(PENDING)),
+		tostring(has(OPEN)), tostring(has(DONE)), tostring(has(FAILED)), tostring(G.applied), tostring(G.ok), tostring(level.name()), tostring(G.err))
+end
+
+install()

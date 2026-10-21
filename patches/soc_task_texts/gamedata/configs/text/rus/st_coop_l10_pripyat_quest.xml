@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_pri_start_go_to_cnpp_quest_task_name">
+		<text>Найти вход в Саркофаг на ЧАЭС</text>
+	</string>
+	<string id="st_pri_start_go_to_cnpp_quest_task_descr">
+		<text>Найти выход на ЧАЭС</text>	
+	</string>
+
+
+	<string id="st_pri_start_meet_a_group_of_stalkers_quest_task_name">
+		<text>Встретиться с группой сталкеров</text>
+	</string>
+	<string id="st_pri_start_meet_a_group_of_stalkers_quest_task_descr">
+		<text>Встретиться с группой сталкеров</text>	
+	</string>
+	<string id="st_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task_name">
+		<text>Встретиться с группой сталкеров</text>
+	</string>
+	<string id="st_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task_descr">
+		<text>Следовать за группой сталкеров</text>	
+	</string>
+</string_table>

@@ -2,7 +2,7 @@
 active 												= sr_idle@return_to_the_surface_task_end_info
 
 [sr_idle@return_to_the_surface_task_end_info]
-on_any_player_inside 									= sr_idle@save %+AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO =give_task(agr_start_break_into_a_military_base_quest_task) =spawn_object(agr_safe_container_1:agr_spawn_safe_container_1_spawn_point)%
+on_any_player_inside 									= {-AGR_SOC_DOCS_SPAWNED} sr_idle@save %+AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO +AGR_SOC_DOCS_SPAWNED =spawn_object(agr_safe_container_1:agr_spawn_safe_container_1_spawn_point)%, sr_idle@save %+AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO%
 
 [sr_idle@save]
 on_info 											= {+AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO} sr_idle@nil %=scenario_autosave(st_the_destination_is_a_bar) =remove_squad(agr_smart_terrain_4_stalker_mole_squad) =remove_squad(agr_smart_terrain_7_stalker_alarm_squad)%

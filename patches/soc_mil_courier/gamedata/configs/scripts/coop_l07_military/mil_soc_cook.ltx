@@ -1,0 +1,28 @@
+; patch soc_mil_courier: the Chef of Freedom (SoC mil_Svoboda_cook, gulag logic@mil_freedom_cook: walker1 with cook_walk1 / cook_look1).
+; Sits at his table (the mod kept the SoC points as mil_smart_terrain_11_walker_cook_walk / _look). The talk window gives the SoC cook
+; dialogs (small talks, vodka, the Bulldog 6 questions).
+[logic]
+active = walker@mil_soc_cook
+
+[walker@mil_soc_cook]
+path_walk = mil_smart_terrain_11_walker_cook_walk
+path_look = mil_smart_terrain_11_walker_cook_look
+meet = meet@mil_soc_cook
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+
+[meet@mil_soc_cook]
+close_snd_hello = nil
+close_snd_bye = nil
+close_anim = nil
+close_victim = nil
+far_anim = nil
+far_victim = nil
+close_distance = 0
+far_distance = 0
+close_snd_distance = 3
+abuse = false
+use = {=actor_enemy} false, true
+allow_break = true
+meet_on_talking = true

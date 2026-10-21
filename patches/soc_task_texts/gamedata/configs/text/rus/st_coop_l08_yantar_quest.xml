@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_yan_start_go_to_yantar_quest_task_name">
+		<text>Найти документы в лаборатории X16</text>
+	</string>
+	<string id="st_yan_start_go_to_yantar_quest_task_descr">
+		<text>Поговорить с учеными\n\nБармен: "Надо пробраться к ученым и узнать, где находится лаборатория Х16, чтобы достать недостающую часть документов."</text>	
+	</string>
+	
+	
+	<string id="st_yan_start_talk_to_the_kruglov_quest_task_name">
+		<text>Сделать замеры излучения</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_kruglov_quest_task_descr">
+		<text>Поговорить с Кругловым\n\nСахаров: "Если вы вместе с нашим сотрудником сделаете замеры, я дам настроенный прототип, который позволит тебе проникнуть в лабораторию."</text>	
+	</string>
+
+
+	<string id="st_yan_start_take_measurements_1_quest_task_name">
+		<text>Сделать замеры излучения</text>
+	</string>
+	<string id="st_yan_start_take_measurements_1_quest_task_descr">
+		<text>Сопроводить Круглова к месту замера</text>	
+	</string>	
+
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_1_quest_task_name">
+		<text>"Замеры начались!"</text>
+	</string>
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_1_quest_task_descr">
+		<text>Дождаться окончания замеров около туннеля на входе</text>	
+	</string>
+	
+	<string id="st_yan_start_return_to_the_measurement_location_1_quest_task_name">
+		<text>"Замеры прерваны!"</text>
+	</string>
+	<string id="st_yan_start_return_to_the_measurement_location_1_quest_task_descr">
+		<text>Вернуться на место замеров около туннеля на входе</text>	
+	</string>
+	
+	
+	<string id="st_yan_start_take_measurements_2_quest_task_name">
+		<text>Сделать замеры излучения</text>
+	</string>
+	<string id="st_yan_start_take_measurements_2_quest_task_descr">
+		<text>Сопроводить Круглова к месту замера</text>	
+	</string>	
+
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_2_quest_task_name">
+		<text>"Замеры начались!"</text>
+	</string>
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_2_quest_task_descr">
+		<text>Дождаться окончания замеров около туннеля на выходе</text>	
+	</string>
+	
+	<string id="st_yan_start_return_to_the_measurement_location_2_quest_task_name">
+		<text>"Замеры прерваны!"</text>
+	</string>
+	<string id="st_yan_start_return_to_the_measurement_location_2_quest_task_descr">
+		<text>Вернуться на место замеров около туннеля на выходе</text>	
+	</string>
+	
+	
+	<string id="st_yan_start_take_measurements_3_quest_task_name">
+		<text>Сделать замеры излучения</text>
+	</string>
+	<string id="st_yan_start_take_measurements_3_quest_task_descr">
+		<text>Сопроводить Круглова к месту замера</text>	
+	</string>
+	
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_3_quest_task_name">
+		<text>"Замеры начались!"</text>
+	</string>
+	<string id="st_yan_start_wait_for_the_measurements_to_finish_3_quest_task_descr">
+		<text>Дождаться окончания замеров около автобуса</text>	
+	</string>
+	
+	<string id="st_yan_start_return_to_the_measurement_location_3_quest_task_name">
+		<text>"Замеры прерваны!"</text>
+	</string>
+	<string id="st_yan_start_return_to_the_measurement_location_3_quest_task_descr">
+		<text>Вернуться на место замеров около автобуса</text>	
+	</string>		
+	
+	
+	<string id="st_yan_start_talk_to_the_saharov_quest_task_name">
+		<text>Сделать замеры излучения</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_saharov_quest_task_descr">
+		<text>Принести результаты Сахарову</text>	
+	</string>
+
+
+	<string id="st_yan_start_configuring_helmets_quest_task_name">
+		<text>Во имя науки!</text>
+	</string>
+	<string id="st_yan_start_configuring_helmets_quest_task_descr">
+		<text>Дождаться настройки шлемов и забрать прототипы.</text>	
+	</string>
+
+
+	<string id="st_yan_start_infiltrate_the_x16_lab_quest_task_name">
+		<text>Проникнуть в лабораторию</text>
+	</string>
+	<string id="st_yan_start_infiltrate_the_x16_lab_quest_task_descr">
+		<text>Проникнуть в лабораторию</text>	
+	</string>
+
+
+	<string id="st_yan_start_talk_to_the_saharov_x16_lab_quest_task_name">
+		<text>Выбраться из лаборатории</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_saharov_x16_lab_quest_task_descr">
+		<text>Поговорить с Сахаровым</text>	
+	</string>
+
+	<string id="st_yan_start_talk_to_the_barmen_quest_task_name">
+		<text>Работа на бармена</text>
+	</string>
+	<string id="st_yan_start_talk_to_the_barmen_quest_task_descr">
+		<text>Обратиться к бармену за работой</text>	
+	</string>
+
+
+	<string id="st_yan_start_sq_art_1_quest_task_name">
+		<text>Заказ на "Кристалл"</text>
+	</string>
+	<string id="st_yan_start_sq_art_1_quest_task_descr">
+		<text>Найти и принести артефакт "Кристалл"</text>
+	</string>	
+	<string id="st_yan_start_sq_art_2_quest_task_name">
+		<text>Заказ на "Огненный шар"</text>
+	</string>
+	<string id="st_yan_start_sq_art_2_quest_task_descr">
+		<text>Найти и принести артефакт "Огненный шар"</text>
+	</string>
+	<string id="st_yan_start_sq_art_3_quest_task_name">
+		<text>Заказ на "Глаз"</text>
+	</string>
+	<string id="st_yan_start_sq_art_3_quest_task_descr">
+		<text>Найти и принести артефакт "Глаз"</text>
+	</string>	
+	
+	<string id="st_yan_start_sq_mutant_snork_part_1_quest_task_name">
+		<text>Заказ на "Стопа Снорка"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_snork_part_1_quest_task_descr">
+		<text>Найти и принести 4 "Стоп Снорка"</text>
+	</string>	
+	<string id="st_yan_start_sq_mutant_krovosos_part_2_quest_task_name">
+		<text>Заказ на "Щупальца Кровососа"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_krovosos_part_2_quest_task_descr">
+		<text>Найти и принести 3 "Щупальца Кровососа"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_chimera_part_3_quest_task_name">
+		<text>Заказ на "Коготь Химеры"</text>
+	</string>
+	<string id="st_yan_start_sq_mutant_chimera_part_3_quest_task_descr">
+		<text>Найти и принести 1 "Коготь Химеры"</text>
+	</string>
+	
+	<string id="st_yan_start_sq_killer_mutants_1_quest_task_name">
+		<text>Заказ на мутантов "На болоте около Бункера ученых"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_1_quest_task_descr">
+		<text>Убить мутантов на болоте около "Бункера ученых"</text>
+	</string>	
+	<string id="st_yan_start_sq_killer_mutants_2_quest_task_name">
+		<text>Заказ на мутантов "Справа от Бункера ученых"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_2_quest_task_descr">
+		<text>Убить мутантов справа от "Бункера ученых"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_3_quest_task_name">
+		<text>Заказ на мутантов "Около Упавшего вертолёта"</text>
+	</string>
+	<string id="st_yan_start_sq_killer_mutants_3_quest_task_descr">
+		<text>Убить мутанта около "Упавшего вертолёта"</text>
+	</string>
+</string_table>

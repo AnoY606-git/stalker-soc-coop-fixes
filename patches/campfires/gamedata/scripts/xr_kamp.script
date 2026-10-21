@@ -15,6 +15,14 @@
 --    center_pos = -206.9, -19.6, -140.1     ; or: center_point = <patrol path name>
 --    radius     = 2.4                       ; distance from the fire to the seats
 --    use_camp   = true                      ; take part in the camp music/story state machine
+--    avoid      = x, y, z, r | x, y, z, r   ; optional: furniture / objects (stool, bench) no seat may be closer than r metres to
+--
+--  Seats (2026-10-21): the AI map knows nothing about stools, barrels, fences or other stalkers, and the stalker only counted as seated when
+--  he stood on the exact AI node, so a seat next to a stool or on the barrel node left him walking against the obstacle for ever (two
+--  stalkers on top of each other next to the stool, one frozen). Now a seat is a free node of the ring that is not the fire, not an `avoid`
+--  object, at least MIN_SEAT_GAP from the seat of every other stalker of the camp; a stalker that stands within NEAR_ACCEPT of his seat for
+--  NEAR_HOLD_MS, or that does not move for STUCK_WINDOW_MS, gets another seat (up to MAX_RETRY times, the blocked spot is remembered) and
+--  after that simply sits down where he stands.
 ----------------------------------------------------------------------------------------------------------------------
 
 kamps = {}
@@ -26,6 +34,23 @@ local SECTORS = {
 }
 local SIT_STATES = { "sit", "sit_ass", "sit_knee" }
 local NO_VERTEX = 4294967295
+
+local MIN_FIRE_DIST   = 1.3     -- no seat closer to the fire than this (the barrel and its AI node)
+local MIN_SEAT_GAP    = 1.1     -- two seats of one camp are never closer than this (ground plane, metres)
+local NEAR_ACCEPT     = 1.0     -- standing this close to the seat for NEAR_HOLD_MS counts as arrived
+local NEAR_HOLD_MS    = 2500
+local STUCK_WINDOW_MS = 5000    -- a stalker that moved less than STUCK_MOVE in this time is stuck
+local STUCK_MOVE      = 0.3
+local MAX_RETRY       = 3       -- other seats tried before the stalker sits down where he stands
+local SEAT_TRIES      = 40
+local BLOCKED_MS      = 300000  -- a seat that could not be reached is avoided for this long ...
+local BLOCKED_R       = 1.0     -- ... together with the ground this close around it (the obstacle is bigger than one node)
+local SEAT_MAX_DY     = 2.0     -- seat floor may differ from the fire floor by this much
+
+local function dist2d(a, b)
+	local dx, dz = a.x - b.x, a.z - b.z
+	return math.sqrt(dx * dx + dz * dz)
+end
 
 local function parse_pos(str)
 	if str == nil then return nil end
@@ -54,6 +79,9 @@ function evaluator_on_position:__init(name, storage) super(nil, name)
 	self.st = storage
 end
 function evaluator_on_position:evaluate()
+	if self.st.arrived == true then
+		return true
+	end
 	if self.st.pos_vertex ~= nil and self.object:level_vertex_id() == self.st.pos_vertex then
 		return true
 	end
@@ -75,18 +103,71 @@ function action_go_position:initialize()
 	self.st.pos_vertex = nil
 	self.st.npc_position_num = nil
 	self.st.signals = {}
+	self.st.arrived = nil
+	self.st.go_started = nil
+	self.st.near_since = nil
+	self.st.prog_pos = nil
+	self.st.retry = 0
+end
+-- stop walking and sit down where the stalker stands (seat blocked or not reachable)
+function action_go_position:sit_here(kamp)
+	local npc = self.object
+	self.st.arrived = true
+	self.st.pos_vertex = npc:level_vertex_id()
+	kamp:settle_npc(npc, self.st.pos_vertex)
+end
+-- near the seat for a while, or no progress at all: take another seat, later sit where he stands
+function action_go_position:watch_progress(kamp, now)
+	local st = self.st
+	local pos = self.object:position()
+	if dist2d(pos, level.vertex_position(st.pos_vertex)) <= NEAR_ACCEPT then
+		if st.near_since == nil then
+			st.near_since = now
+		elseif now - st.near_since >= NEAR_HOLD_MS then
+			self:sit_here(kamp)
+			return
+		end
+	else
+		st.near_since = nil
+	end
+	if st.prog_pos == nil then
+		st.prog_pos = vector():set(pos.x, pos.y, pos.z)
+		st.prog_time = now
+	elseif now - st.prog_time >= STUCK_WINDOW_MS then
+		local moved = dist2d(pos, st.prog_pos)
+		st.prog_pos = vector():set(pos.x, pos.y, pos.z)
+		st.prog_time = now
+		if moved < STUCK_MOVE then
+			st.retry = (st.retry or 0) + 1
+			if st.retry > MAX_RETRY then
+				self:sit_here(kamp)
+			else
+				kamp:reject_seat(self.object)
+			end
+		end
+	end
 end
 function action_go_position:execute()
 	action_base.execute(self)
 
 	local kamp = kamps[self.st.kamp_key]
+	local now = time_global()
+	if self.st.go_started == nil then
+		self.st.go_started = now
+	end
 	local vertex, num = kamp:getDestVertex(self.object, self.st.radius)
 	if vertex == nil then
+		-- no free ground at the fire at all: do not stand there walking, sit down
+		if now - self.st.go_started >= STUCK_WINDOW_MS then
+			self:sit_here(kamp)
+		end
 		return
 	end
 	if self.st.npc_position_num ~= num or self.st.pos_vertex ~= vertex then
 		self.st.npc_position_num = num
 		self.st.pos_vertex = vertex
+		self.st.near_since = nil
+		self.st.prog_pos = nil
 
 		-- look at the fire (a little bit off centre so the circle looks natural)
 		local pp = vector():set(kamp.center.x, kamp.center.y, kamp.center.z)
@@ -105,6 +186,9 @@ function action_go_position:execute()
 		end
 		self.object:set_path_type(game_object.level_path)
 		state_mgr.set_state(self.object, self.st.def_state_moving)
+	end
+	if not self.st.arrived then
+		self:watch_progress(kamp, now)
 	end
 end
 function action_go_position:finalize()
@@ -217,6 +301,16 @@ function CKampManager:__init(key, center)
 	end
 	self.npc = {}
 	self.population = 0
+	self.blocked = {}   -- { x, z, t }: seats that could not be reached (obstacle in the way)
+	self.avoid = {}     -- { x, y, z, r }: no seat inside r of these points
+end
+function CKampManager:add_avoid(x, y, z, r)
+	for _, a in ipairs(self.avoid) do
+		if a.x == x and a.z == z then
+			return
+		end
+	end
+	table.insert(self.avoid, { x = x, y = y, z = z, r = r })
 end
 function CKampManager:select_position(npc_id)
 	local free = {}
@@ -236,7 +330,70 @@ function CKampManager:select_position(npc_id)
 		n.shared = true
 	end
 end
--- seat vertex in the sector of the stalker, at the given distance from the fire
+-- Is this AI node allowed as a seat? Returns nil when not, else the distance to the nearest seat of another stalker of the camp.
+function CKampManager:seat_gap(npc_id, v, vp)
+	local now = time_global()
+	for i = #self.blocked, 1, -1 do
+		local b = self.blocked[i]
+		if now - b.t >= BLOCKED_MS then
+			table.remove(self.blocked, i)
+		elseif dist2d(vp, b) < BLOCKED_R then
+			return nil
+		end
+	end
+	if math.abs(vp.y - self.center.y) > SEAT_MAX_DY then
+		return nil
+	end
+	if dist2d(vp, self.center) < MIN_FIRE_DIST then
+		return nil
+	end
+	for _, a in ipairs(self.avoid) do
+		if dist2d(vp, a) < a.r then
+			return nil
+		end
+	end
+	local gap = 99
+	for id, o in pairs(self.npc) do
+		if id ~= npc_id and o.vertex ~= nil then
+			local d = dist2d(vp, level.vertex_position(o.vertex))
+			if d < gap then
+				gap = d
+			end
+		end
+	end
+	return gap
+end
+-- a free node on the ring: first inside the sector of the stalker, then anywhere on the ring
+function CKampManager:find_seat(npc, n, radius)
+	local npc_id = npc:id()
+	local base = self.position[n.position].dir
+	local base_ang = math.atan2(base.z, base.x)
+	local best, best_gap = nil, -1
+	for try = 1, SEAT_TRIES do
+		local ang
+		if try <= SEAT_TRIES / 2 then
+			ang = base_ang + (math.random() - 0.5) * 0.7
+		else
+			ang = math.random() * 6.2831853
+		end
+		local r = radius + (math.random() - 0.5) * 0.8
+		local p = vector():set(self.center.x + math.cos(ang) * r, self.center.y, self.center.z + math.sin(ang) * r)
+		local v = level.vertex_id(p)
+		if v ~= NO_VERTEX and npc:accessible(v) then
+			local gap = self:seat_gap(npc_id, v, level.vertex_position(v))
+			if gap ~= nil then
+				if gap >= MIN_SEAT_GAP then
+					return v
+				end
+				if gap > best_gap then
+					best, best_gap = v, gap
+				end
+			end
+		end
+	end
+	return best
+end
+-- seat node of the stalker (kept until he leaves or the seat is rejected)
 function CKampManager:getDestVertex(npc, radius)
 	local npc_id = npc:id()
 	local n = self.npc[npc_id]
@@ -249,33 +406,28 @@ function CKampManager:getDestVertex(npc, radius)
 	if n.vertex ~= nil then
 		return n.vertex, n.position
 	end
-
-	local base = self.position[n.position].dir
-	local dir = vector():set(base.x + math.random(-1, 1) / 6, 0, base.z + math.random(-1, 1) / 6)
-	dir:normalize()
-
-	local r = radius + (math.random() - 0.5) * 0.6
-	local dest_vertex = NO_VERTEX
-	while dest_vertex == NO_VERTEX do
-		local p = vector():set(self.center.x + dir.x * r, self.center.y, self.center.z + dir.z * r)
-		dest_vertex = level.vertex_id(p)
-		if dest_vertex == NO_VERTEX then
-			if r < 1 then
-				-- no walkable ground in this direction: use the AI node of the fire itself
-				dest_vertex = level.vertex_id(self.center)
-				break
-			end
-			r = r - 0.5
-		end
-	end
-	if dest_vertex == NO_VERTEX then
+	local v = self:find_seat(npc, n, radius)
+	if v == nil then
 		return nil
 	end
-	if not npc:accessible(dest_vertex) then
-		dest_vertex = npc:accessible_nearest(level.vertex_position(dest_vertex), vector():set(0, 0, 0))
+	n.vertex = v
+	return v, n.position
+end
+-- the stalker could not get to his seat: remember the spot, the next getDestVertex picks another one
+function CKampManager:reject_seat(npc)
+	local n = self.npc[npc:id()]
+	if n ~= nil and n.vertex ~= nil then
+		local vp = level.vertex_position(n.vertex)
+		table.insert(self.blocked, { x = vp.x, z = vp.z, t = time_global() })
+		n.vertex = nil
 	end
-	n.vertex = dest_vertex
-	return dest_vertex, n.position
+end
+-- the stalker sits where he stands: his node counts as his seat for the others
+function CKampManager:settle_npc(npc, vertex)
+	local n = self.npc[npc:id()]
+	if n ~= nil then
+		n.vertex = vertex
+	end
 end
 -- what to do while sitting
 function CKampManager:update_npc(npc, camp)
@@ -417,8 +569,23 @@ function set_scheme(npc, ini, scheme, section, gulag_name)
 	if kamps[st.kamp_key] == nil then
 		kamps[st.kamp_key] = CKampManager(st.kamp_key, center)
 	end
+	local avoid_str = utils.cfg_get_string(ini, section, "avoid", npc, false, "", nil)
+	if avoid_str ~= nil then
+		for item in string.gmatch(avoid_str, "[^|]+") do
+			local t = {}
+			for num in string.gmatch(item, "[^,%s]+") do
+				t[#t + 1] = tonumber(num)
+			end
+			if #t == 4 and t[1] ~= nil and t[2] ~= nil and t[3] ~= nil and t[4] ~= nil then
+				kamps[st.kamp_key]:add_avoid(t[1], t[2], t[3], t[4])
+			else
+				abort("kamp: wrong avoid [%s] in section [%s] (x, y, z, r | ...)", tostring(item), section)
+			end
+		end
+	end
 	kamps[st.kamp_key]:add_npc(npc)
 	st.pos_vertex = nil
+	st.arrived = nil
 	st.pp = center
 
 	st.def_state_moving = utils.cfg_get_string(ini, section, "def_state_moving", npc, false, "", "walk")

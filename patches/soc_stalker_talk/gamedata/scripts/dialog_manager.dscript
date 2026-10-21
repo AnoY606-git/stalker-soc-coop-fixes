@@ -1,0 +1,27 @@
+
+-- soc_stalker_talk (appended to dialog_manager.script): generic stalkers talk like in Shadow of Chernobyl.
+-- SoC gave every ordinary stalker one question, "What interesting things can you tell me?" (dm_cool_info_dialog), and he answered with
+-- one piece of news. The Call of Pripyat menu of the base game ("I would like to ask you something" -> job / anomalies / news, per faction)
+-- is replaced by that single question; the answers are the base game's news phrases (phrase_table.information) with their usual
+-- "I don't know anything else" endings, so nothing new has to be written. The dialog id (dm_universal_dialog) and its precondition stay.
+function init_new_dialog(dialog)
+	local actor_phrase = dialog:AddPhrase("soc_dm_cool_info_actor", "0", "", -10000)
+	local actor_script = actor_phrase:GetPhraseScript()
+	actor_script:AddAction("dialog_manager.fill_priority_information_table")
+
+	for k = 1, 3 do
+		local no_more = dialog:AddPhrase("dm_information_no_more_" .. tostring(k), tostring(get_id()), "0", -10000)
+		no_more:GetPhraseScript():AddPrecondition("dialog_manager.precondition_information_dialogs_no_more")
+		local dont_know = dialog:AddPhrase("dm_information_do_not_know_" .. tostring(k), tostring(get_id()), "0", -10000)
+		dont_know:GetPhraseScript():AddPrecondition("dialog_manager.precondition_information_dialogs_do_not_know")
+	end
+
+	for _, v in pairs(phrase_table.information) do
+		local phrase = dialog:AddPhrase(v.name, tostring(v.id), "0", -10000)
+		if phrase then
+			local script = phrase:GetPhraseScript()
+			script:AddPrecondition("dialog_manager.precondition_information_dialogs")
+			script:AddAction("dialog_manager.action_information_dialogs")
+		end
+	end
+end

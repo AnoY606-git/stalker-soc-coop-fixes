@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_con_start_sneak_into_the_control_room_quest_task_name">
+		<text>Загадка Монолита</text>
+	</string>
+	<string id="st_con_start_sneak_into_the_control_room_quest_task_descr">
+		<text>Проникнуть в секретную лабораторию\n\nДоктор: "Все что ты говорил о Монолите верно - это просто иллюзия, которую наводят из некой лаборатории рядом с Саркофагом... судя по всему, это - единственная возможность пробраться к настоящей тайне Зоны...Которую ты всегда пытался разгадать."</text>	
+	</string>
+
+
+	<string id="st_con_start_destroy_the_monolith_installation_quest_task_name">
+		<text>Загадка Монолита</text>
+	</string>
+	<string id="st_con_start_destroy_the_monolith_installation_quest_task_descr">
+		<text>Разгадать загадку Монолита</text>	
+	</string>
+
+
+	<string id="st_con_start_talk_to_the_representative_awareness_quest_task_name">
+		<text>Загадка Зоны</text>
+	</string>
+	<string id="st_con_start_talk_to_the_representative_awareness_quest_task_descr">
+		<text>Встретится с теми, кто стоял за Монолитом</text>	
+	</string>
+	
+	<string id="st_con_start_kill_all_representatives_of_awareness_quest_task_name">
+		<text>Пора со всем покончить!</text>
+	</string>
+	<string id="st_con_start_kill_all_representatives_of_awareness_quest_task_descr">
+		<text>Найти и убить всех представителей "О-сознания"</text>	
+	</string>
+</string_table>

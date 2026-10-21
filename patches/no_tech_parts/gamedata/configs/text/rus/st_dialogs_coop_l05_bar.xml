@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_0">
+        <text>На счет документов из X-18, вот они.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_1">
+        <text>Давай сюда, так. Ситуация проясняется. Как я и предполагал, выжигатель мозгов рукотворен. Это – экспериментальный излучатель Кайманова, его части как раз изготавливались в лаборатории Х-18. В этих документах есть ссылка на лабораторию Х-16, куда отправлялись готовые блоки, она расположена на территории производственного комплекса возле озера Янтарь. Там неподалеку лагерь ученых, они наверняка подскажут точнее.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_2">
+        <text>Продолжай.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_3">
+        <text>Ситуация непростая: вам надо пробраться к ученым и узнать, где находится лаборатория Х-16, чтобы добыть недостающую часть документов. Ну что, готовы?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_4">
+        <text>Конечно.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_5">
+        <text>Вот и отлично. Я буду ждать.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_6">
+        <text>...</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_0">
+        <text>Как дела с документами? Узнал что-нибудь?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_1">
+        <text>Значит так. По документам, которые вы принесли с Агропрома, кое-что начинает проясняться, но данных не хватает. Упоминается некая лаборатория Х-18, по описанию похожая на заброшенные подземные помещения в Темной долине. Придется вам туда отправиться и добыть недостающую информацию. Лаборатория закрыта, и чтобы открыть ее, понадобятся два электронных ключа. Один я вам дам, а второй заберете у Борова в Темной долине.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_2">
+        <text>Продолжай.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_3">
+        <text>Все что нужно сделать - получить второй ключ от лаборатории Х-18, проникнуть в нее и добыть недостающую часть документов. Вот вам от меня, лично - костюмы с хорошей защитой от радиации. Без них вы долго там не протянете. Ну что, парни, беретесь?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_4">
+        <text>Ну а куда деваться? На полпути сворачивать - глупо.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_0">
+        <text>Ну всё, прототипы у нас. Они отлично работают. Сахаров просто волшебник.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_1">
+        <text>Ну что ребят, осталось только с "Выжигателем" разобраться и на Север проход открыт. Готовы выдвигаться?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_2">
+        <text>Готовы!</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_3">
+        <text>Значит так, прототипы есть, чтобы от выжигателя прикрыться. Координаты бункера я знаю и на кпк вам передал. Вы должны как можно быстрее пробиться в бункер под антеннами и отключить выжигатель. Что будет дальше я не знаю, но чувствую: оно того стоит. Точно знаю одно: дорога к центру Зоны будет открыта. Удачи!</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_4">
+        <text>До встречи</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_0">
+        <text>Кто ещё может предложить работу?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_1">
+        <text>Есть тут пара ребят охотник Павлик, механик-электрик Сенька, Арни</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_2">
+        <text>Можно поподробне про Павлика?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_3">
+        <text>Можно поподробне про Сеньку?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_4">
+        <text>Павлик наш местный охотник на пенсии. Искал и убивал особо опасных мутантов. Сейчас сидит у себя среди чучел и задания раздает, говорят не хило платит. Можете поспрашивать его.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_5">
+        <text>Сидит у нас в гараже и собирает что-то. Скупает у сталкеров всякий хлам. Барахольщик одним словом.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_6">
+        <text>Ясно, спасибо</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_7">
+        <text>Можно поподробне про Арни?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_8">
+        <text>Организует бои на арене и ставки принимает. Можете тоже поучавстовать.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_break_dialog_0">
+        <text>Я подумаю над этим</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_start_dialog_0">
+        <text>Итак, сталкер. Что тебя привело ко мне? Хочешь купить информацию? Или может быть продать?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_break_dialog_0">
+        <text>До встречи</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_0">
+        <text>Эй, сталкер, тебе нафига торт?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_1">
+        <text>Твоё какое дело, ты вообще кто?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_2">
+        <text>Не горячись, не со зла спрашиваю. Мне правда интересно.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_3">
+        <text>День рождения у меня, вот друг торт приволок. У Бармена заказал.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_4">
+        <text>Хороший друг. Вы в Зону вместе пришли, или уже тут закорефанились? Может, расскажешь?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_5">
+        <text>Эх ладно. Звать меня Владом, но кличут все Волчарой. Когда-то я жил в городе под названием Кисловодск. Учеба, работа - всё шло своим чередом. В 28 лет женился на очаровательной Олесе, свадьба на высоте, все дела. А после - страшный взрыв на ЧАЭС. С тех пор мой родной город стали называть Обреченным.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_6">
+        <text>Обреченный город? Что-то такое я слышал.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_7">
+        <text>Угу. Когда жахнуло, я был в полной растерянности, не зная, что делать и куда идти. Но к счастью, у меня был верный друг по имени Даня Ворон, голова - парень! Он всегда готов помочь и предложить выход из любой передряги. Так мы и решили выбраться из Обреченного города. Наш путь был долгим и трудным, но мы наконец-то попали в Зону.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_8">
+        <text>Ну и история, трудно вам пришлось. А дальше вы куда?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_9">
+        <text>Жду вот возвращения моего друга, Дани Ворона, с вылазки. Он сказал, что знает, где разжиться хорошими брониками! Вернется - днюху мою отметим, закусим, подготовим снарягу, да в путь, на поиски новых приключений. А ты знай, хорошие друзья - они дороже всех артефактов Зоны.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_10">
+        <text>Удачи в Зоне, бывай!</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_start_dialog_0">
+        <text>Чего надо?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_0">
+        <text>И тебе не хворать. Документы у нас. И вот еще - флешка Стрелка. Слышал о таком?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_1">
+        <text>О Стрелке-то? Слышал. Не сталкер - легенда! Отличная работа, парни. Теперь надо во всей этой каше разобраться, может узнаю как пробиться на Север. Давай сюда кейс.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_2">
+        <text>Забирай.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_start_dialog_0">
+        <text>Здорово, как жизнь?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_0">
+        <text>Какой?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_1">
+        <text>Выбирай:</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_10">
+        <text>Бой с кабанами: награда 4000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_11">
+        <text>Бой с кровососами: награда 10000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_12">
+        <text>Особый противник: награда 25000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_13">
+        <text>Бой с собаками, 1 минута: награда 4000 | ставка 2000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_14">
+        <text>Бой с псевдособаками, 1 минута: награда 6000 | ставка 3000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_15">
+        <text>Бой с кабанами, 1 минута: награда 8000 | ставка 4000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_16">
+        <text>Бой с кровососами, 1 минута: награда 20000 | ставка 10000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_17">
+        <text>Особый противник, 1 минута: награда 50000 | ставка 25000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_4">
+        <text>Ставка на бой</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_7">
+        <text>На кого будем ставить?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_18">
+        <text>На сталкеров: награда 15000 | ставка 5000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_19">
+        <text>На мутантов: награда 15000 | ставка 5000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_22">
+        <text>Я передумал</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_2">
+        <text>Бой с мутантами</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_20">
+        <text>Я передумал</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_21">
+        <text>Я передумал</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_23">
+        <text>Принято, вперед!</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_29">
+        <text>Погнали!</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_3">
+        <text>Бой на время с мутантами</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_5">
+        <text>С кем будешь биться?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_6">
+        <text>С кем будешь биться?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_8">
+        <text>Бой с собаками: награда 2000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_9">
+        <text>Бой с псевдособаками: награда 3000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_start_dialog_0">
+        <text>Здорова бойцы! Есть бой для вас, не желаете заработать?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_0">
+        <text>Я хочу забрать свою награду</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_1">
+        <text>Забирай!</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_2">
+        <text>Бой с собакам</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_3">
+        <text>Бой с псевдособаками</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_4">
+        <text>Бой с кабанами</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_5">
+        <text>Бой с кровососами</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_6">
+        <text>Особый противник</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_7">
+        <text>Бой с собаками на время</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_8">
+        <text>Бой с псевдособаками на время</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_9">
+        <text>Бой с кабанами на время</text>
+    </string>	
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_10">
+        <text>Бой с кровососами на время</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_11">
+        <text>Особый противник на время</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_12">
+        <text>Ставка на сталкеров</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_13">
+        <text>Ставка на мутантов</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_14">
+        <text>Ничего</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_15">
+        <text>Ничего</text>
+    </string>
+    <string id="bar_smart_terrain_4_duty_petrenko_start_dialog_0">
+        <text>Чем могу помочь?</text>
+    </string>	
+    <string id="bar_smart_terrain_9_stalker_hunter_start_dialog_0">
+        <text>Как дела, охотники?</text>
+    </string>
+    <string id="bar_smart_terrain_10_stalker_plyushkin_start_dialog_0">
+        <text>Здоров. Что-то сломалось?</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_start_dialog_0">
+        <text>Привет друзья, как оно?</text>
+    </string>	
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_0">
+        <text>Можешь сыграть что-нибудь на гитаре?</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_1">
+        <text>Да без проблем, тебе погрустить или посмеяться?</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_2">
+        <text>Погрустить наверное</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_3">
+        <text>Давай чего повеселей!</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_4">
+        <text>Я передумал</text>
+    </string>
+    <string id="bar_smart_terrain_4_duty_voronin_start_dialog_0">
+        <text>Выкладывай, зачем пришёл?</text>
+    </string>
+	
+	
+
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_0">
+        <text>0</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_1">
+        <text>1</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_2">
+        <text>2</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_3">
+        <text>3</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_4">
+        <text>4</text>
+    </string>
+	
+	
+	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_0">
+        <text>Мне нужна работа, что есть на примете?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_1">
+        <text>Есть кое-что...</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_2">
+        <text>Найти артефакт...</text>
+    </string>	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_6">
+        <text>Выбирай:</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_7">
+        <text>Найти "Выверт"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_14">
+        <text>Найти "Грави"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_15">
+        <text>Найти "Золотая рыбка"</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_5">
+        <text>Найти часть мутанта...</text>
+    </string>	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_12">
+        <text>Выбирай:</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_13">
+        <text>Найти 5 "Хвостов Псевдособаки"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_20">
+        <text>Найти 4 "Стопы Снорка"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_21">
+        <text>Найти 3 "Щупальца Кровососа"</text>
+    </string>
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_22">
+        <text>Ничего</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_0">
+        <text>Я по поводу задания...</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_1">
+        <text>Ну, говори давай</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_2">
+        <text>Я принес артефакт "Выверт"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_3">
+        <text>Я принес артефакт "Грави"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_4">
+        <text>Я принес артефакт "Золотая рыбка"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_11">
+        <text>Я принес "Хвосты Псевдособак"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_12">
+        <text>Я принес "Стопы Снорка"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_13">
+        <text>Я принес "Щупальца Кровососа"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_14">
+        <text>Ничего</text>
+    </string>
+	
+	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_0">
+        <text>Я хочу отказаться от заказа...</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_1">
+        <text>От какого?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_11">
+        <text>Я отказываюсь от заказа на "Хвосты Псевдособак"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_12">
+        <text>Я отказываюсь от заказа на "Стопы Снорка"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_13">
+        <text>Я отказываюсь от заказа на "Щупальца Кровососа"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_14">
+        <text>Ничего</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_2">
+        <text>Я отказываюсь от заказа на "Выверт"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_3">
+        <text>Я отказываюсь от заказа на "Грави"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_4">
+        <text>Я отказываюсь от заказа на "Золотая рыбка"</text>
+    </string>
+
+	
+	
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_0">
+        <text>Мне нужна работа, что есть на примете?</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_1">
+        <text>Есть кое-что...</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_4">
+        <text>Зачистить местность от мутантов...</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_10">
+        <text>Выбирай:</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_11">
+        <text>Убить мутанта 1</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_18">
+        <text>Убить мутанта 2</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_19">
+        <text>Убить мутанта 3</text>
+    </string>	
+
+
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_22">
+        <text>Ничего</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_0">
+        <text>Я по поводу задания...</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_1">
+        <text>Слушаю</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_8">
+        <text>Я убил мутанта "1"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_9">
+        <text>Я убил мутанта "2"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_10">
+        <text>Я убил мутанта "3"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_14">
+        <text>Ничего</text>
+    </string>
+	
+	
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_0">
+        <text>Я хочу отказаться от заказа...</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_1">
+        <text>От какого?</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_8">
+        <text>Я отказываюсь от заказа на мутанта "1"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_9">
+        <text>Я отказываюсь от заказа на мутанта "2"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_10">
+        <text>Я отказываюсь от заказа на мутанта "3Убить мутанта "</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_14">
+        <text>Ничего</text>
+    </string>	
+	
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_break_dialog_0">
+        <text>До встречи</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_0">
+        <text>Что случилось?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_1">
+        <text>Вот черт, потерял фамильное ружье на дикой территории. Думал кровососов пострелять, да еле сам ноги унес. Черт! Послушай, брат, если принесешь мое ружье, отблагодарю. Я тут заработал чуток, все тебе отдам, только ружье верни. Фамильное оно у нас, от отца к сыну передавалось. И вот на тебе - потерял. Я к нему, считай, прирос, сроднился, а тут такая засада.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_2">
+        <text>Хорошо, попробую достать ружье.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_3">
+        <text>Все отдам, дружище, только верни ружье, молю тебя. Потерял я его возле жилища кровососов, сейчас скину тебе координаты этого места. И поосторожней там, твари эти очень злобные.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_4">
+        <text>Посмотрим.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_0">
+        <text>По поводу твоего ружья...</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_1">
+        <text>Привет. Есть новости? Нашёл???</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_2">
+        <text>Нашел, держи свое ружье.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_3">
+        <text>Нет. У меня сейчас есть поважнее дела.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_4">
+        <text>Что? Ружье нашел? Ого!!! Брат, братишка, братулька... у меня просто нет слов. Спасибо. СПАСИБО, черт возьми! Эх, ну помог, ну помог!!! Даа! Вот, возьми мое скромное вознаграждение, это все что у меня есть. Прости, что оно не так велико, как твоя помощь. И я не забуду, черт меня дери, как ты мне помог. Надеюсь, смогу со временем так же помочь тебе, как ты мне. Спасибо. Слушай, что я тебе расскажу. Рядом с тем местом, где ты мое ружье достал, есть еще одна штука, странный заколоченный дом. Что там - никому не известно, но через окна видно, что там много аномалий. Может и артефакты есть, только как туда пробраться, я не знаю.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_5">
+        <text>Дело твое, но я надеюсь, что ты передумаешь.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_6">
+        <text>До встречи.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_start_dialog_0">
+        <text>Эх...если б кто помог...</text>
+    </string>
+</string_table>

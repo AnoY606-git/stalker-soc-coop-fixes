@@ -1,20 +1,11 @@
 [logic]
 active 												= sr_idle@start_quest
-;Начало игры(Начало начал, Важное поручение):
+
+;Game start (Beginning of beginnings, Important mission): stock logic.
+; The level maker's chain after the flash drive (helicopter flight, its task, the Fox detour, vodka start of the bridge pass) is gone: the original SoC
+; continues with Sidorovich's talk about the military case right after the hand-in (patch cordon, NOTES.md). Nothing is waited for here any more.
+; The tasks themselves are given to every player by coop_soc_opening.script.
 [sr_idle@start_quest]
-; stock logic (patch cutscenes_pkg_opening v1.3 waited for the opening movie flag or 6000 game seconds, so the tasks came late or never)
-on_game_timer 										= 10 | sr_idle@esc_helicopter_go_to_agroprom %=give_task(esc_start_main_quest_task) =give_task(esc_start_talk_to_the_sidorovich_quest_task) =scenario_autosave(st_save_esc_game_start)%
-
-[sr_idle@esc_helicopter_go_to_agroprom]
-on_info  											= {+ESC_HELICOPTER_GO_TO_AGROPROM_INFO} sr_idle@esc_5_bottles_of_vodka_for_kuznetsov_start_quest %+ESC_HELICOPTER_GO_TO_AGROPROM_INFO%
-on_info2 = {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO -ESC_HELICOPTER_GO_TO_AGROPROM_INFO} sr_idle@esc_helicopter_fallback
-
-; Fallback: if the helicopter script never fires (e.g. helicopter offline), give its flag and task anyway
-[sr_idle@esc_helicopter_fallback]
-on_info = {+ESC_HELICOPTER_GO_TO_AGROPROM_INFO} sr_idle@esc_5_bottles_of_vodka_for_kuznetsov_start_quest
-on_game_timer = 1800 | sr_idle@esc_5_bottles_of_vodka_for_kuznetsov_start_quest %=give_task(esc_start_talk_to_the_sidorovich_quest_1_task) +ESC_HELICOPTER_GO_TO_AGROPROM_INFO%
-
-[sr_idle@esc_5_bottles_of_vodka_for_kuznetsov_start_quest]
-on_info  											= {+ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO} sr_idle@nil %=give_task(esc_start_5_bottles_of_vodka_for_kuznetsov_quest_task)%
+on_game_timer 										= 10 | sr_idle@nil %=give_task(esc_start_main_quest_task) =give_task(esc_start_talk_to_the_sidorovich_quest_task) =scenario_autosave(st_save_esc_game_start)%
 
 [sr_idle@nil]

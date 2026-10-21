@@ -1,0 +1,393 @@
+-------------------------------------------------------------------------------------------------------
+-- The Guide and the Doctor of the original Shadow of Chernobyl (patch soc_doctor_chain, see its NOTES.md).
+-- SoC: Ghost's documents (Yantar) start yan_provodnik_task "Meet the Guide". The Guide on Cordon (esc_provodnik_start, branch 12 to 16) says that
+-- Doctor waits in Strelok's hiding place (esc_find_doctor_start -> task doctor_meet "Meet with Doctor"). In the hiding place of the Agroprom
+-- underground the player is knocked out (agr_knockdown) and wakes up in the Dead City jail, where the Doctor (cit_doctor) recognises Strelok, tells
+-- him the story and gives the key and the map of the stash at Pripyat (cit_doctor_main_dialog, info cit_jail_doctor_pryp_task -> task cit_doctor_task
+-- "Secret stash at Pripyat", diary "Meeting with the Doctor"). The stash holds the decoder (patch soc_aes_quests places it in the Pripyat hotel).
+--
+-- The mod has no Dead City: here the Doctor stands in Strelok's hiding place of the Agroprom underground (SoC position of cit_doctor in l03u) and the
+-- jail, the knock-out and the jail dialogs do not exist. Everything else is the SoC chain:
+--   Guide dialog (flag ESC_FIND_DOCTOR_START)  ->  task "Meet with Doctor" for EVERY player  ->  the Doctor is created in the hiding place
+--   (server, once)  ->  he talks  ->  CIT_JAIL_DOCTOR_PRYP_TASK, CIT_DOCTOR_MEET_CONCLUSION_INFO  ->  task "Secret stash at Pripyat" for EVERY player
+--   until the decoder is taken (soc_aes_quests takes over on Pripyat with its own three stash steps).
+--
+-- Shared story flags (saved, synced to every player) plus a server tick (1 s, real time), the pattern of coop_soc_yan.script:
+--  1. progress(): derives ESC_FIND_DOCTOR_DONE (a player came near the hiding place, SoC: the knock-out zone), makes the chain monotonic
+--  2. every open task is given to every living player once per level load (late joiners and respawned players get it)
+--  3. the Doctor is created by alife():create once (story id soc_cit_doctor, like the Cordon technician); he is invulnerable (logic file)
+-- Soft-lock rules: the chain never blocks anything (the stash steps of soc_aes_quests do not read a flag of this file); a dead / lost Doctor sets the
+-- talk flags itself; a party that reached Pripyat closes the chain (SOC_DOC_CLOSED) and hides the Guide topic and the tasks (freeplay after the ending
+-- keeps the flags, nothing replays).
+-------------------------------------------------------------------------------------------------------
+
+local CORDON = "coop_l01_escape"
+local UG = "coop_l03_agroprom_underground"
+-- the levels from the Pripyat hotel on: the stash is reachable, soc_aes_quests gives its own steps
+local LATE = { coop_l10_pripyat = true, coop_l11_stancia_1 = true, coop_l11_stancia_2 = true, coop_l11_sarcofag = true, coop_l11_control_monolith = true }
+
+local F = {
+	DOCS    = "X16_GHOST_DOCS_TAKEN",             -- Ghost's documents taken (patch soc_yan_x16_quests / yantar_restore): SoC yan_provodnik_spawn
+	YAN_G   = "YAN_SOC_GUIDE_MET",                -- the Yantar tick's flag that completes "Meet the Guide" (SoC: done by esc_find_doctor_start)
+	GUIDE   = "ESC_FIND_DOCTOR_START",            -- SoC info, given by the Guide dialog
+	MET     = "ESC_FIND_DOCTOR_DONE",             -- SoC info: the party came to the hiding place (knock-out zone) / talked to the Doctor
+	TASK    = "CIT_JAIL_DOCTOR_PRYP_TASK",        -- SoC info, given by the Doctor dialog: the Pripyat stash task
+	CONCL   = "CIT_DOCTOR_MEET_CONCLUSION_INFO",  -- SoC info, given by the Doctor dialog: the diary text "Meeting with the Doctor"
+	GOT     = "PRI_MONOLITH_DECODER_GOT",         -- soc_aes_quests: the decoder is in a player's inventory
+	CLOSED  = "SOC_DOC_CLOSED",                   -- own: the party is on Pripyat or later, the chain is over
+}
+
+-- SoC l03u_agr_underground level.spawn: cit_doctor at -69.7555 -6.8732 -70.4957 (story id 350), the knock-out restrictor (r 1, the logic fires within 8 m of
+-- the actor) at -75.4297 -6.8732 -74.6515. The mod's underground has the same coordinates; AI node 3563 and game vertex 689 are recomputed by
+-- tools\check_doctor_chain.py --verify-spot (the level's own cross table).
+local DOC = { section = "soc_cit_doctor", story = "soc_cit_doctor", x = -69.7555, y = -6.8732, z = -70.4957, lvid = 3563, gvid = 689 }
+local KNOCK = { x = -75.4297, y = -6.8732, z = -74.6515, r = 8.0 }
+local NEAR_DOC = 10.0
+local LOGIC_FILE = "scripts\\coop_l03_agroprom_underground\\soc_cit_doctor.ltx"
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCDOC " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCDOC " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if has(f) then return end
+	pcall(story_flags.give_flag, f)
+	qlog("FLAG " .. f)
+end
+
+local function each_player(fn)
+	if db == nil or db.mp_actors == nil then return end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil then
+			local okalive, alive = pcall(function() return a:alive() end)
+			if okalive and alive then fn(pid, a) end
+		end
+	end
+end
+
+local function actors_online()
+	local n = 0
+	if db ~= nil and db.mp_actors ~= nil then
+		for _ in pairs(db.mp_actors) do n = n + 1 end
+	end
+	return n
+end
+
+local function dist(a, p)
+	local pos = a:position()
+	local dx, dy, dz = pos.x - p.x, pos.y - p.y, pos.z - p.z
+	return math.sqrt(dx * dx + dy * dy + dz * dz)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the Doctor
+-------------------------------------------------------------------------------------------------------
+local idle_seen = {}          -- entity id -> ticks the online Doctor had no active logic scheme
+local doc_created = 0
+local doc_failed = 0
+
+-- id of the live Doctor entity (living OR dead) or nil. Drops a stale registry entry.
+function find_doctor()
+	local sim = alife()
+	if sim == nil then return nil end
+	local id = get_story_object_id(DOC.story)
+	if id ~= nil then
+		if sim:object(id) ~= nil then return id end
+		unregister_story_id(DOC.story)
+	end
+	return nil
+end
+
+-- every entity of the Doctor section (duplicate check independent of the registry; only when the registry lost him)
+local function count_all()
+	local sim = alife()
+	local n, ids = 0, {}
+	if sim == nil then return 0, ids end
+	for i = 1, 65534 do
+		local o = sim:object(i)
+		if o ~= nil and o:section_name() == DOC.section then
+			n = n + 1
+			ids[#ids + 1] = i
+		end
+	end
+	return n, ids
+end
+
+function ensure_doctor()
+	if not OnServer() then return nil end
+	if level.name() ~= UG then return nil end
+	local id = find_doctor()
+	if id ~= nil then return id end
+	if actors_online() == 0 then return nil end
+	if doc_failed >= 3 then return nil end
+	local n, ids = count_all()
+	if n > 0 then
+		pcall(function() add_story_object(ids[1], DOC.story) end)
+		qlog("re-registered existing Doctor " .. tostring(ids[1]))
+		return ids[1]
+	end
+	local pos = vector():set(DOC.x, DOC.y, DOC.z)
+	local ok, err = pcall(function()
+		local se = alife():create(DOC.section, pos, DOC.lvid, DOC.gvid)
+		if se == nil then error("alife():create returned nil") end
+		pcall(function() db.spawned_vertex_by_id[se.id] = DOC.lvid end)
+		doc_created = doc_created + 1
+		qlog(string.format("Doctor created id=%d lvid=%d gvid=%d", se.id, DOC.lvid, DOC.gvid))
+	end)
+	if not ok then
+		doc_failed = doc_failed + 1
+		qlog("Doctor create failed (" .. doc_failed .. "): " .. tostring(err))
+		return nil
+	end
+	return find_doctor()
+end
+
+-- the logic starts by itself (custom_data of the section); if the engine did not run it (no active scheme for two ticks) start the file by script,
+-- the way xr_logic.initialize_obj would (same fallback as the Cordon technician)
+local function ensure_logic(id)
+	local st = db.storage[id]
+	if st == nil or st.object == nil then
+		idle_seen[id] = nil
+		return
+	end
+	if st.active_scheme ~= nil then
+		idle_seen[id] = nil
+		return
+	end
+	idle_seen[id] = (idle_seen[id] or 0) + 1
+	if idle_seen[id] < 2 then return end
+	idle_seen[id] = nil
+	local npc = st.object
+	local ini = ini_file(LOGIC_FILE)
+	ini = xr_logic.configure_schemes(npc, ini, LOGIC_FILE, modules.stype_stalker, "logic", "")
+	local sect = xr_logic.determine_section_to_activate(npc, ini, "logic", db.actor)
+	xr_logic.activate_by_section(npc, ini, sect, "", false)
+	qlog("Doctor logic started by script, section " .. tostring(sect))
+end
+
+-- a dead Doctor must not block the chain: the talk flags are given (no reward is made up, the Pripyat task is just the SoC task text)
+local function doctor_alive_check(id)
+	if has(F.TASK) then return end
+	local dead = false
+	pcall(function()
+		local se = alife():object(id)
+		if se ~= nil and se.alive ~= nil and not se:alive() then dead = true end
+	end)
+	if dead then
+		qlog("the Doctor is dead: the talk flags are given")
+		give(F.TASK)
+		give(F.CONCL)
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- progress
+-------------------------------------------------------------------------------------------------------
+local function cascade()
+	if has(F.GUIDE) then give(F.YAN_G) end                       -- SoC: yan_provodnik_task is done by esc_find_doctor_start
+	if has(F.TASK) then give(F.MET) end
+	if has(F.CLOSED) and has(F.GUIDE) then give(F.MET); give(F.TASK) end   -- the party is past the Doctor: nothing waits for him
+	if has(F.CLOSED) then give(F.YAN_G) end                                  -- a party that went on without the Guide must not keep "Meet the Guide" open
+end
+
+local function progress(now)
+	local lvl = level.name()
+	if has(F.GOT) or LATE[lvl] then
+		if not has(F.CLOSED) then give(F.CLOSED) end
+	end
+	-- the party came to the hiding place: SoC fires the knock-out within 8 m of the zone; here that completes "Meet with Doctor"
+	if lvl == UG and has(F.GUIDE) and not has(F.MET) then
+		each_player(function(pid, a)
+			if dist(a, KNOCK) <= KNOCK.r or dist(a, DOC) <= NEAR_DOC then give(F.MET) end
+		end)
+	end
+	if lvl == UG and has(F.GUIDE) and not has(F.CLOSED) then
+		local id = ensure_doctor()
+		if id ~= nil then
+			pcall(ensure_logic, id)
+			doctor_alive_check(id)
+		end
+	end
+	cascade()
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the stages: task id, open while ... (any level; the sections are in configs\misc\tm_coop_soc_doctor.ltx)
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	-- SoC doctor_meet: "Meet with Doctor at Strelok's hiding place" (marker: the Doctor once he exists)
+	{ id = "soc_doc_meet_task", open = function() return has(F.GUIDE) and not has(F.MET) and not has(F.CLOSED) end },
+	-- SoC cit_doctor_task: "Secret stash at Pripyat" until the decoder is taken (soc_aes_quests has its own steps on Pripyat)
+	{ id = "soc_doc_stash_task", open = function() return has(F.TASK) and not has(F.GOT) and not has(F.CLOSED) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+last = ""
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step(now)
+	now = now or time_global()
+	local out = {}
+	local okp, errp = pcall(progress, now)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			each_player(function(pid, a)
+				if given[st.id] == nil or not given[st.id][pid] then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+						last = st.id .. " -> " .. tostring(pid)
+					end
+				end
+			end)
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step(now)
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what and the local state
+function reset_given()
+	given = {}
+	idle_seen = {}
+	doc_created = 0
+	doc_failed = 0
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- dialogs (dialogs_coop_soc_doctor.xml: soc_doc_guide_dialog, soc_doc_hello_dialog, soc_doc_main_dialog)
+-------------------------------------------------------------------------------------------------------
+-- the Guide topic (SoC esc_provodnik_start branch 12 to 16): Ghost's documents are taken, the Guide has not spoken yet, the party is not past the Doctor
+function st_g_open(a, b) return has(F.DOCS) and not has(F.GUIDE) and not has(F.CLOSED) end
+-- the Doctor's talk (SoC cit_doctor_main_dialog, dont_has_info cit_jail_doctor_pryp_task)
+function st_d_open(a, b) return not has(F.TASK) end
+-- the Doctor's greeting: SoC cit_doctor_hello_dialog, first meeting / after the talk (shared flag, same on every machine)
+function st_h_first(a, b) return not has(F.TASK) end
+function st_h_after(a, b) return has(F.TASK) end
+
+-------------------------------------------------------------------------------------------------------
+-- PDA archive line + voice (the ORIGINAL English recordings of the Steam SoC; the Guide has none, the Russian SoC has none for the Doctor here)
+-------------------------------------------------------------------------------------------------------
+local NPC_G = { ["1"] = 1, ["3"] = 1 }
+local NPC_D = { ["h11"] = 1, ["h21"] = 1, ["1"] = 1, ["2"] = 1, ["3"] = 1, ["4"] = 1 }
+VOICE_D = { "h11", "1", "2", "3", "4" }
+local VOICE = { g = {}, d = {} }
+for _, id in ipairs(VOICE_D) do
+	if id == "h11" then
+		VOICE.d[id] = "characters_voice\\dialogs\\eng\\cit_doctor_hello_dialog_11"
+	else
+		VOICE.d[id] = "characters_voice\\dialogs\\eng\\cit_doctor_main_dialog_" .. id
+	end
+end
+
+local keep_snd = nil
+local lastsay = { key = nil, t = 0 }
+played = ""                           -- tests / logs: the last path handed to the sound engine
+
+local function game_lang()
+	local ok, s = pcall(function() return game.translate_string("st_opt_windowed") end)
+	if ok and s ~= nil then
+		for i = 1, string.len(s) do
+			if string.byte(s, i) >= 168 then return "rus" end
+		end
+	end
+	return "eng"
+end
+
+-- "rus" or "eng": the voice language of THIS player (voice_language auto | rus | eng of his coop_settings.ltx)
+function lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	return game_lang()
+end
+
+function voice_path(kind, id)
+	if lang() ~= "eng" then return nil end
+	return VOICE[kind] and VOICE[kind][id] or nil
+end
+
+local function say(kind, id, first, second)
+	local tid = "coop_soc_doc_" .. kind .. "_" .. id
+	local npcset = kind == "g" and NPC_G or NPC_D
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = npcset[id] and "npc" or "actor" end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+	if not OnClient() then return end
+	local la = getLocalActor()
+	if la == nil or first == nil or second == nil then return end
+	if first:id() ~= la:id() and second:id() ~= la:id() then return end
+	local now = time_global()
+	local key = kind .. id
+	if lastsay.key == key and now - lastsay.t < 1500 then return end
+	lastsay.key, lastsay.t = key, now
+	local v = voice_path(kind, id)
+	if v == nil then return end                                       -- no recording in this language (or none for the line): silent
+	if not getFS():exist("$game_sounds$", v .. ".ogg") then qlog("NOVOICE " .. v); return end
+	qlog("VOICE_PLAY " .. kind .. id .. " lang=" .. lang() .. " path=" .. v)
+	played = v
+	pcall(function()
+		if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end
+		keep_snd = sound_object(v)
+		keep_snd:play(la, 0, sound_object.s2d)
+	end)
+end
+
+function say_g0(a, b) say("g", "0", a, b) end
+function say_g1(a, b) say("g", "1", a, b) end
+function say_g2(a, b) say("g", "2", a, b) end
+function say_g3(a, b) say("g", "3", a, b) end
+function say_g4(a, b) say("g", "4", a, b) end
+function say_dh11(a, b) say("d", "h11", a, b) end
+function say_dh21(a, b) say("d", "h21", a, b) end
+function say_d0(a, b) say("d", "0", a, b) end
+function say_d1(a, b) say("d", "1", a, b) end
+function say_d11(a, b) say("d", "11", a, b) end
+function say_d2(a, b) say("d", "2", a, b) end
+function say_d21(a, b) say("d", "21", a, b) end
+function say_d3(a, b) say("d", "3", a, b) end
+function say_d31(a, b) say("d", "31", a, b) end
+function say_d4(a, b) say("d", "4", a, b) end

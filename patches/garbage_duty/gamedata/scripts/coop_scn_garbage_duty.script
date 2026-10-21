@@ -1,0 +1,501 @@
+-------------------------------------------------------------------------------------------------------
+-- Garbage, Duty checkpoint on the road to the Bar, as in the original Shadow of Chernobyl (patch garbage_duty).
+-- Auto-loaded by the Scene Director (patches/cutscenes_core loads every coop_scn_*.script).
+--
+--  1. The boar attack ("Волна мутантов"): every boar of the four attack squads reports "killed by a player" with its own
+--     story flag GAR_DUTY_BOAR_KILLED_<n> (configs/scripts/coop_l02_garbage/gar_smart_terrain_8_m_boar_squad.ltx, SoC
+--     mob_death + killed_by_actor, true for every player). When the four squads are dead the director plays the scene
+--     gar_duty_rush on every client: the commander speaks (original SoC voice, Russian or English like the opening) and
+--     the PDA shows his line.  WIN_KILLS (1, the SoC rule: `c < 1` is the looser) or more boars killed by players = praise
+--     ("consider your pass paid", the shared story flag GAR_FREE_PASS is given, voice duty_after_rush_good); none = SoC
+--     "gar_actor_looser" ("no use at all", no pass, duty_after_rush_bad).
+--  2. The gate: the Garbage exit to the Bar (level changer gar_bar_level_changer) is switched off on every machine until
+--     the shared story flag GAR_FREE_PASS exists (SoC: the Duty guards let nobody pass without `gar_free_pass`).
+--     The flag comes from (a) the commander's dialog with the Agroprom case flag, (b) paying PASS_PRICE (owner approved
+--     addition, the original had 500), (c) the boar attack won (1.), (d) the soft-lock guard below. It is a normal story flag: saved,
+--     synced, late joiners.
+--     SOFT-LOCK GUARD (server, every 2 s, on every level): the flag is also given when the host switched the gate off
+--     ([garbage] duty_gate = false in coop_settings.ltx), when the party is on a level past the Garbage story (Bar and later: anyone who
+--     has been on the Bar), and when any Bar-or-later story flag (BAR_, ROS_, MIL_, YAN_, X16_, RAD_, X10_, PRI_, AES_, SAR_, CON_) exists,
+--     which also covers an old save made after the Bar was reached.
+--  4. The fight at Gray's hangar (SoC gar_seryi): the server gives GAR_THE_ORDER_TO_KILL_GRAY_INFO (= SoC gar_begin_assault / gar_seryi_open_fire)
+--     by the three SoC restrictors of the level: gar_seryi_igrok_durak_restrictor and gar_bandits_shuher (a player inside: the bandits open fire at
+--     once) and gar_seryi_factory (a player inside: 30 s later the assault). Any player counts. See "SoC zones" below.
+--  5. The checkpoint zones (SoC meet zone gar_dolg_blokpost_zone_warn / _guard): without the pass a player in the warning zone hears the guard's
+--     warning, a player in the guard zone is attacked by the Duty guards (hostile to that player only). See "SoC zones" below.
+--  3. Dialog helpers for dialogs_coop_l02_garbage.xml (gar_duty_pass_start_dialog).
+-------------------------------------------------------------------------------------------------------
+
+local LEVEL      = "coop_l02_garbage"
+local CHANGER    = "gar_bar_level_changer"
+local PASS_FLAG  = "GAR_FREE_PASS"
+local CASE_FLAG  = "AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO"   -- Agroprom: the military case / documents were taken
+local PASS_PRICE = 2000
+local WIN_KILLS  = 1                                  -- SoC gar_boars_counter: one kill by a player is enough (c < 1 = looser)
+local BOARS      = 8
+local SQUADS     = { "GAR_SMART_TERRAIN_8_M_BOAR_1_SQUAD_DEAD", "GAR_SMART_TERRAIN_8_M_BOAR_2_SQUAD_DEAD",
+                     "GAR_SMART_TERRAIN_8_M_BOAR_3_SQUAD_DEAD", "GAR_SMART_TERRAIN_8_M_BOAR_4_SQUAD_DEAD" }
+local VOICE      = "characters_voice\\scenario\\coop_l02_garbage\\"
+local ICON       = "ui_inGame2_Dolg_4"
+local GRAY_FLAG   = "GAR_THE_ORDER_TO_KILL_GRAY_INFO"
+local GRAY_POS    = { x = -63.7, y = 0.8, z = 8.4 }                        -- Gray's post in the hangar
+local GRAY_RADIUS = 20.0                                                -- fallback only (see seryi_tick)
+-- levels before the Garbage story is over: everything else (Bar and later) means the pass is no longer needed
+local EARLY = { coop_l01_escape = true, coop_l02_garbage = true, coop_l03_agroprom = true, coop_l03_agroprom_underground = true,
+	coop_l04_darkvalley = true, coop_l04_x18 = true }
+local LATE_PREFIX = { "BAR_", "ROS_", "MIL_", "YAN_", "X16_", "RAD_", "X10_", "PRI_", "AES_", "SAR_", "CON_" }
+
+local function dbg(s)
+	pcall(printf_msg, "GARDUTY %s", tostring(s))
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[GD] " .. tostring(s)) end
+end
+
+local function has(name)
+	local ok, r = pcall(function() return story_flags.has_flag(name) end)
+	return ok and r == true
+end
+
+-- how many boars died by a player's hand (story flags, the same on every machine)
+function kills()
+	local n = 0
+	for i = 1, BOARS do
+		if has("GAR_DUTY_BOAR_KILLED_" .. i) then n = n + 1 end
+	end
+	return n
+end
+
+local function boars_dead()
+	for _, f in ipairs(SQUADS) do
+		if not has(f) then return false end
+	end
+	return true
+end
+
+-- "rus" or "eng": the voice of this player (the same rule as the opening: coop_soc_opening.voice_lang, auto = game language)
+local function voice_lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	local ok2, s = pcall(function() return game.translate_string("st_gar_duty_lang_probe") end)
+	if ok2 and type(s) == "string" and string.find(s, "[\192-\255]") then return "rus" end
+	return "eng"
+end
+
+local function show(var)
+	local a = db.actor
+	if a == nil then return end
+	local id = (var == "win") and "gar_duty_rush_win" or "gar_duty_rush_lose"
+	local ok = pcall(function()
+		a:give_game_news(game.translate_string("st_tip"), game.translate_string(id), ICON, 0, 15000, 0)
+	end)
+	dbg("tip " .. id .. " ok=" .. tostring(ok))
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. the boar attack result scene
+-------------------------------------------------------------------------------------------------------
+coop_scenes.register {
+	id        = "gar_duty_rush",
+	kind      = "sequence",
+	level     = LEVEL,
+	once      = true,
+	skip      = "none",
+	length_ms = 14000,
+	grace_ms  = 12000,
+	settle_ms = 3000,
+
+	-- SERVER: all four boar squads are dead
+	trigger = function(ctx)
+		return boars_dead()
+	end,
+
+	-- SERVER, once: the verdict is picked here (kills are counted on the server flags)
+	pick = function(ctx)
+		local k = kills()
+		dbg("verdict kills=" .. k)
+		if k >= WIN_KILLS then return "win" end
+		return "lose"
+	end,
+
+	on_go = function(ctx, var)
+		if var == "win" then story_flags.give_flag(PASS_FLAG) end
+	end,
+
+	steps = function(var, env)
+		local path = VOICE
+		if voice_lang() == "eng" then path = VOICE .. "eng\\" end
+		path = path .. ((var == "win") and "duty_after_rush_good" or "duty_after_rush_bad")
+		return {
+			{ ["do"] = "fn", fn = function(e) show(var) end },
+			{ ["do"] = "snd2d", path = path, wait = false, vol = 1 },
+			{ ["do"] = "wait", ms = 12000 },
+		}
+	end,
+}
+
+-------------------------------------------------------------------------------------------------------
+-- 3. dialog helpers (they run on the machine of the talking player; the flag is shared)
+-------------------------------------------------------------------------------------------------------
+function pass_closed(a, b)  return not has(PASS_FLAG) end
+function pass_open(a, b)    return has(PASS_FLAG) end
+function case_have(a, b)    return has(CASE_FLAG) end
+function case_missing(a, b) return not has(CASE_FLAG) end
+
+local function money()
+	local la = getLocalActor()
+	if la == nil then return 0 end
+	return la:money()
+end
+function can_pay(a, b)   return money() >= PASS_PRICE end
+function cannot_pay(a, b) return money() < PASS_PRICE end
+
+-- the case (documents) show the pass; the whole group gets it
+function give_pass_case(a, b)
+	story_flags.give_flag(PASS_FLAG)
+	dbg("pass given by the case")
+end
+
+-- the money is taken from the talking player only, the pass is for the whole group
+function give_pass_money(a, b)
+	pcall(function() dialogs.relocate_money_from_actor(a, b, PASS_PRICE) end)
+	story_flags.give_flag(PASS_FLAG)
+	dbg("pass bought for " .. PASS_PRICE)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the gate: the Bar level changer follows the flag (every machine, once per second)
+-------------------------------------------------------------------------------------------------------
+local G = { gen = 0, last = 0, applied = nil, at = 0, ok = false, err = nil }
+
+local function apply(now)
+	local want = has(PASS_FLAG)
+	if G.applied == want and now - G.at < 15000 then return end
+	local lc = nil
+	pcall(function() lc = level.object(CHANGER) end)
+	if lc == nil then return end
+	local ok, e = pcall(function() lc:enable_level_changer(want) end)
+	G.ok = ok
+	if not ok then G.err = tostring(e) end
+	G.applied = want
+	G.at = now
+	dbg("bar exit open=" .. tostring(want) .. " ok=" .. tostring(ok))
+end
+
+-------------------------------------------------------------------------------------------------------
+-- server side: soft-lock guard and Gray's fight
+-------------------------------------------------------------------------------------------------------
+local SV = { last = 0, late = nil, why = nil }
+
+local function late_flag()
+	if SV.late == nil then
+		SV.late = {}
+		pcall(function()
+			for name, _ in pairs(story_flags_table.flags_to_id) do
+				for _, pre in ipairs(LATE_PREFIX) do
+					if string.sub(name, 1, string.len(pre)) == pre then
+						SV.late[#SV.late + 1] = name
+						break
+					end
+				end
+			end
+		end)
+	end
+	for _, name in ipairs(SV.late) do
+		if has(name) then return name end
+	end
+	return nil
+end
+
+local function gate_guard()
+	if has(PASS_FLAG) then return end
+	local why = nil
+	local ok, on = pcall(function() return coop_host_cfg.bool("garbage", "duty_gate", true) end)
+	if ok and on == false then why = "host setting duty_gate=false" end
+	if why == nil and EARLY[level.name()] ~= true then why = "level " .. tostring(level.name()) end
+	if why == nil then
+		local f = late_flag()
+		if f ~= nil then why = "story flag " .. f end
+	end
+	if why ~= nil then
+		SV.why = why
+		story_flags.give_flag(PASS_FLAG)
+		dbg("gate opened: " .. why)
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- SoC zones. The level.spawn of the Steam SoC l02_garbage holds these space restrictors (box = centre, yaw about Y in radians, full edge
+-- lengths); the Garbage of the mod has the same coordinates.
+--  Gray's hangar, smart terrain gar_seryi_bandits (SoC logic of the bandits: combat_ignore_cond = {-gar_seryi_open_fire}):
+--    gar_seryi_factory               on_actor_inside = sr_idle@time %+gar_seryi_actor_enter%, then on_timer = 30000 | nil %+gar_begin_assault%
+--                                    (the assault bandit camper11: {+gar_begin_assault} %+gar_seryi_open_fire%)
+--    gar_seryi_igrok_durak_restrictor  on_actor_inside = nil %+gar_seryi_open_fire%     (the strip in front of Gray's firing line)
+--    gar_bandits_shuher              on_actor_inside = {-gar_seryi_open_fire} nil %+gar_seryi_open_fire%     (the bandits' camp)
+--  No info and no task is needed (not "garbage_find_stalker", not the Seriy task): only the actor entering a zone.
+--  Duty checkpoint (gulag_garbage.ltx, the three guards zoneguard1..3, meet zone = gar_dolg_blokpost_zone_warn|{-gar_free_pass}warning state
+--  and sound gar_dolg_blokpost|gar_dolg_blokpost_zone_guard|{-gar_free_pass}true@...): while gar_free_pass is not set, an actor in the warning
+--  zone gets the guards' threat state and voice, an actor in the guard zone ("true": zero-power hit + set_relation(enemy, actor)) is attacked.
+--  Co-op: every player counts on his own. The hostility is set per player (set_relation with that player's object only), so the others
+--  keep talking to the guards; the Duty NPCs of the checkpoint (not the commander: he has the pass dialog) all turn on that player.
+-------------------------------------------------------------------------------------------------------
+local function box(x, y, z, yaw, sx, sy, sz) return { x = x, y = y, z = z, yaw = yaw, sx = sx, sy = sy, sz = sz } end
+
+-- is the point p inside the box (the box's local x axis is (cos, 0, -sin), its z axis (sin, 0, cos) in world space)
+local function inside(b, p)
+	local dx, dy, dz = p.x - b.x, p.y - b.y, p.z - b.z
+	local c, sn = math.cos(b.yaw), math.sin(b.yaw)
+	local lx = dx * c - dz * sn
+	local lz = dx * sn + dz * c
+	return math.abs(lx) <= b.sx * 0.5 and math.abs(dy) <= b.sy * 0.5 and math.abs(lz) <= b.sz * 0.5
+end
+
+local FACTORY = box(-92.867, 8.666, -1.476, 0.0, 105.48, 25.594, 82.39)     -- gar_seryi_factory
+local DURAK   = box(-76.501, 3.187, 9.897, 0.0, 3.07, 7.358, 32.617)        -- gar_seryi_igrok_durak_restrictor
+local SHUHER  = box(-129.375, 5.462, -1.653, 0.0, 33.508, 19.805, 82.929)   -- gar_bandits_shuher
+local WARN    = box(28.319, 4.230, 232.591, 1.0242, 24.22, 8.146, 10.23)    -- gar_dolg_blokpost_zone_warn
+local GUARD   = box(21.027, 2.358, 237.084, -0.5292, 6.31, 3.957, 12.9)     -- gar_dolg_blokpost_zone_guard
+local ASSAULT_DELAY_MS = 30000                      -- SoC: sr_idle@time on_timer = 30000
+local NEAR_FALLBACK_MS = 45000                      -- fallback: a player stays within GRAY_RADIUS of Gray's post this long
+local CP_CENTER   = { x = 28.0, y = 3.0, z = 233.0 }
+local CP_CALM_DIST = 60.0                           -- a hostile player this far from the checkpoint ...
+local CP_CALM_MS   = 15000                          -- ... and out of the guard zone for this long is forgiven (no soft lock in a chase)
+local WARN_COOLDOWN_MS = 25000
+local ZONEGUARD_VOICE = "duty_zoneguard_1"          -- SoC sound group gar_dolg_blokpost (the zone guards' warning)
+local SY = { t0 = nil, near = nil, why = nil }
+local CP = { hostile = {}, ids = {}, scan = -1e9, warn = -1e9, last_err = nil }
+
+local function live_players()
+	local out = {}
+	if type(db.mp_actors) ~= "table" then return out end
+	for pid, a in pairs(db.mp_actors) do
+		local ok, alive = pcall(function() return a:alive() end)
+		if ok and alive then out[#out + 1] = { pid = pid, obj = a } end
+	end
+	return out
+end
+
+local function pos_of(o)
+	local ok, p = pcall(function() return o:position() end)
+	if ok then return p end
+	return nil
+end
+
+-- test helper: which SoC zones contain the point
+function zones_at(x, y, z)
+	local p = { x = x, y = y, z = z }
+	return { warn = inside(WARN, p), guard = inside(GUARD, p), factory = inside(FACTORY, p), durak = inside(DURAK, p), shuher = inside(SHUHER, p) }
+end
+
+-- Gray's hangar: SERVER, any player. Returns the reason when it gave the flag.
+local function seryi_tick(now)
+	if level.name() ~= LEVEL or has(GRAY_FLAG) then return end
+	local why = nil
+	local near = false
+	for _, pl in ipairs(live_players()) do
+		local p = pos_of(pl.obj)
+		if p ~= nil then
+			if inside(DURAK, p) then
+				why = "a player entered gar_seryi_igrok_durak_restrictor"
+			elseif inside(SHUHER, p) then
+				why = "a player entered gar_bandits_shuher"
+			end
+			if SY.t0 == nil and inside(FACTORY, p) then
+				SY.t0 = now
+				dbg("a player entered gar_seryi_factory, the assault follows in " .. ASSAULT_DELAY_MS / 1000 .. " s")
+			end
+			local dx, dy, dz = p.x - GRAY_POS.x, p.y - GRAY_POS.y, p.z - GRAY_POS.z
+			if dx * dx + dy * dy + dz * dz <= GRAY_RADIUS * GRAY_RADIUS then near = true end
+		end
+	end
+	if why == nil and SY.t0 ~= nil and now - SY.t0 >= ASSAULT_DELAY_MS then
+		why = ASSAULT_DELAY_MS / 1000 .. " s after a player entered gar_seryi_factory"
+	end
+	-- fallback (cannot soft-lock): somebody stands at Gray's post for a long time and no zone fired (zone data wrong, different spawn)
+	if near then SY.near = SY.near or now else SY.near = nil end
+	if why == nil and SY.near ~= nil and now - SY.near >= NEAR_FALLBACK_MS then
+		why = "fallback: a player stayed within " .. GRAY_RADIUS .. " m of Gray's post"
+	end
+	if why ~= nil then
+		SY.why = why
+		story_flags.give_flag(GRAY_FLAG)
+		dbg("Gray fight started: " .. why)
+	end
+end
+
+-- the Duty NPCs of the checkpoint (spawn section gar_dolg_blokpost; the commander has his own section and is left out), rescanned every 5 s
+local function duty_ids(now)
+	if now - CP.scan < 5000 then return CP.ids end
+	CP.scan = now
+	local ids = {}
+	for id = 1, 65534 do
+		local so = nil
+		pcall(function() so = alife():object(id) end)
+		if so ~= nil then
+			local sec = ""
+			pcall(function() sec = so:section_name() end)
+			if string.find(sec, "gar_dolg_blokpost", 1, true) ~= nil then ids[#ids + 1] = id end
+		end
+	end
+	CP.ids = ids
+	return ids
+end
+
+local function set_rel(rel, pl_obj, now)
+	local n = 0
+	for _, id in ipairs(duty_ids(now)) do
+		local o = nil
+		pcall(function() o = level.object_by_id(id) end)
+		if o ~= nil then
+			local ok = pcall(function() if o:alive() then o:set_relation(rel, pl_obj) end end)
+			if ok then n = n + 1 end
+		end
+	end
+	return n
+end
+
+-- SoC "true": a zero-power wound hit by the player, then the relation of the guard to him is enemy (here for every Duty NPC of the checkpoint)
+local function attack(pl, now)
+	local n = set_rel(game_object.enemy, pl.obj, now)
+	for _, id in ipairs(CP.ids) do
+		pcall(function()
+			local o = level.object_by_id(id)
+			if o ~= nil and o:alive() then
+				local h = hit()
+				h.power = 0
+				h.direction = o:direction()
+				h.bone = "bip01_spine"
+				h.draftsman = pl.obj
+				h.impulse = 0
+				h.type = hit.wound
+				o:hit(h)
+			end
+		end)
+	end
+	return n
+end
+
+local function forgive(pid, now)
+	local e = CP.hostile[pid]
+	CP.hostile[pid] = nil
+	if e ~= nil then
+		set_rel(game_object.neutral, e.obj, now)
+		dbg("checkpoint: the guards calm down towards " .. tostring(pid))
+	end
+end
+
+-- SERVER: guard zone without the pass -> hostile to that player; with the pass, or when he left the area, back to neutral
+local function guard_tick(now)
+	if level.name() ~= LEVEL then return end
+	if has(PASS_FLAG) then
+		for pid, _ in pairs(CP.hostile) do forgive(pid, now) end
+		return
+	end
+	local alive = {}
+	for _, pl in ipairs(live_players()) do
+		alive[pl.pid] = pl
+		local p = pos_of(pl.obj)
+		if p ~= nil and inside(GUARD, p) then
+			local fresh = CP.hostile[pl.pid] == nil or CP.hostile[pl.pid].obj ~= pl.obj
+			if fresh then
+				CP.scan = -1e9
+				dbg("checkpoint: player " .. tostring(pl.pid) .. " entered the guard zone without the pass")
+			end
+			CP.hostile[pl.pid] = { obj = pl.obj, last_in = now }
+			attack(pl, now)
+		end
+	end
+	for pid, e in pairs(CP.hostile) do
+		local pl = alive[pid]
+		if pl == nil or pl.obj ~= e.obj then
+			CP.hostile[pid] = nil                              -- he died / respawned: a new object, no relation left to undo
+		else
+			local p = pos_of(pl.obj)
+			if p ~= nil then
+				local dx, dz = p.x - CP_CENTER.x, p.z - CP_CENTER.z
+				if dx * dx + dz * dz > CP_CALM_DIST * CP_CALM_DIST and now - e.last_in >= CP_CALM_MS then forgive(pid, now) end
+			end
+		end
+	end
+	-- keep the relation while he stays (new guards come online, relations are re-applied every 5 s)
+	if now - (CP.reapply or 0) >= 5000 then
+		CP.reapply = now
+		for pid, e in pairs(CP.hostile) do attack({ pid = pid, obj = e.obj }, now) end
+	end
+end
+
+-- EVERY MACHINE, the local player only: the guard's warning voice in the warning and guard zone (own language, once per 25 s)
+local function warn_tick(now)
+	if level.name() ~= LEVEL or has(PASS_FLAG) then return end
+	if now - CP.warn < WARN_COOLDOWN_MS then return end
+	local la = getLocalActor()
+	if la == nil then return end
+	local ok, alive = pcall(function() return la:alive() end)
+	if not (ok and alive) then return end
+	local p = pos_of(la)
+	if p == nil or not (inside(WARN, p) or inside(GUARD, p)) then return end
+	CP.warn = now
+	local path = VOICE
+	if voice_lang() == "eng" then path = VOICE .. "eng\\" end
+	path = path .. ZONEGUARD_VOICE
+	if not getFS():exist("$game_sounds$", path .. ".ogg") then dbg("warning voice missing: " .. path) return end
+	dbg("checkpoint warning played: " .. path)
+	pcall(function()
+		if CP.snd ~= nil and CP.snd:playing() then CP.snd:stop() end
+		CP.snd = sound_object(path)
+		CP.snd:play(la, 0, sound_object.s2d)
+	end)
+end
+
+local function fast_tick(now)
+	local ok, e = pcall(warn_tick, now)
+	if not ok then CP.last_err = tostring(e) end
+	if OnServer() then
+		ok, e = pcall(guard_tick, now)
+		if not ok then CP.last_err = tostring(e) end
+		ok, e = pcall(seryi_tick, now)
+		if not ok then CP.last_err = tostring(e) end
+	end
+end
+
+local function server_tick(now)
+	if now - SV.last < 2000 then return end
+	SV.last = now
+	gate_guard()
+end
+
+local function install()
+	G.gen = G.gen + 1
+	local gen = G.gen
+	pcall(function()
+		level.add_call(function()
+			if gen ~= G.gen then return true end
+			local now = time_global()
+			if now - (G.fast or 0) >= 250 then
+				G.fast = now
+				fast_tick(now)
+			end
+			if now - G.last < 1000 then return false end
+			G.last = now
+			if OnServer() then
+				local oks, es = pcall(server_tick, now)
+				if not oks then G.err = tostring(es) end
+			end
+			if level.name() == LEVEL then
+				local ok, e = pcall(apply, now)
+				if not ok then G.err = tostring(e) end
+			else
+				G.applied = nil
+			end
+			return false
+		end, function() end)
+	end)
+end
+
+function status()
+	local nh = 0
+	for _ in pairs(CP.hostile) do nh = nh + 1 end
+	return string.format("pass=%s case=%s kills=%d boars_dead=%s changer_ok=%s applied=%s why=%s gray=%s gray_why=%s hostile=%d err=%s", tostring(has(PASS_FLAG)), tostring(has(CASE_FLAG)),
+		kills(), tostring(boars_dead()), tostring(G.ok), tostring(G.applied), tostring(SV.why), tostring(has(GRAY_FLAG)), tostring(SY.why), nh,
+		tostring(G.err or CP.last_err))
+end
+
+install()

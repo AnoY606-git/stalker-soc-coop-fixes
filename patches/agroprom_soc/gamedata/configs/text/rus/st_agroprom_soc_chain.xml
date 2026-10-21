@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="coop_soc_agr_help_stalkers_name">
+		<text>Помочь сталкерам</text>
+	</string>
+	<string id="coop_soc_agr_help_stalkers_descr">
+		<text>Помочь сталкерам отбиться от военных\n\nSOS, военные режут нашего брата сталкера, мужики, все кто меня слышат - помогите!</text>
+	</string>
+	<string id="coop_soc_agr_ghost_name">
+		<text>Узнать о судьбе Призрака</text>
+	</string>
+	<string id="coop_soc_agr_ghost_descr">
+		<text>Узнать о судьбе Призрака\n\n... Узнал, что одного из группы Стрелка зовут Призраком. Хоть какая-то зацепка. Если смогу найти Призрака, смогу найти и Стрелка.</text>
+	</string>
+	<string id="coop_soc_agru_flash_descr">
+		<text>Найти в тайнике информацию о Стрелке</text>
+	</string>
+</string_table>

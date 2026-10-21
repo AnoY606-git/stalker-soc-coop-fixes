@@ -104,7 +104,7 @@
 		<text>Are you ready to leave the Zone? There will be no turning back.</text>
 	</string>
 	<string id="st_test_text_yes_no">
-		<text>Are you ready to travel to the Center of the Zone? There will be no turning back.</text>
+		<text>Are you ready to travel to the Radar?</text>
 	</string>
 	<string id="st_question_space_restrictor_text_yes_no">
 		<text>Are you ready to proceed?</text>

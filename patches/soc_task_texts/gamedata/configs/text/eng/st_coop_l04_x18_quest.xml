@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_x18_start_go_to_x18_doc_1_task_name">
+		<text>Find the documents in X18</text>
+	</string>
+	<string id="st_x18_start_go_to_x18_doc_1_task_descr">
+		<text>Find the documents</text>
+	</string>
+
+	<string id="st_x18_start_find_the_password_x18_codedoor_1_task_name">
+		<text>Find the codelocked door</text>
+	</string>
+	<string id="st_x18_start_find_the_password_x18_codedoor_1_task_descr">
+		<text>Discover the code that opens the door\n\nExcellent, Colleague. I'm glad that you've received 2nd level access. At last you will find out what goes on in our laboratory. Your access code is 1243. Chief of Laboratory X-18, Piotr Ilyitch Kalugin.</text>
+	</string>	
+
+	<string id="st_x18_start_go_to_x18_doc_2_task_name">
+		<text>Find the documents in X18</text>
+	</string>
+	<string id="st_x18_start_go_to_x18_doc_2_task_descr">
+		<text>Find the documents</text>
+	</string>	
+
+	<string id="st_x18_start_find_the_password_x18_codedoor_2_task_name">
+		<text>Open the door to the control center</text>
+	</string>
+	<string id="st_x18_start_find_the_password_x18_codedoor_2_task_descr">
+		<text>Discover the code that opens the door\n\nDear colleague, may I remind you that starting tomorrow you will attend to the container in the central laboratory room. You must inspect the containers every two hours. Report everything directly to me. The code to the central laboratory room is 9524. Chief of Laboratory X18, Piotr Ilyitch Kalugin.</text>
+	</string>	
+
+	<string id="st_x18_start_kill_the_flame_poltergeist_quest_task_name">
+		<text>"Locked once again!"</text>
+	</string>
+	<string id="st_x18_start_kill_the_flame_poltergeist_quest_task_descr">
+		<text>Kill the poltergeist</text>
+	</string>
+
+	<string id="st_x18_start_go_to_x18_doc_3_task_name">
+		<text>Find the documents in X18</text>
+	</string>
+	<string id="st_x18_start_go_to_x18_doc_3_task_descr">
+		<text>Find the documents</text>
+	</string>
+
+	<string id="st_x18_start_get_out_of_the_lab_quest_task_name">
+		<text>To the exit!</text>
+	</string>
+	<string id="st_x18_start_get_out_of_the_lab_quest_task_descr">
+		<text>Get out of the laboratory</text>
+	</string>	
+</string_table>

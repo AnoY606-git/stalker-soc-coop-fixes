@@ -1,0 +1,45 @@
+-- loaded by the Scene Director like every coop_scn_*.script: starts the Guide / Doctor tick (coop_soc_doctor.script) and registers the two diary lines
+-- of the original SoC that are shown once per player: the Guide's PDA note (SoC article esc_provodnik_pda, info esc_find_doctor_start) and
+-- "Meeting with the Doctor" (SoC article cit_doctor_meet_conclusion_art, info cit_doctor_meet_conclusion_info)
+pcall(function() coop_soc_doctor.install() end)
+
+local function news(title_id, text_id)
+	return function(var, env)
+		return {
+			{ ["do"] = "fn", fn = function(e)
+				pcall(function()
+					e.actor:give_game_news(game.translate_string(title_id), game.translate_string(text_id), "ui_iconsTotal_grouping", 0, 9000, 0)
+				end)
+			end },
+			{ ["do"] = "wait", ms = 1000 },
+		}
+	end
+end
+
+pcall(function()
+	coop_scenes.register {
+		id        = "soc_doc_guide_pda",
+		kind      = "sequence",
+		once      = true,
+		skip      = "none",
+		length_ms = 2500,
+		grace_ms  = 20000,
+		settle_ms = 2000,
+		trigger   = function(ctx) return ctx.flag("ESC_FIND_DOCTOR_START") end,
+		steps     = news("coop_soc_doc_pda_name", "coop_soc_doc_pda_text"),
+	}
+end)
+
+pcall(function()
+	coop_scenes.register {
+		id        = "soc_doc_conclusion",
+		kind      = "sequence",
+		once      = true,
+		skip      = "none",
+		length_ms = 2500,
+		grace_ms  = 20000,
+		settle_ms = 2000,
+		trigger   = function(ctx) return ctx.flag("CIT_DOCTOR_MEET_CONCLUSION_INFO") end,
+		steps     = news("coop_soc_doc_concl_name", "coop_soc_doc_concl_text"),
+	}
+end)

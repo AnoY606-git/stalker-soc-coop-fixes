@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_ros_start_go_to_yantar_quest_task_name">
+		<text>Find the documents in X16 lab</text>
+	</string>
+	<string id="st_ros_start_go_to_yantar_quest_task_descr">
+		<text>Talk to the scientists\n\nBarkeep: "You need to get through to the scientists and find out where Lab X16 is located to find the missing documents."</text>	
+	</string>
+	
+	
+	<string id="st_ros_start_help_kruglov_quest_task_name">
+		<text>Meet Kruglov</text>
+	</string>
+	<string id="st_ros_start_help_kruglov_quest_task_descr">
+		<text>Get through to Kruglov\n\nKruglov: "Stalker, help! We were attacked by the Mercs and half of our team is dead. Help us and you won't regret it"\n \n "...be careful, there are about fifteen of them, but we don't know for sure"</text>	
+	</string>
+	
+	
+	<string id="st_ros_start_escort_kruglov_to_yantar_quest_task_name">
+		<text>Lead Kruglov to Yantar</text>
+	</string>
+	<string id="st_ros_start_escort_kruglov_to_yantar_quest_task_descr">
+		<text>Lead Kruglov to the exit to Yantar\n\nKruglov: "We were returning from Yantar, when the Mercs shot us down. People say that they need information, but I know better - they'll shoot us all. Take me out to Yantar and I'll tell you what I know about your Brain Scorcher, and barkeep will pay you well for it. I make a bad warrior, but I know the way, so I'll lead and you cover us along the way."</text>	
+	</string>
+</string_table>

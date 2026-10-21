@@ -1,0 +1,12 @@
+	<character id="mil_soc_pavlik">
+		<class>mil_soc_pavlik</class>
+	</character>
+	<character id="mil_soc_ara">
+		<class>mil_soc_ara</class>
+	</character>
+	<character id="mil_soc_ara_guard">
+		<class>mil_soc_ara_guard</class>
+	</character>
+	<character id="mil_soc_cook">
+		<class>mil_soc_cook</class>
+	</character>

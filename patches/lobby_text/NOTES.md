@@ -16,3 +16,9 @@ RU: две строки-подсказки из старой беты (инве�
 
 ## Tested
 Real game test copy of coop.addon: lobby screenshot shows the new English text; log dump of `st_coop_desc` shows the new text. Russian text is the same file structure, checked by decoding the cp1251 output; not rendered in game (UI language was English in the test). At 800x600 the 5-line English text slightly touches the "LOBBY" label; at 1080p the panel is wider and fits (not rendered here).
+
+## Radar question text (2026-10-21, patch level_back)
+`st_test_text_yes_no` (shown by `mil_question_1_space_restrictor` on the Army Warehouses before the walk to the Radar) said "Are you ready to travel to the Center of the Zone? There will be no
+turning back." FOSTER asked for the message to go, because the way back from the Radar now exists (see `patches\level_back\NOTES.md`). EN: "Are you ready to travel to the Radar?",
+RU: "Готовы ли Вы отправиться к Радару?" in `ui_st_screen_addon.xml` (both languages, cp1251 kept). The unused evacuation strings `st_freeplay_text_*` are untouched.
+RU: убрано "Обратного пути не будет" у вопроса перед Радаром (обратный путь с Радара теперь есть).

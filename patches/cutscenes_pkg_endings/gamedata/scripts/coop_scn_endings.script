@@ -177,6 +177,13 @@ local function go_to_menu(why)
 	end)
 end
 
+-- freeplay (patch freeplay): "freeplay" when the host allows playing on after the true ending, nil = the old end (main menu)
+local function freeplay_variant()
+	local ok, v = pcall(function() return coop_scn_freeplay.credits_variant() end)
+	if ok and v ~= nil then return v end
+	return nil
+end
+
 local function log_var(env)
 	slog(string.format("%s CLIENT_VAR actor=%s n=%s var=%s", env.id, tostring(env.actor_id), tostring(env.n), tostring(env.var)))
 end
@@ -261,8 +268,9 @@ coop_scenes.register{
 	end,
 	on_client_start = log_var,
 	on_end = function(ctx, var, reason)
-		slog("end_peace DONE reason=" .. tostring(reason) .. " -> credits")
-		coop_scenes.request("credits")
+		local fp = freeplay_variant()
+		slog("end_peace DONE reason=" .. tostring(reason) .. " -> credits" .. (fp and (" (" .. fp .. ")") or ""))
+		coop_scenes.request("credits", fp)
 	end,
 }
 
@@ -277,6 +285,15 @@ coop_scenes.register{
 	skip = "majority",
 	settle_ms = 0,
 	steps = function(var, env)
+		if var == "freeplay" then
+			-- the party plays on (patch freeplay): the credits end with the UI back, nobody is disconnected
+			return {
+				{ ["do"] = "tutorial_stop" },
+				{ ["do"] = "ui_off" },
+				{ ["do"] = "tutorial", name = "credits_seq", wait = true, min_ms = 3000, cap_ms = cfg.credits_ms + 5000 },
+				{ ["do"] = "ui_on" },
+			}
+		end
 		return {
 			{ ["do"] = "tutorial_stop" },
 			{ ["do"] = "ui_off" },
@@ -289,6 +306,11 @@ coop_scenes.register{
 		log_var(env)
 	end,
 	on_client_end = function(env, reason)
+		-- freeplay: the credits are over, the game goes on (the freeplay scene moves the party)
+		if env.var == "freeplay" then
+			slog("credits END freeplay actor=" .. tostring(LocalActor()) .. " reason=" .. tostring(reason))
+			return
+		end
 		-- reaching here means the run was ended from outside (skip, END, watchdog) before the main_menu step
 		go_to_menu(reason)
 	end,

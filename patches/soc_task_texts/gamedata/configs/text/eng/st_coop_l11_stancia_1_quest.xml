@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_aes_1_start_go_to_sarcofag_quest_task_name">
+		<text>Reach the power plant</text>
+	</string>
+	<string id="st_aes_1_start_go_to_sarcofag_quest_task_descr">
+		<text>Find the entrance to the sarcophagus</text>	
+	</string>
+</string_table>

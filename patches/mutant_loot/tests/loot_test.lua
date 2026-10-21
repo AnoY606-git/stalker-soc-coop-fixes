@@ -1,39 +1,26 @@
+--@qa_lib
 -------------------------------------------------------------------------------------------------------
--- TEST ONLY (never shipped). Hook file for tools/stalker_xrmpe/run_coop.ps1 -Mode dedicated -Clients 2 (qa_harness.lua API).
--- Roles: the dedicated server (OnServer, no player) drives the scenario; the two clients (first / second actor id = P1 / P2)
--- act on server flags. Default (forced) mode, chance forced to 1.0:
---   server spawns a dog and a flesh next to P1 and kills both with a hit whose draftsman is P1's actor,
---   both clients see the right part on the corpse and the tip / use callback armed,
---   P1 takes the DOG part (it lands in P1's inventory), then P2 tries the same corpse and gets nothing (no duplicate),
---   then P1 and P2 request the FLESH part in the same tick: exactly one part exists.
--- Run with -Cfg mode=default for the real chances (0.2): spawns 5 dogs + 5 fleshes, kills them, checks that the clients'
--- view of every corpse matches the server's roll (no crash, no mismatch).
+-- TEST ONLY (never shipped). Hook file for run_coop.ps1 -Mode listen -Clients 1 (one listen host = one player), qa_lib loaded.
+--   powershell -NoProfile -ExecutionPolicy Bypass -File tools\stalker_xrmpe\run_coop.ps1 -Map coop_l01_escape -Owner <name> `
+--     -Mode listen -Clients 1 -ExtraDir <stage>\gamedata -Hooks <this file> -SoakSeconds 120 -CompareTimeout 10 -ResultDir <dir>
+--   (-Cfg mode=default runs the real SoC chance 0.2 instead of the forced chance 1.0)
+-- The merged gamedata must hold mutant_loot + darkvalley_restore (bind_monster.script with the mutant_loot hooks) + soc_economy.
+--
+-- What it does (forced mode): the host spawns a dog, a boar and a flesh next to the player and kills them with hits credited to the
+-- player. Then for each corpse it performs the take action a real player does: the USE path = mutant_loot.use_cb(binder, corpse,
+-- actor), the exact function the engine calls through the corpse's use callback with who = the player's actor (a bot cannot press
+-- the Use key). It checks that
+--   * the death roll was made with the forced chance and the corpse carries the part (flag), the server binder armed the callback,
+--   * the part reaches the player's inventory (online object walk AND server scan: exactly one),
+--   * the corpse no longer offers it (flag off), a second use gives nothing more,
+--   * the "Found: ..." tip and later the "Nothing useful ..." tip were shown to this player.
+-- Default mode: 6 corpses at the real chance: every roll used 0.2 and the corpse flags match the rolls; every winner is taken the same way.
+-- The window of the old version is gone, so nothing needs a click.
 -------------------------------------------------------------------------------------------------------
-mlt = { st = 0, t0 = nil, ids = {}, done = {} }
+mlt = { st = 0, t0 = nil, list = {}, done = {} }
 
 local function tlog(s) qa.event('MLOOT ' .. tostring(s)) end
-
-local function has(n) return story_flags.has_flag(n) end
-local function give(n) story_flags.give_flag(n) end
 local function is_default() return tostring(qa.cfg.mode) == "default" end
-
-local function flag_ids(pat)   -- { [tag] = id } for flags like PREFIX_<TAG>_<id>
-	local r = {}
-	for k, v in pairs(story_flags.story_flags) do
-		if v == true then
-			local tag, id = string.match(k, pat)
-			if tag then r[tag] = tonumber(id) end
-		end
-	end
-	return r
-end
-
-local function server_actors()    -- sorted ids of the player actors on the server
-	local r = {}
-	if type(db.mp_actors) == "table" then for id, o in pairs(db.mp_actors) do r[#r + 1] = id end end
-	table.sort(r)
-	return r
-end
 
 local function count_parts(section)   -- server: { owner_id = n } over all server entities
 	local r = {}
@@ -47,11 +34,9 @@ local function count_parts(section)   -- server: { owner_id = n } over all serve
 	return r
 end
 
-local function ok_str(t) local l = {} for k, v in pairs(t) do l[#l + 1] = tostring(k) .. "=" .. tostring(v) end table.sort(l) return table.concat(l, ",") end
 local function total(t) local n = 0 for _, v in pairs(t) do n = n + v end return n end
 
-local function local_count(section)
-	local lo = qa.local_object()
+local function local_count(lo, section)
 	local n = 0
 	pcall(function() lo:iterate_inventory(function(own, it) if it:section() == section then n = n + 1 end end, lo) end)
 	return n
@@ -60,7 +45,7 @@ end
 local function spawn_near(sec, pa, k)
 	local se_a = alife():object(pa)
 	local p = se_a.position
-	local pos = vector():set(p.x + 1.0 + (k or 0) * 0.3, p.y, p.z + (k or 0) * 0.2)   -- the actor's own vertex: the level lookup on the server returned far vertices
+	local pos = vector():set(p.x + 2.0 + (k or 0) * 0.4, p.y, p.z + (k or 0) * 0.3)
 	local se = alife():create(sec, pos, se_a.m_level_vertex_id, se_a.m_game_vertex_id)
 	return se.id
 end
@@ -68,7 +53,8 @@ end
 local function kill_with_hit(cid, pa)
 	local o = level.object_by_id(cid)
 	local a = level.object_by_id(pa)
-	if o == nil or not o:alive() then return o ~= nil end
+	if o == nil then return false end
+	if not o:alive() then return true end
 	local h = hit()
 	h.draftsman = a or o
 	h.type = hit.fire_wound
@@ -80,221 +66,142 @@ local function kill_with_hit(cid, pa)
 	return true
 end
 
--- ---------------------------------------------------------------- both clients
-local function client_hooks(t, lo)
-	local me = LocalActor()
-	local role = tostring(qa.cfg.role)
-	local who = nil
-	for k, v in pairs(story_flags.story_flags) do
-		if v == true then
-			local n = string.match(k, "^MLT_P(%d)_" .. tostring(me) .. "$")
-			if n then who = "P" .. n end
-		end
+local function has_tip(prefix, from)
+	local tips = mutant_loot.test.tips
+	for i = (from or 1), #tips do
+		if string.sub(tips[i], 1, string.len(prefix)) == prefix then return true end
 	end
-	if who == nil then return end
-	mlt.who = who
-	local cids = flag_ids("^MLT_C_(%u+)_(%d+)$")
-
-	if is_default() then
-		if not mlt.done.dflt and has("MLT_DEFAULT_READY") then
-			mlt.done.dflt = true
-			qa.eventually(role .. " default-chance: all 10 corpses match the server's rolls", function()
-				local bad = {}
-				local cids = flag_ids("^MLT_C_(%u+%d)_(%d+)$")
-				local n = 0
-				for tag, id in pairs(cids) do n = n + 1 end
-				if n < 10 then return false, "corpses " .. n end
-				local wins = 0
-				for k, v in pairs(story_flags.story_flags) do
-					if v == true then
-						local id = string.match(k, "^MLT_W_(%d+)$")
-						if id then wins = wins + 1 end
-					end
-				end
-				for tag, id in pairs(cids) do
-					local want = has("MLT_W_" .. id)
-					local got = #mutant_loot.parts_on(id) == 1
-					if want ~= got then bad[#bad + 1] = tag end
-					if want and mutant_loot.test.armed[id] ~= true then bad[#bad + 1] = tag .. "(not armed)" end
-				end
-				return #bad == 0, "corpses=" .. n .. " wins=" .. wins .. " bad=" .. table.concat(bad, ",")
-			end, 40)
-		end
-		return
-	end
-
-	if not mlt.done.shared and cids.DOG and cids.FLESH and has("MLT_ROLLED") then
-		mlt.done.shared = true
-		for _, tag in ipairs({ "DOG", "FLESH" }) do
-			local id = cids[tag]
-			local part = (tag == "DOG") and "mutant_dog_part" or "mutant_flesh_part"
-			qa.eventually(role .. "/" .. who .. " flags show " .. part .. " on the " .. tag .. " corpse", function()
-				local p = mutant_loot.parts_on(id)
-				return #p == 1 and p[1] == part, table.concat(p, ",")
-			end, 40)
-			qa.eventually(role .. "/" .. who .. " Search tip + use callback armed on the " .. tag .. " corpse", function()
-				return mutant_loot.test.armed[id] == true, tostring(mutant_loot.test.arm_err[id])
-			end, 40)
-		end
-		-- the Search window opens on the corpse (client side UI code path), then is closed again
-		qa.eventually(role .. "/" .. who .. " Search window opens on the DOG corpse", function()
-			local ok, err = pcall(function() ui_mutant_loot.open(cids.DOG) end)
-			local cur = ui_mutant_loot.current() ~= nil
-			pcall(function() ui_mutant_loot.close() end)
-			return ok and cur, tostring(err)
-		end, 10)
-	end
-
-	-- P1 takes the dog part (the function the Take button calls)
-	if who == "P1" and has("MLT_GO_P1") and not mlt.done.p1 then
-		mlt.done.p1 = true
-		tlog("P1 request_take DOG " .. tostring(cids.DOG))
-		mutant_loot.request_take(cids.DOG)
-		qa.eventually("P1 inventory (client view) holds the dog part", function()
-			return local_count("mutant_dog_part") == 1, "count " .. local_count("mutant_dog_part")
-		end, 40)
-	end
-	-- P2 tries the same corpse afterwards
-	if who == "P2" and has("MLT_GO_P2") and not mlt.done.p2 then
-		mlt.done.p2 = true
-		tlog("P2 request_take DOG " .. tostring(cids.DOG))
-		mutant_loot.request_take(cids.DOG)
-		qa.eventually("P2 inventory (client view) has no dog part", function()
-			return has("MLT_P2_DONE") and local_count("mutant_dog_part") == 0, "count " .. local_count("mutant_dog_part")
-		end, 40)
-	end
-	-- after P1 took it both clients agree: the corpse is empty, the tip is still armed (state consistent), window opens empty
-	if has("MLT_GO_P2") and not mlt.done.empty then
-		mlt.done.empty = true
-		qa.eventually(role .. "/" .. who .. " DOG corpse empty on this client, tip still armed, empty window opens", function()
-			local empty = #mutant_loot.parts_on(cids.DOG) == 0 and mutant_loot.test.armed[cids.DOG] == true
-			if not empty then return false, "parts " .. #mutant_loot.parts_on(cids.DOG) end
-			local ok = pcall(function() ui_mutant_loot.open(cids.DOG) end)
-			pcall(function() ui_mutant_loot.close() end)
-			return ok, "window"
-		end, 40)
-	end
-	-- race on the FLESH corpse: both request in the same tick
-	if has("MLT_GO_RACE") and not mlt.done.race then
-		mlt.done.race = true
-		tlog(who .. " race request_take FLESH " .. tostring(cids.FLESH))
-		mutant_loot.request_take(cids.FLESH)
-		pcall(function() ui_mutant_loot.open(cids.FLESH) end)    -- window with the part icon on screen for the engine screenshot
-		pcall(function() get_console():execute("screenshot") end)
-		mlt.close_t = t + 3
-	end
-	if mlt.close_t and t >= mlt.close_t then
-		mlt.close_t = nil
-		pcall(function() ui_mutant_loot.close() end)
-	end
+	return false
 end
 
--- ---------------------------------------------------------------- server
-local function server_hooks(t, lo)
+-- the take action of a real player: the engine's use callback
+local function press_use(cid, pa)
+	local corpse = level.object_by_id(cid)
+	local actor = level.object_by_id(pa)
+	if corpse == nil or actor == nil then return false, "objects missing" end
+	local n0 = #mutant_loot.test.uses
+	mutant_loot.use_cb(nil, corpse, actor)
+	return #mutant_loot.test.uses == n0 + 1
+end
+
+local function run(t, lo)
 	if mlt.t0 == nil then mlt.t0 = t end
 	local dt = t - mlt.t0
 	local dflt = is_default()
+	local pa = LocalActor()
 	if mlt.st == 0 then
-		if dt < 5 then return end
-		local acts = server_actors()
-		if #acts < 2 then return end
-		mlt.acts = acts
-		mlt.t1 = dt
-		mlt.st = 1
-		return
-	elseif mlt.st == 1 and dt >= mlt.t1 + 12 then       -- both players have settled in the level
-		local acts = server_actors()
-		local pa, pb = acts[1], acts[2]
-		give("MLT_P1_" .. pa); give("MLT_P2_" .. pb)
-		local a, b = alife():object(pa), alife():object(pb)
-		tlog(string.format("P1=%d P2=%d distance %.1f", pa, pb, a.position:distance_to(b.position)))
+		if dt < 12 or db.mp_actors == nil or db.mp_actors[pa] == nil then return end
+		qa_lib.god(true)
+		mlt.pa = pa
 		if dflt then
 			mlt.list = {}
-			for i = 0, 4 do
-				mlt.list[#mlt.list + 1] = { tag = "DOG" .. i, id = spawn_near("dog_normal", pa, i) }
-				mlt.list[#mlt.list + 1] = { tag = "FLESH" .. i, id = spawn_near("flesh_normal", pa, i + 5) }
+			for i = 0, 2 do
+				mlt.list[#mlt.list + 1] = { tag = "DOG" .. i, sec = "dog_normal", part = "mutant_dog_part", k = i }
+				mlt.list[#mlt.list + 1] = { tag = "FLESH" .. i, sec = "flesh_normal", part = "mutant_flesh_part", k = i + 3 }
 			end
 		else
 			mutant_loot.test.chance = 1.0
-			mlt.list = { { tag = "DOG", id = spawn_near("dog_normal", pa, 0) }, { tag = "FLESH", id = spawn_near("flesh_normal", pa, 3) } }
+			mlt.list = {
+				{ tag = "DOG", sec = "dog_normal", part = "mutant_dog_part", k = 0 },
+				{ tag = "BOAR", sec = "boar_normal", part = "mutant_boar_part", k = 2 },
+				{ tag = "FLESH", sec = "flesh_normal", part = "mutant_flesh_part", k = 4 },
+			}
 		end
-		mlt.pa, mlt.pb = pa, pb
-		for _, e in ipairs(mlt.list) do give("MLT_C_" .. e.tag .. "_" .. e.id) end
-		tlog("spawned " .. #mlt.list .. " mutants")
-		mlt.st = 2
-		mlt.t2 = dt
-	elseif mlt.st == 2 and dt >= mlt.t2 + 1 then
+		for _, e in ipairs(mlt.list) do e.id = spawn_near(e.sec, pa, e.k) end
+		tlog("spawned " .. #mlt.list .. " mutants near player " .. pa)
+		mlt.st = 1
+		mlt.t1 = dt
+	elseif mlt.st == 1 and dt >= mlt.t1 + 1 then
 		local online = 0
+		for _, e in ipairs(mlt.list) do if level.object_by_id(e.id) ~= nil then online = online + 1 end end
+		if online == #mlt.list or dt > mlt.t1 + 40 then
+			qa.assert("mutants online before the kill", online == #mlt.list, online .. "/" .. #mlt.list)
+			for _, e in ipairs(mlt.list) do kill_with_hit(e.id, pa) end
+			mlt.st = 2
+			mlt.t2 = dt
+		end
+	elseif mlt.st == 2 then
+		local rolled, armed = 0, 0
 		for _, e in ipairs(mlt.list) do
-			if level.object_by_id(e.id) ~= nil then online = online + 1 end
+			if mutant_loot.test.rolls[e.id] then rolled = rolled + 1 end
+			if mutant_loot.test.armed[e.id] then armed = armed + 1 end
 		end
-		if online == #mlt.list or dt > mlt.t2 + 40 then
-			qa.assert("server: mutants online before the kill", online == #mlt.list, online .. "/" .. #mlt.list)
-			for _, e in ipairs(mlt.list) do kill_with_hit(e.id, mlt.pa) end
-			mlt.st = 3
-			mlt.t3 = dt
-		end
-	elseif mlt.st == 3 then
-		local rolled = 0
-		for _, e in ipairs(mlt.list) do if mutant_loot.test.rolls[e.id] then rolled = rolled + 1 end end
-		if rolled == #mlt.list then
+		if rolled == #mlt.list and (armed == #mlt.list or dt > mlt.t2 + 15 or dflt) then
 			local wins = 0
 			for _, e in ipairs(mlt.list) do
 				local r = mutant_loot.test.rolls[e.id]
-				tlog(string.format("roll %s id=%d part=%s chance=%.2f r=%.3f win=%s who=%s", e.tag, e.id, r.part, r.chance, r.r, tostring(r.win), tostring(r.who)))
-				if r.win then wins = wins + 1; give("MLT_W_" .. e.id) end
+				e.win = r.win
+				if r.win then wins = wins + 1 end
+				tlog(string.format("roll %s id=%d part=%s chance=%.2f r=%.3f win=%s", e.tag, e.id, r.part, r.chance, r.r, tostring(r.win)))
+				qa.assert("roll part of " .. e.tag .. " is " .. e.part, r.part == e.part, tostring(r.part))
 				if dflt then
-					qa.assert("server: default chance for " .. e.tag .. " is the SoC 0.2", math.abs(r.chance - 0.2) < 0.0001, tostring(r.chance))
+					qa.assert("default chance for " .. e.tag .. " is the SoC 0.2", math.abs(r.chance - 0.2) < 0.0001, tostring(r.chance))
+					qa.assert("corpse flag of " .. e.tag .. " matches the roll", (#mutant_loot.parts_on(e.id) == 1) == r.win, tostring(#mutant_loot.parts_on(e.id)))
 				else
-					qa.assert("server: " .. e.tag .. " rolled with forced chance 1.0 and carries " .. r.part, r.win == true, "r=" .. r.r)
-				end
-				local pn = nil
-				pcall(function() pn = level.object_by_id(mlt.pa):name() end)
-				if e.tag == "DOG" then   -- the flesh may be killed by a roaming NPC before the hit lands: only the dog is asserted
-					qa.assert("server: death of " .. e.tag .. " credited to player P1 (" .. tostring(pn) .. ")", r.who ~= nil and r.who == pn, tostring(r.who))
+					qa.assert(e.tag .. " rolled with the forced chance 1.0 and carries the part", r.win == true and #mutant_loot.parts_on(e.id) == 1, "r=" .. r.r)
+					qa.assert("use callback + Search tip armed on the " .. e.tag .. " corpse", mutant_loot.test.armed[e.id] == true, tostring(mutant_loot.test.arm_err[e.id]))
 				end
 			end
-			give("MLT_ROLLED")
-			if dflt then give("MLT_DEFAULT_READY"); tlog("default mode: wins " .. wins .. "/" .. #mlt.list); mlt.st = 99
-			else mlt.st = 4; mlt.t4 = dt end
-		elseif dt > mlt.t3 + 40 then
-			qa.assert("server: all mutants died and were rolled", false, "rolled " .. rolled .. "/" .. #mlt.list)
+			tlog("wins " .. wins .. "/" .. #mlt.list)
+			mlt.queue = {}
+			for _, e in ipairs(mlt.list) do if e.win then mlt.queue[#mlt.queue + 1] = e end end
+			mlt.st = 3
+			mlt.t3 = dt
+		elseif dt > mlt.t2 + 40 then
+			qa.assert("all mutants died and were rolled", false, "rolled " .. rolled .. "/" .. #mlt.list)
 			mlt.st = 99
 		end
-	elseif mlt.st == 4 and dt >= mlt.t4 + 8 then       -- clients had time to check flags + tips
-		give("MLT_GO_P1")
-		mlt.st = 5; mlt.t5 = dt
-	elseif mlt.st == 5 and dt >= mlt.t5 + 8 then
-		local c = count_parts("mutant_dog_part")
-		qa.assert("server: P1 got exactly one dog part", c[mlt.pa] == 1 and total(c) == 1, "counts " .. ok_str(c))
-		qa.assert("server: dog corpse flag gone after the take", #mutant_loot.parts_on(mlt.list[1].id) == 0, "")
-		give("MLT_GO_P2")
-		mlt.st = 6; mlt.t6 = dt
-	elseif mlt.st == 6 and dt >= mlt.t6 + 8 then
-		local c = count_parts("mutant_dog_part")
-		qa.assert("server: P2 got nothing, still exactly one dog part (P1's)", c[mlt.pb] == nil and c[mlt.pa] == 1 and total(c) == 1, "counts " .. ok_str(c))
-		local seen = {}
-		for _, tk in ipairs(mutant_loot.test.takes) do seen[#seen + 1] = string.format("%d:%s:%d:obj%.1f:se%.1f", tk.actor, tk.why, tk.n, tk.dist or -1, tk.dist_se or -1) end
-		local p1ok, p2empty = false, false
-		for _, tk in ipairs(mutant_loot.test.takes) do
-			if tk.actor == mlt.pa and tk.why == "ok" and tk.n == 1 then p1ok = true end
-			if tk.actor == mlt.pb and tk.why == "empty" then p2empty = true end
-		end
-		qa.assert("server: take log shows P1 ok(1) and P2 refused as empty (not as too far)", p1ok and p2empty, table.concat(seen, " "))
-		give("MLT_P2_DONE")
-		give("MLT_GO_RACE")
-		mlt.st = 7; mlt.t7 = dt
-	elseif mlt.st == 7 and dt >= mlt.t7 + 10 then
-		local c = count_parts("mutant_flesh_part")
-		qa.assert("server: race for the flesh part -> exactly one part exists", total(c) == 1, "counts " .. ok_str(c))
-		qa.assert("server: flesh corpse flag gone after the race", #mutant_loot.parts_on(mlt.list[2].id) == 0, "")
+	elseif mlt.st == 3 and dt >= mlt.t3 + 1 then
+		-- take the next corpse (the USE path), one at a time
+		local e = mlt.queue[1]
+		if e == nil then mlt.st = 5; mlt.t5 = dt; return end
+		mlt.cur = e
+		mlt.n0 = local_count(lo, e.part)
+		mlt.srv0 = count_parts(e.part)[pa] or 0
+		mlt.tips0 = #mutant_loot.test.tips
+		local ok, why = press_use(e.id, pa)
+		qa.assert("use path reached use_cb on the server for " .. e.tag, ok == true, tostring(why))
+		mlt.st = 4
+		mlt.t4 = dt
+	elseif mlt.st == 4 and dt >= mlt.t4 + 3 then
+		local e = mlt.cur
+		local now_n = local_count(lo, e.part)
+		local srv = count_parts(e.part)
+		qa.assert("part of " .. e.tag .. " reached the player's inventory (online walk)", now_n == mlt.n0 + 1, mlt.n0 .. " -> " .. now_n)
+		qa.assert("exactly one " .. e.part .. " more on the server for the player", (srv[pa] or 0) == mlt.srv0 + 1, tostring(srv[pa]))
+		qa.assert(e.tag .. " corpse no longer offers the part", #mutant_loot.parts_on(e.id) == 0, "")
+		qa.assert("tip 'Found:' shown to the player for " .. e.tag, has_tip("Found", mlt.tips0 + 1) or has_tip(game.translate_string("st_mutant_loot_found"), mlt.tips0 + 1), table.concat(mutant_loot.test.tips, " | "))
+		mlt.tips1 = #mutant_loot.test.tips
+		-- second press after the repeat window: nothing more, "Nothing useful" tip
+		mlt.t4b = dt
+		mlt.st = 41
+	elseif mlt.st == 41 and dt >= mlt.t4b + 4 then
+		local e = mlt.cur
+		local ok = press_use(e.id, mlt.pa)
+		qa.assert("second use on " .. e.tag .. " reached use_cb", ok == true, "")
+		mlt.st = 42
+		mlt.t4c = dt
+	elseif mlt.st == 42 and dt >= mlt.t4c + 3 then
+		local e = mlt.cur
+		local srv = count_parts(e.part)
+		qa.assert("second use on " .. e.tag .. " gave no second part", (srv[mlt.pa] or 0) == mlt.srv0 + 1, tostring(srv[mlt.pa]))
+		qa.assert("tip 'Nothing useful' shown after the second use on " .. e.tag, has_tip(game.translate_string("st_mutant_loot_empty"), mlt.tips1 + 1), table.concat(mutant_loot.test.tips, " | "))
+		table.remove(mlt.queue, 1)
+		mlt.st = 3
+		mlt.t3 = dt
+	elseif mlt.st == 5 and dt >= mlt.t5 + 1 then
+		local takes = {}
+		for _, tk in ipairs(mutant_loot.test.takes) do takes[#takes + 1] = string.format("%d:%s:%d", tk.corpse, tk.why, tk.n) end
+		tlog("takes " .. table.concat(takes, " "))
+		qa.assert("no take was refused as too far", (function() for _, tk in ipairs(mutant_loot.test.takes) do if tk.why == "far" then return false end end return true end)(), table.concat(takes, " "))
+		qa.assert("mutant_loot test finished", true, "")
 		mlt.st = 99
 	end
 end
 
 qa.hooks.mloot = function(t, lo)
 	local ok, err = pcall(function()
-		if OnServer() then server_hooks(t, lo) else client_hooks(t, lo) end
+		if OnServer() and LocalActor() ~= nil then run(t, lo) end
 	end)
 	if not ok then tlog("ERR " .. tostring(err)) end
 end

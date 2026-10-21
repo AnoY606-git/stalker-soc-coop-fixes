@@ -64,6 +64,7 @@
 
 ; Respawns
 #include "creatures\spawn_sections.ltx"
+#include "creatures\spawn_sections_coop_soc_doctor.ltx"
 
 ; Extra Content
 #include "extracontent.ltx"
@@ -100,17 +101,17 @@ ang_speed3  = 2.0
 files = info_portions, info_upgrades
 
 [dialogs]
-files = dialogs, dialogs_coop_l01_escape, dialogs_coop_l02_garbage, dialogs_coop_l03_agroprom, dialogs_coop_l04_darkvalley, dialogs_coop_l05_bar, dialogs_coop_l07_military, dialogs_coop_l08_yantar, dialogs_coop_l10_pripyat, dialogs_coop_l11_control_monolith, dialogs_coop_repeat_quests
+files = dialogs, dialogs_coop_l01_escape, dialogs_coop_l02_garbage, dialogs_coop_l03_agroprom, dialogs_coop_l04_darkvalley, dialogs_coop_l05_bar, dialogs_coop_l07_military, dialogs_coop_l08_yantar, dialogs_coop_l10_pripyat, dialogs_coop_l11_control_monolith, dialogs_coop_repeat_quests, dialogs_coop_soc_duty, dialogs_coop_soc_doctor
 
 [encyclopedia]
 files = encyclopedia_infos
 
 [profiles]
 ;список xml файлов, содержащих профили сталкеров и торговцев
-files =  npc_profile, npc_profile_addon
+files =  npc_profile, npc_profile_addon, npc_profile_coop_soc_duty, npc_profile_soc_doctor
 
 ;список xml файлов, содержащих описание конкретных сталкеров и торговцев
-specific_characters_files = character_desc_general, character_desc_selo, character_desc_coop_l01_escape, character_desc_coop_l02_garbage, character_desc_coop_l03_agroprom, character_desc_coop_l04_darkvalley, character_desc_coop_l05_bar, character_desc_coop_l06_rostok, character_desc_coop_l07_military, character_desc_coop_l08_yantar, character_desc_coop_l10_pripyat, character_desc_coop_l11_sarcofag, character_desc_coop_l11_control_monolith
+specific_characters_files = character_desc_general, character_desc_selo, character_desc_coop_l01_escape, character_desc_coop_l02_garbage, character_desc_coop_l03_agroprom, character_desc_coop_l04_darkvalley, character_desc_coop_l05_bar, character_desc_coop_l06_rostok, character_desc_coop_l07_military, character_desc_coop_l08_yantar, character_desc_coop_l10_pripyat, character_desc_coop_l11_sarcofag, character_desc_coop_l11_control_monolith, character_desc_coop_soc_duty, character_desc_coop_soc_doctor
 
 
 [inventory]

@@ -201,8 +201,10 @@ def main():
         for needle in ("[damage]", "player_damage_mult = 1.5", "[ammo]", "max_players = 4", "[enemy_scaling]", "human_extra_per_player = 0.5",
                        "skip_levels = coop_l11_sarcofag", "[box_loot]", "wood_chance = 30", "[box_loot_items]", "medkit = 8", "[repeat_quests]",
                        "cooldown_min = 1440", "timeout_mult = 1", "item_rewards = true", "[mutant_loot]", "mutant_dog_part = 0.2", "take_distance = 6",
-                       "[roaming]", "stay_min = 240", "allow_online_move = true", "Урон игроков", "Множитель урона"):
+                       "[roaming]", "stay_min = 240", "allow_online_move = true", "Урон игроков", "Множитель урона",
+                       "[freeplay]", "Свободная игра после истинной концовки", "Freeplay after the true ending"):
             check("created file contains '%s'" % needle, needle in text)
+        check("freeplay.enabled is written as true (default on)", "[freeplay]" in text and "enabled = true" in text.split("[freeplay]", 1)[1].split("[", 1)[0])
         check("sarcophagus section only with the optional package", "[sarcophagus_fps]" not in text)
         check("summary line logged, nothing from the file", "0 value(s) from the file" in host.last_line and "damage.player_damage_mult=1.5" in host.last_line, host.last_line[:200])
         check("summary line is in host_cfg.log too", os.path.exists(os.path.join(tmp, "logs_host_cfg.log")))
@@ -240,6 +242,8 @@ def main():
             "[mutant_loot]\r\n"
             "mutant_dog_part = 1\r\n"
             "take_distance = 12\r\n"
+            "[freeplay]\r\n"
+            "enabled = false\r\n"
             "[roaming]\r\n"
             "enabled = false\r\n"
             "stay_min = 10\r\n"
@@ -253,6 +257,7 @@ def main():
         check("bad value is named in the summary", "ammo.max_players=4(bad value 'abc', default used)" in line)
         check("host.num with comment and BOM", host.num("damage", "player_damage_mult", 9) == 2.0)
         check("host.bool accepts off", host.bool("damage", "log", True) is False)
+        check("freeplay.enabled = false in the file reaches the host switch of coop_scn_freeplay", host.bool("freeplay", "enabled", True) is False)
         check("host.num accepts a decimal comma", abs(host.num("ammo", "ammo_per_extra_player", 9) - 0.5) < 1e-9)
         check("host.num bad value gives the default", host.num("ammo", "max_players", 7) == 7)
         check("host.num missing key gives the default", host.num("nope", "nothing", 5) == 5)
@@ -320,6 +325,41 @@ def main():
         open(cfg_path, "wb").write(b"[damage]\nplayer_damage_mult = 5\n")
         host.reload()
         check("client: an existing file is ignored", host.num("damage", "player_damage_mult", 1.5) == 1.5)
+
+        # ---- 4b. the personal [client] section is read on a client (voice_language)
+        # (the file written above has no [client] section: it is completed, the old line stays)
+        check("client_str: default auto when the file has no [client] section", host.client_str("voice_language", "auto") == "auto")
+        t4 = open(cfg_path, "rb").read().decode("utf-8")
+        check("client_str: section appended with EN and RU comments, old lines kept",
+              "[client]" in t4 and "voice_language = auto" in t4 and "player_damage_mult = 5" in t4 and "Voice language" in t4
+              and "Язык" in t4, t4[:200])
+        check("client_str: damage values are still ignored on a client", host.num("damage", "player_damage_mult", 1.5) == 1.5)
+        open(cfg_path, "wb").write(b"[client]\nvoice_language = eng\n")
+        host.reload()
+        check("client_str: eng from the file", host.client_str("voice_language", "auto") == "eng")
+        open(cfg_path, "wb").write(b"\xef\xbb\xbf[Client]\r\nVoice_Language = RUS ; comment\r\n")
+        host.reload()
+        check("client_str: BOM, case, comment", host.client_str("voice_language", "auto") == "RUS", host.client_str("voice_language", "auto"))
+        os.remove(cfg_path)
+        host.reload()
+        check("client_str: no file -> default", host.client_str("voice_language", "auto") == "auto")
+        t4b = open(cfg_path, "rb").read().decode("utf-8") if os.path.exists(cfg_path) else ""
+        check("client: a client-only file is created with just the [client] section",
+              "[client]" in t4b and "voice_language = auto" in t4b and "[damage]" not in t4b, t4b[:120])
+        G["__server"] = True
+        # a server (listen host) with an old file lacking [client]: appended, its other lines untouched
+        open(cfg_path, "wb").write(b"[damage]\nplayer_damage_mult = 2\n")
+        host.reload()
+        t4c = open(cfg_path, "rb").read().decode("utf-8")
+        check("server: old file gets the [client] section appended", "[client]" in t4c and "voice_language = auto" in t4c and "player_damage_mult = 2" in t4c)
+        check("server: its value still applies", host.num("damage", "player_damage_mult", 1.5) == 2)
+        check("server: the section just appended is not parsed yet (caller default)", host.client_str("voice_language", "x") == "x")
+        host.reload()
+        check("server: client_str reads the file at the next read", host.client_str("voice_language", "x") == "auto")
+        os.remove(cfg_path)
+        host.reload()
+        t4d = open(cfg_path, "rb").read().decode("utf-8")
+        check("server: a fresh file holds [client] voice_language = auto", "[client]" in t4d and "voice_language = auto" in t4d)
         G["__server"] = True
 
         # ---- 5. unwritable folder: no error, defaults

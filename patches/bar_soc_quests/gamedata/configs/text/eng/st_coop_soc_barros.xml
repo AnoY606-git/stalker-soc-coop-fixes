@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="coop_soc_barman_121"><text>So, Marked One, you got the documents from X16?</text></string>
+	<string id="coop_soc_barman_1211"><text>Yeah. Here.</text></string>
+	<string id="coop_soc_barman_1212"><text>No.</text></string>
+	<string id="coop_soc_barman_12121"><text>Damn it! Here I am, busting my arse while you're off wandering in the woods! Go get those damn documents or we won't make any progress!</text></string>
+	<string id="coop_soc_barman_121211"><text>OK.</text></string>
+	<string id="coop_soc_barman_131"><text>Well, Marked One, now we just need to deal with the Scorcher and open the way North! You ready to go now?</text></string>
+	<string id="coop_soc_barman_1312"><text>Yes.</text></string>
+	<string id="coop_soc_barman_13121"><text>OK, Marked One, you’ve got the protective prototype so you’ll be safe from the emissions. I have the bunker coordinates. Don’t forget that the prototype won’t protect you forever, so you need to get to the bunker ASAP and turn off the Scorcher. I don’t know what will happen after that but I am sure it will be worth it. The only thing we can be sure of is that the road to the Zone’s center will be open.</text></string>
+	<string id="coop_soc_barman_1313"><text>Go on.</text></string>
+	<string id="coop_soc_barman_1314"><text>All we need to do is get to the antennas and disable them. Got it?</text></string>
+	<string id="coop_soc_barman_1315"><text>Got it.</text></string>
+	<string id="coop_soc_barman_1316"><text>Oh yeah, one last thing! The leader of Duty, I marked him on the map, needs a volunteer to carry out some sort of assignment at the military warehouses. If you're interested, you can drop by. I'll talk with the guards, they'll let you in.</text></string>
+	<string id="coop_soc_barman_132"><text>No, I'm not ready yet.</text></string>
+	<string id="coop_soc_barman_1321"><text>Get ready, Marked One! This task can't wait!</text></string>
+	<string id="coop_soc_barman_161"><text>What do you want, Marked One?</text></string>
+	<string id="coop_soc_barman_162"><text>Hey, Marked One! Times change but you don't still grumpy and aloof. Here, take a seat, have a drink - might make you nicer...</text></string>
+	<string id="coop_soc_hunter_problem"><text>I've got a big problem man! I... I lost my family rifle in the Wild Territory. I wanted to shoot some bloodsuckers but I barely got away. Damn! Listen, bro'... if you get it back I'll pay you. I've made a little cash here and I'll give you all of it, just get my rifle back. It's a family rifle, you know, passed down from father to son... And I lost it! I've grown used to it, it's like an extension of my arm now...</text></string>
+	<string id="coop_soc_hunter_news"><text>Hey! Any news? Did you find it?!</text></string>
+	<string id="coop_soc_hunter_thanks"><text>Thanks bro'! I'll never forget that you helped me!</text></string>
+	<string id="coop_soc_hunter_q_0"><text>Go on.</text></string>
+	<string id="coop_soc_hunter_q_1"><text>I'll give you anything! Just return my rifle, I beg you. I lost it by that place where those damn bloodsuckers live. Here are the coordinates. Be careful though. Bloodsuckers aren't the friendly kind.</text></string>
+	<string id="coop_soc_hunter_q_11"><text>OK, I'll try to get your rifle.</text></string>
+	<string id="coop_soc_hunter_q_111"><text>I won't cheat you.</text></string>
+	<string id="coop_soc_hunter_q_1111"><text>It's in your interest.</text></string>
+	<string id="coop_soc_hunter_q_12"><text>No. I've got more important things to do.</text></string>
+	<string id="coop_soc_hunter_q_121"><text>Up to you... but I hope you change your mind.</text></string>
+	<string id="coop_soc_hunter_q_1212"><text>We'll see.</text></string>
+	<string id="coop_soc_hunter_f_0"><text>I found it. Here is your rifle.</text></string>
+	<string id="coop_soc_hunter_f_1"><text>Wow?! You found my rifle?! I'm lost for words, man! Thank you so much! THANK YOU! I'm so grateful! You really helped me out there, you really did. Goddamn. Here take this - it ain't much but it's all I got. I won't forget your help and I hope to repay you in time. Listen, I'll tell you something. There's a weird boarded-up house near that place you found my rifle. Nobody knows what's really inside it but you can see through the windows that there are anomalies there, lots of them. There might be artifacts in there too... I don't know how to get there though.</text></string>
+	<string id="coop_soc_x16_look_descr"><text>Find the X16 documents</text></string>
+	<string id="coop_soc_x16_bring_descr"><text>Bring the documents to the Barkeep</text></string>
+	<string id="coop_soc_hunter_return_descr"><text>Return the rifle to the hunter at the Bar</text></string>
+	<string id="coop_soc_kruglov_talk_descr"><text>Talk to professor Kruglov</text></string>
+	<string id="coop_soc_kruglov_bring_descr"><text>Talk to Kruglov</text></string>
+</string_table>

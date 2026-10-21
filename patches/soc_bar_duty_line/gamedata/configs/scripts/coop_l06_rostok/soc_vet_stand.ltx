@@ -1,0 +1,28 @@
+; Mad veterans' camp and the Mercs of the construction site (patch soc_bar_duty_line): they stand guard where SoC had them and fight any player
+; (the script sets the relation to enemy for every player). Started by the spawn section (custom_data) or by coop_soc_duty.script ensure_logic().
+[logic]
+active = remark@soc_vet_stand
+
+[remark@soc_vet_stand]
+anim = guard
+target = nil
+meet = meet@soc_vet_stand
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+use_camp = false
+
+[meet@soc_vet_stand]
+close_snd_hello = nil
+close_snd_bye = nil
+close_anim = nil
+close_victim = nil
+far_anim = nil
+far_victim = nil
+close_distance = 0
+far_distance = 0
+close_snd_distance = 3
+abuse = false
+use = false
+allow_break = true
+meet_on_talking = false

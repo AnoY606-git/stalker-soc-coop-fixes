@@ -84,23 +84,4 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="esc_smart_terrain_1_trader_sidorovich_x18_documents">
-        <has_flag>ESC_RETURN_FROM_DV_INFO</has_flag>
-        <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO</dont_has_flag>
-        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_1_x18</precondition>
-        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_2_x18</precondition>
-        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_3_x18</precondition>
-        <phrase_list>
-            <phrase id="0">
-                <text>esc_smart_terrain_1_trader_sidorovich_x18_documents_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <text>esc_smart_terrain_1_trader_sidorovich_x18_documents_1</text>
-                <action>dialogs_money.give_money_to_actor_1000</action>
-                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO</give_flag>
-                <action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
 </game_dialogs>

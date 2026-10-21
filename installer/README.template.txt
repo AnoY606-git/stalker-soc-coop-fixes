@@ -31,7 +31,9 @@ The first time the host starts a game with this patch it creates the file coop_s
 - dedicated server:  X-Ray Multiplayer Extension\game\_appdata_server\coop_settings.ltx
 Open it with Notepad, change a number (for example player_damage_mult = 2.0), save, then change the level or restart the server.
 A line you delete or a wrong value simply uses the default; delete the whole file to get a fresh one. The log line "[HOSTCFG]" shows what is in effect.
-Other players never read this file and it does not change the add-on fingerprint.
+Other players never read this file and it does not change the add-on fingerprint, except one personal setting: the [client] section is read by EVERY player from HIS OWN coop_settings.ltx (the file is created for you at the first start, also if you only join).
+  voice_language = auto | rus | eng : voice of Sidorovich's opening speech (auto = the language of your game, default; rus = Russian; eng = English).
+  A line with no recording in that language is silent. There are no on-screen subtitles.
 
 {CHANGES_EN}
 
@@ -65,6 +67,8 @@ Other players never read this file and it does not change the add-on fingerprint
 - выделенный сервер:         X-Ray Multiplayer Extension\game\_appdata_server\coop_settings.ltx
 Откройте файл в Блокноте, измените число (например player_damage_mult = 2.0), сохраните и смените локацию или перезапустите сервер.
 Удалённая строка или неверное значение = значение по умолчанию; удалите файл целиком, чтобы получить новый. Строка "[HOSTCFG]" в логе показывает, что действует.
-Остальные игроки этот файл не читают, отпечаток аддона он не меняет.
+Остальные игроки этот файл не читают, отпечаток аддона он не меняет, кроме одной личной настройки: раздел [client] читает КАЖДЫЙ игрок из СВОЕГО coop_settings.ltx (файл создаётся при первом запуске, и у тех, кто только подключается).
+  voice_language = auto | rus | eng : язык озвучки вступления Сидоровича (auto = язык вашей игры, по умолчанию; rus = русский; eng = английский).
+  Если записи на этом языке нет, реплика без звука. Субтитров на экране нет.
 
 {CHANGES_RU}

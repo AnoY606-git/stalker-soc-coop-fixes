@@ -1,0 +1,823 @@
+-------------------------------------------------------------------------------------------------------
+-- Army Warehouses (Military): the snitch Pavlik (mil_courier_job) and the Bulldog 6 order (mil_freedom_rg6_task) of the original SoC
+-- (patch soc_mil_courier, see its NOTES.md).  Builds on patch soc_mil_quests (Lukash's SoC dialog, the Barrier job).
+--
+--  * mil_courier_job: Lukash sends the player to find out whose rat the snitch Pavlik is.  Pavlik waits at the SoC wait point; when a player
+--    comes near the farmstead he walks to the meeting point and calls his agent (radio call, SoC voice).  The agent Ara and his three
+--    bodyguards (killers) come from the west, the two talk (SoC voice) and Ara leaves.  The players must kill Pavlik AND Ara (SoC: Ara
+--    runs away along the way he came), then report to Lukash (7000).  Failures as in SoC: Pavlik killed before his call, a player within
+--    12 m of Pavlik before he left for the farmstead, Pavlik leaving the farmstead, Ara got away.
+--  * mil_freedom_rg6_task: Voronin (Bar) sends the player to the Freedom Chef (vodka, three drinks, three questions) who gives away that the
+--    Bulldog 6 lies in the village; the player brings it to Voronin, who gives the Duty scientific suit.
+-- Everything is driven by SHARED story flags plus a server tick (1 s): derived flags (zones as spheres of the SoC restrictors, deaths with
+-- fallbacks, so a dead NPC never blocks a step), the NPC creation (alife():create once, like patches cordon_technician / soc_yan_x16_quests),
+-- the tasks (every open step goes to EVERY living player once, late joiners included) and, on every client, the SoC voice cues in the voice
+-- language of that player.  The dialogs (dialogs_coop_l07_military.xml / dialogs_coop_l05_bar.xml) set the flags; the phrase
+-- preconditions below read flags only (same on every machine).
+-------------------------------------------------------------------------------------------------------
+
+local LEVEL = "coop_l07_military"
+
+local F = {
+	CSTART = "MIL_SOC_COURIER_START", CKHUT = "MIL_SOC_COURIER_KHUTOR", CPIN = "MIL_SOC_COURIER_IN_KHUTOR", CCALL = "MIL_SOC_COURIER_CALL",
+	CDEAD = "MIL_SOC_COURIER_DEAD", ARRIVE = "MIL_SOC_ARA_ARRIVE", AEND = "MIL_SOC_ARA_END", ADEAD = "MIL_SOC_ARA_DEAD",
+	ALEAVE = "MIL_SOC_ARA_LEAVE", CSEEN = "MIL_SOC_COURIER_SEEN", CLEFT = "MIL_SOC_COURIER_LEFT", CFAIL = "MIL_SOC_COURIER_FAILED",
+	CDONE = "MIL_SOC_COURIER_DONE", CUE_CALL = "MIL_SOC_CUE_CALL", CUE_MEET = "MIL_SOC_CUE_MEET", CUE_AMBUSH = "MIL_SOC_CUE_AMBUSH",
+	RSTART = "MIL_SOC_RG6_START", RMET = "MIL_SOC_RG6_COOK_MET", RASK = "MIL_SOC_RG6_ASK", RGOT = "MIL_SOC_RG6_GOT", RDONE = "MIL_SOC_RG6_DONE",
+	-- flags of soc_mil_quests that are read here
+	BP = "MIL_SOC_BLOCKPOST_ACCEPTED", CP = "MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO",
+	LD = "MIL_SMART_TERRAIN_16_FREEDOM_1_SQUAD_DEAD",
+}
+
+local STORY = { lukash = "mil_smart_terrain_3_freedom_lukash", voronin = "bar_smart_terrain_4_duty_voronin" }
+
+-- the NPCs and the item the server creates once. lv / gv = nearest AI node of the mod level and its game vertex
+-- (tools\check_milc_chain.py --verify recomputes them). made = story flag set when the object was created (never created twice, a
+-- killed and released NPC is not replaced)
+local NPC = {
+	pavlik = { section = "mil_soc_pavlik", story = "mil_soc_pavlik", made = "MIL_SOC_MADE_PAVLIK", x = -178.6, y = -16.9, z = 352.7,
+		lv = 144842, gv = 1550, logic = "scripts\\coop_l07_military\\mil_soc_pavlik.ltx" },
+	ara = { section = "mil_soc_ara", story = "mil_soc_ara", made = "MIL_SOC_MADE_ARA", x = -273.9, y = -14.8, z = 373.8,
+		lv = 65328, gv = 1566, logic = "scripts\\coop_l07_military\\mil_soc_ara.ltx" },
+	g1 = { section = "mil_soc_ara_guard_1", story = "mil_soc_ara_guard_1", made = "MIL_SOC_MADE_G1", x = -273.9, y = -14.8, z = 375.3,
+		lv = 65330, gv = 1566, logic = "scripts\\coop_l07_military\\mil_soc_ara_guard_1.ltx" },
+	g2 = { section = "mil_soc_ara_guard_2", story = "mil_soc_ara_guard_2", made = "MIL_SOC_MADE_G2", x = -273.9, y = -14.8, z = 372.6,
+		lv = 65326, gv = 1566, logic = "scripts\\coop_l07_military\\mil_soc_ara_guard_2.ltx" },
+	g3 = { section = "mil_soc_ara_guard_3", story = "mil_soc_ara_guard_3", made = "MIL_SOC_MADE_G3", x = -275.4, y = -14.8, z = 375.3,
+		lv = 64175, gv = 1566, logic = "scripts\\coop_l07_military\\mil_soc_ara_guard_3.ltx" },
+	cook = { section = "mil_soc_cook", story = "mil_soc_cook", made = "MIL_SOC_MADE_COOK", x = -76.6, y = -11.3, z = 27.9,
+		lv = 236289, gv = 1317, logic = "scripts\\coop_l07_military\\mil_soc_cook.ltx" },
+	rg6 = { section = "wpn_rg-6", story = "mil_soc_rg6", made = "MIL_SOC_MADE_RG6", x = -274.55, y = -27.47, z = 245.41,
+		lv = 62901, gv = 1518, item = true },
+}
+local CREATE_ORDER_ARA = { "ara", "g1", "g2", "g3" }
+
+-- SoC restrictors (spheres): x, y, z, r
+local KHUTOR_ZONE = { -176.4, -16.1, 378.2, 14.15 }     -- khutor_zone: Pavlik inside = mil_courier_in_khutor_zone
+local KHUTOR_ACTOR = { -179.9, -16.1, 364.8, 45.45 }    -- mil_bandit_restrictor: a player inside = mil_actor_in_khutor_zone
+local SEEN_DIST = 12.0                                  -- Pavlik: on_actor_dist_le = 12
+local COOK_NEAR = 12.0                                  -- a player this close to the Chef has found him
+local PAVLIK_GO = { -175.9, -16.0, 381.7 }              -- the meeting point (end of the mod path mil_smart_terrain_1_walker_8_walk)
+local ARA_END = { -177.7, -16.0, 379.2 }                -- end of the way Ara runs (mil_smart_terrain_1_walker_6_walk)
+local ARA_FAR = { -380.7, -14.0, 398.3 }                -- end of the way out (mil_smart_terrain_1_walker_2_walk)
+
+-- real-time timers (ms); the game clock barely advances on a dedicated server
+local KHUTOR_WALK_MS = 45000     -- Pavlik is declared at the meeting point after this long even if he did not get there
+local CALL_MS = 8800             -- the radio call (SoC mil_pavlik_dialog_1, the longer of the two languages)
+local MEET_MS = 9000             -- the talk of Pavlik and Ara (mil_pavlik_dialog_2)
+local AMBUSH_MS = 4000           -- Ara's shout when Pavlik is dead (mil_pavlik_ambush)
+local ARRIVE_NEAR = 7.0
+local ARRIVE_TIMEOUT_MS = 80000  -- Ara counts as arrived after this long (he may be frozen offline when nobody is near)
+local LEAVE_NEAR = 25.0
+local LEAVE_MS = 110000          -- Ara counts as gone this long after the talk
+local VOICE_RANGE = 170.0        -- a client hears the cues only when its player is this close to the farmstead
+
+-- SoC payment: dialogs_military.lukash_payment 7000 for the snitch
+local PAY_COURIER = 7000
+local VODKA, RG6_SECTION, SUIT = "vodka", "wpn_rg-6", "dolg_scientific_outfit"
+
+local CUES = {
+	{ flag = F.CUE_CALL, file = "mil_soc_courier_call" },
+	{ flag = F.CUE_MEET, file = "mil_soc_courier_meet" },
+	{ flag = F.CUE_AMBUSH, file = "mil_soc_courier_ambush" },
+}
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCMILC " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCMILC " .. tostring(s)) end
+	if rawget(_G, "qa") and qa.event then pcall(qa.event, "[SC] " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has(f) then
+		pcall(story_flags.give_flag, f)
+		qlog("FLAG " .. f)
+	end
+end
+
+local function is_server()
+	local ok, r = pcall(OnServer)
+	return ok and r and true or false
+end
+
+local function on_level()
+	local ok, n = pcall(function() return level.name() end)
+	return ok and n == LEVEL
+end
+
+-- living players (id -> object)
+local function players()
+	local out = {}
+	if db ~= nil and db.mp_actors ~= nil then
+		for pid, a in pairs(db.mp_actors) do
+			local ok, alive = pcall(function() return a ~= nil and a:alive() end)
+			if ok and alive then out[pid] = a end
+		end
+	end
+	return out
+end
+
+local function d3(p, x, y, z)
+	local dx, dy, dz = p.x - x, p.y - y, p.z - z
+	return math.sqrt(dx * dx + dy * dy + dz * dz)
+end
+
+local function pos_of(a)
+	local ok, p = pcall(function() return a:position() end)
+	if ok then return p end
+	return nil
+end
+
+local function any_player_within(x, y, z, r)
+	for _, a in pairs(players()) do
+		local p = pos_of(a)
+		if p ~= nil and d3(p, x, y, z) <= r then return true, a end
+	end
+	return false, nil
+end
+
+local function any_has(section)
+	for _, a in pairs(players()) do
+		local ok, r = pcall(function() return a:object(section) ~= nil end)
+		if ok and r then return true end
+	end
+	return false
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. the server objects: creation (once), lookup, state
+-------------------------------------------------------------------------------------------------------
+local ids = {}           -- key -> entity id (this VM)
+local created_at = {}    -- key -> time_global at creation
+local idle_seen = {}     -- key -> ticks without an active logic scheme
+
+local function sid(story)
+	local ok, id = pcall(get_story_object_id, story)
+	if ok and id ~= nil then return id end
+	return nil
+end
+
+-- server entity of an NPC (story registry first, then the id this VM created)
+local function se_of(key)
+	local spec = NPC[key]
+	local id = sid(spec.story)
+	if id == nil then id = ids[key] end
+	if id == nil then return nil, nil end
+	local ok, o = pcall(function() return alife():object(id) end)
+	if ok and o ~= nil then return o, id end
+	return nil, id
+end
+
+-- "none" (never created), "alive", "dead" (killed, or created once and gone). Tests can force it with the global table SOCMILC_FORCE_DEAD.
+local gone_since = {}   -- key -> time_global when the object was first missing
+
+local function state_of(key)
+	local fd = rawget(_G, "SOCMILC_FORCE_DEAD")
+	if type(fd) == "table" and fd[key] then return "dead" end
+	local spec = NPC[key]
+	local se = se_of(key)
+	if se == nil then
+		if has(spec.made) then
+			-- just created or just loaded: the registry may not know him yet. Gone only when he stays missing for 4 s.
+			local now = time_global()
+			if created_at[key] ~= nil and now - created_at[key] < 5000 then return "alive" end
+			gone_since[key] = gone_since[key] or now
+			if now - gone_since[key] < 4000 then return "alive" end
+			return "dead"
+		end
+		return "none"
+	end
+	gone_since[key] = nil
+	local ok, alive = pcall(function() return se:alive() end)
+	if ok and alive == false then return "dead" end
+	return "alive"
+end
+
+-- story character dead? (the NPCs of other patches)
+local function story_dead(story)
+	local fd = rawget(_G, "SOCMILC_FORCE_DEAD")
+	if type(fd) == "table" and fd[story] then return true end
+	local ok, r = pcall(function()
+		local id = get_story_object_id(story)
+		if id == nil then return false end
+		local so = alife():object(id)
+		if so == nil or so.alive == nil then return false end
+		return so:alive() == false
+	end)
+	return ok and r == true
+end
+
+local function npc_pos(key)
+	local se = se_of(key)
+	if se == nil then return nil end
+	local ok, p = pcall(function() return se.position end)
+	if ok and p ~= nil then return p end
+	return nil
+end
+
+local function npc_near(key, pt, r)
+	local p = npc_pos(key)
+	if p == nil then return false end
+	return d3(p, pt[1], pt[2], pt[3]) <= r
+end
+
+-- an AI node must be where the NPC is meant to stand (the level.ai could be rebuilt); otherwise the nearest valid node
+local function valid_node(v)
+	return v ~= nil and v >= 0 and v < 4000000000
+end
+
+local function node_ok(spec)
+	local ok, r = pcall(function()
+		local p = level.vertex_position(spec.lv)
+		return math.abs(p.x - spec.x) < 4 and math.abs(p.z - spec.z) < 4 and math.abs(p.y - spec.y) < 4
+	end)
+	return ok and r == true
+end
+
+local function find_node(x, y, z)
+	local pos = vector():set(x, y, z)
+	local lv = level.vertex_id(pos)
+	if valid_node(lv) then return lv end
+	for r = 0.5, 4.0, 0.5 do
+		for k = 0, 11 do
+			local a = k * math.pi / 6
+			lv = level.vertex_id(vector():set(x + math.cos(a) * r, y, z + math.sin(a) * r))
+			if valid_node(lv) then return lv end
+		end
+	end
+	return nil
+end
+
+-- nearest game-graph vertex of the level of the stored one (by level position)
+local function nearest_gv(pos, ref_gv)
+	local best
+	pcall(function()
+		local gg = game_graph()
+		local lid = gg:vertex(ref_gv):level_id()
+		local best_d
+		for i = 0, 8191 do
+			if gg:valid_vertex_id(i) then
+				local v = gg:vertex(i)
+				if v:level_id() == lid then
+					local d = pos:distance_to(v:level_point())
+					if best_d == nil or d < best_d then best, best_d = i, d end
+				end
+			end
+		end
+	end)
+	return best or ref_gv
+end
+
+-- the spawn section must exist (apply_shared.py writes the sections into the level file): alife():create of an unknown section is fatal
+local missing_logged = {}
+local function section_known(key)
+	local spec = NPC[key]
+	local ok, r = pcall(function() return system_ini():section_exist(spec.section) end)
+	if ok and r then return true end
+	if not missing_logged[key] then
+		missing_logged[key] = true
+		qlog("spawn section " .. spec.section .. " is not in the configs (apply_shared.py of soc_mil_courier not applied?): " .. key .. " is not created")
+	end
+	return false
+end
+
+local function create(key)
+	local spec = NPC[key]
+	if has(spec.made) then return nil end
+	local se, id = se_of(key)
+	if se ~= nil then return id end
+	if next(players()) == nil then return nil end
+	if not section_known(key) then return nil end
+	local pos = vector():set(spec.x, spec.y, spec.z)
+	local lv, gv = spec.lv, spec.gv
+	if not spec.item and not node_ok(spec) then
+		lv = find_node(spec.x, spec.y, spec.z)
+		if lv == nil then
+			qlog("no level vertex for " .. key)
+			return nil
+		end
+		gv = nearest_gv(pos, spec.gv)
+	end
+	local ok, ent = pcall(function() return alife():create(spec.section, pos, lv, gv) end)
+	if not ok or ent == nil then
+		qlog("alife():create failed for " .. key .. " " .. tostring(ent))
+		return nil
+	end
+	ids[key] = ent.id
+	created_at[key] = time_global()
+	pcall(function() db.spawned_vertex_by_id[ent.id] = lv end)
+	give(spec.made)
+	qlog(string.format("created %s id=%s lvid=%s gvid=%s", key, tostring(ent.id), tostring(lv), tostring(gv)))
+	return ent.id
+end
+
+local function ensure(key)
+	if not is_server() or not on_level() then return end
+	create(key)
+end
+
+-- the story registry must know the object (the task marker and the lookups use the story id)
+local function check_story(key)
+	local spec = NPC[key]
+	local id = ids[key]
+	if id == nil or created_at[key] == nil then return end
+	if time_global() - created_at[key] < 2000 then return end
+	if sid(spec.story) == nil then
+		pcall(function() add_story_object(id, spec.story) end)
+		qlog("story id registered by script: " .. spec.story)
+	end
+end
+
+-- The logic normally starts by itself (section line custom_data). If the engine did not run it (no active scheme on two ticks in a
+-- row), start the same file by script, the way xr_logic.initialize_obj does (same code as patch cordon_technician).
+local function ensure_logic(key)
+	local spec = NPC[key]
+	if spec.logic == nil then return end
+	local id = sid(spec.story) or ids[key]
+	if id == nil then return end
+	local st = db.storage[id]
+	if st == nil or st.object == nil then
+		idle_seen[key] = nil
+		return
+	end
+	if st.active_scheme ~= nil then
+		idle_seen[key] = nil
+		return
+	end
+	idle_seen[key] = (idle_seen[key] or 0) + 1
+	if idle_seen[key] < 2 then return end
+	idle_seen[key] = nil
+	local npc = st.object
+	local ini = ini_file(spec.logic)
+	ini = xr_logic.configure_schemes(npc, ini, spec.logic, modules.stype_stalker, "logic", "")
+	local sect = xr_logic.determine_section_to_activate(npc, ini, "logic", db.actor)
+	xr_logic.activate_by_section(npc, ini, sect, "", false)
+	qlog("logic started by script for " .. key .. ", section " .. tostring(sect))
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. progress: the derived flags (server tick)
+-------------------------------------------------------------------------------------------------------
+local T = {}   -- real-time marks of this VM
+
+local function courier_complete()
+	return has(F.CDEAD) and has(F.ADEAD) and has(F.CCALL) and not has(F.CFAIL)
+end
+
+-- Pavlik sees a player too close: SoC killactor (the NPC becomes enemy of the actor)
+local function pavlik_hostile(a)
+	local id = sid(NPC.pavlik.story) or ids.pavlik
+	if id == nil then return end
+	pcall(function()
+		local st = db.storage[id]
+		if st ~= nil and st.object ~= nil then st.object:set_relation(game_object.enemy, a) end
+	end)
+end
+
+local function courier_progress(now)
+	if not has(F.CSTART) then return end
+	if has(F.CDONE) then return end
+	local lvl = on_level()
+
+	-- Lukash gone: nobody to pay or to report to; the job is over when the agent and the snitch are dead
+	if courier_complete() and (has(F.LD) or story_dead(STORY.lukash)) then give(F.CDONE) return end
+	if has(F.CFAIL) then return end
+
+	local pav = state_of("pavlik")
+	if lvl and pav == "none" and not has(F.CDEAD) then
+		ensure("pavlik")
+		pav = state_of("pavlik")
+	end
+	if pav == "alive" then check_story("pavlik") pcall(ensure_logic, "pavlik") end
+
+	-- Pavlik died: before his call = the job is lost (SoC objective 2: infoportion_fail mil_courier_dead)
+	if pav == "dead" and not has(F.CDEAD) then
+		give(F.CDEAD)
+		if not has(F.CCALL) then
+			give(F.CFAIL)
+			return
+		end
+	end
+
+	-- phase 1: a player near the farmstead (the SoC restrictor); too close to Pavlik = he sees the player (SoC killactor, objective 1 fail)
+	if not has(F.CKHUT) and pav == "alive" and lvl then
+		local pp = npc_pos("pavlik")
+		if pp ~= nil then
+			for _, a in pairs(players()) do
+				local p = pos_of(a)
+				if p ~= nil and d3(p, pp.x, pp.y, pp.z) <= SEEN_DIST then
+					give(F.CSEEN)
+					give(F.CFAIL)
+					pavlik_hostile(a)
+					return
+				end
+			end
+		end
+		if any_player_within(KHUTOR_ACTOR[1], KHUTOR_ACTOR[2], KHUTOR_ACTOR[3], KHUTOR_ACTOR[4]) then
+			give(F.CKHUT)
+			T.khut_at = now
+		end
+	end
+
+	-- phase 2: Pavlik walks to the meeting point and calls his agent
+	if has(F.CKHUT) and not has(F.CCALL) and pav == "alive" then
+		T.khut_at = T.khut_at or now
+		if not has(F.CPIN) and (npc_near("pavlik", PAVLIK_GO, 5.0) or now - T.khut_at >= KHUTOR_WALK_MS) then give(F.CPIN) end
+		if has(F.CPIN) and not has(F.CUE_CALL) then
+			give(F.CUE_CALL)
+			T.call_at = now
+		end
+		if has(F.CUE_CALL) then
+			T.call_at = T.call_at or now
+			if now - T.call_at >= CALL_MS then give(F.CCALL) end
+		end
+	end
+
+	-- Pavlik left the farmstead zone after he was in it (SoC khutor_zone: on_npc_in_zone, then on_npc_not_in_zone = mil_courier_khutor_leave)
+	if not has(F.CDEAD) and pav == "alive" and lvl then
+		local pp = npc_pos("pavlik")
+		if pp ~= nil then
+			local dz = d3(pp, KHUTOR_ZONE[1], KHUTOR_ZONE[2], KHUTOR_ZONE[3])
+			if dz <= KHUTOR_ZONE[4] then T.pav_in = true end
+			if T.pav_in and dz > KHUTOR_ZONE[4] + 4.0 then
+				give(F.CLEFT)
+				give(F.CFAIL)
+				return
+			end
+		end
+	end
+
+	-- phase 3: the agent and his bodyguards come (created once, when the call is done)
+	if has(F.CCALL) then
+		if lvl and not has(F.ADEAD) then
+			for _, k in ipairs(CREATE_ORDER_ARA) do ensure(k) end
+		end
+		local ara = state_of("ara")
+		if ara == "alive" then
+			check_story("ara")
+			pcall(ensure_logic, "ara")
+			for _, k in ipairs({ "g1", "g2", "g3" }) do
+				if state_of(k) == "alive" then check_story(k) pcall(ensure_logic, k) end
+			end
+		end
+		if ara == "dead" and not has(F.ADEAD) then give(F.ADEAD) end
+
+		if not has(F.ARRIVE) and ara == "alive" then
+			T.wait_from = T.wait_from or now
+			if npc_near("ara", ARA_END, ARRIVE_NEAR) or now - T.wait_from >= ARRIVE_TIMEOUT_MS then
+				give(F.ARRIVE)
+				T.meet_at = now
+				-- SoC remark1: the talk (mil_ara_to_pavlik); when Pavlik is already dead remark2 (mil_ara_ambush) follows at once
+				if has(F.CDEAD) then
+					give(F.CUE_AMBUSH)
+					T.ambush_at = now
+				else
+					give(F.CUE_MEET)
+				end
+			end
+		end
+		if has(F.ARRIVE) and not has(F.AEND) then
+			T.meet_at = T.meet_at or now
+			if has(F.CDEAD) and not has(F.CUE_AMBUSH) then
+				give(F.CUE_AMBUSH)
+				T.ambush_at = now
+			end
+			local endt
+			if has(F.CUE_AMBUSH) then
+				T.ambush_at = T.ambush_at or now
+				endt = T.ambush_at + AMBUSH_MS
+			else
+				endt = T.meet_at + MEET_MS
+			end
+			if now >= endt or ara ~= "alive" then
+				give(F.AEND)
+				T.aend_at = now
+			end
+		end
+		-- the agent runs away along the way he came (SoC mil_ara_leave): the job is lost
+		if has(F.AEND) and ara == "alive" and not has(F.ALEAVE) and not has(F.ADEAD) then
+			T.aend_at = T.aend_at or now
+			if npc_near("ara", ARA_FAR, LEAVE_NEAR) or now - T.aend_at >= LEAVE_MS then
+				give(F.ALEAVE)
+				give(F.CFAIL)
+				return
+			end
+		end
+	end
+end
+
+local function rg6_progress(now)
+	local lvl = on_level()
+	-- the Chef (SoC: always there) and the Bulldog 6 in the village basement are created once, when a player is on the level
+	if lvl then
+		ensure("cook")
+		ensure("rg6")
+	end
+	local cook = state_of("cook")
+	if cook == "alive" then
+		check_story("cook")
+		pcall(ensure_logic, "cook")
+	end
+	if state_of("rg6") ~= "none" then check_story("rg6") end
+	if not has(F.RSTART) or has(F.RDONE) then return end
+	-- step 1: a player reached the Chef
+	if not has(F.RMET) and lvl and cook == "alive" then
+		local cp = npc_pos("cook")
+		if cp ~= nil and any_player_within(cp.x, cp.y, cp.z, COOK_NEAR) then give(F.RMET) end
+	end
+	-- the Chef is dead before he talked: the order itself tells where the Bulldog 6 is (SoC fails the task, here it must not lock)
+	if cook == "dead" and not has(F.RASK) then give(F.RASK) end
+	-- step 3: a player holds the Bulldog 6 (SoC mil_task_rg6_have)
+	if not has(F.RGOT) and any_has(RG6_SECTION) then give(F.RGOT) end
+	-- monotonic: a later step also sets the earlier ones
+	if has(F.RGOT) and not has(F.RASK) then give(F.RASK) end
+	if has(F.RASK) and not has(F.RMET) then give(F.RMET) end
+	-- Voronin dead: nobody to hand it to
+	if has(F.RGOT) and story_dead(STORY.voronin) then give(F.RDONE) end
+end
+
+function progress()
+	local now = time_global()
+	local ok, err = pcall(courier_progress, now)
+	if not ok then qlog("COURIERERR " .. tostring(err)) end
+	local ok2, err2 = pcall(rg6_progress, now)
+	if not ok2 then qlog("RG6ERR " .. tostring(err2)) end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. the stages: task id, open while ...
+-------------------------------------------------------------------------------------------------------
+local function ara_known() return state_of("ara") ~= "none" end
+
+STAGES = {
+	-- SoC mil_courier_job
+	{ id = "mil_soc_courier_1_task", open = function() return has(F.CSTART) and not has(F.CKHUT) and not has(F.CFAIL) and not has(F.CDONE) end },
+	{ id = "mil_soc_courier_2_task", open = function() return has(F.CKHUT) and not has(F.CCALL) and not has(F.CFAIL) and not has(F.CDONE) end },
+	{ id = "mil_soc_courier_3_task", open = function() return has(F.CCALL) and not has(F.CDEAD) and not has(F.CFAIL) and not has(F.CDONE) end },
+	{ id = "mil_soc_courier_4_task", open = function() return has(F.CCALL) and not has(F.ADEAD) and ara_known() and not has(F.CFAIL) and not has(F.CDONE) end },
+	{ id = "mil_soc_courier_5_task", open = function() return courier_complete() and not has(F.CDONE) end },
+	-- SoC mil_freedom_rg6_task
+	{ id = "mil_soc_rg6_1_task", open = function() return has(F.RSTART) and not has(F.RMET) and not has(F.RDONE) end },
+	{ id = "mil_soc_rg6_2_task", open = function() return has(F.RMET) and not has(F.RASK) and not has(F.RDONE) end },
+	{ id = "mil_soc_rg6_3_task", open = function() return has(F.RASK) and not has(F.RGOT) and not has(F.RDONE) end },
+	{ id = "mil_soc_rg6_4_task", open = function() return has(F.RGOT) and not has(F.RDONE) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	progress()
+	if db == nil or db.mp_actors == nil then return out end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+function reset_given()
+	given = {}
+end
+
+-- tests: forget the real-time marks and the created objects of this VM
+function reset_vm()
+	T = {}
+	ids = {}
+	created_at = {}
+	idle_seen = {}
+	gone_since = {}
+	missing_logged = {}
+	given = {}
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 4. voice cues (every client, once per flag, in the voice language of its own player)
+-------------------------------------------------------------------------------------------------------
+local V = { base = nil, played = {} }
+
+local function voice_lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	local ok2, s = pcall(function() return game.translate_string("st_mil_soc_lang_probe") end)
+	if ok2 and type(s) == "string" and string.find(s, "[\192-\255]") then return "rus" end
+	return "eng"
+end
+
+local function play_cue(c)
+	local la = nil
+	pcall(function() la = db.actor end)
+	if la == nil then la = getLocalActor() end
+	if la == nil then return false end
+	local p = pos_of(la)
+	if p ~= nil and d3(p, KHUTOR_ZONE[1], KHUTOR_ZONE[2], KHUTOR_ZONE[3]) > VOICE_RANGE then
+		qlog("CUE " .. c.file .. " skipped (far from the farmstead)")
+		return false
+	end
+	local lang = voice_lang()
+	local path = "characters_voice\\scenario\\coop_l07_military\\" .. (lang == "eng" and "eng\\" or "") .. c.file
+	local okfs, exists = pcall(function() return getFS():exist("$game_sounds$", path .. ".ogg") end)
+	if okfs and not exists then
+		qlog("NOSND " .. path)
+		return false
+	end
+	local ok, err = pcall(function()
+		local so = sound_object(path)
+		so:play(la, 0, sound_object.s2d)
+	end)
+	qlog("CUE " .. c.file .. " lang=" .. lang .. " " .. (ok and "ok" or tostring(err)))
+	return ok
+end
+
+local function tick_client(now)
+	if getLocalActor() == nil then return end
+	if V.base == nil then
+		-- the first tick records what already happened (a load or a late join never replays a cue)
+		V.base = {}
+		for _, c in ipairs(CUES) do V.base[c.flag] = has(c.flag) end
+		return
+	end
+	for _, c in ipairs(CUES) do
+		if has(c.flag) and not V.base[c.flag] and not V.played[c.flag] then
+			V.played[c.flag] = true
+			play_cue(c)
+		end
+	end
+end
+
+-- tests
+function reset_client()
+	V = { base = nil, played = {} }
+end
+
+function client_tick()
+	tick_client(time_global())
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 5. dialog states (phrase preconditions read flags only)
+-------------------------------------------------------------------------------------------------------
+local function base_state()
+	local ok, s = pcall(function() return coop_soc_mil.lukash_state() end)
+	if ok and s ~= nil then return s end
+	return "default"
+end
+
+-- paid-once flag of the talking player (the flags are shared; a listen host runs a dialog action on both roles)
+local function paid_flag(kind, la)
+	return "MIL_SOC_PAID_" .. kind .. "_" .. (string.gsub(string.upper(tostring(la:name())), "[^A-Z0-9]", "_"))
+end
+
+local function paid(kind)
+	local la = getLocalActor()
+	if la == nil then return false end
+	return has(paid_flag(kind, la))
+end
+
+-- Lukash (SoC mil_leader_start_dialog) with the courier job layered on the "offer" state of patch soc_mil_quests:
+-- new (the Duty farmstead), wait, report, capwait, paid, default: as soc_mil_quests;
+-- coffer (the report is made, no courier job yet), cwait (job running), cpay (snitch and agent dead, not paid yet), cfail, offer (job paid: Barrier offer)
+function lukash_state()
+	local s = base_state()
+	if s == "offer" or s == "capwait" or s == "paid" or s == "default" then
+		if has(F.CSTART) and courier_complete() and not paid("C7") then return "cpay" end
+	end
+	if s == "offer" then
+		if has(F.CDONE) then return "offer" end
+		if has(F.CFAIL) then return "cfail" end
+		if has(F.CSTART) then return "cwait" end
+		return "coffer"
+	end
+	return s
+end
+
+function lu_hub(a, b) local s = lukash_state(); return s == "new" or s == "offer" end
+function lu_wait(a, b) return lukash_state() == "wait" end
+function lu_report(a, b) return lukash_state() == "report" end
+function lu_capwait(a, b) return lukash_state() == "capwait" end
+function lu_paid(a, b) return lukash_state() == "paid" end
+function lu_default(a, b) return lukash_state() == "default" end
+function lu_coffer(a, b) return lukash_state() == "coffer" end
+function lu_cwait(a, b) return lukash_state() == "cwait" end
+function lu_cpay(a, b) return lukash_state() == "cpay" end
+function lu_cfail(a, b) return lukash_state() == "cfail" end
+
+-- payments (the talking player only, once per player name; client role only)
+local function pay_once(kind, amount, a, b)
+	local okc, isc = pcall(OnClient)
+	if not (okc and isc) then return end
+	local la = getLocalActor()
+	if la == nil then return end
+	local pf = paid_flag(kind, la)
+	if has(pf) then return end
+	give(pf)
+	pcall(function() dialogs.relocate_money_to_actor(a, b, amount) end)
+	qlog("PAID " .. kind .. " " .. tostring(amount) .. " to " .. tostring(la:name()))
+end
+
+function pay_courier(a, b) pay_once("C7", PAY_COURIER, a, b) end     -- SoC lukash_payment
+
+-- Cook: the vodka is taken from the talking player (SoC dialogs_military.transfer_vodka)
+local function count_item(section)
+	local la = getLocalActor()
+	if la == nil then return 0 end
+	local n = 0
+	pcall(function()
+		la:iterate_inventory(function(dummy, item)
+			if item:section() == section then n = n + 1 end
+		end, nil)
+	end)
+	return n
+end
+
+function has_vodka(a, b) return count_item(VODKA) >= 1 end
+function take_vodka(a, b)
+	pcall(function() dialogs.relocate_item_section_from_actor(a, b, VODKA, 1) end)
+end
+
+-- Voronin: the Bulldog 6 hand-in (SoC bar_dialogs.have_rg6 / give_rg6 / enter_to_dolg) and a suit for every player once
+function has_rg6(a, b) return count_item(RG6_SECTION) >= 1 end
+function take_rg6(a, b)
+	pcall(function() dialogs.relocate_item_section_from_actor(a, b, RG6_SECTION, 1) end)
+end
+function give_suit(a, b)
+	local okc, isc = pcall(OnClient)
+	if not (okc and isc) then return end
+	local la = getLocalActor()
+	if la == nil then return end
+	local pf = paid_flag("SUIT", la)
+	if has(pf) then return end
+	give(pf)
+	pcall(function() dialogs.relocate_item_section_to_actor(a, b, SUIT) end)
+	qlog("SUIT to " .. tostring(la:name()))
+end
+-- a player who was not the one who handed the weapon in still gets the suit (the Bulldog 6 is delivered, the flag is shared)
+function suit_pending(a, b) return has(F.RDONE) and not paid("SUIT") end
+
+-------------------------------------------------------------------------------------------------------
+-- 6. install
+-------------------------------------------------------------------------------------------------------
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+end
+
+function status()
+	local function b(f) return tostring(has(f)) end
+	return string.format("cstart=%s ckhut=%s cpin=%s ccall=%s cdead=%s arrive=%s aend=%s adead=%s aleave=%s cfail=%s cdone=%s | rstart=%s rmet=%s rask=%s rgot=%s rdone=%s",
+		b(F.CSTART), b(F.CKHUT), b(F.CPIN), b(F.CCALL), b(F.CDEAD), b(F.ARRIVE), b(F.AEND), b(F.ADEAD), b(F.ALEAVE), b(F.CFAIL), b(F.CDONE),
+		b(F.RSTART), b(F.RMET), b(F.RASK), b(F.RGOT), b(F.RDONE))
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			local now = time_global()
+			if is_server() then
+				local ok, err = pcall(tick_server, now)
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			local okd, ded = pcall(IsDedicatedServer)
+			if not (okd and ded) then
+				local ok, err = pcall(tick_client, now)
+				if not ok then qlog("CLIENTERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

@@ -151,3 +151,63 @@ the screenshot are not part of this logic.
 ### Кратко (дополнение)
 Все ковры `esc_smart_terrain_1_animpoint_1..11` (стулья/стены в домах деревни, нет в ТЧ) отключены строкой `skip_animpoints`; до: 5 статистов на этих заданиях,
 после: 0. Сидорович и проводник не затронуты.
+
+
+### Note 2026-10-21: the hooded sitter in the village cellar is the guide
+FOSTER's picture of a hooded stalker sitting on an iron bed in a cellar under a village house (broken wall hole, wooden floor, wall lamp) is the level guide `esc_smart_terrain_1_stalker_guide` on the exclusive cover `esc_smart_terrain_1_animpoint_4` (-213.1, -23.2, -121.9). It is NOT a generic animpoint job (those, covers 1 to 11, are skipped above, including `_5` and `_6` that stand beside the beds of the same cellar), and the guide gives the level-travel flags, so `skip_animpoints` does not touch him and he stays. The Cordon technician stands in the same cellar since this update (see `cordon_technician/NOTES.md`).
+
+## Update 2026-10-21: Garbage story edits that live in this patch's job files (one patch per file)
+* `gar_smart_terrain_2_walker_devil.ltx` (Bes, FOSTER: after his quest the request greeting came up again). The greeting is the character's start dialog; it now only exists
+  before the quest. `meet@gar_smart_terrain_2_walker_devil` (talk after the bandits are dead) sets `meet_dialog = gar_smart_terrain_4_stalker_devil_2_start_dialog` (the existing short
+  line "Ну и бойня..."), and the final camp section `kamp@..._animpoint_1_no_meet` uses the new `meet@gar_smart_terrain_2_walker_devil_done` (talkable, same short line) instead of `no_meet`.
+  Same `meet_dialog` mechanism the mod uses for Fox and Lucky. Not tested in game.
+* `gar_smart_terrain_7_walker_gray.ltx`: only the camp sections (no Gray fight edit any more: the server gives the fight info when a player is near, see `garbage_gray\NOTES.md`).
+* `gar_smart_terrain_9_animpoint_duty.ltx`: jobs take `check_npc_name(gar_dolg_blokpost)` (see `garbage_duty\NOTES.md`).
+
+## Update 2026-10-21: Seriy and Bes wait for the arrival (patch garbage_soc_quests)
+`gar_smart_terrain_7_walker_gray.ltx` and `gar_smart_terrain_2_walker_devil.ltx`: the first state now leaves for `..._idle` on `GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO` (the arrival) instead of waiting for Bes's job / the Yurik outcome. The level maker's radio calls (`grey_grey_1`, `neutrals_commander_pda_1`, not used by SoC) and the step "help the Gray fight off the bandits" are no longer reached (their sections stay for old saves). Seriy's fight is unchanged. See `garbage_soc_quests\NOTES.md`.
+
+
+## Update 2026-10-21: stalkers walking on the spot / on top of each other at the fires (report on v1.4)
+Report (FOSTER, Cordon rookie village, barrel fire with a stool, blue bus behind the fence): stalkers stand at the fire in walking poses, "they try to
+go somewhere and cannot"; two stand on top of each other next to the stool, one stands frozen on the other side.
+
+### Cause (offline analysis, no game; the job count is NOT the problem)
+- Jobs are plentiful. `tools\check_camp_jobs.py`: the village smart terrain `esc_smart_terrain_1` has 31 slots for stalkers (5 kamp seats, 6 guard paths, the 20
+  `point` jobs every smart terrain has) for 10 stalkers (9 at start, up to 12 with a late squad, roaming cap 10); enemy scaling only touches hostile factions, the
+  village dwellers are neutral. Every smart terrain with a fire has more slots than people.
+- The seat logic of `xr_kamp.script` was brittle. A stalker only counted as seated when his AI node was EXACTLY the seat node (`level_vertex_id() == pos_vertex`),
+  and the seat node was a random sector of the circle that nobody checked: (1) when the sector has no AI node (the map has holes where the building / bus stand) the
+  script fell back to the fire's own node, which is inside the barrel; several sectors fall back to the same node, so stalkers walk at the barrel for ever, on top of
+  each other; (2) a node next to a stool, bench or crate is reachable on the map but not for the body, and the stalker pushes against it for ever; (3) two seats could be
+  the same node or neighbours (0.7 m apart). Nothing ever gave up or chose another seat. The second village fire (`esc_campfire_0000`, the west half of its ring is a
+  building) is the worst: with the v1.4 rule a seat falls on the barrel node in 64 % of the starts (`tools\check_camp_seats.py`); the Bar fire 13 and the Army Warehouses
+  camp (10 stalkers on a 1.9 m circle that holds 8 seats) have the same kind of problem, the Garbage fires put two seats under 1 m apart in 40 % of the starts.
+- Reproduced with the REAL script in a Lua VM on the REAL AI maps (`tests\kamp_seat_mock_test.py`, solid barrel and stool, stalkers pushed out to the rim). v1.4 script,
+  runs with a stalker that never sits down: second village fire 24 %, Bar fire 13 about 10 %, a village fire with obstacles the script does not know about 79 %; Army
+  Warehouses camp: two stalkers within 0.5 m in 99 % of the runs. With the fix: 0 in every scene.
+
+### Fix
+- `scripts\xr_kamp.script`: a seat is a free node of the ring that is (a) not within 1.3 m of the fire, (b) not within `r` of an `avoid` point (new optional line
+  `avoid = x, y, z, r | ...` of the kamp section: the stool / bench covers of the map, written by `tools\check_camp_seats.py --fix`), (c) not within 1.1 m of the seat of any
+  other stalker of the same fire, (d) on the floor of the fire (2 m). The stalker looks in his own sector first, then anywhere on the ring. A stalker who stands within 1 m
+  of his seat for 2.5 s counts as arrived; one who moved less than 0.3 m in 5 s is stuck: the spot is remembered as blocked (with 1 m around it, for 5 minutes) and he gets
+  another seat, up to 3 times; after that he sits down where he stands. Nobody walks in place any more.
+- `avoid` entries: the village fire (the stool `esc_smart_terrain_1_animpoint_7`) and the Bar fires 11, 12, 13 (the benches the old animpoint jobs used).
+- Army Warehouses camp (`mil_campfire_0004`, 10 stalkers): radius 1.9 to 2.5 (also in `freedom_duty\...\mil_smart_terrain_3_walker_freedom_ordinary.ltx`), the circle holds 10
+  seats 1.1 m apart.
+- "3 at the fire, nobody on chairs, 7 extras" is unchanged (jobs, `skip_animpoints`, squads untouched).
+
+### Checks (offline, seconds)
+`python tools\check_camp_seats.py` (every fire of the merged configs against its level.ai: node at the fire, empty sectors, seats that fit, furniture without `avoid`),
+`python tools\check_camp_jobs.py` (job slots vs stalkers per smart terrain), `python tests\kamp_seat_mock_test.py --ai-root <dir> --old tests\xr_kamp_v1.4.script.txt --all-camps`
+(the real script, old and new, every fire), `python tests\village_npcs_mock_test.py` (the in-game hook against a mock), plus `check_conflicts.py`, `luabal.py` and the build budget.
+In game: `tests\village_npcs.lua` (listen mode, from 120 s on every NPC of the village smart terrain: has a job, kamp stalkers sit within 1.3 m of the seat, nobody that wants
+to move stays within 0.3 m for 20 s, no two online NPCs closer than 0.5 m; logs `VILLAGE ...` lines with job and scheme). Not run in the game yet.
+Not touched: the `cover` point jobs (random spot 3 to 8 m around the smart terrain) and the guard jobs; if the hook still finds a stuck NPC, its log line names the job and scheme.
+
+### Кратко (RU)
+Причина: место у костра выбиралось случайно на круге, а сталкер считался севшим, только если стоял точно в узле AI-карты. Если в секторе нет узлов (второй костёр деревни: половина
+круга это здание), место падало на узел самого костра (внутри бочки), сталкеры упирались в бочку на одном месте; узел у табурета или скамьи недостижим для тела; два места могли
+совпасть. Теперь место свободное, не ближе 1,3 м к костру, не у табурета или скамьи (строка `avoid`), не ближе 1,1 м к чужому месту; застрявший берёт другое место, потом садится где
+стоит. Работ хватает (31 на 10 сталкеров). Проверено офлайн настоящим скриптом на настоящих картах AI: до исправления у второго костра 24 % запусков со сталкером, вечно идущим на месте, после 0.

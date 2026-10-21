@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding="windows-1251"?>
+<xml>
+<!-- soc_doctor_chain: SoC cit_doctor (Strelok's friend). Same model as the SoC Doctor (the mod has it as actors\stalker_mp\stalker_doctor). -->
+<specific_character id="soc_cit_doctor" team_default = "1">
+    <name>coop_soc_doc_name</name>
+    <icon>ui_inGame2_neutral_0_3</icon>
+    <map_icon x="0" y="0"></map_icon>
+    <bio>coop_soc_doc_bio</bio>
+    <class>soc_cit_doctor</class>
+    <community>stalker</community> <terrain_sect>stalker_terrain</terrain_sect>
+    <money min="1000" max="2000" infinitive="0"></money>
+    <rank>859</rank>
+    <reputation>145</reputation>
+    <visual>actors\stalker_mp\stalker_doctor</visual>
+    <snd_config>characters_voice\human_02\stalker\</snd_config>
+    <crouch_type>-1</crouch_type>
+    <supplies>
+        [spawn] 
+
+    </supplies>
+#include "gameplay\character_criticals_4.xml"
+    <start_dialog>soc_doc_hello_dialog</start_dialog>
+    <actor_dialog>soc_doc_main_dialog</actor_dialog>
+    <actor_dialog>actor_break_dialog</actor_dialog>
+</specific_character>
+</xml>

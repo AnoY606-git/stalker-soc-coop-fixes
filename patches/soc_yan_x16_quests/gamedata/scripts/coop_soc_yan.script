@@ -1,0 +1,544 @@
+-------------------------------------------------------------------------------------------------------
+-- Yantar and lab X16 in the order of the original Shadow of Chernobyl (patch soc_yan_x16_quests, see its NOTES.md).
+-- SoC: Barkeep job bar_x16_documents -> Sakharov: offer help (yan_find_scientist) -> Kruglov -> measurements (one task) -> results to
+-- Sakharov (prototype helmet) -> yan_find_vasilyev_task (Vasiliev's corpse names the lab) -> lab: yan_find_ghost_task (Ghost's documents)
+-- and yan_kill_brain_task (the control modules, the mechanism) -> yan_kill_brain_task_2 (secret tunnel, Sakharov) -> documents to the
+-- Barkeep. Also yan_scientist_job ("Help for the scientists") and yan_provodnik_task ("Meet the Guide").
+--
+-- Everything is driven by SHARED story flags (saved, synced to every player) plus a server tick (1 s, real time):
+--  1. progress(): derives the SoC infos from the world (players in the measurement zones, items in inventories, levers) and makes the
+--     chain monotonic: a later flag also sets every earlier one, so a skipped step never blocks the chain
+--  2. every task whose stage is open is given to EVERY living player once per level load (stock xr_effects.give_task hands a task to
+--     the first player only), so late joiners and respawned players get the open tasks
+--  3. items the dialogs promise (detector, helmet, suit, artifact) are created by the server for every living player; the dialogs only
+--     set flags, so nothing depends on which machine ran the dialog
+-- A dead NPC never blocks anything (Kruglov and Sakharov are invulnerable in the mod; Vasiliev and Ghost are corpses).
+-------------------------------------------------------------------------------------------------------
+
+local YAN = "coop_l08_yantar"
+local X16 = "coop_l08_x16"
+local CORDON = "coop_l01_escape"
+
+local F = {
+	ARRIVED  = "ROS_START_GO_TO_YANTAR_QUEST_TASK_INFO",                                                -- the party is on Yantar (set by the Rostok zone, and here)
+	RESCUE   = "ROS_SMART_TERRAIN_3_KRUGLOV_HELP_SPACE_RESTRICTOR_INFO",                                -- Kruglov was rescued at Rostok (SoC bar_rescue_research_done)
+	OFFERED  = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO",           -- Sakharov: help offered (SoC yan_find_scientist_start)
+	PREP     = "YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO",                   -- Kruglov agreed, detector given (SoC yan_kruglov_after_actor)
+	REPORTED = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO",  -- results delivered (SoC yan_find_scientist_done)
+	HELMET   = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO",        -- helmet given, lab job started (SoC yan_find_vasilyev_start)
+	VAS      = "YAN_SOC_VASILYEV_FOUND",                                                                -- Vasiliev's PDA read (SoC yan_find_vasilyev_end)
+	VAS_PDA  = "YAN_SOC_VAS_PDA",                                                                       -- the PDA itself was picked up (tip)
+	LAB      = "YAN_YAN_START_INFILTRATE_THE_X16_LAB_QUEST_TASK_INFO",                                  -- the party is in the lab level (SoC yan_find_laboratory_end)
+	INSTALL  = "X16_START_FIND_THE_INSTALLATION_QUEST_TASK_INFO",                                       -- the party reached the installation area
+	DOCS     = "X16_GHOST_DOCS_TAKEN",                                                                  -- Ghost's documents taken (SoC yan_x16_documents_gain)
+	EXIT     = "X16_START_GET_OUT_OF_THE_LAB_TASK_INFO",                                                -- out of the lab through the tunnel (SoC yantar_tunnel_finish)
+	DONE     = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO",          -- Sakharov thanked (SoC yan_kill_brain_done)
+	GAIN     = "YAN_X16_DOCUMENTS_GAIN",                                                                -- the party holds the X16 documents (SoC yan_x16_documents_gain); the Barkeep task of patch bar_soc_quests reads it
+	BAR_DONE = "BAR_X16_DOCUMENTS_DONE",                                                                -- the Barkeep took the X16 documents (SoC bar_x16_documents_done), set by the Bar dialog
+	OUTFIT   = "YAN_SOC_OUTFIT_GIVEN",                                                                  -- dialog: Sakharov gives the suit (flag), the tick hands it out
+	OUTFIT_D = "YAN_SOC_OUTFIT_DONE",
+	REWARD   = "YAN_SOC_REWARD_GIVEN",                                                                  -- dialog: Sakharov rewards the measurements (flag), the tick hands it out
+	REWARD_D = "YAN_SOC_REWARD_DONE",
+	GUIDE    = "YAN_SOC_GUIDE_MET",                                                                     -- the party met the Guide on Cordon (SoC esc_find_doctor_start)
+}
+local MEAS = { "YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO" }
+local WAITF = { "YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_1_QUEST_TASK_INFO", "YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_2_QUEST_TASK_INFO",
+	"YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_3_QUEST_TASK_INFO" }
+local SW = { "X16_LAB_PRIMARY_SWITCHER_1_DEACTIVATE_INFO", "X16_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO", "X16_LAB_PRIMARY_SWITCHER_3_DEACTIVATE_INFO",
+	"X16_LAB_PRIMARY_SWITCHER_4_DEACTIVATE_INFO" }
+
+-- the three measurement spheres of the level (restrictors yan_start_take_measurements_N_space_restrictor, radius 8.2): tunnel at the entrance,
+-- tunnel at the exit, the bus. Measuring = a player with the device stands in the sphere for 10 s (the stock restrictor logic, but for any player)
+local SITES = { { x = 108.5, y = -8.9, z = -209.3, r = 8.2 }, { x = 144.2, y = -8.9, z = -121.8, r = 8.2 }, { x = 177.9, y = -4.6, z = -99.5, r = 8.2 } }
+local MEAS_MS = 10000
+
+-- Vasiliev lies where the mod's secret tunnel comes out (graph point yantar_graph_point_0046, the swamp west of the factory)
+local VAS_POS = { x = -77.0, y = -5.4, z = -197.6 }
+local VAS_SECTION, VAS_STORY, VAS_PDA_SECTION = "yan_vasilyev", "yan_vasilyev", "yan_vasilyev_pda"
+local DETECTOR, HELMET_ITEM, SUIT, ARTEFACT, DOC_ITEM = "yan_psi_detector", "dev_psi_protection_helmet", "ecolog_outfit", "af_cristall_flower", "lab_x16_documents"
+local GUIDE_STORY = "esc_smart_terrain_1_stalker_guide"
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCYAN " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCYAN " .. tostring(s)) end
+end
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if has(f) then return end
+	pcall(story_flags.give_flag, f)
+	qlog("FLAG " .. f)
+end
+
+local function all_of(list)
+	for i = 1, #list do if not has(list[i]) then return false end end
+	return true
+end
+
+local function any_of(list)
+	for i = 1, #list do if has(list[i]) then return true end end
+	return false
+end
+
+local function all_sw() return all_of(SW) end
+local function meas_all() return all_of(MEAS) end
+
+-------------------------------------------------------------------------------------------------------
+-- players
+-------------------------------------------------------------------------------------------------------
+local function each_player(fn)
+	if db == nil or db.mp_actors == nil then return end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil then
+			local okalive, alive = pcall(function() return a:alive() end)
+			if okalive and alive then fn(pid, a) end
+		end
+	end
+end
+
+local function first_player()
+	local fp, fa = nil, nil
+	each_player(function(pid, a) if fa == nil then fp, fa = pid, a end end)
+	return fp, fa
+end
+
+local function player_has(a, section)
+	local ok, r = pcall(function() return a:object(section) ~= nil end)
+	return ok and r and true or false
+end
+
+local function any_has(section)
+	local r = false
+	each_player(function(pid, a) if player_has(a, section) then r = true end end)
+	return r
+end
+
+-- a new item in the inventory of a living player (same call as game_sv.script uses for quest items)
+local function create_for(a, section)
+	local ok, err = pcall(function() alife():create(section, a:position(), a:level_vertex_id(), a:game_vertex_id(), a:id()) end)
+	qlog("ITEM " .. section .. " player=" .. tostring(a:id()) .. " " .. (ok and "ok" or tostring(err)))
+	return ok
+end
+
+local function dist(a, p)
+	local pos = a:position()
+	local dx, dy, dz = pos.x - p.x, pos.y - p.y, pos.z - p.z
+	return math.sqrt(dx * dx + dy * dy + dz * dz)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. progress: the SoC infos
+-------------------------------------------------------------------------------------------------------
+local t0 = {}                 -- measurement site -> time_global when the party started to stand in it
+local item_t = {}             -- "player|section" -> time_global of the last item we created
+local vas = { id = nil, tries = 0, failed = false, cleaned = false }
+local guide_t = nil
+
+local function cascade()
+	if has(F.BAR_DONE) then give(F.DONE) end
+	if has(F.DOCS) then give(F.GAIN) end
+	if has(F.DONE) then give(F.EXIT) end
+	if has(F.EXIT) or has(F.DOCS) or any_of(SW) then give(F.LAB) end
+	if any_of(SW) then give(F.INSTALL) end
+	if has(F.LAB) then give(F.VAS); give(F.HELMET) end
+	if has(F.VAS) then give(F.HELMET) end
+	if has(F.HELMET) then give(F.REPORTED) end
+	if has(F.REPORTED) then
+		give(F.PREP)
+		for i = 1, 3 do give(MEAS[i]); give(WAITF[i]) end
+	end
+	if has(F.PREP) then give(F.OFFERED) end
+end
+
+-- Vasiliev's corpse (dead ecologist) and his PDA on the ground next to it; the corpse has the story id yan_vasilyev (map marker)
+local function ensure_vasilyev()
+	if vas.id ~= nil or vas.failed or has(F.VAS) then return end
+	local ex = nil
+	pcall(function() ex = get_story_object_id(VAS_STORY) end)
+	if ex ~= nil then vas.id = ex return end
+	local pid, pl = first_player()
+	if pl == nil then return end
+	vas.tries = vas.tries + 1
+	local ok, err = pcall(function()
+		local pos = vector():set(VAS_POS.x, VAS_POS.y + 0.3, VAS_POS.z)
+		local lv = level.vertex_id(pos)
+		if lv == nil or lv == 4294967295 then lv = pl:level_vertex_id() end
+		local gv = pl:game_vertex_id()
+		local se = alife():create(VAS_SECTION, pos, lv, gv)
+		vas.id = se.id
+		pcall(function() se:kill() end)
+		alife():create(VAS_PDA_SECTION, vector():set(pos.x + 0.4, pos.y, pos.z), lv, gv)
+		qlog("VASILYEV created id=" .. tostring(se.id))
+	end)
+	if not ok then
+		qlog("VASILYEV create failed: " .. tostring(err))
+		if vas.tries >= 3 then vas.failed = true end
+	end
+end
+
+-- the server entity was killed at creation; the online object of a stalker spawned like this may come up alive: kill it the first time it is online
+-- (same as the Ghost's corpse of patch yantar_restore)
+local function vasilyev_cleanup()
+	if vas.id == nil or vas.cleaned then return end
+	local o = nil
+	pcall(function() o = level.object_by_id(vas.id) end)
+	if o == nil then return end
+	vas.cleaned = true
+	local alive = false
+	pcall(function() alive = o:alive() end)
+	if alive then
+		pcall(function() o:kill(o) end)
+		qlog("VASILYEV online and alive: killed")
+	end
+end
+
+local function guide_check(lvl)
+	if lvl ~= CORDON or not has(F.DOCS) or has(F.GUIDE) then return end
+	local near = false
+	local gid = nil
+	pcall(function() gid = get_story_object_id(GUIDE_STORY) end)
+	local gp = nil
+	if gid ~= nil then
+		pcall(function()
+			local o = level.object_by_id(gid)
+			if o ~= nil then gp = o:position() end
+		end)
+		if gp == nil then
+			pcall(function()
+				local se = alife():object(gid)
+				if se ~= nil then gp = se.position end
+			end)
+		end
+	end
+	if gp ~= nil then
+		each_player(function(pid, a) if dist(a, gp) <= 6.0 then near = true end end)
+		if near then qlog("the Guide is met") give(F.GUIDE) end
+	else
+		-- no Guide object known (should not happen): arriving on Cordon with the documents counts, after 30 s
+		guide_t = guide_t or time_global()
+		if time_global() - guide_t > 30000 then give(F.GUIDE) end
+	end
+end
+
+local function progress(now)
+	local lvl = level.name()
+	-- the documents / PDA are items: any living player who holds one counts
+	if not has(F.DOCS) and any_has(DOC_ITEM) then give(F.DOCS) end
+	if not has(F.VAS_PDA) and any_has(VAS_PDA_SECTION) then give(F.VAS_PDA); give(F.VAS) end
+	if all_sw() then give(F.DOCS) end                             -- no soft-lock: the levers cannot be reached without the documents zone, and a lost corpse never blocks
+	if lvl == YAN then
+		give(F.ARRIVED)
+		if all_sw() then give(F.EXIT) end                         -- left the lab by the entrance instead of the tunnel
+	end
+	if lvl == X16 and first_player() ~= nil then give(F.LAB) end
+	if lvl == YAN and has(F.HELMET) and not has(F.VAS) then
+		ensure_vasilyev()
+		if vas.failed then give(F.VAS) end
+	end
+	if lvl == YAN then vasilyev_cleanup() end
+	cascade()
+
+	-- the measurements: a player with the device stands in a site for 10 s
+	if lvl == YAN and has(F.PREP) then
+		for i = 1, 3 do
+			if not has(MEAS[i]) then
+				local inside = false
+				each_player(function(pid, a)
+					if player_has(a, DETECTOR) and dist(a, SITES[i]) <= SITES[i].r then inside = true end
+				end)
+				if inside then
+					t0[i] = t0[i] or now
+					if now - t0[i] >= MEAS_MS then
+						give(MEAS[i]); give(WAITF[i]); t0[i] = nil
+					end
+				else
+					t0[i] = nil
+				end
+			end
+		end
+		-- the device must stay with the party (a dead carrier loses it with his body): give one to the first living player
+		if not has(F.REPORTED) and not any_has(DETECTOR) then
+			local pid, a = first_player()
+			if a ~= nil then
+				local k = tostring(pid) .. "|" .. DETECTOR
+				if item_t[k] == nil or now - item_t[k] > 20000 then item_t[k] = now; create_for(a, DETECTOR) end
+			end
+		end
+	end
+
+	-- rewards of the dialogs (the dialogs only set flags): one artifact per living player when the results were delivered, the suit when Sakharov gave it
+	if has(F.REWARD) and not has(F.REWARD_D) then
+		give(F.REWARD_D)
+		each_player(function(pid, a) create_for(a, ARTEFACT) end)
+	end
+	if has(F.OUTFIT) and not has(F.OUTFIT_D) then
+		give(F.OUTFIT_D)
+		each_player(function(pid, a) create_for(a, SUIT) end)
+	end
+	-- the prototype helmet for every living player (also late joiners and respawned players) until the lab job is over
+	if has(F.HELMET) and not has(F.DONE) and (lvl == YAN or lvl == X16) then
+		each_player(function(pid, a)
+			if not player_has(a, HELMET_ITEM) then
+				local k = tostring(pid) .. "|" .. HELMET_ITEM
+				if item_t[k] == nil or now - item_t[k] > 20000 then item_t[k] = now; create_for(a, HELMET_ITEM) end
+			end
+		end)
+	end
+	guide_check(lvl)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the stages: task id, levels (nil = any), open while ...
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	-- (SoC bar_x16_documents is the one Barkeep task of patch bar_soc_quests: it follows F.OFFERED and F.GAIN, nothing to give here)
+	-- SoC yan_scientist_job: offer help to the scientists, until Sakharov sends the party to the lab
+	{ id = "yan_soc_job_task", maps = { [YAN] = true }, open = function() return not has(F.HELMET) end },
+	-- SoC yan_find_scientist: talk to Kruglov, escort him to the sites (one task), results to Sakharov
+	{ id = "yan_start_talk_to_the_kruglov_quest_task", maps = { [YAN] = true }, open = function() return has(F.OFFERED) and not has(F.REPORTED) end },
+	-- SoC yan_find_vasilyev_task: Vasiliev's corpse, then the lab
+	{ id = "yan_start_infiltrate_the_x16_lab_quest_task", maps = { [YAN] = true }, open = function() return has(F.HELMET) and not has(F.LAB) end },
+	-- SoC yan_find_ghost_task (lab level)
+	{ id = "yan_soc_ghost_task", maps = { [X16] = true }, open = function() return has(F.LAB) and not has(F.DOCS) end },
+	-- SoC yan_kill_brain_task (lab level)
+	{ id = "x16_start_find_the_installation_quest_task", maps = { [X16] = true }, open = function() return has(F.LAB) and not all_sw() end },
+	-- SoC yan_kill_brain_task_2: secret tunnel, Sakharov
+	{ id = "x16_start_get_out_of_the_lab_task", maps = nil, open = function() return all_sw() and not has(F.DONE) end },
+	-- SoC yan_provodnik_task (starts when Ghost's documents were read)
+	{ id = "yan_soc_guide_task", maps = nil, open = function() return has(F.DOCS) and not has(F.GUIDE) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+last = ""
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step(now)
+	now = now or time_global()
+	local out = {}
+	local okp, errp = pcall(progress, now)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db == nil or db.mp_actors == nil then return out end
+	local lvl = level.name()
+	for _, st in ipairs(STAGES) do
+		if st.maps == nil or st.maps[lvl] then
+			local ok, isopen = pcall(st.open)
+			if ok and isopen then
+				each_player(function(pid, a)
+					if given[st.id] == nil or not given[st.id][pid] then
+						local ready = true
+						pcall(function() ready = IsActorNetReady(pid) end)
+						if ready then
+							given[st.id] = given[st.id] or {}
+							given[st.id][pid] = true
+							local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+							qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+							out[#out + 1] = st.id .. "|" .. tostring(pid)
+							last = st.id .. " -> " .. tostring(pid)
+						end
+					end
+				end)
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step(now)
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what and the local state
+function reset_given()
+	given = {}
+	t0 = {}
+	item_t = {}
+	vas = { id = nil, tries = 0, failed = false, cleaned = false }
+	guide_t = nil
+end
+
+function vasilyev_state() return vas end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. dialogs (dialogs_coop_l08_yantar.xml: yan_soc_saharov_dialog, yan_soc_kruglov_dialog)
+-------------------------------------------------------------------------------------------------------
+-- Sakharov: one greeting per state, computed from shared flags only (same on every machine); the states exclude each other
+function sak_state()
+	if has(F.DONE) then return "done" end                         -- the lab job is over: the mod's usual greeting
+	if has(F.EXIT) then return "exit" end                         -- out of the lab (SoC yantar_attack_start + yan_kill_brain_done: thanks)
+	if has(F.HELMET) then return "lab" end                        -- helmet given, on the way to the lab (SoC branch 6)
+	if meas_all() then return "results" end                       -- measurements done (SoC branch 3: results, helmet, Vasiliev)
+	if has(F.OFFERED) then return "wait" end                      -- help accepted (SoC branch 7)
+	if has(F.RESCUE) then return "offer_r" end                    -- Kruglov was rescued (SoC branch 10: suit, then the offer)
+	return "offer"                                                -- SoC branch 1
+end
+
+-- Kruglov: meet / talk (the SoC escort talk) / busy / after
+function kru_state()
+	if has(F.REPORTED) then return "after" end
+	if has(F.PREP) then return "busy" end
+	if has(F.OFFERED) then return "talk" end
+	if has(F.RESCUE) then return "meet_r" end
+	return "meet"
+end
+
+function st_s_done(a, b) return sak_state() == "done" end
+function st_s_exit(a, b) return sak_state() == "exit" end
+function st_s_lab(a, b) return sak_state() == "lab" end
+function st_s_results(a, b) return sak_state() == "results" end
+function st_s_wait(a, b) return sak_state() == "wait" end
+function st_s_offer_r(a, b) return sak_state() == "offer_r" end
+function st_s_offer(a, b) return sak_state() == "offer" end
+function st_k_after(a, b) return kru_state() == "after" end
+function st_k_busy(a, b) return kru_state() == "busy" end
+function st_k_talk(a, b) return kru_state() == "talk" end
+function st_k_meet_r(a, b) return kru_state() == "meet_r" end
+function st_k_meet(a, b) return kru_state() == "meet" end
+
+-------------------------------------------------------------------------------------------------------
+-- PDA archive line + voice (the ORIGINAL English recordings of the Steam SoC; the Russian SoC has none for these dialogs)
+-------------------------------------------------------------------------------------------------------
+-- phrases spoken by the NPC (the others are the player's); recordings: sounds\characters_voice\dialogs\eng\<SoC dialog>_<id>.ogg
+local NPC_S = { ["11"] = 1, ["211"] = 1, ["21111"] = 1, ["211121"] = 1, ["211151"] = 1, ["101"] = 1, ["1012"] = 1, ["1014"] = 1, ["101411"] = 1, ["101431"] = 1,
+	["31"] = 1, ["3111"] = 1, ["311111"] = 1, ["311113"] = 1, ["61"] = 1, ["71"] = 1, ["231"] = 1 }
+local NPC_K = { ["11"] = 1, ["1111"] = 1, ["111111"] = 1, ["21"] = 1, ["41"] = 1, ["71"] = 1, ["101"] = 1 }
+VOICE_S = { "11", "211", "21111", "31", "3111", "311111", "61", "71" }
+VOICE_K = { "111111", "21" }
+local VOICE = { s = {}, k = {} }
+-- English Steam SoC under ...\dialogs\eng\, original Russian SoC at the stock path ...\dialogs\<name>.ogg (ships in patch soc_ru_voices)
+for _, id in ipairs(VOICE_S) do
+	VOICE.s[id] = { eng = "characters_voice\\dialogs\\eng\\yantar_general_ucheniy_talk_start_" .. id,
+	                rus = "characters_voice\\dialogs\\yantar_general_ucheniy_talk_start_" .. id }
+end
+for _, id in ipairs(VOICE_K) do
+	VOICE.k[id] = { eng = "characters_voice\\dialogs\\eng\\yantar_help_scientist_" .. id,
+	                rus = "characters_voice\\dialogs\\yantar_help_scientist_" .. id }
+end
+
+local keep_snd = nil
+local lastsay = { key = nil, t = 0 }
+played = ""                           -- tests / logs: the last path handed to the sound engine
+
+local function game_lang()
+	local ok, s = pcall(function() return game.translate_string("st_opt_windowed") end)
+	if ok and s ~= nil then
+		for i = 1, string.len(s) do
+			if string.byte(s, i) >= 168 then return "rus" end
+		end
+	end
+	return "eng"
+end
+
+-- "rus" or "eng": the voice language of THIS player (voice_language auto | rus | eng of his coop_settings.ltx)
+function lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	return game_lang()
+end
+
+function voice_path(kind, id)
+	local v = VOICE[kind] and VOICE[kind][id]
+	return v and v[lang()] or nil
+end
+
+local function say(kind, id, first, second)
+	local tid = "coop_soc_yan_" .. kind .. "_" .. id
+	local npcset = kind == "s" and NPC_S or NPC_K
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = npcset[id] and "npc" or "actor" end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+	if not OnClient() then return end
+	local la = getLocalActor()
+	if la == nil or first == nil or second == nil then return end
+	if first:id() ~= la:id() and second:id() ~= la:id() then return end
+	local now = time_global()
+	local key = kind .. id
+	if lastsay.key == key and now - lastsay.t < 1500 then return end
+	lastsay.key, lastsay.t = key, now
+	pcall(function() if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end end)  -- the next phrase cuts the line still playing (as in SoC), even a silent one
+	local v = voice_path(kind, id)
+	if v == nil then return end                                       -- no recording in this language (or none for the line): silent
+	if not getFS():exist("$game_sounds$", v .. ".ogg") then qlog("NOVOICE " .. v); return end
+	qlog("VOICE_PLAY " .. kind .. id .. " lang=" .. lang() .. " path=" .. v)
+	played = v
+	pcall(function()
+		if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end
+		keep_snd = sound_object(v)
+		keep_snd:play(la, 0, sound_object.s2d)
+	end)
+end
+
+-- BEGIN say (written by tools\apply_dialogs.py, do not edit by hand)
+function say_s11(a, b) say("s", "11", a, b) end
+function say_s111(a, b) say("s", "111", a, b) end
+function say_s211(a, b) say("s", "211", a, b) end
+function say_s2111(a, b) say("s", "2111", a, b) end
+function say_s21111(a, b) say("s", "21111", a, b) end
+function say_s21112(a, b) say("s", "21112", a, b) end
+function say_s211121(a, b) say("s", "211121", a, b) end
+function say_s2111211(a, b) say("s", "2111211", a, b) end
+function say_s21115(a, b) say("s", "21115", a, b) end
+function say_s211151(a, b) say("s", "211151", a, b) end
+function say_s101(a, b) say("s", "101", a, b) end
+function say_s1011(a, b) say("s", "1011", a, b) end
+function say_s1012(a, b) say("s", "1012", a, b) end
+function say_s1013(a, b) say("s", "1013", a, b) end
+function say_s1014(a, b) say("s", "1014", a, b) end
+function say_s10141(a, b) say("s", "10141", a, b) end
+function say_s101411(a, b) say("s", "101411", a, b) end
+function say_s101412(a, b) say("s", "101412", a, b) end
+function say_s10143(a, b) say("s", "10143", a, b) end
+function say_s101431(a, b) say("s", "101431", a, b) end
+function say_s31(a, b) say("s", "31", a, b) end
+function say_s311(a, b) say("s", "311", a, b) end
+function say_s3111(a, b) say("s", "3111", a, b) end
+function say_s31111(a, b) say("s", "31111", a, b) end
+function say_s311111(a, b) say("s", "311111", a, b) end
+function say_s311112(a, b) say("s", "311112", a, b) end
+function say_s311113(a, b) say("s", "311113", a, b) end
+function say_s311114(a, b) say("s", "311114", a, b) end
+function say_s71(a, b) say("s", "71", a, b) end
+function say_s61(a, b) say("s", "61", a, b) end
+function say_s231(a, b) say("s", "231", a, b) end
+function say_s2311(a, b) say("s", "2311", a, b) end
+function say_k21(a, b) say("k", "21", a, b) end
+function say_k41(a, b) say("k", "41", a, b) end
+function say_k11(a, b) say("k", "11", a, b) end
+function say_k111(a, b) say("k", "111", a, b) end
+function say_k1111(a, b) say("k", "1111", a, b) end
+function say_k11111(a, b) say("k", "11111", a, b) end
+function say_k111111(a, b) say("k", "111111", a, b) end
+function say_k1111111(a, b) say("k", "1111111", a, b) end
+function say_k101(a, b) say("k", "101", a, b) end
+function say_k71(a, b) say("k", "71", a, b) end
+-- END say

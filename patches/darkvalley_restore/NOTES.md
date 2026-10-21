@@ -59,3 +59,11 @@ Not proven in game (limits of the harness): the harness player in Dark Valley is
 ## Кратко по-русски
 Тёмная долина и X18 приведены к оригинальной SoC: бандиты у входа в лабораторию, наполненный ящик, дверь убрана, снорки и фоновый звук лаборатории, труп полтергейста и набор частиц SoC, выход в Кордон через южные ворота с сообщением торговца и заданием, документы у Сидоровича (1000), гаусс за 800.
 Не сделаны: короткие звуки комнат `x18_sound_N` (нет оригинального списка файлов), блокировка выхода на Свалку после рейда.
+
+## Technician parts (2026-10-21)
+`spawns/all.spawn` no longer holds the 63 technician-part items (`jup_b200_tech_materials_*`) of Cordon, Garbage and Agroprom, see `patches/no_tech_parts/NOTES.md`. If the file is regenerated (make_all_spawn.py, then cordon_bridge make_paths.py), run `patches/no_tech_parts/tools/strip_spawn.py` on it last.
+
+## Level changers of patch level_back (2026-10-21)
+`spawns/all.spawn` also holds three level changers written by `patches/level_back/tools/add_level_changers.py` (`rad_mil_level_changer`, `pri_rad_level_changer`,
+`aes_2_esc_freeplay_level_changer`). If the file is regenerated (make_all_spawn.py, then cordon_bridge make_paths.py), run `strip_spawn.py`, `strip_bar_anomalies.py` and then
+`add_level_changers.py` on it (the steps select by content and compose in any order). Check: `python patches/level_back/tools/check_level_changers.py <all.spawn> --addon <coop.addon>`.

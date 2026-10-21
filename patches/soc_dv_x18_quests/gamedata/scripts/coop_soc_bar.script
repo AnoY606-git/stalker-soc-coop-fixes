@@ -1,0 +1,239 @@
+-------------------------------------------------------------------------------------------------------
+-- Barkeep start dialog of the original Shadow of Chernobyl (SoC bar_bar_barmen_start), patch soc_dv_x18_quests.
+-- The part that matters for Dark Valley / X18: Agroprom documents -> reward -> the X18 job (bar_darklab_documents) and the X18
+-- documents hand-in -> reward -> the X16 job speech; then (patch bar_soc_quests) the X16 documents hand-in and the Brain Scorcher job.
+--  * phrase preconditions (st_*): which state the Barkeep greets in, computed from shared story flags only (same on every machine)
+--  * say_<phrase id>: PDA archive line for every player + the ORIGINAL English recording (10 of the SoC lines have one; the Russian
+--    SoC has no voice for dialogs), on the machine of the talking player only. Language = that player's voice_language setting
+--    (coop_soc_opening.voice_lang(), patch cutscenes_pkg_opening), no subtitles. A missing recording is simply silent.
+--  * rewards and hand-ins use the stock helpers (same calls as the mod's own dialogs)
+-------------------------------------------------------------------------------------------------------
+
+local FLAG = {
+	JOB      = "ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO",
+	AGR_DONE = "BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO",
+	GO       = "BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_DARKVALLEY_STOP_DIALOG_INFO",
+	GAIN     = "BAR_DARKLAB_DOCUMENT_GAIN",
+	DONE     = "BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO",
+	-- X16 documents and the Brain Scorcher job (patch bar_soc_quests, SoC infos of the same names)
+	X16_START = "BAR_X16_DOCUMENTS_START",                         -- X16 job accepted (SoC bar_x16_documents_start)
+	X16_GAIN  = "YAN_X16_DOCUMENTS_GAIN",                          -- the party holds the X16 documents (SoC yan_x16_documents_gain; set by coop_soc_barros.script)
+	X16_DONE  = "BAR_X16_DOCUMENTS_DONE",                          -- documents handed to the Barkeep (SoC bar_x16_documents_done)
+	RADAR     = "BAR_DEACTIVATE_RADAR_START",                      -- Brain Scorcher job accepted (SoC bar_deactivate_radar_start)
+}
+local X16_ITEM = "lab_x16_documents"
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCBAR " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCBAR " .. tostring(s)) end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- state of the job (one greeting per state, the states exclude each other)
+-------------------------------------------------------------------------------------------------------
+function state()
+	if has(FLAG.RADAR) then return "radar" end                        -- Brain Scorcher job accepted (SoC 16)
+	if has(FLAG.X16_DONE) then return "radaroffer" end                -- X16 documents handed in, Scorcher job not accepted yet (SoC 13)
+	if has(FLAG.DONE) then                                            -- X18 documents handed in (SoC bar_darklab_document_done)
+		if has(FLAG.X16_GAIN) then return "x16docs" end               -- X16 documents found, not handed in (SoC 12)
+		if has(FLAG.X16_START) then return "x16wait" end              -- X16 job accepted (SoC 18)
+		return "x16offer"                                             -- X16 job not accepted yet (SoC 19: the speech 1721 again)
+	end
+	if has(FLAG.GO) then
+		if has(FLAG.GAIN) then return "docs" end                      -- documents found, not handed in (SoC bar_darklab_document_gain)
+		return "wait"                                                 -- job accepted (SoC bar_darklab_document_start)
+	end
+	if has(FLAG.AGR_DONE) then return "offer" end                     -- Agroprom documents handed in, X18 job not accepted yet
+	if has(FLAG.JOB) then return "agroprom" end                       -- Sidorovich gave the military case job: the Barkeep asks for the documents
+	return "default"
+end
+
+function st_agroprom(a, b) return state() == "agroprom" end
+function st_offer(a, b) return state() == "offer" end
+function st_wait(a, b) local s = state() return s == "wait" or s == "x16wait" end
+function st_docs(a, b) return state() == "docs" end
+function st_default(a, b) return state() == "default" end
+function st_x16offer(a, b) return state() == "x16offer" end
+function st_x16docs(a, b) return state() == "x16docs" end
+function st_radaroffer(a, b) return state() == "radaroffer" end
+function st_radar(a, b) return state() == "radar" end
+
+-- the talking player (dialog preconditions run on his machine; first_speaker is not always the player, see dialogs.who_is_npc)
+local function actor_of(a, b)
+	local ok, npc, act = pcall(function() return dialogs.who_is_npc(a, b) end)
+	if ok and act ~= nil then return act end
+	return a
+end
+
+-- SoC agroprom_military_case_have: the Agroprom documents (the mod's container) are in the talking player's inventory
+function has_agroprom_docs(a, b)
+	local act = actor_of(a, b)
+	return act ~= nil and act:object("agr_safe_container_1") ~= nil
+end
+
+-- SoC bar_dialogs.give_agroprom_documents: the documents (and the flash drive that goes with them in the mod) go to the Barkeep
+function take_agroprom_docs(a, b)
+	pcall(function() dialogs_coop_l05_bar.transfer_agr_safe_container_1(a, b) end)
+	pcall(function() dialogs_coop_l05_bar.transfer_dev_flash_agru(a, b) end)
+end
+
+-- SoC bar_dialogs.give_agroprom_reward: 5000
+function reward_agroprom(a, b)
+	dialogs_money.give_money_to_actor_5000(a, b)
+end
+
+-- SoC bar_dialogs.give_darklab_documents: the X18 documents (three in the mod) go to the Barkeep. The check and the transfer are the
+-- co-op versions of patch x18 (any living player may hold one; only the talker's own copies move)
+function take_x18_docs(a, b)
+	pcall(function() dialogs_coop_l05_bar.transfer_dev_document_1_x18(a, b) end)
+	pcall(function() dialogs_coop_l05_bar.transfer_dev_document_2_x18(a, b) end)
+	pcall(function() dialogs_coop_l05_bar.transfer_dev_document_3_x18(a, b) end)
+end
+
+-- SoC bar_dialogs.give_darklab_reward: 10000
+function reward_x18(a, b)
+	dialogs_money.give_money_to_actor_10000(a, b)
+end
+
+-- any living player holds the item (the same check as xr_conditions.any_actor_has_item)
+local function any_has(section)
+	if db.mp_actors == nil then return false end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then
+			local ok, o = pcall(function() return a:object(section) end)
+			if ok and o ~= nil then return true end
+		end
+	end
+	return false
+end
+
+-- SoC bar_dialogs.have_x16_documents: the talking player holds the documents of the X16 lab (lab_x16_documents, Ghost's body on Yantar).
+-- No soft-lock: when the party took them (flag) but nobody carries them any more (a player died with them, or the X16 chain was finished
+-- another way, see coop_soc_barros.script), the hand-in is open to everybody
+function has_x16_docs(a, b)
+	local act = actor_of(a, b)
+	if act ~= nil and act:object(X16_ITEM) ~= nil then return true end
+	return has(FLAG.X16_GAIN) and not any_has(X16_ITEM)
+end
+
+-- SoC bar_dialogs.give_x16_documents (SoC pays nothing here: the dialog only takes the documents, the reward is the next job)
+function take_x16_docs(a, b)
+	local act = actor_of(a, b)
+	if act ~= nil and act:object(X16_ITEM) ~= nil then
+		pcall(function() dialogs.relocate_item_section_from_actor(a, b, X16_ITEM) end)
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- PDA archive line + voice
+-------------------------------------------------------------------------------------------------------
+local NPC = { ["2"] = 1, ["211"] = 1, ["221"] = 1, ["151"] = 1, ["15111"] = 1, ["15113"] = 1, ["15115"] = 1, ["171"] = 1, ["1731"] = 1,
+	["1721"] = 1, ["17212"] = 1, ["172131"] = 1, ["172141"] = 1, ["181"] = 1,
+	["121"] = 1, ["12121"] = 1, ["131"] = 1, ["13121"] = 1, ["1314"] = 1, ["1316"] = 1, ["1321"] = 1, ["161"] = 1, ["162"] = 1 }
+-- SoC phrase id -> recording: English Steam SoC under ...\dialogs\eng\, original Russian SoC at the stock path ...\dialogs\<name>.ogg
+-- (the Russian files ship in patch soc_ru_voices)
+local VOICE = {}
+for _, id in ipairs({ "2", "221", "151", "15111", "171", "1721", "17212", "121", "13121", "1314" }) do
+	VOICE[id] = { eng = "characters_voice\\dialogs\\eng\\bar_bar_barmen_start_" .. id,
+	              rus = "characters_voice\\dialogs\\bar_bar_barmen_start_" .. id }
+end
+VOICE_IDS = { "2", "221", "151", "15111", "171", "1721", "17212", "121", "13121", "1314" }   -- the last three ship with patch bar_soc_quests
+
+local keep_snd = nil
+local last = { key = nil, t = 0 }
+played = ""                           -- tests / logs: the last path handed to the sound engine
+
+local function game_lang()
+	local ok, s = pcall(function() return game.translate_string("st_opt_windowed") end)
+	if ok and s ~= nil then
+		for i = 1, string.len(s) do
+			if string.byte(s, i) >= 168 then return "rus" end
+		end
+	end
+	return "eng"
+end
+
+-- "rus" or "eng": the voice language of THIS player (voice_language auto | rus | eng of his coop_settings.ltx)
+function lang()
+	local ok, l = pcall(function() return coop_soc_opening.voice_lang() end)
+	if ok and (l == "rus" or l == "eng") then return l end
+	return game_lang()
+end
+
+function voice_path(id)
+	local v = VOICE[id]
+	return v and v[lang()] or nil
+end
+
+local function say(id, first, second)
+	local tid = "coop_soc_barman_" .. id
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = NPC[id] and "npc" or "actor" end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+	if not OnClient() then return end
+	local la = getLocalActor()
+	if la == nil or first == nil or second == nil then return end
+	if first:id() ~= la:id() and second:id() ~= la:id() then return end
+	local now = time_global()
+	if last.key == id and now - last.t < 1500 then return end
+	last.key, last.t = id, now
+	pcall(function() if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end end)  -- the next phrase cuts the line still playing (as in SoC), even a silent one
+	local v = voice_path(id)
+	if v == nil then return end                                       -- no recording in this language (or no voice for the line): silent
+	if not getFS():exist("$game_sounds$", v .. ".ogg") then qlog("NOVOICE " .. v); return end
+	qlog("VOICE_PLAY id=" .. id .. " lang=" .. lang() .. " path=" .. v)
+	played = v
+	pcall(function()
+		if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end
+		keep_snd = sound_object(v)
+		keep_snd:play(la, 0, sound_object.s2d)
+	end)
+end
+
+function say_2(a, b) say("2", a, b) end
+function say_21(a, b) say("21", a, b) end
+function say_211(a, b) say("211", a, b) end
+function say_2111(a, b) say("2111", a, b) end
+function say_22(a, b) say("22", a, b) end
+function say_221(a, b) say("221", a, b) end
+function say_2211(a, b) say("2211", a, b) end
+function say_151(a, b) say("151", a, b) end
+function say_1511(a, b) say("1511", a, b) end
+function say_15111(a, b) say("15111", a, b) end
+function say_15112(a, b) say("15112", a, b) end
+function say_15113(a, b) say("15113", a, b) end
+function say_15114(a, b) say("15114", a, b) end
+function say_15115(a, b) say("15115", a, b) end
+function say_171(a, b) say("171", a, b) end
+function say_172(a, b) say("172", a, b) end
+function say_173(a, b) say("173", a, b) end
+function say_1731(a, b) say("1731", a, b) end
+function say_1721(a, b) say("1721", a, b) end
+function say_17211(a, b) say("17211", a, b) end
+function say_17212(a, b) say("17212", a, b) end
+function say_17213(a, b) say("17213", a, b) end
+function say_17214(a, b) say("17214", a, b) end
+function say_172131(a, b) say("172131", a, b) end
+function say_172141(a, b) say("172141", a, b) end
+function say_181(a, b) say("181", a, b) end
+function say_121(a, b) say("121", a, b) end
+function say_1211(a, b) say("1211", a, b) end
+function say_1212(a, b) say("1212", a, b) end
+function say_12121(a, b) say("12121", a, b) end
+function say_121211(a, b) say("121211", a, b) end
+function say_131(a, b) say("131", a, b) end
+function say_1312(a, b) say("1312", a, b) end
+function say_13121(a, b) say("13121", a, b) end
+function say_1313(a, b) say("1313", a, b) end
+function say_1314(a, b) say("1314", a, b) end
+function say_1315(a, b) say("1315", a, b) end
+function say_1316(a, b) say("1316", a, b) end
+function say_132(a, b) say("132", a, b) end
+function say_1321(a, b) say("1321", a, b) end
+function say_161(a, b) say("161", a, b) end
+function say_162(a, b) say("162", a, b) end

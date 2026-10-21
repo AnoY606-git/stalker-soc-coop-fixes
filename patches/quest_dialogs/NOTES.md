@@ -22,3 +22,6 @@ Run the script again if the mod's dialog files or `patches/cordon`'s Escape dial
 ## 2026-10-21
 `dialogs_coop_l01_escape.xml` was regenerated on top of `patches/cordon`'s copy again after the Sidorovich start dialog became the original SoC opening
 (see `patches\cutscenes_pkg_opening\NOTES.md`); the only difference to cordon's copy is still the two `<precondition>` lines.
+
+## 2026-10-21 technician parts
+`dialogs_coop_l05_bar.xml` no longer has the two technician-parts dialogs of Plyushkin (`what_kind_of_junk_is_needed`, `hand_over_the_trash`); the generator drops them too. See `patches/no_tech_parts/NOTES.md`.

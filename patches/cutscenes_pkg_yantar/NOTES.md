@@ -30,7 +30,7 @@ Original (`yan/yan_sleep_restrictor.ltx:1-20`): `+yan_spawn_ghost` (given in `gu
 - The mod has no `yan_spawn_ghost` and no gulag scene, so the trigger is a position: any alive player within 10 m of (174.65, -7.80, -99.65), the research stop of the
   SoC scientists (`way_l08_yantar.ltx` `yan_scientist_wait_walk_3`; the mod level uses SoC coordinates), while `SCN_YANTAR_BRAIN_PLAYED` is not set (the SoC ghost sleep precedes the X16 dream). This is an approximation of a gulag-driven event; if the party never walks past that stop the scene does not play.
 - The hidden-bed teleports (`yan_actor_sleep_1`, `yan_actor_sleep`) are left out: in co-op everyone sleeps where they stand.
-- `dream_talk_l/_r` voices are played if the files exist (they are not in the media set, so currently silent).
+- `dream_talk_l/_r` voices (v1.4.2): played in the voice language of each player (`coop_soc_opening.voice_lang()`, the steps are built on each client): Russian = stock path `sounds\characters_voice\scenario\yantar\dream_talk_l/_r.ogg`, English = `...\yantar\eng\dream_talk_l/_r.ogg`. The four files ship in patch `soc_ru_voices` (Russian: FOSTER's SoC sounds, English: Steam SoC 1.0006). A missing file stays silent. Offline test: `tests\dream_voice_mock_test.py` (real script in a Lua VM: rus / eng / missing file / no opening script; ALL PASS).
 - Looped cameras: the director's `cam` step cannot loop (request in `CONTRACT_REQUESTS.md`); `fn` steps start/stop `level.add_cam_effector(..., true)` themselves and
   `on_client_end` removes them on every end path (done, skip, stopped, watchdog).
 Skip: anyone (camera scene). `once` via `SCN_YANTAR_GHOST_SLEEP_PLAYED`. Late joiners and loads never replay.

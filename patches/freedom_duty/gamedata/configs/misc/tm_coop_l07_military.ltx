@@ -9,7 +9,7 @@ storyline 								= true
 title 									= st_mil_start_talk_to_the_cap_quest_task_name
 descr 									= st_mil_start_talk_to_the_cap_quest_task_descr
 target 									= mil_smart_terrain_12_1_freedom_cap
-condlist_0 								= {+MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO} complete %=give_task(mil_start_protect_the_barrier_quest_task)%
+condlist_0 								= {+MIL_SMART_TERRAIN_12_1_FREEDOM_CAP_PROTECT_THE_BARRIER_DIALOG_INFO} complete
 condlist_1 								= {+MIL_START_TALK_TO_THE_CAP_QUEST_TASK_FAIL_INFO} fail
 
 ;Квест основной(Защита Барьера: уничтожить отряд Монолита)
@@ -21,7 +21,6 @@ title 									= st_mil_start_protect_the_barrier_quest_task_name
 descr 									= st_mil_start_protect_the_barrier_quest_task_descr
 target 									= mil_smart_terrain_17_monolith_1_squad
 condlist_0 								= {+MIL_SMART_TERRAIN_17_MONOLITH_1_SQUAD_DEAD} complete
-reward_money 							= 10000
 
 ;Квест Бармена(Отправится на Радар)
 [mil_start_go_to_radar_quest_task]
@@ -44,7 +43,7 @@ storyline 											= false
 title 												= st_mil_start_kill_the_sniper_on_the_tower_quest_task_name
 descr 												= st_mil_start_kill_the_sniper_on_the_tower_quest_task_descr
 target 												= mil_smart_terrain_8_freedom_1_squad
-condlist_0 											= {+MIL_SMART_TERRAIN_8_FREEDOM_1_SQUAD_DEAD} complete %=give_task(mil_start_talk_to_skull_about_the_assault_quest_task)%
+condlist_0 											= {+MIL_SMART_TERRAIN_8_FREEDOM_1_SQUAD_DEAD} complete
 condlist_1 											= {+MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO} fail
 on_complete 										= {=local_actor_story_id(actor_the_main_character)} %=mil_dolg_increase_goodwill%
 
@@ -57,7 +56,6 @@ title 												= st_mil_start_talk_to_skull_about_the_assault_quest_task_name
 descr 												= st_mil_start_talk_to_skull_about_the_assault_quest_task_descr
 target 												= mil_smart_terrain_18_duty_skull
 condlist_0 											= {+MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO} complete
-condlist_1 											= {+MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO +MIL_START_TAKE_KEY_POSITIONS_QUEST_TASK_INFO} complete %=give_task(mil_start_kill_lukash_quest_task) =give_task(mil_start_kill_the_snipers_1_quest_task)%
 
 ;Квест Черепа(Убить Лукаша)
 [mil_start_kill_lukash_quest_task]
@@ -68,7 +66,6 @@ title 												= st_mil_start_kill_lukash_quest_task_name
 descr 												= st_mil_start_kill_lukash_quest_task_descr
 target 												= mil_smart_terrain_16_freedom_1_squad
 condlist_0 											= {+MIL_SMART_TERRAIN_16_FREEDOM_1_SQUAD_DEAD} complete
-reward_money 										= 25000
 
 ;Квест Черепа(Убить Снайперов №1)
 [mil_start_kill_the_snipers_1_quest_task]
@@ -78,8 +75,7 @@ storyline 											= false
 title 												= st_mil_start_kill_the_snipers_quest_task_name
 descr 												= st_mil_start_kill_the_snipers_quest_task_descr
 target 												= mil_smart_terrain_6_freedom_1_squad
-condlist_0 											= {+MIL_SMART_TERRAIN_6_FREEDOM_1_SQUAD_DEAD} complete %=give_task(mil_start_kill_the_snipers_2_quest_task)%
-reward_money 										= 2000
+condlist_0 											= {+MIL_SMART_TERRAIN_6_FREEDOM_1_SQUAD_DEAD} complete
 
 ;Квест Черепа(Убить Снайперов №2)
 [mil_start_kill_the_snipers_2_quest_task]
@@ -89,8 +85,7 @@ storyline 											= false
 title 												= st_mil_start_kill_the_snipers_quest_task_name
 descr 												= st_mil_start_kill_the_snipers_quest_task_descr
 target 												= mil_smart_terrain_5_freedom_1_squad
-condlist_0 											= {+MIL_SMART_TERRAIN_5_FREEDOM_1_SQUAD_DEAD} complete %=give_task(mil_start_kill_the_snipers_3_quest_task)%
-reward_money 										= 2000
+condlist_0 											= {+MIL_SMART_TERRAIN_5_FREEDOM_1_SQUAD_DEAD} complete
 
 ;Квест Черепа(Убить Снайперов №3)
 [mil_start_kill_the_snipers_3_quest_task]
@@ -100,8 +95,7 @@ storyline 											= false
 title 												= st_mil_start_kill_the_snipers_quest_task_name
 descr 												= st_mil_start_kill_the_snipers_quest_task_descr
 target 												= mil_smart_terrain_4_freedom_1_squad
-condlist_0 											= {+MIL_SMART_TERRAIN_4_FREEDOM_1_SQUAD_DEAD} complete %=give_task(mil_start_kill_the_snipers_4_quest_task)%
-reward_money 										= 2000
+condlist_0 											= {+MIL_SMART_TERRAIN_4_FREEDOM_1_SQUAD_DEAD} complete
 
 ;Квест Черепа(Убить Снайперов №4)
 [mil_start_kill_the_snipers_4_quest_task]
@@ -123,7 +117,7 @@ storyline 											= false
 title 												= st_mil_start_report_to_max_quest_task_name
 descr 												= st_mil_start_report_to_max_quest_task_descr
 target 												= mil_smart_terrain_15_freedom_max
-condlist_0 											= {+MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO} complete %=give_task(mil_start_kill_skull_quest_task) =give_task(mil_start_kill_the_duty_1_quest_task) =give_task(mil_start_kill_the_duty_2_quest_task) =give_task(mil_start_kill_the_duty_3_quest_task) =give_task(mil_start_kill_the_duty_4_quest_task) =give_task(mil_start_kill_the_duty_5_quest_task) =give_task(mil_start_kill_the_duty_6_quest_task) =give_task(mil_start_kill_the_duty_7_quest_task) =give_task(mil_start_kill_the_duty_8_quest_task)%
+condlist_0 											= {+MIL_SMART_TERRAIN_15_FREEDOM_MAX_HELP_FREEDOM_STOP_DIALOG_INFO} complete
 condlist_1 											= {+MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO} fail
 on_complete 										= {=local_actor_story_id(actor_the_main_character)} %=mil_freedom_increase_goodwill%
 
@@ -135,8 +129,7 @@ storyline 											= false
 title 												= st_mil_start_kill_skull_quest_task_name
 descr 												= st_mil_start_kill_skull_quest_task_descr
 target 												= mil_smart_terrain_18_duty_skull
-condlist_0 											= {+MIL_SMART_TERRAIN_14_DUTY_SKULL_SQUAD_DEAD} complete
-reward_money 										= 25000
+condlist_0 											= {+MIL_SOC_DUTY_DEAD} complete
 
 ;Квест Макса(Убить Долговца №1)
 [mil_start_kill_the_duty_1_quest_task]
@@ -246,3 +239,123 @@ descr 										= st_mil_start_max_flash_return_quest_task_descr
 target 										= mil_smart_terrain_15_freedom_max
 condlist_0 									= {+MIL_MAX_FLASH_JOB_COMPLETE_INFO} complete
 reward_item 									= wpn_walther
+
+;;; soc_mil_quests begin (generated by patches\soc_mil_quests\tools\apply_logic.py)
+;SoC steps that the level maker had no task for (texts: st_coop_soc_mil.xml)
+[mil_soc_return_lukash_task]
+icon = ui_inGame2_mil_start_report_to_max_quest_task
+prior = 50
+storyline = false
+title = st_mil_soc_return_lukash_name
+descr = st_mil_soc_return_lukash_descr
+target = mil_smart_terrain_3_freedom_lukash
+condlist_0 = {+MIL_SOC_LUKASH_JOB_DONE} complete
+
+[mil_soc_cap_reward_task]
+icon = ui_inGame2_mil_start_talk_to_the_cap_quest_task
+prior = 150
+storyline = true
+title = st_mil_soc_cap_reward_name
+descr = st_mil_soc_cap_reward_descr
+target = mil_smart_terrain_12_1_freedom_cap
+condlist_0 = {+MIL_SOC_CAP_REWARD} complete
+
+[mil_soc_duty_fee_task]
+icon = ui_inGame2_mil_start_kill_lukash_quest_task
+prior = 50
+storyline = false
+title = st_mil_soc_duty_fee_name
+descr = st_mil_soc_duty_fee_descr
+target = mil_smart_terrain_18_duty_skull
+condlist_0 = {+MIL_SOC_DUTY_FEE} complete
+
+;;; soc_mil_quests end
+
+;;; soc_mil_courier begin (generated by patches\soc_mil_courier\tools\apply_shared.py)
+;Army Warehouses: SoC mil_courier_job (5 objectives) and mil_freedom_rg6_task (4 objectives); texts: st_coop_soc_milc.xml
+[mil_soc_courier_1_task]
+icon = ui_inGame2_mil_start_report_to_max_quest_task
+prior = 60
+storyline = false
+title = st_mil_soc_courier_1_name
+descr = st_mil_soc_courier_1_descr
+target = mil_soc_pavlik
+condlist_0 = {+MIL_SOC_COURIER_KHUTOR} complete
+condlist_1 = {+MIL_SOC_COURIER_FAILED} fail
+
+[mil_soc_courier_2_task]
+icon = ui_inGame2_mil_start_report_to_max_quest_task
+prior = 60
+storyline = false
+title = st_mil_soc_courier_2_name
+descr = st_mil_soc_courier_2_descr
+target = mil_soc_pavlik
+condlist_0 = {+MIL_SOC_COURIER_CALL} complete
+condlist_1 = {+MIL_SOC_COURIER_FAILED} fail
+
+[mil_soc_courier_3_task]
+icon = ui_inGame2_mil_start_kill_lukash_quest_task
+prior = 60
+storyline = false
+title = st_mil_soc_courier_3_name
+descr = st_mil_soc_courier_3_descr
+target = mil_soc_pavlik
+condlist_0 = {+MIL_SOC_COURIER_DEAD} complete
+condlist_1 = {+MIL_SOC_COURIER_FAILED} fail
+
+[mil_soc_courier_4_task]
+icon = ui_inGame2_mil_start_kill_lukash_quest_task
+prior = 60
+storyline = false
+title = st_mil_soc_courier_4_name
+descr = st_mil_soc_courier_4_descr
+target = mil_soc_ara
+condlist_0 = {+MIL_SOC_ARA_DEAD} complete
+condlist_1 = {+MIL_SOC_COURIER_FAILED} fail
+
+[mil_soc_courier_5_task]
+icon = ui_inGame2_mil_start_report_to_max_quest_task
+prior = 60
+storyline = false
+title = st_mil_soc_courier_5_name
+descr = st_mil_soc_courier_5_descr
+target = mil_smart_terrain_3_freedom_lukash
+condlist_0 = {+MIL_SOC_COURIER_DONE} complete
+condlist_1 = {+MIL_SOC_COURIER_FAILED} fail
+
+[mil_soc_rg6_1_task]
+icon = ui_inGame2_mil_start_talk_to_the_cap_quest_task
+prior = 70
+storyline = false
+title = st_mil_soc_rg6_1_name
+descr = st_mil_soc_rg6_1_descr
+target = mil_soc_cook
+condlist_0 = {+MIL_SOC_RG6_COOK_MET} complete
+
+[mil_soc_rg6_2_task]
+icon = ui_inGame2_mil_start_talk_to_the_cap_quest_task
+prior = 70
+storyline = false
+title = st_mil_soc_rg6_2_name
+descr = st_mil_soc_rg6_2_descr
+target = mil_soc_cook
+condlist_0 = {+MIL_SOC_RG6_ASK} complete
+
+[mil_soc_rg6_3_task]
+icon = ui_inGame2_mil_start_kill_lukash_quest_task
+prior = 70
+storyline = false
+title = st_mil_soc_rg6_3_name
+descr = st_mil_soc_rg6_3_descr
+target = mil_soc_rg6
+condlist_0 = {+MIL_SOC_RG6_GOT} complete
+
+[mil_soc_rg6_4_task]
+icon = ui_inGame2_mil_start_report_to_max_quest_task
+prior = 70
+storyline = false
+title = st_mil_soc_rg6_4_name
+descr = st_mil_soc_rg6_4_descr
+target = bar_smart_terrain_4_duty_voronin
+condlist_0 = {+MIL_SOC_RG6_DONE} complete
+;;; soc_mil_courier end

@@ -1,0 +1,8 @@
+[logic]
+active 												= sr_idle@start_quest_idle
+
+[sr_idle@start_quest_idle]
+on_info 											= {+YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO} sr_idle@nil %+YAN_YAN_START_INFILTRATE_THE_X16_LAB_QUEST_TASK_INFO =scenario_autosave(st_find_the_installation)%
+;on_info 											= {-YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO} sr_idle@nil %+YAN_YAN_START_INFILTRATE_THE_X16_LAB_QUEST_TASK_INFO =scenario_autosave(st_find_the_installation)%
+
+[sr_idle@nil]

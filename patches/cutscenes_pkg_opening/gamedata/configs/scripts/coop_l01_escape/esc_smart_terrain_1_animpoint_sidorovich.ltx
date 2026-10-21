@@ -1,0 +1,39 @@
+[logic@esc_smart_terrain_1_animpoint_sidorovich]
+suitable 											= {=check_npc_name(esc_smart_terrain_1_trader_sidorovich)} true
+prior 												= 300
+trade 												= misc\trade\esc_smart_terrain_1_trader_sidorovich.ltx
+can_select_weapon 									= false
+level_spot 											= trader
+active 												= animpoint@esc_smart_terrain_1_animpoint_sidorovich
+
+[animpoint@esc_smart_terrain_1_animpoint_sidorovich]
+cover_name 											= esc_smart_terrain_1_animpoint_3
+reach_distance 										= 2
+avail_animations 									= animpoint_sit_normal
+use_camp 											= false
+meet 												= meet@trader
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+invulnerable 										= true
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+
+; patch cutscenes_pkg_opening: the level maker's own hello / bye voice (trader_script1a / trader_script1c) played on top of the SoC recordings of
+; coop_scn_opening.script (scene sidor_greet: same distances, 3 m hello, 5 m bye), so Sidorovich spoke twice. Only the SoC lines play now.
+[meet@trader]
+close_snd_hello 									= nil
+close_snd_bye 										= nil
+close_anim 											= nil
+close_victim 										= nil
+far_anim 											= nil
+far_victim 											= nil
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance 									= 3
+abuse           									= false
+use 												= {=actor_enemy} false, {!coop_sidor_talk_ok} false, true
+allow_break 										= true
+meet_on_talking 									= false
+
+;================================================

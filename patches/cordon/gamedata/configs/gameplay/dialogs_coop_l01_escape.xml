@@ -347,71 +347,71 @@
         </phrase_list>
     </dialog>
     <dialog id="esc_smart_terrain_7_military_kuznetsov_go_to_fox_1">
-    <has_flag>ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO</has_flag>
-    <dont_has_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</dont_has_flag>	
+        <dont_has_flag>ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO</dont_has_flag>
         <phrase_list>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_3</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_3</text>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_1</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_1</text>
-                <next>2</next>
-            </phrase>
             <phrase id="0">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_0</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_0</text>
+                <action>coop_soc_cordon.say_bridge_12</action>
+                <text>coop_soc_bridge_12</text>
                 <next>1</next>
             </phrase>
+            <phrase id="1">
+                <action>coop_soc_cordon.say_bridge_13</action>
+                <text>coop_soc_bridge_13</text>
+                <next>2</next>
+                <next>4</next>
+            </phrase>
             <phrase id="2">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_2</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_1_2</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</give_flag>				
+                <action>coop_soc_cordon.say_bridge_14</action>
+                <text>coop_soc_bridge_14</text>
+                <precondition>coop_soc_cordon.has_bridge_bribe</precondition>
+                <action>coop_soc_cordon.give_bridge_bribe</action>
+                <give_flag>ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO</give_flag>
+                <give_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</give_flag>
+                <give_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_2_STOP_DIALOG_INFO</give_flag>
                 <next>3</next>
             </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="esc_smart_terrain_7_military_kuznetsov_go_to_fox_2">
-        <precondition>dialogs_coop_l01_escape.if_actor_has_vodka_5x</precondition>
-		<has_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_1_STOP_DIALOG_INFO</has_flag>
-		<dont_has_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_2_STOP_DIALOG_INFO</dont_has_flag>	
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_1</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_0</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_0</text>
-                <action>dialogs_coop_l01_escape.transfer_vodka_5x</action>
-                <give_flag>ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO</give_flag>
-                <next>1</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_2</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_go_to_fox_2_2</text>
+            <phrase id="3">
+                <action>coop_soc_cordon.say_bridge_15</action>
+                <text>coop_soc_bridge_15</text>
                 <action>dialogs.break_dialog</action>
-                <give_flag>ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_2_STOP_DIALOG_INFO</give_flag>	
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_cordon.say_bridge_24</action>
+                <text>coop_soc_bridge_24</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_soc_cordon.say_bridge_25</action>
+                <text>coop_soc_bridge_25</text>
+                <action>dialogs.break_dialog</action>
             </phrase>
         </phrase_list>
     </dialog>
     <dialog id="esc_smart_terrain_7_military_kuznetsov_start_dialog">
         <phrase_list>
             <phrase id="0">
-                <action>coop_pda_phrases.say__esc_smart_terrain_7_military_kuznetsov_start_dialog_0</action>
-
-                <text>esc_smart_terrain_7_military_kuznetsov_start_dialog_0</text>
-                <dont_has_flag>all_esc_help_lost_pridurok_task_info</dont_has_flag>
+                <text />
+                <next>10</next>
+                <next>20</next>
+            </phrase>
+            <!-- original SoC esc_bridge_soldiers_start: 11 off limits, 21 keep moving once the pass is paid -->
+            <phrase id="10">
+                <text />
+                <dont_has_flag>ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO</dont_has_flag>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_cordon.say_bridge_11</action>
+                <text>coop_soc_bridge_11</text>
+            </phrase>
+            <phrase id="20">
+                <text />
+                <has_flag>ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO</has_flag>
+                <next>21</next>
+            </phrase>
+            <phrase id="21">
+                <action>coop_soc_cordon.say_bridge_21</action>
+                <text>coop_soc_bridge_21</text>
             </phrase>
         </phrase_list>
     </dialog>
@@ -431,6 +431,7 @@
                 <text>esc_smart_terrain_1_trader_sidorovich_flesh_2</text>
 				<action>dialogs_coop_l01_escape.transfer_dev_flash_sidorovich</action>
                 <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO</give_flag>
+                <give_flag>ESC_HELICOPTER_GO_TO_AGROPROM_INFO</give_flag>
                 <action>dialogs_money.give_money_to_actor_1000</action>
                 <next>3</next>
             </phrase>
@@ -456,51 +457,60 @@
         </phrase_list>
     </dialog>
     <dialog id="esc_smart_terrain_1_trader_sidorovich_go_to_fox">
-        <has_flag>ESC_HELICOPTER_GO_TO_AGROPROM_INFO</has_flag>
+        <has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO</has_flag>
         <dont_has_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</dont_has_flag>
         <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_cordon.say_job_0</action>
+                <text>coop_soc_job_0</text>
+                <next>1</next>
+            </phrase>
             <phrase id="1">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_1</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_1</text>
+                <action>coop_soc_cordon.say_job_1</action>
+                <text>coop_soc_job_1</text>
                 <next>2</next>
             </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_3</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_5</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_5</text>
-                <next>6</next>
-            </phrase>
             <phrase id="2">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_2</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_2</text>
+                <action>coop_soc_cordon.say_job_2</action>
+                <text>coop_soc_job_2</text>
                 <next>3</next>
             </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_6</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_6</text>
-                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</give_flag>
-                <action>dialogs.break_dialog</action>
+            <phrase id="3">
+                <action>coop_soc_cordon.say_job_3</action>
+                <text>coop_soc_job_3</text>
+                <next>4</next>
             </phrase>
             <phrase id="4">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_4</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_4</text>
+                <action>coop_soc_cordon.say_job_4</action>
+                <text>coop_soc_job_4</text>
                 <next>5</next>
             </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__esc_smart_terrain_1_trader_sidorovich_go_to_fox_0</action>
-
-                <text>esc_smart_terrain_1_trader_sidorovich_go_to_fox_0</text>
-                <next>1</next>
+            <phrase id="5">
+                <action>coop_soc_cordon.say_job_5</action>
+                <text>coop_soc_job_5</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6">
+                <action>coop_soc_cordon.say_job_6</action>
+                <text>coop_soc_job_6</text>
+                <next>7</next>
+            </phrase>
+            <phrase id="7">
+                <action>coop_soc_cordon.say_job_7</action>
+                <text>coop_soc_job_7</text>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</give_flag>
+                <next>8</next>
+            </phrase>
+            <phrase id="8">
+                <action>coop_soc_cordon.say_job_8</action>
+                <text>coop_soc_job_8</text>
+                <next>9</next>
+            </phrase>
+            <phrase id="9">
+                <action>coop_soc_cordon.say_job_9</action>
+                <text>coop_soc_job_9</text>
+                <give_flag>ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs.break_dialog</action>
             </phrase>
         </phrase_list>
     </dialog>

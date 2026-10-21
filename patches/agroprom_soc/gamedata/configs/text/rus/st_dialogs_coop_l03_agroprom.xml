@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="agr_smart_terrain_7_stalker_mole_start_dialog_0">
+        <text>Спасибо тебе за твою помощь, сталкер! Не приди ты вовремя, я был бы уже покойником.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_0">
+        <text>Я ищу информацию о Стрелке, Серый мне говорил, что ты что-то знаешь.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_1">
+        <text>Серый? Ну хорошо, слушай. Говорят что Стрелок промышлял в этих местах. К тому же где-то в местных подвалах находится тайник Стрелка. Говорили даже, что здесь была база его группировки. Мы тоже искали тайник, только ничего не нашли. Я тебе скину информацию, может тебе повезет. Там вся информация о тайнике, которая у нас есть.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_2">
+        <text>Как мне попасть в эти подвалы?</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_3">
+        <text>Тут один из многих входов, через него ты попадешь в один из соединенных друг с другом подвалов, ну а там смотри сам, карты у меня нет, они очень длинные с множеством комнат и довольно запутаны.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_4">
+        <text>Спасибо за информацию.</text>
+    </string>
+</string_table>

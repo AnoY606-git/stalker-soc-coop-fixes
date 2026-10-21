@@ -56,6 +56,9 @@
 	</character>
 	<character id="gar_smart_terrain_8_duty_prapor">
 		<class>gar_smart_terrain_8_duty_prapor</class>
+	</character>
+	<character id="gar_dolg_blokpost">
+		<class>gar_dolg_blokpost</class>
 	</character>	
 	<character id="gar_smart_terrain_10_bandit_major">
 		<class>gar_smart_terrain_10_bandit_major</class>
@@ -248,5 +251,20 @@
 	</character>
 	<character id="mil_crazy_stalker">
 		<class>mil_crazy_stalker</class>
+	</character>
+	<character id="mil_soc_pavlik">
+		<class>mil_soc_pavlik</class>
+	</character>
+	<character id="mil_soc_ara">
+		<class>mil_soc_ara</class>
+	</character>
+	<character id="mil_soc_ara_guard">
+		<class>mil_soc_ara_guard</class>
+	</character>
+	<character id="mil_soc_cook">
+		<class>mil_soc_cook</class>
+	</character>
+	<character id="yan_soc_semenov">
+		<class>yan_soc_semenov</class>
 	</character>
 </xml>

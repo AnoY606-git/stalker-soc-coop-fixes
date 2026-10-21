@@ -1,0 +1,27 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- soc_doctor_chain: the Guide and the Doctor of the original SoC. Included from misc\task_manager.ltx (task ids are global, any level).
+;-- Both tasks are given to EVERY player by the server tick of scripts\coop_soc_doctor.script (once per level load, only while open).
+;--------------------------------------------------------------------------------------------------------------------------------------
+;SoC doctor_meet: "Meet with Doctor" (Guide dialog), the marker is the Doctor in Strelok's hiding place (Agroprom underground) once he exists
+[soc_doc_meet_task]
+icon        = ui_inGame2_agru_start_find_the_shooter_hiding_place_task
+prior       = 175
+storyline   = true
+title       = coop_soc_doc_meet_name
+descr       = coop_soc_doc_meet_descr
+target      = soc_cit_doctor
+condlist_0  = {+ESC_FIND_DOCTOR_DONE} complete
+condlist_1  = {+SOC_DOC_CLOSED} complete
+
+;SoC cit_doctor_task: "Secret stash at Pripyat" (the Doctor's talk). On Pripyat itself soc_aes_quests gives its three stash steps with the same title; this one ends where its first step ends (the hotel) and fails like theirs
+[soc_doc_stash_task]
+icon        = ui_inGame2_pri_start_go_to_cnpp_quest_task
+prior       = 172
+storyline   = true
+title       = coop_soc_doc_stash_name
+descr       = coop_soc_doc_stash_descr
+target      = nil
+condlist_0  = {+PRI_MONOLITH_DECODER_GOT} complete
+condlist_1  = {+PRI_ACTOR_IN_HOTEL} complete
+condlist_2  = {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} fail
+condlist_3  = {+SOC_AES_CNPP_ARRIVED} fail

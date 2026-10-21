@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="agr_smart_terrain_7_stalker_mole_start_dialog_0">
+        <text>Thanks for your help, stalker! If you hadn't shown up, I'd be a dead man by now.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_0">
+        <text>I'm looking for info on Strelok. Seriy told me you know something about him.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_1">
+        <text>Seriy? Well, OK, listen. They say Strelok used to sneak around here. On top of that, his stash is somewhere around here below ground. I heard his group even has its base here. We also looked for the stash but we found jack shit. I'll give you the info about the stash, maybe you'll be luckier. This is everything we have on the stash.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_2">
+        <text>How do I get into the basement?</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_3">
+        <text>This is one of the many exits which will lead you into the interconnected basements. Once you're in there, you're on your own - I don't have a map and the basement network is huge and confusing.</text>
+    </string>
+    <string id="agr_smart_terrain_7_stalker_mole_talk_to_the_stalker_mole_4">
+        <text>Thanks for the information.</text>
+    </string>
+</string_table>

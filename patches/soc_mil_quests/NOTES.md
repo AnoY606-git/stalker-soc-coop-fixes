@@ -1,0 +1,83 @@
+# Army Warehouses (Military): the quest chain of the original SoC (phase 2)
+
+Request (maintainer FOSTER): "the quests themselves must be remade to match the original SoC". Phase 1 (texts) is `patches\soc_task_texts`; its NOTES.md section "Phase 2" listed the differences of the Military level. This patch does the structure for `coop_l07_military`: who gives which task, which steps exist, in which order. Same approach as `soc_dv_x18_quests`, `garbage_soc_quests` and `agroprom_soc`: one server tick that gives every open task to every player, shared story flags, no soft-lock when an NPC dies, a static chain checker and a mock test.
+
+Status: code only, NOT run in the game (offline rules: no game launch). Offline checks and a game test hook are below.
+
+## The original SoC chain (Steam SoC 1.0006: `tasks_military.xml`, `info_l10military.xml`, `dialogs_military.xml`, `dialogs_military.script`; Russian text from the SoC add-on of the CoP port)
+* `mil_lukash_job` "Destroy the Duty company": Lukash (`mil_leader_start_dialog`, you tell him about the Duty group at the farmstead) sends the player to Max, objective "Report to Max" (`mil_go_max`), "Destroy the Duty squad" (`mil_kill_dolg`, ONE objective), "Return to Lukash" (`mil_return_lukash`). No money in the task; Lukash's next job follows in the same talk.
+* `mil_courier_job` (the snitch Pavlik, 5 objectives, Lukash pays 7000) comes next in SoC, then `mil_blockpost_job` "Assist at Freedom's Barrier outpost": "Talk to Barrier outpost commander" (Cap, `mil_freedom_commander`, info `mil_fblockpost_quest`), "Help destroy the Monolith's strike squad", "Talk to Barrier outpost commander" again (reward, Cap pays half of his money). Lukash pays `mil_dolg_payment` 4000 (once per player in SoC, shared with Skull's sniper payment) and enlists the player. The Barrier job can also start at Cap himself.
+* Duty: `mil_kill_sniper` "Kill the tower sniper" (Skull, pays 4000), then `mil_kill_lukash` "Kill Lukash": objectives "Get rid of the sniper" x3 (`Mil_Sniper1..3`, all active at once), "Kill Lukash", "Return to the Duty farmstead and receive my fee" (`mil_dolg_payment2`, 8000).
+* `mil_mad_job` (Max's flash drive) is the task of the earlier port in `freedom_duty` and is kept (gate: SoC offers it after the report to Lukash).
+* Verified: SoC has NO recorded voice for the dialogs of Lukash, Max, Skull or Cap (the Steam archives hold dialog voice for the Barkeep, the trader, the scientists and the Osoznanie only), so the dialogs are silent in both languages. The scenario lines of the level (Skull's commands, Max's "go collect", Lukash's guard call) are already in the mod.
+
+## Old (mod) vs new
+| # | Mod (level maker) | New |
+|---|---|---|
+| 1 | Lukash: a one-line greeting plus a 4-phrase monologue "help_freedom" and a "Nothing really" dialog; the report to Max task came from a zone | one SoC dialog (`mil_soc_lukash_dialog`, the original wording EN + RU): the Duty job (1100 / 11011 gives the flag), "I told you to go talk to Max", the report ("assignment complete"), the Barrier offer ("What exactly?" 7003, "OK, I'll do it" / "No, I won't do it yet"), "go to the Barrier", the payment, "no work right now". The repeatable-quest boar leg dialogs of `repeatable_quests` stay on him |
+| 2 | Max: greeting + monologue "help_freedom" (flag), eight / nine men | SoC `mil_max_dialog`: "Go to Lukash" before the job, the farmstead questions (1001, 1200, 1201, 1210 / 1220 / 1100, 1101, 1102 gives the flag), "Go to Lukash and make your report", "We'll talk after we take down those Duty assholes"; afterwards his own greeting, the flash drive dialogs of `freedom_duty` follow |
+| 3 | "Kill Skull" + eight "kill the Duty" tasks (nine squads, 2000 / 25000 each) | ONE objective "Destroy the Duty squad" (`mil_start_kill_skull_quest_task`), done when all nine Duty squads are dead (derived flag `MIL_SOC_DUTY_DEAD`); the eight single tasks are hidden |
+| 4 | no "Return to Lukash" | new step `mil_soc_return_lukash_task`, done by Lukash's report phrase (flag `MIL_SOC_LUKASH_JOB_DONE`) |
+| 5 | The Barrier: the zone `mil_cap_pda_1` gave "Talk to Cap" (first player), Cap's dialog needed the zone flag, 10000 task reward, no reward step | Lukash's "OK, I'll do it" (`MIL_SOC_BLOCKPOST_ACCEPTED`) gives "Talk to Barrier outpost commander"; Cap speaks the SoC job lines (4003, 1004 gives the mod flag that spawns the Monolith squad, 1005); the zone only plays its radio call now; "Help destroy the Monolith's strike squad" until the squad is dead; NEW step `mil_soc_cap_reward_task` "Talk to Barrier outpost commander" (Cap 3001 / 3002 pays half of his money, flag `MIL_SOC_CAP_REWARD`); Lukash pays 4000 once the Monolith squad is dead (flag `MIL_SOC_FREEDOM_QUESTS_END`). 10000 task reward gone. The lore dialog `mil_freedom_commander_common2` ("What's this place?") is on Cap |
+| 6 | Skull: 3 dialogs (greeting, sniper job, assault talk with the level maker's lines and 2000) | SoC `mil_dolg_skull_dialog`: the job (100, 101, 102, 103, 104, 105 / 1041 / 1001), "We made a deal", payment 4000 (400, once per player), the assault offer (451, "Gotcha." 401 / "Some other time." 411), "Don't interfere", the reward 8000 (200, 201), "Keep along your way". Sniper that died without the job: 501 to 504 |
+| 7 | Four sniper tasks one after another (the fourth was an ordinary Freedom man, 2000 each), "Kill Lukash" 25000; the chain that was to give them after the assault talk could not fire (condlist 0 completed first) so they were never given | three sniper tasks at once (squads 6, 5, 4, as SoC), "Kill Lukash", then NEW step `mil_soc_duty_fee_task` "Return to the Duty farmstead and receive my fee" (flag `MIL_SOC_DUTY_FEE`). The fourth is hidden. No task rewards |
+| 8 | the Duty assault never started when the player took Skull's job: the logic (`mil_smart_terrain_14_walker_skull.ltx`, `mil_smart_terrain_14_animpoint_duty.ltx`, 9 lines) waits for `..._ABOUT_THE_run_STOP_DIALOG_INFO`; a name with lower case letters is not a story flag for `xr_logic.parse_infop` (`isUpperCase`), it is read as an actor info portion that nothing gives, while the dialog gave `..._ABOUT_THE_ASSAULT_STOP_DIALOG_INFO` | the logic waits for the flag the dialog gives (`..._ABOUT_THE_ASSAULT_STOP_DIALOG_INFO`), checked by `check_mil_chain.py` part 5 |
+| 9 | `mil_start_go_to_radar_quest_task` ("Disable the Brain Scorcher", Military) completed on the Radar level and gave `rad_start_go_to_radar_quest_task` | hidden (SoC has no objective here; patch `bar_soc_quests` makes the Barkeep's Scorcher job ONE task up to the Radar). The tick gives `rad_start_go_to_radar_quest_task` when the Radar level sets `MIL_START_GO_TO_RADAR_QUEST_TASK_INFO` (it came from the removed step before) |
+| 10 | every task by `give_task` chains and restrictors (first player only) | the server tick gives every open task to every player once (late joiners and respawned players included) |
+| 11 | rewards in the task sections (every player gets them) | SoC payments in the dialogs, to the talking player once per name (`MIL_SOC_PAID_<kind>_<name>`): Skull 4000 (shared with Lukash's 4000), Skull's fee 8000, Cap half of his purse (the mod's Cap has no known purse on the client: fallback 2000) |
+
+## How it works
+`coop_soc_mil.script` (loaded by `coop_scn_soc_mil.script`, like every `coop_scn_*`): a server tick (1 s).
+1. `progress()`: the derived flag `MIL_SOC_DUTY_DEAD` (all nine Duty squad flags) and the fallbacks, so a dead NPC never blocks a step: Max dead before the report = reported; Lukash dead = `MIL_SOC_LUKASH_JOB_DONE`; Cap dead = his talk steps done; Skull dead = "Return to Skull" and the fee done.
+2. every task whose stage is open is given to EVERY living player once (`GiveTaskToClient`; the stock `give_task` hands a task to the first player only). The stage closes with the flag that completes the task, so finished steps are not offered again.
+Stages (flags are the mod's own where its logic reads them, `MIL_SOC_*` where new): report to Max (Lukash flag, not yet reported) -> destroy the Duty squad (reported, group alive) -> return to Lukash (Lukash flag, group dead, not reported) -> Barrier: talk (job accepted, Cap not spoken) -> help destroy (Cap flag, Monolith alive) -> reward (Monolith dead, Cap not thanked); Duty: tower sniper (job flags, sniper alive) -> return to Skull (sniper dead, assault talk not held) -> snipers 1..3 and Lukash (assault accepted) -> fee (Lukash dead, fee not paid); Radar fallback.
+Dialogs: NPC speaks first, the state comes from the flags only (`lukash_state`, `max_state`, `skull_state`, `cap_state`: exactly one state holds for every flag combination, tested on 3000 random combinations). The hidden redirect phrases and all texts are generated from `tools\mil_model.py` (`gen_dialogs.py`, `gen_text.py`); every phrase has a PDA archive line (`coop_soc_mil_say.script`, generated). Every phrase that commits (accepts a job, gives a flag) carries its flag itself, so a talk cut off afterwards loses nothing.
+
+## Files
+| Patch | File |
+|---|---|
+| soc_mil_quests (this) | `scripts\coop_soc_mil.script` (tick, states, payments), `coop_scn_soc_mil.script` (loader), `coop_soc_mil_say.script` (generated PDA lines), `configs\text\eng|rus\st_coop_soc_mil.xml` (84 SoC strings, made by `tools\gen_text.py`) |
+| freedom_duty | `configs\gameplay\dialogs_coop_l07_military.xml` (the mod's Lukash / Max / Skull / Cap dialogs out, the five SoC dialogs in, 106 phrases; the flash drive offer is gated on `MIL_SOC_LUKASH_JOB_DONE`), `character_desc_coop_l07_military.xml` (the four NPCs start with the SoC dialogs), `configs\misc\tm_coop_l07_military.ltx` (chains and rewards removed, three new steps between the markers `;;; soc_mil_quests`), `configs\scripts\coop_l07_military\mil_smart_terrain_14_walker_skull.ltx` (copy of the mod's file, flag fix), `space_restrictors\mil_cap_pda_1_space_restrictor.ltx` (copy, no `give_task`) |
+| campfires | `configs\scripts\coop_l07_military\mil_smart_terrain_14_animpoint_duty.ltx` (8 lines: the flag fix) |
+| repeatable_quests | `configs\misc\coop_hidden_tasks.ltx` (+10 ids: `mil_start_go_to_radar`, `mil_start_kill_the_snipers_4`, `mil_start_kill_the_duty_1..8`) |
+Tools: `tools\apply_logic.py <mod source>` (idempotent, edits the files other patches own; run again after anything regenerates them), `tools\gen_dialogs.py`, `tools\gen_text.py <steam soc extract> <port st_soc_strings.xml>`, `tools\add_changes_lines.py` (installer lines), `tools\check_mil_chain.py` (static proof), `tools\mil_model.py` (flags, dialogs, tasks); tests: `tests\mock_test.py` (the real scripts and the real dialogs in a Lua VM, 207 checks), `tests\soc_mil_hooks.lua` (game hook).
+
+## Not done / limits
+* `mil_courier_job` (the snitch Pavlik and his informer, 5 objectives, 7000): the mod has no such NPCs (no spawn, no profile, no paths); adding them means editing `all.spawn`. In SoC Lukash offers it between the Duty job and the Barrier, here he goes straight to the Barrier offer. `mil_freedom_rg6_task` (Bulldog 6, Cook, Voronin on the Bar): the mod has no Cook, no vodka dialog chain, and the Bar's Duty / Freedom line (Voronin) does not exist; not feasible without those.
+* `actor_set_freedom` / `set_freedom_enemy` (SoC sets the player community): not called, `dialogs.actor_set_freedom` works on the simulation board of the server and may not exist on a client. The mod's own relation changes stay: `mil_dolg_increase_goodwill` on completing the tower sniper task, `mil_freedom_increase_goodwill` on the report to Max.
+* The Barrier job in SoC has a fail info (`mil_fblockpost_quest_fail`); the mod has no trigger for it (kept: the "Talk to the commander" step fails when the Barkeep has sent the party to the Radar, as before).
+* Payments go to the player who talks; a second player finds the state already advanced (flags are shared) and is not paid again. The same as the Garbage patch.
+* Cap's reward is half of his purse in SoC; the purse of the mod's Cap is unknown on the client, the fallback is 2000.
+* The lore dialogs of the zone guard and Cook, the Freedom engineer / trader and the hunters' job of the original are not ported (not part of the requested chains).
+* The Cap radio call zone (`mil_cap_pda_1`) only plays its call and sets its flag now; Cap no longer needs that flag to talk.
+
+## Offline checks done
+`python patches\soc_mil_quests\tests\mock_test.py` (ALL PASS: the dialogs and their Lua functions, exactly one state per NPC for 3000 random flag combinations, the whole Freedom route and the whole Duty route through the real dialogs, late joiner, once per player, dead / respawned player, payments once per player, the shared 4000, Max / Lukash / Cap / Skull dead, Duty dead before Max, Lukash "I've already dealt with them", Radar fallback); `python -I patches\soc_mil_quests\tools\check_mil_chain.py <mod source> --skip=soc_levels,weapon_upgrades,npc_attachments,arrival_facing` (0 problems); `tools\check_conflicts.py` (only the 7 known overlaps); `tools\check_lua_escapes.py` (nothing new); `tools\luabal.py`; `python -I build.py <scratch>\b.db --skip=soc_levels,weapon_upgrades,npc_attachments,arrival_facing` (BUDGET OK).
+
+## Game test (one listen-host run, two players, nothing human)
+```
+python -I build.py <out>\b.db --skip=soc_levels,weapon_upgrades,npc_attachments,arrival_facing --stage=<out>\stage
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\stalker_xrmpe\run_coop.ps1 -Map coop_l01_escape -Mode listen -Clients 1 -Owner socmil -ExtraDir <out>\stage\gamedata -Hooks <repo>\patches\soc_mil_quests\tests\soc_mil_hooks.lua -SoakSeconds 260 -ResultDir <out>\res
+python tools\stalker_xrmpe\qa_verdict.py <out>\res --prefix SM
+```
+The hook (starts on Cordon, the chain runs on every level) fast-forwards the flags that the dialogs and squads give and asserts on host and client: each SoC task with its SoC title and description for the local player, `coop_soc_mil.who(task)` lists every player, the mod-only tasks are never given, the states of the four NPCs, the payments (4000 once, no second 4000 for Skull after Lukash, 8000 once), the Radar task. Not driven: the real dialog windows and the zones of the Military level (the level is not online on Cordon; the mock test plays the same dialogs).
+
+## Кратко по-русски
+Армейские склады приведены к цепочке оригинальной ТЧ (код, в игре не запускался).
+- Лукаш, Макс, Череп и Кеп говорят оригинальными репликами ТЧ RU + EN (озвучки диалогов в ТЧ нет). Свобода: Лукаш посылает к Максу, "Уничтожить группу Долга" теперь ОДНА цель (вместо Черепа и 8 заданий), "Вернуться к Лукашу"; потом Барьер: поговорить с командиром, помочь уничтожить отряд Монолита, поговорить с командиром за наградой (Кеп платит половину своих денег), Лукаш платит 4000.
+- Долг: снайпер на вышке (Череп платит 4000), штурм: три снайпера (в ТЧ три, а не четыре), Лукаш, "Вернуться на хутор Долга и получить гонорар" (8000). Деньги платятся в диалогах, как в ТЧ; награды в заданиях убраны.
+- Шага "идти на Радар" на этой локации нет (задание на Радар даёт Бармен). Задания получают все игроки (в том числе зашедшие позже), смерть Макса, Лукаша, Кепа или Черепа не блокирует шаги.
+- Исправлена ошибка: штурм Долга не начинался после задания Черепа (в имени флага в логике была строчная буква), а задания "убить Лукаша" не выдавались.
+- Не сделано: стукач Павлик и заказ на "Бульдог 6" (в моде нет таких NPC).
+
+| Было | Стало |
+|---|---|
+| Череп + 8 заданий "убить долговца" | одна цель "Уничтожить группу Долга" |
+| 4 снайпера, 2000 за каждого, 25000 за Лукаша | 3 снайпера, платит Череп в диалогах (4000 и 8000) |
+| Барьер: зона давала задание, награда 10000, нет шага с наградой | Лукаш даёт задание, Кеп даёт награду, Лукаш платит 4000 |
+| нет "Вернуться к Лукашу" | есть |
+| шаг "идти на Радар" на Складах | убран |
+
+<!-- soc_mil_courier begin -->
+Update (patch `soc_mil_courier`): `mil_courier_job` (the snitch Pavlik, Ara, 7000) and `mil_freedom_rg6_task` (Bulldog 6, the Chef, Voronin) exist now, so the "Not done" bullet about them above is out of date. The Lukash dialog above is replaced by that patch (`tools\apply_shared.py`): the courier offer follows the report, the Barrier offer follows the courier job. Run its `apply_shared.py` after `tools\apply_logic.py` here.
+<!-- soc_mil_courier end -->

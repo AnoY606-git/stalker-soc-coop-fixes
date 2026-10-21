@@ -1,25 +1,22 @@
-;--------------------------------------------------------------------------------------------------------------------------------------
-;-- Основные квесты:
-;--------------------------------------------------------------------------------------------------------------------------------------
-;Квест Бармена(Пробраться в лабораторию X-18)
+; SoC bar_darklab_documents2, objective 1 "Find the documents" (started on entering the lab); done when the party holds all X18 documents
 [val_start_sneak_into_the_x_18_lab_1_quest_task]
-icon 									= ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
-prior 									= 200
-storyline 								= true
-title 									= st_val_start_sneak_into_the_x_18_lab_1_quest_task_name
-descr 									= st_val_start_sneak_into_the_x_18_lab_1_quest_task_descr
-target 									= val_x18_level_changer
-condlist_0 								= {+VAL_START_SNEAK_INTO_THE_X_18_LAB_1_QUEST_TASK_INFO} complete %=give_task(x18_start_go_to_x18_doc_1_task) =give_task(x18_start_go_to_x18_doc_2_task) =give_task(x18_start_go_to_x18_doc_3_task)%
+icon                                    = ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_val_start_sneak_into_the_x_18_lab_1_quest_task_name
+descr                                   = st_val_start_sneak_into_the_x_18_lab_1_quest_task_descr
+target                                  = nil
+condlist_0                              = {+BAR_DARKLAB_DOCUMENT_GAIN} complete
 
-;Квест Бармена(Вернуться к Бармену и отдать документы)
+; SoC bar_darklab_documents2, objective 2 "Bring the documents to the Barkeep"
 [val_start_take_the_documents_to_the_barmen_quest_task]
-icon 									= ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
-prior 									= 200
-storyline 								= true
-title 									= st_val_start_take_the_documents_to_the_barmen_quest_task_name
-descr 									= st_val_start_take_the_documents_to_the_barmen_quest_task_descr
-target 									= bar_smart_terrain_1_stalker_barmen
-condlist_0 								= {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} complete %=give_task(bar_start_go_to_yantar_quest_task)%
+icon                                    = ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_val_start_take_the_documents_to_the_barmen_quest_task_name
+descr                                   = st_val_start_take_the_documents_to_the_barmen_quest_task_descr
+target                                  = bar_smart_terrain_1_stalker_barmen
+condlist_0                              = {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} complete
 
 ;--------------------------------------------------------------------------------------------------------------------------------------
 ;-- Второстепенные квесты:
@@ -47,7 +44,6 @@ condlist_0 											= {+VAL_SMART_TERRAIN_16_STALKER_LUCKY_END_INFO} complete
 condlist_1 											= {+VAL_SMART_TERRAIN_16_STALKER_1_SQUAD_DEAD} fail
 reward_money 										= 5000
 
-
 ;Квест Алексея Змея(Поговорить со Змеем)
 [val_start_fake_gauss_1_quest_task]
 icon 												= ui_inGame2_val_start_fake_gauss_quest_task
@@ -72,17 +68,16 @@ condlist_0 											= {+VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_TEST_1
 condlist_1 											= {+VAL_SMART_TERRAIN_15_STALKER_SCAMMER_FAKE_GAUSS_TEST_2_STOP_DIALOG} fail
 condlist_2 											= {+VAL_SMART_TERRAIN_15_STALKER_FAIL_INFO} fail
 
-
-;Квест Пули(Следовать за Пулей)
+; SoC val_captive_help, objective 1 (given by coop_soc_dv.script to every player once Bullet asks, flag VAL_ESCORT_TASK_START)
 [val_start_follow_the_bullet_quest_task]
-icon 												= ui_inGame2_val_start_follow_the_bullet_quest_task
-prior 												= 100
-storyline 											= true
-title 												= st_val_start_follow_the_bullet_quest_task_name
-descr 												= st_val_start_follow_the_bullet_quest_task_descr
-target 												= val_smart_terrain_18_duty_bullet_squad
-condlist_0 											= {+VAL_SMART_TERRAIN_19_SPAWN_SQUAD_SPACE_RESTRICTOR_INFO} complete %=give_task(val_start_save_the_prisoner_quest_task)%
-condlist_1 											= {+VAL_SMART_TERRAIN_18_DUTY_BULLET_SQUAD_DEAD} fail
+icon                                    = ui_inGame2_val_start_follow_the_bullet_quest_task
+prior                                   = 100
+storyline                               = true
+title                                   = st_val_start_follow_the_bullet_quest_task_name
+descr                                   = st_val_start_follow_the_bullet_quest_task_descr
+target                                  = val_smart_terrain_18_duty_bullet_squad
+condlist_0                              = {+VAL_SMART_TERRAIN_19_SPAWN_SQUAD_SPACE_RESTRICTOR_INFO} complete
+condlist_1                              = {+VAL_SMART_TERRAIN_18_DUTY_BULLET_SQUAD_DEAD} fail
 
 ;Квест Пули(Дождаться бандитов и спасти пленника)
 [val_start_save_the_prisoner_quest_task]
@@ -97,22 +92,117 @@ condlist_1 											= {+VAL_SMART_TERRAIN_19_DUTY_1_SQUAD_DEAD} fail
 condlist_2 											= {+VAL_SMART_TERRAIN_18_DUTY_BULLET_SQUAD_DEAD} fail
 reward_money 										= 3000
 
-;Sidorovich/raid (original SoC task val_come_to_trader): leave Dark Valley by the south gate
+; SoC val_come_to_trader: "Get out of the Dark Valley" (fails when the X18 documents are handed to the Barkeep)
 [val_start_get_out_via_south_gate_quest_task]
-icon 									= ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
-prior 									= 200
-storyline 								= true
-title 									= st_val_start_get_out_via_south_gate_quest_task_name
-descr 									= st_val_start_get_out_via_south_gate_quest_task_descr
-target 									= val_esc_level_changer
-condlist_0 								= {+ESC_RETURN_FROM_DV_INFO} complete %=give_task(val_start_show_documents_to_sidorovich_quest_task)%
+icon                                    = ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_val_start_get_out_via_south_gate_quest_task_name
+descr                                   = st_val_start_get_out_via_south_gate_quest_task_descr
+target                                  = val_esc_level_changer
+condlist_0                              = {+ESC_RETURN_FROM_DV_INFO} complete
+condlist_1                              = {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} fail
 
+; hidden: in SoC the documents go to the Barkeep (kept so that an old save can still load)
 [val_start_show_documents_to_sidorovich_quest_task]
-icon 									= ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
-prior 									= 200
-storyline 								= true
-title 									= st_val_start_show_documents_to_sidorovich_quest_task_name
-descr 									= st_val_start_show_documents_to_sidorovich_quest_task_descr
-target 									= esc_smart_terrain_1_trader_sidorovich
-condlist_0 								= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO} complete
-condlist_1 								= {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} fail
+icon                                    = ui_inGame2_val_start_take_the_documents_to_the_barmen_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_val_start_show_documents_to_sidorovich_quest_task_name
+descr                                   = st_val_start_show_documents_to_sidorovich_quest_task_descr
+target                                  = esc_smart_terrain_1_trader_sidorovich
+condlist_0                              = {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_X18_DOCUMENTS_STOP_DIALOG_INFO} complete
+condlist_1                              = {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} fail
+
+; SoC bar_darklab_documents, objective 4 "Sneak into the base"
+[val_soc_darklab_1_task]
+icon                                    = ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_soc_darklab_name
+descr                                   = st_soc_darklab_1_descr
+target                                  = val_smart_terrain_4_bandit_borov
+condlist_0                              = {+VAL_ACTOR_ON_BANDITS_BASE} complete
+
+; SoC bar_darklab_documents, objective 1 "Take the key to the lab from Borov"
+[val_soc_darklab_2_task]
+icon                                    = ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_soc_darklab_name
+descr                                   = st_soc_darklab_2_descr
+target                                  = val_smart_terrain_4_bandit_borov
+condlist_0                              = {+VAL_ACTOR_HAS_BOROV_KEY} complete
+
+; SoC bar_darklab_documents, objective 2 "Get out of the bandit base"
+[val_soc_darklab_3_task]
+icon                                    = ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_soc_darklab_name
+descr                                   = st_soc_darklab_3_descr
+target                                  = val_x18_level_changer
+condlist_0                              = {+VAL_ACTOR_LEAVE_BANDITS_BASE} complete
+
+; SoC bar_darklab_documents, objective 3 "Find the entrance to the lab"
+[val_soc_darklab_4_task]
+icon                                    = ui_inGame2_val_start_sneak_into_the_x_18_lab_1_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_soc_darklab_name
+descr                                   = st_soc_darklab_4_descr
+target                                  = val_x18_level_changer
+condlist_0                              = {+VAL_X18_DOOR_OPEN} complete
+
+; SoC val_prisoner_help: free the Duty member Serega from the bandit prison (done when the cell door is opened, fails when he dies)
+[val_soc_prisoner_task]
+icon                                    = ui_inGame2_val_start_save_the_prisoner_quest_task
+prior                                   = 100
+storyline                               = true
+title                                   = st_soc_prisoner_name
+descr                                   = st_soc_prisoner_descr
+target                                  = val_smart_terrain_20_duty_1_squad
+condlist_0                              = {+VAL_VAL_DOOR_METAL_2_OPEN_INFO} complete
+condlist_1                              = {+VAL_SMART_TERRAIN_20_DUTY_1_SQUAD_DEAD} fail
+
+; SoC dar_codedoor_1, objective 1 (done when the party holds the document with the code)
+[x18_soc_codedoor_1_code_task]
+icon                                    = ui_inGame2_x18_start_find_the_password_x18_codedoor_1_task
+prior                                   = 150
+storyline                               = true
+title                                   = st_x18_start_find_the_password_x18_codedoor_1_task_name
+descr                                   = st_x18_start_find_the_password_x18_codedoor_1_task_descr
+target                                  = x18_codedoor_1
+condlist_0                              = {+X18_START_GO_TO_X18_DOC_1_TASK_INFO} complete
+condlist_1                              = {+X18_CODEDOOR_1_OPEN_INFO} complete
+
+; SoC dar_codedoor_1, objective 2 "Open the door using the code"
+[x18_soc_codedoor_1_open_task]
+icon                                    = ui_inGame2_x18_start_find_the_password_x18_codedoor_1_task
+prior                                   = 150
+storyline                               = true
+title                                   = st_soc_codedoor_1_open_name
+descr                                   = st_soc_codedoor_1_open_descr
+target                                  = x18_codedoor_1
+condlist_0                              = {+X18_CODEDOOR_1_OPEN_INFO} complete
+
+; SoC dar_codedoor_2, objective 1 (done when the party holds the document with the code)
+[x18_soc_codedoor_2_code_task]
+icon                                    = ui_inGame2_x18_start_find_the_password_x18_codedoor_2_task
+prior                                   = 150
+storyline                               = true
+title                                   = st_x18_start_find_the_password_x18_codedoor_2_task_name
+descr                                   = st_x18_start_find_the_password_x18_codedoor_2_task_descr
+target                                  = x18_codedoor_2
+condlist_0                              = {+X18_START_GO_TO_X18_DOC_2_TASK_INFO} complete
+condlist_1                              = {+X18_CODEDOOR_2_OPEN_INFO} complete
+
+; SoC dar_codedoor_2, objective 2 "Open the door using the code"
+[x18_soc_codedoor_2_open_task]
+icon                                    = ui_inGame2_x18_start_find_the_password_x18_codedoor_2_task
+prior                                   = 150
+storyline                               = true
+title                                   = st_soc_codedoor_2_open_name
+descr                                   = st_soc_codedoor_2_open_descr
+target                                  = x18_codedoor_2
+condlist_0                              = {+X18_CODEDOOR_2_OPEN_INFO} complete

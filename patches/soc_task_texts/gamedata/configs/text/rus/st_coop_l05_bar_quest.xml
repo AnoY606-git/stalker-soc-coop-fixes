@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+
+	<string id="st_bar_start_the_destination_is_a_bar_quest_task_name">
+		<text>Пункт назначения - Бар</text>
+	</string>
+	<string id="st_bar_start_the_destination_is_a_bar_quest_task_descr">
+		<text>Отнести всю найденную информацию Бармену. Наверняка, он найдет во всех этих бумажках и файлах с флешки что-то важное.</text>	
+	</string>	
+
+
+
+	<string id="st_bar_start_sneak_into_the_x_18_lab_quest_task_name">
+		<text>Найти документы в подземной лаборатории</text>
+	</string>
+	<string id="st_bar_start_sneak_into_the_x_18_lab_quest_task_descr">
+		<text>Забрать у Борова ключ от лаборатории\n\nБармен: "По тем документам, которые ты принес с Агропрома, кое-что начинает проясняться, но данных не хватает. Есть информация о некоем "выжигателе мозгов", который преграждает путь на север, но что это такое - никому не известно. Также упоминается некая лаборатория X18, описания сходятся с заброшенными подземными помещениям в Темной Долине. Что там творится неизвестно, да к тому же бандиты сейчас в темной долине свою базу основали.\n Как раз недавно отправились туда несколько разведчиков-долговцев, пока от них никаких вестей.\n Для того чтобы проникнуть в лабораторию тебе понадобится два электронных ключа, один я тебе дам, а второй придется забрать у Борова, лидера бандитов. \n\n Итак, тебе надо забрать второй ключ от лаборатории у Борова. Затем проникнуть в лабораторию и достать документы."</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_go_to_yantar_quest_task_name">
+		<text>Найти документы в лаборатории X16</text>
+	</string>
+	<string id="st_bar_start_go_to_yantar_quest_task_descr">
+		<text>Поговорить с учеными\n\nБармен: "Надо пробраться к ученым и узнать, где находится лаборатория Х16, чтобы достать недостающую часть документов."</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_go_to_military_quest_task_name">
+		<text>Отключить Выжигатель Мозгов</text>
+	</string>
+	<string id="st_bar_start_go_to_military_quest_task_descr">
+		<text>Добраться до антенн</text>	
+	</string>
+	
+	
+	<string id="st_bar_start_find_the_family_gun_quest_task_name">
+		<text>Найти фамильное ружье</text>
+	</string>
+	<string id="st_bar_start_find_the_family_gun_quest_task_descr">
+		<text>Найти фамильное ружье\n\nОхотник: "Верни ружье. Потерял я его возле жилища кровососов, сейчас скину тебе координаты этого места. И поосторожней там, твари эти очень злобные."</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_1_quest_task_name">
+		<text>Место встречи изменить нельзя</text>
+	</string>
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_1_quest_task_descr">
+		<text>Отправиться на свалку и встретиться с заказчиком.</text>	
+	</string>
+	
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_2_quest_task_name">
+		<text>Место встречи изменить нельзя</text>
+	</string>
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_2_quest_task_descr">
+		<text>Отправиться на свалку и занять позицию для прикрытия.</text>	
+	</string>	
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_3_quest_task_name">
+		<text>Место встречи изменить нельзя</text>
+	</string>
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_3_quest_task_descr">
+		<text>Дождаться заказчика.</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_sq_art_1_quest_task_name">
+		<text>Заказ на "Выверт"</text>
+	</string>
+	<string id="st_bar_start_sq_art_1_quest_task_descr">
+		<text>Найти и принести артефакт "Выверт"</text>
+	</string>	
+	<string id="st_bar_start_sq_art_2_quest_task_name">
+		<text>Заказ на "Грави"</text>
+	</string>
+	<string id="st_bar_start_sq_art_2_quest_task_descr">
+		<text>Найти и принести артефакт "Грави"</text>
+	</string>
+	<string id="st_bar_start_sq_art_3_quest_task_name">
+		<text>Заказ на "Золотая рыбка"</text>
+	</string>
+	<string id="st_bar_start_sq_art_3_quest_task_descr">
+		<text>Найти и принести артефакт "Золотая рыбка"</text>
+	</string>
+
+
+	<string id="st_bar_start_sq_mutant_psevdodog_part_1_quest_task_name">
+		<text>Заказ на "Хвост Псевдособаки"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_psevdodog_part_1_quest_task_descr">
+		<text>Найти и принести 5 "Хвостов Псевдособак"</text>
+	</string>	
+	<string id="st_bar_start_sq_mutant_snork_part_2_quest_task_name">
+		<text>Заказ на "Стопа Снорка"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_snork_part_2_quest_task_descr">
+		<text>Найти и принести 4 "Стоп Снорка"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_krovosos_part_3_quest_task_name">
+		<text>Заказ на "Щупальца Кровососа"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_krovosos_part_3_quest_task_descr">
+		<text>Найти и принести 3 "Щупальца Кровососа"</text>
+	</string>
+	
+	
+	<string id="st_bar_start_sq_killer_mutants_1_quest_task_name">
+		<text>Заказ на мутантов "NoN"</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_1_quest_task_descr">
+		<text>Убить мутантов 1</text>
+	</string>	
+	<string id="st_bar_start_sq_killer_mutants_2_quest_task_name">
+		<text>Заказ на мутантов "NoN"</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_2_quest_task_descr">
+		<text>Убить мутантов 2</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_3_quest_task_name">
+		<text>Заказ на мутантов "NoN"</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_3_quest_task_descr">
+		<text>Убить мутантов 3</text>
+	</string>
+</string_table>

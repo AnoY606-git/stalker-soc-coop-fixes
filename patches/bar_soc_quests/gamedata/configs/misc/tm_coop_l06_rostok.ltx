@@ -1,0 +1,59 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест Бармена(Отправится на Янтарь)
+[ros_start_go_to_yantar_quest_task]
+icon 									= ui_inGame2_ros_start_go_to_yantar_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_ros_start_go_to_yantar_quest_task_name
+descr 									= st_ros_start_go_to_yantar_quest_task_descr
+target 									= ros_yan_level_changer
+condlist_0 								= {+ROS_START_GO_TO_YANTAR_QUEST_TASK_INFO} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+; SoC bar_resque_information objective "Get through to Kruglov" (patch bar_soc_quests): done when the Mercs are dead, or when a player reached Kruglov
+; (he speaks and starts walking, flag BAR_KRUGLOV_FOLLOW_ACTOR). The next steps are given by coop_soc_barros.script to every player.
+[ros_start_help_kruglov_quest_task]
+icon                                    = ui_inGame2_ros_start_help_kruglov_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_ros_start_help_kruglov_quest_task_name
+descr                                   = st_ros_start_help_kruglov_quest_task_descr
+target                                  = ros_smart_terrain_4_ecolog_kruglov
+condlist_0                              = {+ROS_SMART_TERRAIN_3_KILLER_1_SQUAD_DEAD} complete
+condlist_1                              = {+BAR_KRUGLOV_FOLLOW_ACTOR} complete
+
+; SoC bar_resque_information objective "Talk to professor Kruglov" (patch bar_soc_quests): the Mercs are dead, now reach Kruglov; he speaks when a player
+; is close (his walker logic sets BAR_KRUGLOV_FOLLOW_ACTOR, SoC bar_kruglov_follow_actor, which starts the escort)
+[ros_soc_kruglov_talk_task]
+icon                                    = ui_inGame2_ros_start_help_kruglov_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_ros_start_help_kruglov_quest_task_name
+descr                                   = coop_soc_kruglov_talk_descr
+target                                  = ros_smart_terrain_4_ecolog_kruglov
+condlist_0                              = {+BAR_KRUGLOV_FOLLOW_ACTOR} complete
+
+; SoC bar_resque_information_2 objective "Lead Kruglov to the exit to Yantar" (patch bar_soc_quests): given to every player when Kruglov follows (flag
+; BAR_KRUGLOV_FOLLOW_ACTOR), done when he is on Yantar
+[ros_start_escort_kruglov_to_yantar_quest_task]
+icon                                    = ui_inGame2_ros_start_escort_kruglov_to_yantar_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_ros_start_escort_kruglov_to_yantar_quest_task_name
+descr                                   = st_ros_start_escort_kruglov_to_yantar_quest_task_descr
+target                                  = ros_smart_terrain_4_ecolog_kruglov
+condlist_0                              = {+YAN_SMART_TERRAIN_1_WALKER_KRUGLOV_GO_TO_SAXAROV_INFO} complete
+
+; SoC bar_resque_information_2 objective "Talk to Kruglov" (patch bar_soc_quests): Kruglov is on Yantar, talk to him (his first Yantar talk completes it)
+[ros_soc_kruglov_bring_task]
+icon                                    = ui_inGame2_ros_start_escort_kruglov_to_yantar_quest_task
+prior                                   = 200
+storyline                               = true
+title                                   = st_ros_start_escort_kruglov_to_yantar_quest_task_name
+descr                                   = coop_soc_kruglov_bring_descr
+target                                  = yan_smart_terrain_1_ecolog_kruglov
+condlist_0                              = {+YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO} complete

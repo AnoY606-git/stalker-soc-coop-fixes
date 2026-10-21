@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>	
+
+	
+	<string id="st_gar_start_save_the_stalker_yurik_from_bandits_quest_task_name">
+		<text>Спасти Юрика</text>
+	</string>
+	<string id="st_gar_start_save_the_stalker_yurik_from_bandits_quest_task_descr">
+		<text>Убейте бандитов и спасите Юрика</text>
+	</string>
+	
+
+	<string id="st_gar_start_talk_to_yurik_quest_task_name">
+		<text>Поговорить с Юриком</text>
+	</string>
+	<string id="st_gar_start_talk_to_yurik_quest_task_descr">
+		<text>Поговорить с Юриком</text>
+	</string>
+	
+	
+	<string id="st_gar_start_talk_to_devil_quest_task_name">
+		<text>Ответить на призыв о помощи</text>
+	</string>
+	<string id="st_gar_start_talk_to_devil_quest_task_descr">
+		<text>Предложить свою помощь лидеру нейтралов\n\nНа кладбище машин произошла перестрелка между нейтралами и бандитами. Нейтралы отбились, но зовут на помощь.</text>
+	</string>
+	
+	
+	<string id="st_gar_start_help_to_repel_the_bandits_attack_quest_task_name">
+		<text>Отбить рейд бандитов</text>
+	</string>
+	<string id="st_gar_start_help_to_repel_the_bandits_attack_quest_task_descr">
+		<text>Уничтожить рейд бандитов\n\nБес: "Бандитское отродье пытается получить контроль над Свалкой. Здесь полчаса назад была драка. Троих уродов мы положили. Остальные братки отступили, но явно вот-вот вернутся с подкреплением. Нас мало и лишний ствол не помешает. Если поможешь нам уничтожить их подкрепление, то я в долгу не останусь."</text>
+	</string>
+
+
+	<string id="st_gar_start_talk_to_devil_1_quest_task_name">
+		<text>Отбить рейд бандитов</text>
+	</string>
+	<string id="st_gar_start_talk_to_devil_1_quest_task_descr">
+		<text>Поговорить с Бесом</text>
+	</string>
+	
+	
+	<string id="st_gar_start_help_the_gray_to_fight_off_the_bandits_quest_task_name">
+		<text>Встретиться с Серым.</text>
+	</string>
+	<string id="st_gar_start_help_the_gray_to_fight_off_the_bandits_quest_task_descr">
+		<text>Встретиться с Серым на свалке.\n\nЛис: Серый, сидит в ангаре на свалке, он знает о Стрелке больше.</text>
+	</string>
+	
+	
+	<string id="st_gar_start_talk_to_gray_quest_task_name">
+		<text>Встретиться с Серым.</text>
+	</string>
+	<string id="st_gar_start_talk_to_gray_quest_task_descr">
+		<text>Узнать у Серого о Стрелке</text>
+	</string>	
+
+
+	<string id="st_gar_start_go_to_the_agroprom_quest_task_name">
+		<text>Получить информацию о Стрелке</text>
+	</string>
+	<string id="st_gar_start_go_to_the_agroprom_quest_task_descr">
+		<text>Получить от Крота информацию\n\nБугай пишет Серому: Крот и ко раскопали тайник Стрелка на Агропроме, сходи, узнай что там и как. Серый - Бугаю: Все равно они будут идти после этого на Бар, я их лучше на свалке подожду на дороге.</text>
+	</string>	
+
+
+	<string id="st_gar_start_help_fight_off_the_mutants_quest_task_name">
+		<text>Помочь заставе Долга</text>
+	</string>
+	<string id="st_gar_start_help_fight_off_the_mutants_quest_task_descr">
+		<text>Убить кабанов\n\nДолг: "Всем прием, говорит застава Долга на свалке. Из темной Долины по направлению к бару идет волна мутантов. Всем кто поможет отстрелять нечисть, признательность с нашей стороны гарантируем. Слово Долга."</text>	
+	</string>
+</string_table>

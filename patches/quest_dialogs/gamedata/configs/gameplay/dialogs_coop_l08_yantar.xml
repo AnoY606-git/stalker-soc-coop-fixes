@@ -23,44 +23,6 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog">
-        <has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO</has_flag>
-		<dont_has_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO</dont_has_flag>	
-        <phrase_list>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_3</action>
-
-                <text>yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_1</action>
-
-                <text>yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_0</action>
-
-                <text>yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_2</action>
-
-                <text>yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_4</action>
-
-                <text>yan_smart_terrain_1_ecolog_kruglov_x16_preparation_dialog_4</text>
-                <action>dialogs_coop_l08_yantar.give_actor_yan_psi_detector</action>
-				<give_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO</give_flag>
-                <action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="yan_smart_terrain_1_ecolog_kruglov_start_dialog">
         <phrase_list>
             <phrase id="0">
@@ -80,107 +42,6 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog">
-        <has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO</has_flag>
-		<dont_has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO</dont_has_flag>	
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog_0</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog_1</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog_2</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_give_psi_protection_helmet_dialog_2</text>
-                <action>dialogs.break_dialog</action>
-				<give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO</give_flag>
-            </phrase>
-        </phrase_list>
-    </dialog>	
-    <dialog id="yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog">
-        <precondition>dialogs_coop_l08_yantar.if_actor_has_yan_psi_detector</precondition>
-        <has_flag>YAN_START_WAIT_FOR_THE_MEASUREMENTS_TO_FINISH_3_QUEST_TASK_INFO</has_flag>
-		<dont_has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO</dont_has_flag>	
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_0</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_1</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_2</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_3</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_4</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_4</text>
-                <next>5</next>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_5</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_5</text>
-                <next>6</next>
-            </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_6</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_measurements_dialog_6</text>
-				<give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO</give_flag>
-                <action>dialogs_coop_l08_yantar.transfer_yan_psi_detector</action>				
-                <action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog">
-        <has_flag>X16_START_GET_OUT_OF_THE_LAB_TASK_INFO</has_flag>
-		<dont_has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO</dont_has_flag>	
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog_0</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog_1</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog_2</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_installation_is_disabled_dialog_2</text>
-				<give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO</give_flag>			
-                <action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="yan_smart_terrain_1_ecolog_saharov_start_dialog">
         <phrase_list>
             <phrase id="0">
@@ -196,54 +57,6 @@
                 <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_kruglov_break_dialog_0</action>
 
                 <text>yan_smart_terrain_1_ecolog_kruglov_break_dialog_0</text>
-                <action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog">
-        <dont_has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_0</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_1</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_2</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_3</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_4</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_4</text>
-                <next>5</next>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_5</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_5</text>
-                <next>6</next>
-            </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_6</action>
-
-                <text>yan_smart_terrain_1_ecolog_saharov_talk_to_the_saharov_x16_dialog_6</text>
-                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO</give_flag>
                 <action>dialogs.break_dialog</action>
             </phrase>
         </phrase_list>
@@ -673,6 +486,517 @@
                 <dont_has_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_3_FAIL_INFO</dont_has_flag>
                 <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_3_FAIL_INFO</give_flag>
                 <has_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_SQ_KILLER_MUTANTS_3_STOP_DIALOG_INFO</has_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="yan_soc_saharov_dialog">
+        <phrase_list>
+            <!-- original SoC yantar_general_ucheniy_talk_start (phrase ids are the SoC ids); the greeting is chosen by the state of the job -->
+            <phrase id="0">
+                <text />
+                <next>1</next>
+                <next>10</next>
+                <next>3</next>
+                <next>5</next>
+                <next>7</next>
+                <next>6</next>
+                <next>23</next>
+                <next>99</next>
+            </phrase>
+            <phrase id="1">
+                <text />
+                <precondition>coop_soc_yan.st_s_offer</precondition>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_yan.say_s11</action>
+                <text>coop_soc_yan_s_11</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_yan.say_s111</action>
+                <text>coop_soc_yan_s_111</text>
+                <next>211</next>
+            </phrase>
+            <phrase id="211">
+                <action>coop_soc_yan.say_s211</action>
+                <text>coop_soc_yan_s_211</text>
+                <next>2111</next>
+            </phrase>
+            <phrase id="2111">
+                <action>coop_soc_yan.say_s2111</action>
+                <text>coop_soc_yan_s_2111</text>
+                <next>21111</next>
+            </phrase>
+            <phrase id="21111">
+                <action>coop_soc_yan.say_s21111</action>
+                <text>coop_soc_yan_s_21111</text>
+                <next>21112</next>
+                <next>21113</next>
+                <next>21115</next>
+            </phrase>
+            <phrase id="21112">
+                <action>coop_soc_yan.say_s21112</action>
+                <text>coop_soc_yan_s_21112</text>
+                <precondition>coop_soc_yan_semenov.st_prof_alive</precondition>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO</give_flag>
+                <next>211121</next>
+            </phrase>
+            <phrase id="211121">
+                <action>coop_soc_yan.say_s211121</action>
+                <text>coop_soc_yan_s_211121</text>
+                <next>2111211</next>
+            </phrase>
+            <phrase id="2111211">
+                <action>coop_soc_yan.say_s2111211</action>
+                <text>coop_soc_yan_s_2111211</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="21115">
+                <action>coop_soc_yan.say_s21115</action>
+                <text>coop_soc_yan_s_21115</text>
+                <next>211151</next>
+            </phrase>
+            <phrase id="211151">
+                <action>coop_soc_yan.say_s211151</action>
+                <text>coop_soc_yan_s_211151</text>
+            </phrase>
+            <phrase id="10">
+                <text />
+                <precondition>coop_soc_yan.st_s_offer_r</precondition>
+                <next>101</next>
+            </phrase>
+            <phrase id="101">
+                <action>coop_soc_yan.say_s101</action>
+                <text>coop_soc_yan_s_101</text>
+                <give_flag>YAN_SOC_OUTFIT_GIVEN</give_flag>
+                <next>1011</next>
+            </phrase>
+            <phrase id="1011">
+                <action>coop_soc_yan.say_s1011</action>
+                <text>coop_soc_yan_s_1011</text>
+                <next>1012</next>
+            </phrase>
+            <phrase id="1012">
+                <action>coop_soc_yan.say_s1012</action>
+                <text>coop_soc_yan_s_1012</text>
+                <next>1013</next>
+            </phrase>
+            <phrase id="1013">
+                <action>coop_soc_yan.say_s1013</action>
+                <text>coop_soc_yan_s_1013</text>
+                <next>1014</next>
+            </phrase>
+            <phrase id="1014">
+                <action>coop_soc_yan.say_s1014</action>
+                <text>coop_soc_yan_s_1014</text>
+                <next>10141</next>
+                <next>10143</next>
+            </phrase>
+            <phrase id="10141">
+                <action>coop_soc_yan.say_s10141</action>
+                <text>coop_soc_yan_s_10141</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO</give_flag>
+                <next>101411</next>
+            </phrase>
+            <phrase id="101411">
+                <action>coop_soc_yan.say_s101411</action>
+                <text>coop_soc_yan_s_101411</text>
+                <next>101412</next>
+            </phrase>
+            <phrase id="101412">
+                <action>coop_soc_yan.say_s101412</action>
+                <text>coop_soc_yan_s_101412</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="10143">
+                <action>coop_soc_yan.say_s10143</action>
+                <text>coop_soc_yan_s_10143</text>
+                <next>101431</next>
+            </phrase>
+            <phrase id="101431">
+                <action>coop_soc_yan.say_s101431</action>
+                <text>coop_soc_yan_s_101431</text>
+            </phrase>
+            <phrase id="3">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_s_results</precondition>
+                <next>31</next>
+            </phrase>
+            <phrase id="31">
+                <action>coop_soc_yan.say_s31</action>
+                <text>coop_soc_yan_s_31</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO</give_flag>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO</give_flag>
+                <give_flag>YAN_SOC_REWARD_GIVEN</give_flag>
+                <next>311</next>
+            </phrase>
+            <phrase id="311">
+                <action>coop_soc_yan.say_s311</action>
+                <text>coop_soc_yan_s_311</text>
+                <next>3111</next>
+            </phrase>
+            <phrase id="3111">
+                <action>coop_soc_yan.say_s3111</action>
+                <text>coop_soc_yan_s_3111</text>
+                <next>31111</next>
+            </phrase>
+            <phrase id="31111">
+                <action>coop_soc_yan.say_s31111</action>
+                <text>coop_soc_yan_s_31111</text>
+                <next>311111</next>
+            </phrase>
+            <phrase id="311111">
+                <action>coop_soc_yan.say_s311111</action>
+                <text>coop_soc_yan_s_311111</text>
+                <next>311112</next>
+            </phrase>
+            <phrase id="311112">
+                <action>coop_soc_yan.say_s311112</action>
+                <text>coop_soc_yan_s_311112</text>
+                <next>311113</next>
+            </phrase>
+            <phrase id="311113">
+                <action>coop_soc_yan.say_s311113</action>
+                <text>coop_soc_yan_s_311113</text>
+                <next>311114</next>
+            </phrase>
+            <phrase id="311114">
+                <action>coop_soc_yan.say_s311114</action>
+                <text>coop_soc_yan_s_311114</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="7">
+                <text />
+                <precondition>coop_soc_yan.st_s_wait</precondition>
+                <next>71</next>
+            </phrase>
+            <phrase id="71">
+                <action>coop_soc_yan.say_s71</action>
+                <text>coop_soc_yan_s_71</text>
+            </phrase>
+            <phrase id="6">
+                <text />
+                <precondition>coop_soc_yan.st_s_lab</precondition>
+                <next>61</next>
+            </phrase>
+            <phrase id="61">
+                <action>coop_soc_yan.say_s61</action>
+                <text>coop_soc_yan_s_61</text>
+            </phrase>
+            <phrase id="23">
+                <text />
+                <precondition>coop_soc_yan.st_s_exit</precondition>
+                <next>231</next>
+            </phrase>
+            <phrase id="231">
+                <action>coop_soc_yan.say_s231</action>
+                <text>coop_soc_yan_s_231</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO</give_flag>
+                <next>2311</next>
+            </phrase>
+            <phrase id="2311">
+                <action>coop_soc_yan.say_s2311</action>
+                <text>coop_soc_yan_s_2311</text>
+            </phrase>
+            <phrase id="99">
+                <text />
+                <precondition>coop_soc_yan.st_s_done</precondition>
+                <next>991</next>
+            </phrase>
+            <phrase id="991">
+                <action>coop_pda_phrases.say__yan_smart_terrain_1_ecolog_saharov_start_dialog_0</action>
+                <text>yan_smart_terrain_1_ecolog_saharov_start_dialog_0</text>
+            </phrase>
+            <phrase id="21113">
+                <action>coop_soc_yan_semenov.say_s21113</action>
+                <text>coop_soc_yan_sem_s_21113</text>
+                <precondition>coop_soc_yan_semenov.st_prof_die</precondition>
+                <next>211131</next>
+            </phrase>
+            <phrase id="211131">
+                <action>coop_soc_yan_semenov.say_s211131</action>
+                <text>coop_soc_yan_sem_s_211131</text>
+                <next>211132</next>
+            </phrase>
+            <phrase id="211132">
+                <action>coop_soc_yan_semenov.say_s211132</action>
+                <text>coop_soc_yan_sem_s_211132</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_X16_STOP_DIALOG_INFO</give_flag>
+                <give_flag>YAN_FIND_SCIENTIST_SEMENOV_START</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="5">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_s_semdead</precondition>
+                <next>51</next>
+            </phrase>
+            <phrase id="51">
+                <action>coop_soc_yan_semenov.say_s51</action>
+                <text>coop_soc_yan_sem_s_51</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO</give_flag>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO</give_flag>
+                <next>511</next>
+            </phrase>
+            <phrase id="511">
+                <action>coop_soc_yan_semenov.say_s511</action>
+                <text>coop_soc_yan_sem_s_511</text>
+                <next>5111</next>
+            </phrase>
+            <phrase id="5111">
+                <action>coop_soc_yan_semenov.say_s5111</action>
+                <text>coop_soc_yan_sem_s_5111</text>
+                <next>51111</next>
+            </phrase>
+            <phrase id="51111">
+                <action>coop_soc_yan_semenov.say_s51111</action>
+                <text>coop_soc_yan_sem_s_51111</text>
+                <next>511111</next>
+            </phrase>
+            <phrase id="511111">
+                <action>coop_soc_yan_semenov.say_s511111</action>
+                <text>coop_soc_yan_sem_s_511111</text>
+                <next>5111111</next>
+            </phrase>
+            <phrase id="5111111">
+                <action>coop_soc_yan_semenov.say_s5111111</action>
+                <text>coop_soc_yan_sem_s_5111111</text>
+                <next>511111111</next>
+            </phrase>
+            <phrase id="511111111">
+                <action>coop_soc_yan_semenov.say_s511111111</action>
+                <text>coop_soc_yan_sem_s_511111111</text>
+                <next>51112</next>
+            </phrase>
+            <phrase id="51112">
+                <action>coop_soc_yan_semenov.say_s51112</action>
+                <text>coop_soc_yan_sem_s_51112</text>
+                <next>51113</next>
+            </phrase>
+            <phrase id="51113">
+                <action>coop_soc_yan_semenov.say_s51113</action>
+                <text>coop_soc_yan_sem_s_51113</text>
+                <next>51114</next>
+            </phrase>
+            <phrase id="51114">
+                <action>coop_soc_yan_semenov.say_s51114</action>
+                <text>coop_soc_yan_sem_s_51114</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="yan_soc_kruglov_dialog">
+        <phrase_list>
+            <!-- original SoC yantar_help_scientist: Kruglov sends the player ahead to the measurement sites -->
+            <phrase id="0">
+                <text />
+                <next>2</next>
+                <next>4</next>
+                <next>1</next>
+                <next>10</next>
+                <next>7</next>
+                <next>6</next>
+            </phrase>
+            <phrase id="2">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_k_meet_r</precondition>
+                <next>21</next>
+            </phrase>
+            <phrase id="21">
+                <action>coop_soc_yan.say_k21</action>
+                <text>coop_soc_yan_k_21</text>
+            </phrase>
+            <phrase id="4">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_k_meet</precondition>
+                <next>41</next>
+            </phrase>
+            <phrase id="41">
+                <action>coop_soc_yan.say_k41</action>
+                <text>coop_soc_yan_k_41</text>
+            </phrase>
+            <phrase id="1">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_k_talk</precondition>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_yan.say_k11</action>
+                <text>coop_soc_yan_k_11</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_yan.say_k111</action>
+                <text>coop_soc_yan_k_111</text>
+                <next>1111</next>
+            </phrase>
+            <phrase id="1111">
+                <action>coop_soc_yan.say_k1111</action>
+                <text>coop_soc_yan_k_1111</text>
+                <next>11111</next>
+            </phrase>
+            <phrase id="11111">
+                <action>coop_soc_yan.say_k11111</action>
+                <text>coop_soc_yan_k_11111</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO</give_flag>
+                <next>111111</next>
+            </phrase>
+            <phrase id="111111">
+                <action>coop_soc_yan.say_k111111</action>
+                <text>coop_soc_yan_k_111111</text>
+                <next>1111111</next>
+            </phrase>
+            <phrase id="1111111">
+                <action>coop_soc_yan.say_k1111111</action>
+                <text>coop_soc_yan_k_1111111</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="10">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_k_busy</precondition>
+                <next>101</next>
+            </phrase>
+            <phrase id="101">
+                <action>coop_soc_yan.say_k101</action>
+                <text>coop_soc_yan_k_101</text>
+            </phrase>
+            <phrase id="7">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_k_after</precondition>
+                <next>71</next>
+            </phrase>
+            <phrase id="71">
+                <action>coop_soc_yan.say_k71</action>
+                <text>coop_soc_yan_k_71</text>
+            </phrase>
+            <phrase id="6">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_k_other</precondition>
+                <next>61</next>
+            </phrase>
+            <phrase id="61">
+                <action>coop_soc_yan_semenov.say_m61</action>
+                <text>coop_soc_yan_sem_m_61</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="yan_soc_semenov_dialog">
+        <phrase_list>
+            <!-- original SoC yantar_help_scientist for Semenov: no time before the offer, the escort talk (the device is handed out by the tick of coop_soc_yan) -->
+            <phrase id="0">
+                <text />
+                <next>6</next>
+                <next>5</next>
+                <next>10</next>
+                <next>7</next>
+            </phrase>
+            <phrase id="6">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_m_meet</precondition>
+                <next>61</next>
+            </phrase>
+            <phrase id="61">
+                <action>coop_soc_yan_semenov.say_m61</action>
+                <text>coop_soc_yan_sem_m_61</text>
+            </phrase>
+            <phrase id="5">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_m_talk</precondition>
+                <next>51</next>
+            </phrase>
+            <phrase id="51">
+                <action>coop_soc_yan_semenov.say_m51</action>
+                <text>coop_soc_yan_sem_m_51</text>
+                <next>511</next>
+            </phrase>
+            <phrase id="511">
+                <action>coop_soc_yan_semenov.say_m511</action>
+                <text>coop_soc_yan_sem_m_511</text>
+                <next>512</next>
+            </phrase>
+            <phrase id="512">
+                <action>coop_soc_yan_semenov.say_m512</action>
+                <text>coop_soc_yan_sem_m_512</text>
+                <next>513</next>
+            </phrase>
+            <phrase id="513">
+                <action>coop_soc_yan_semenov.say_m513</action>
+                <text>coop_soc_yan_sem_m_513</text>
+                <give_flag>YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO</give_flag>
+                <next>514</next>
+            </phrase>
+            <phrase id="514">
+                <action>coop_soc_yan_semenov.say_m514</action>
+                <text>coop_soc_yan_sem_m_514</text>
+                <next>515</next>
+            </phrase>
+            <phrase id="515">
+                <action>coop_soc_yan_semenov.say_m515</action>
+                <text>coop_soc_yan_sem_m_515</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="10">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_m_busy</precondition>
+                <next>101</next>
+            </phrase>
+            <phrase id="101">
+                <action>coop_soc_yan_semenov.say_m101</action>
+                <text>coop_soc_yan_sem_m_101</text>
+            </phrase>
+            <phrase id="7">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_m_after</precondition>
+                <next>71</next>
+            </phrase>
+            <phrase id="71">
+                <action>coop_soc_yan_semenov.say_m71</action>
+                <text>coop_soc_yan_sem_m_71</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="yan_soc_wounded_dialog">
+        <phrase_list>
+            <!-- original SoC yantar_wounded_scientist (help_start_dialog of the wounded scientist) -->
+            <phrase id="0">
+                <text />
+                <next>1</next>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="1">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_w_first</precondition>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_yan_semenov.say_w11</action>
+                <text>coop_soc_yan_sem_w_11</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_yan_semenov.say_w111</action>
+                <text>coop_soc_yan_sem_w_111</text>
+                <give_flag>YAN_SCIENTIST_RETURN_TO_BUNKER</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="2">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_w_done</precondition>
+                <next>211</next>
+            </phrase>
+            <phrase id="211">
+                <action>coop_soc_yan_semenov.say_w211</action>
+                <text>coop_soc_yan_sem_w_211</text>
+            </phrase>
+            <phrase id="3">
+                <text />
+                <precondition>coop_soc_yan_semenov.st_w_after</precondition>
+                <next>31</next>
+            </phrase>
+            <phrase id="31">
+                <action>coop_soc_yan_semenov.say_w31</action>
+                <text>coop_soc_yan_sem_w_31</text>
             </phrase>
         </phrase_list>
     </dialog>

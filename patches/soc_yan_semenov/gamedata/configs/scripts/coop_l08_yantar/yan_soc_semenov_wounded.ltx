@@ -1,0 +1,75 @@
+; Semenov wounded by the psi-emission at the third measurement site (SoC logic of the scientist: walker@scientist_wounded, path
+; wounded_walk (171.98, -7.69, -99.49), wounded@yan_scientist). Created by scripts\coop_soc_yan_semenov.script when the three measurements
+; are done (spawn section [yan_soc_semenov_wounded], story id yan_semenov_help = the map marker of the task).
+; Lies wounded and mortal (zombies can kill him: YAN_SCIENTIST_DIE, SoC yantar_tasks.yan_scientist_task_fail / yan_scientist_return_task).
+; The talk (dialog yan_soc_wounded_dialog, SoC yantar_wounded_scientist) sets YAN_SCIENTIST_RETURN_TO_BUNKER: he gets up; the server tick
+; sends him home (removes him and puts the bunker Semenov back) because walking all the way back is not reliable in this mod.
+[logic]
+active = remark@yan_soc_semenov_wounded
+on_death = death@yan_soc_semenov
+
+[remark@yan_soc_semenov_wounded]
+anim = wait
+meet = meet@yan_soc_semenov_wounded
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+use_camp = false
+wounded = wounded@yan_soc_semenov
+on_info = {+YAN_SCIENTIST_RETURN_TO_BUNKER} remark@yan_soc_semenov_up
+
+[remark@yan_soc_semenov_up]
+anim = guard
+target = actor
+meet = meet@yan_soc_semenov_wounded
+invulnerable = true
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+use_camp = false
+wounded = wounded@yan_soc_semenov_ok
+
+; SoC wounded@yan_scientist: hp_state = 102|help_me@...|101|wounded_heavy@... (a threshold above 100 means always wounded); the sound theme
+; yantar_kruglov_radiation_quest_7 is not in the mod, the stock heavy-wounded voice is used
+[wounded@yan_soc_semenov]
+hp_state = 102|wounded_heavy@nil
+hp_state_see = 102|wounded_heavy@nil
+hp_victim = 102|nil
+hp_cover = 102|false
+hp_fight = 102|false
+help_start_dialog = yan_soc_wounded_dialog
+enable_talk = true
+not_for_help = true
+use_medkit = false
+autoheal = false
+
+; SoC wounded@ignore_scientist (hp_state 0: never wounded)
+[wounded@yan_soc_semenov_ok]
+hp_state = 0|wounded_heavy@nil
+hp_state_see = 0|wounded_heavy@nil
+hp_victim = 0|nil
+hp_cover = 0|false
+hp_fight = 0|false
+
+; SoC death@scientist
+[death@yan_soc_semenov]
+on_info = %+YAN_SCIENTIST_DIE%
+
+[meet@yan_soc_semenov_wounded]
+close_snd_hello = nil
+close_snd_bye = nil
+close_anim = nil
+close_victim = nil
+far_anim = nil
+far_victim = nil
+close_distance = 0
+far_distance = 0
+close_snd_distance = 0
+abuse = false
+use = {=actor_enemy} false, true
+allow_break = true
+meet_on_talking = true

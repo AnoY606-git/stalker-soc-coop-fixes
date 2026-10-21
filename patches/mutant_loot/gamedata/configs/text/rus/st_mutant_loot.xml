@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <string_table>
 	<string id="st_mutant_loot_tip"><text>Обыскать</text></string>
-	<string id="st_mutant_loot_title"><text>Труп мутанта</text></string>
+	<string id="st_mutant_loot_found"><text>Найдено:</text></string>
 	<string id="st_mutant_loot_empty"><text>На теле нет ничего полезного</text></string>
-	<string id="st_mutant_loot_take"><text>Взять</text></string>
-	<string id="st_mutant_loot_close"><text>Закрыть</text></string>
 </string_table>

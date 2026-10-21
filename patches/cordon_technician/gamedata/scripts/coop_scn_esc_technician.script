@@ -21,8 +21,14 @@ SECTION    = "esc_rookie_technician"
 STORY_ID   = "esc_rookie_technician"
 LOGIC_FILE = "scripts\\coop_l01_escape\\esc_rookie_technician.ltx"
 
--- in the basement of the village: Sidorovich's bunker, next to the work cabinet (esc_shkaf_work_01), AI node 204839
-SPOT = { x = -246.4, y = -24.8, z = -133.7 }
+-- in the cellar under the rookie village house at x -213 / z -122 (floor y -23.2, wooden floor, iron bed, wall lamp; entered from the
+-- south through a gap in the wall, the cellar room is x -215.7 to -211.0, z -127.7 to -120.4; the guide sits at its north end).
+-- AI node of the level.ai at x -211.8, z -121.4: the north-east corner, deep in the room away from the entrance (FOSTER 2026-10-21:
+-- "move him further in"; was x -212.1, z -124.6 in the middle of the room). He stands there (remark, arms folded) and looks at the
+-- entrance (see the logic file).
+SPOT = { x = -211.8, y = -23.2, z = -121.4 }
+local MOVE_R = 2.0     -- an existing technician farther than this from SPOT (a save from before the move) is re-created at SPOT once
+local moved = false
 
 local checked_at = 0
 local created_n = 0
@@ -127,6 +133,17 @@ function ensure()
 	if not OnServer() then return nil end
 	if level.name() ~= LEVEL then return nil end
 	local id = find()
+	if id ~= nil and not moved then
+		-- a save from before the move: release him where he stands, the next tick creates him at SPOT
+		moved = true
+		local se = alife():object(id)
+		local pos = find_node(SPOT.x, SPOT.y, SPOT.z)
+		if se ~= nil and pos ~= nil and se.position:distance_to(pos) > MOVE_R then
+			say(string.format("moving: releasing id=%d at %.1f %.1f %.1f", id, se.position.x, se.position.y, se.position.z))
+			alife():release(se, true)
+			return nil
+		end
+	end
 	if id ~= nil then return id end
 	if actors_online() == 0 then return nil end
 	local n, ids = count_all()
@@ -140,6 +157,9 @@ function ensure()
 	if not valid_node(lv) then
 		say("no level vertex, cannot create")
 		return nil
+	end
+	if math.abs(pos.y - SPOT.y) > 1.5 then
+		say(string.format("WARNING the node y %.2f is not the cellar floor %.2f (surface node picked?)", pos.y, SPOT.y))
 	end
 	local gv = game_vertex(pos)
 	if gv == nil then

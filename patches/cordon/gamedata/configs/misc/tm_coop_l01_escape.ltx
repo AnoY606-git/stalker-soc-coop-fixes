@@ -1,0 +1,345 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест основной(Начало начал)
+[esc_start_main_quest_task]
+icon 												= ui_inGame2_esc_start_main_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_main_quest_task_name
+descr 												= st_esc_start_main_quest_task_descr
+target 												= nil
+condlist_0 											= {+all_good_boy} complete
+
+
+
+;Квест Сидоровича(Важное поручение: найти Шустрого)
+[esc_start_talk_to_the_sidorovich_quest_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_sidorovich_quest_task
+prior 												= 200
+storyline 											= true
+title 												= st_esc_start_talk_to_the_sidorovich_quest_task_name
+descr 												= st_esc_start_talk_to_the_sidorovich_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_START_TALK_TO_THE_SIDOROVICH_QUEST_TASK_INFO} complete %=give_task(esc_start_find_stalker_shustry_quest_task) =give_task(esc_start_talk_to_the_wolf_quest_task)%
+
+;Квест Сидоровича(Важное поручение: вернуть флешку)
+[esc_start_find_stalker_shustry_quest_task]
+icon 												= ui_inGame2_esc_start_find_stalker_shustry_quest_task
+prior 												= 300
+storyline 											= true
+title 												= st_esc_start_find_stalker_shustry_quest_task_name
+descr 												= st_esc_start_find_stalker_shustry_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO} complete
+
+
+
+;Квест Волка(Разузнать про ситуацию с Шустрым)
+[esc_start_talk_to_the_wolf_quest_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_wolf_quest_task
+prior 												= 350
+storyline 											= true
+title 												= st_esc_start_talk_to_the_wolf_quest_task_name
+descr 												= st_esc_start_talk_to_the_wolf_quest_task_descr
+target 												= esc_smart_terrain_1_stalker_wolf
+condlist_0 											= {+ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO} complete %=give_task(esc_start_save_the_stalker_shustry_quest_task) =give_task(esc_start_talk_to_petruha_quest_task)%
+
+;Квест Волка(Убить бандитов и забрать флешку)
+[esc_start_save_the_stalker_shustry_quest_task]
+icon 												= ui_inGame2_esc_start_save_the_stalker_shustry_quest_task
+prior 												= 350
+storyline 											= true
+title 												= st_esc_start_save_the_stalker_shustry_quest_task_name
+descr 												= st_esc_start_save_the_stalker_shustry_quest_task_descr
+target 												= esc_smart_terrain_3_stalker_shustry
+condlist_0 											= {+ESC_START_ESCORT_THE_STALKER_SHUSTRY_QUEST_TASK_INFO} complete %=give_task(esc_start_escort_the_stalker_shustry_quest_task)%
+
+;Квест Волка(Сопроводить до деревни)
+[esc_start_escort_the_stalker_shustry_quest_task]
+icon 												= ui_inGame2_esc_start_escort_the_stalker_shustry_quest_task
+prior 												= 350
+storyline 											= true
+title 												= st_esc_start_escort_the_stalker_shustry_quest_task_name
+descr 												= st_esc_start_escort_the_stalker_shustry_quest_task_descr
+target 												= esc_smart_terrain_3_stalker_shustry
+condlist_0 											= {+ESC_SMART_TERRAIN_1_STALKER_WOLF_HELP_ATP_END_STOP_DIALOG_INFO} complete
+reward_money 										= 500
+
+
+
+;Квест Волка(Поговорить с Петрухой)
+[esc_start_talk_to_petruha_quest_task]
+icon 												= ui_inGame2_esc_start_talk_to_petruha_quest_task
+prior 												= 250
+storyline 											= true
+title 												= st_esc_start_talk_to_petruha_quest_task_name
+descr 												= st_esc_start_talk_to_petruha_quest_task_descr
+target												= esc_smart_terrain_4_stalker_petruha
+condlist_0 											= {+ESC_SMART_TERRAIN_4_STALKER_PETRUHA_HELP_ATP_STOP_DIALOG_INFO} complete %=give_task(esc_start_kill_bandits_on_the_atp_quest_task)%
+
+;Квест Волка(Убить бандитов на АТП)
+[esc_start_kill_bandits_on_the_atp_quest_task]
+icon 												= ui_inGame2_esc_start_kill_bandits_on_the_atp_quest_task
+prior 												= 250
+storyline 											= true
+title 												= st_esc_start_kill_bandits_on_the_atp_quest_task_name
+descr 												= st_esc_start_kill_bandits_on_the_atp_quest_task_descr
+target 												= esc_smart_terrain_3_bandit_1_squad
+condlist_0 											= {+ESC_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD} complete %=give_task(esc_start_go_back_to_the_wolf_quest_task)%
+
+;Квест Волка(Вернуться к Волку за наградой)
+[esc_start_go_back_to_the_wolf_quest_task]
+icon 												= ui_inGame2_esc_start_go_back_to_the_wolf_quest_task
+prior 												= 250
+storyline 											= true
+title												= st_esc_start_go_back_to_the_wolf_quest_task_name
+descr												= st_esc_start_go_back_to_the_wolf_quest_task_descr
+target 												= esc_smart_terrain_1_stalker_wolf
+condlist_0 											= {+ESC_SMART_TERRAIN_1_STALKER_WOLF_HELP_ATP_END_STOP_DIALOG_INFO} complete
+reward_money 										= 500
+
+
+
+;Квест Сидоровича(Похоже, что-то намечается)
+[esc_start_talk_to_the_sidorovich_quest_1_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_sidorovich_quest_1_task
+prior 												= 400
+storyline 											= true
+title 												= st_esc_start_talk_to_the_sidorovich_quest_1_task_name
+descr 												= st_esc_start_talk_to_the_sidorovich_quest_1_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO} complete %=give_task(esc_start_talk_to_the_fox_quest_1_task)%
+
+;Квест Сидоровича(Лис может что-то знать)
+[esc_start_talk_to_the_fox_quest_1_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_fox_quest_1_task
+prior 												= 400
+storyline 											= true
+title 												= st_esc_start_talk_to_the_fox_quest_1_task_name
+descr 												= st_esc_start_talk_to_the_fox_quest_1_task_descr
+target 												= esc_smart_terrain_6_stalker_fox
+condlist_0 											= {+ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO} complete %=give_task(esc_start_talk_to_the_fox_quest_2_task)%
+
+;Квест Сидоровича(Дорога на север)
+[esc_start_talk_to_the_fox_quest_2_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_fox_quest_2_task
+prior 												= 400
+storyline 											= true
+title 												= st_esc_start_talk_to_the_fox_quest_2_task_name
+descr 												= st_esc_start_talk_to_the_fox_quest_2_task_descr
+target 												= esc_gar_level_changer
+condlist_0 											= {+GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO} complete
+
+
+
+;Квест Лиса(Спасение Лиса от собак)
+[esc_start_kill_dogs_quest_task]
+icon 												= ui_inGame2_esc_start_kill_dogs_quest_task
+prior 												= 300
+storyline 											= true
+title 												= st_esc_start_kill_dogs_quest_task_name
+descr 												= st_esc_start_kill_dogs_quest_task_descr
+target 												= esc_smart_terrain_6_m_dog_squad
+condlist_0 											= {+ESC_SMART_TERRAIN_6_M_DOG_SQUAD_DEAD} complete
+reward_money 										= 1000
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Original SoC after the flash drive (patch cordon, see NOTES.md). Titles and texts are SoC's (st_cordon_soc_chain.xml).
+;--   esc_soc_trader_job_task          SoC esc_trader_job: "Work for the trader" (get the special task from Sidorovich), done when he gave it
+;--   esc_soc_railroad_passage_task    SoC find_railroad_passage: way north, done on arrival at the Garbage (the old "Road to the North" end)
+;--   esc_soc_military_documents_task  SoC agroprom_get_military_documents: done when the Barkeep has the documents. ONE task like SoC: its description
+;--                                    and marker follow the objectives (patch agroprom_soc): Cordon text until the group is on Agroprom, "steal the documents"
+;--                                    (no marker), then "take the documents to the Barkeep" (marker: the Barkeep) once the case is in hand (flag AGR_START_BREAK_...)
+;-- They are given to EVERY player by the server tick of coop_soc_opening.script.
+;--------------------------------------------------------------------------------------------------------------------------------------
+[esc_soc_trader_job_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_sidorovich_quest_1_task
+prior 												= 400
+storyline 											= true
+title 												= coop_soc_task_trader_job_name
+descr 												= coop_soc_task_trader_job_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_GO_TO_FOX_STOP_DIALOG_INFO} complete
+
+[esc_soc_railroad_passage_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_fox_quest_2_task
+prior 												= 400
+storyline 											= true
+title 												= coop_soc_task_railroad_name
+descr 												= coop_soc_task_railroad_descr
+target 												= esc_gar_level_changer
+condlist_0 											= {+GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO} complete
+
+[esc_soc_military_documents_task]
+icon 												= ui_inGame2_esc_start_talk_to_the_fox_quest_2_task
+prior 												= 390
+storyline 											= true
+title 												= coop_soc_task_documents_name
+descr 												= {+AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO} st_agr_start_the_destination_is_a_bar_quest_task_descr, {=actor_has_item(agr_safe_container_1)} st_agr_start_the_destination_is_a_bar_quest_task_descr, {+AGR_STALKER_HELP_1_INFO} st_agr_start_break_into_a_military_base_quest_task_descr, coop_soc_task_documents_descr
+target 												= {+AGR_START_BREAK_INTO_A_MILITARY_BASE_QUEST_TASK_INFO} bar_smart_terrain_1_stalker_barmen, {=actor_has_item(agr_safe_container_1)} bar_smart_terrain_1_stalker_barmen
+condlist_0 											= {+BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Квест Кузнецова(5 бутылок водки)
+[esc_start_5_bottles_of_vodka_for_kuznetsov_quest_task]
+icon 												= ui_inGame2_esc_start_5_bottles_of_vodka_for_kuznetsov_quest_task
+prior 												= 50
+storyline 											= false
+title 												= coop_soc_task_pass_name
+descr 												= coop_soc_task_pass_descr
+target 												= esc_smart_terrain_7_military_kuznetsov
+condlist_0 											= {+ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO +ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_GO_TO_FOX_2_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_SQUAD_DEAD} fail, {+ESC_SMART_TERRAIN_7_MILITARY_SHTIRTS_SQUAD_DEAD} fail
+
+
+
+;Квест Сидоровича(Найти и принести артефакт "Медуза")
+[esc_start_sq_art_1_quest_task]
+icon 												= ui_inGame2_esc_start_sq_art_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_art_1_quest_task_name
+descr 												= st_esc_start_sq_art_1_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_1_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_1_FAIL_INFO} fail
+reward_money 										= 3500
+
+;Квест Сидоровича(Найти и принести артефакт "Кровь камня")
+[esc_start_sq_art_2_quest_task]
+icon 												= ui_inGame2_esc_start_sq_art_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_art_2_quest_task_name
+descr 												= st_esc_start_sq_art_2_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_2_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_2_FAIL_INFO} fail
+reward_money 										= 2500
+
+;Квест Сидоровича(Найти и принести артефакт "Каменный цветок")
+[esc_start_sq_art_3_quest_task]
+icon 												= ui_inGame2_esc_start_sq_art_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_art_3_quest_task_name
+descr 												= st_esc_start_sq_art_3_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_3_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_ART_3_FAIL_INFO} fail
+reward_money 										= 3000
+
+
+;Квест Сидоровича(Найти и убить сталкера "Макрушник")
+[esc_start_sq_killer_1_quest_task]
+icon 												= ui_ingame2_esc_start_sq_killer_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_killer_1_quest_task_name
+descr 												= st_esc_start_sq_killer_1_quest_task_descr
+target 												= esc_smart_terrain_8_stalker_killer
+condlist_0 											= {+ESC_SMART_TERRAIN_8_STALKER_1_SQUAD_DEAD} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_1_FAIL_INFO} fail
+reward_money 										= 1500
+
+;Квест Сидоровича(Найти и убить сталкеров "3 балбеса")
+[esc_start_sq_killer_2_quest_task]
+icon 												= ui_ingame2_esc_start_sq_killer_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_killer_2_quest_task_name
+descr 												= st_esc_start_sq_killer_2_quest_task_descr
+target 												= esc_smart_terrain_9_stalker_idiot
+condlist_0 											= {+ESC_SMART_TERRAIN_9_STALKER_1_SQUAD_DEAD} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_2_FAIL_INFO} fail
+reward_money 										= 3500
+
+;Квест Сидоровича(Найти и убить сталкера "Снайпера-неудачника")
+[esc_start_sq_killer_3_quest_task]
+icon 												= ui_ingame2_esc_start_sq_killer_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_killer_3_quest_task_name
+descr 												= st_esc_start_sq_killer_3_quest_task_descr
+target 												= esc_smart_terrain_10_stalker_sniper_loser
+condlist_0 											= {+ESC_SMART_TERRAIN_10_STALKER_1_SQUAD_DEAD} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_3_FAIL_INFO} fail
+reward_money 										= 2500
+
+
+;Квест Сидоровича(Убить мутантов в овраге около "Деревни новичков")
+[esc_start_sq_killer_mutants_1_quest_task]
+icon 												= ui_ingame2_esc_start_sq_killer_mutants_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_killer_mutants_1_quest_task_name
+descr 												= st_esc_start_sq_killer_mutants_1_quest_task_descr
+target 												= esc_smart_terrain_1_m_dog_squad
+condlist_0 											= {+ESC_SMART_TERRAIN_1_M_DOG_SQUAD_DEAD} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_1_FAIL_INFO} fail
+reward_money 										= 2500
+
+;Квест Сидоровича(Убить мутантов на холме за "АТП")
+[esc_start_sq_killer_mutants_2_quest_task]
+icon 												= ui_ingame2_esc_start_sq_killer_mutants_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_killer_mutants_2_quest_task_name
+descr 												= st_esc_start_sq_killer_mutants_2_quest_task_descr
+target 												= esc_smart_terrain_7_m_boar_squad
+condlist_0 											= {+ESC_SMART_TERRAIN_7_M_BOAR_SQUAD_DEAD} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_2_FAIL_INFO} fail
+reward_money 										= 3500
+
+;Квест Сидоровича(Убить мутантов в враге около "Элеватора")
+[esc_start_sq_killer_mutants_3_quest_task]
+icon 												= ui_ingame2_esc_start_sq_killer_mutants_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_killer_mutants_3_quest_task_name
+descr 												= st_esc_start_sq_killer_mutants_3_quest_task_descr
+target 												= esc_smart_terrain_13_m_boar_squad
+condlist_0 											= {+ESC_SMART_TERRAIN_13_M_BOAR_SQUAD_DEAD} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_KILLER_MUTANTS_3_FAIL_INFO} fail
+reward_money 										= 4500
+
+
+;Квест Сидоровича(Найти и принести "Копыто Кабана")
+[esc_start_sq_mutant_boar_part_1_quest_task]
+icon 												= ui_ingame2_esc_start_sq_mutant_boar_part_1_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_mutant_boar_part_1_quest_task_name
+descr 												= st_esc_start_sq_mutant_boar_part_1_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_10_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_BOAR_PART_1_FAIL_INFO} fail
+reward_money 										= 2500
+
+;Квест Сидоровича(Найти и принести "Хвост Собаки")
+[esc_start_sq_mutant_dog_part_2_quest_task]
+icon 												= ui_ingame2_esc_start_sq_mutant_dog_part_2_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_mutant_dog_part_2_quest_task_name
+descr 												= st_esc_start_sq_mutant_dog_part_2_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_11_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_DOG_PART_2_FAIL_INFO} fail
+reward_money 										= 2000
+
+;Квест Сидоровича(Найти и принести "Глаз Плоти")
+[esc_start_sq_mutant_flesh_part_3_quest_task]
+icon 												= ui_ingame2_esc_start_sq_mutant_flesh_part_3_quest_task
+prior 												= 100
+storyline 											= true
+title 												= st_esc_start_sq_mutant_flesh_part_3_quest_task_name
+descr 												= st_esc_start_sq_mutant_flesh_part_3_quest_task_descr
+target 												= esc_smart_terrain_1_trader_sidorovich
+condlist_0 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SECONDARY_QUESTS_IDLE_12_STOP_DIALOG_INFO} complete
+condlist_1 											= {+ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_SQ_MUTANT_FLESH_PART_3_FAIL_INFO} fail
+reward_money 										= 1000
+

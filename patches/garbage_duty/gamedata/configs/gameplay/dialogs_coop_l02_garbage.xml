@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+    <dialog id="gar_smart_terrain_2_stalker_gray_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_scn_garbage_soc.say_seriy_22</action>
+                <text>gar_seriy_start_22</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_4_stalker_devil_1_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_1_start_dialog_0</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_1_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_4_stalker_devil_2_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_2_start_dialog_0</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_2_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_4_stalker_devil_help_the_and">
+        <has_flag>GAR_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD</has_flag>
+        <has_flag>GAR_SMART_TERRAIN_3_BANDIT_2_SQUAD_DEAD</has_flag>
+        <dont_has_flag>GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_help_the_and_0</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_help_the_and_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_help_the_and_1</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_help_the_and_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_help_the_and_2</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_help_the_and_2</text>
+                <action>coop_scn_garbage_soc.pay_bes</action>
+				<give_flag>GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO</give_flag>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_8_duty_prapor_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_start_dialog_0</action>
+
+                <text>gar_smart_terrain_8_duty_prapor_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar">
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_1</action>
+
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_0</action>
+
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_2</action>
+
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_3</action>
+
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_4</action>
+
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_4</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_1_stalker_yurik_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_1_stalker_yurik_start_dialog_0</action>
+
+                <text>gar_smart_terrain_1_stalker_yurik_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_1_stalker_yurik_help">
+        <has_flag>GAR_SMART_TERRAIN_1_BANDIT_1_SQUAD_DEAD</has_flag>
+        <dont_has_flag>GAR_SMART_TERRAIN_1_STALKER_YURIK_HELP_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__gar_smart_terrain_1_stalker_yurik_help_2</action>
+
+                <text>gar_smart_terrain_1_stalker_yurik_help_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__gar_smart_terrain_1_stalker_yurik_help_3</action>
+
+                <text>gar_smart_terrain_1_stalker_yurik_help_3</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__gar_smart_terrain_1_stalker_yurik_help_1</action>
+
+                <text>gar_smart_terrain_1_stalker_yurik_help_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_1_stalker_yurik_help_0</action>
+
+                <text>gar_smart_terrain_1_stalker_yurik_help_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__gar_smart_terrain_1_stalker_yurik_help_4</action>
+
+                <text>gar_smart_terrain_1_stalker_yurik_help_4</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>GAR_SMART_TERRAIN_1_STALKER_YURIK_HELP_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_2_stalker_gray_help">
+        <has_flag>GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD</has_flag>
+        <has_flag>GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD</has_flag>
+        <dont_has_flag>GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO</dont_has_flag>
+        <has_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO</has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_scn_garbage_soc.say_seriy_221</action>
+                <text>gar_seriy_start_221</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_scn_garbage_soc.say_seriy_2211</action>
+                <text>gar_seriy_start_2211</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_scn_garbage_soc.say_seriy_2212</action>
+                <text>gar_seriy_start_2212</text>
+                <action>coop_scn_garbage_soc.pay_seriy</action>
+                <action>dialogs.break_dialog</action>
+                <give_flag>GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_2_stalker_gray_help_nofox">
+        <has_flag>GAR_SMART_TERRAIN_6_BANDIT_1_SQUAD_DEAD</has_flag>
+        <has_flag>GAR_SMART_TERRAIN_6_BANDIT_2_SQUAD_DEAD</has_flag>
+        <dont_has_flag>GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO</dont_has_flag>
+        <dont_has_flag>ESC_SMART_TERRAIN_6_STALKER_FOX_INFO_MILITARY_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_scn_garbage_soc.say_seriy_222</action>
+                <text>gar_seriy_start_222</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_scn_garbage_soc.say_seriy_2221</action>
+                <text>gar_seriy_start_2221</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_scn_garbage_soc.say_seriy_2222</action>
+                <text>gar_seriy_start_2222</text>
+                <action>coop_scn_garbage_soc.pay_seriy</action>
+                <action>dialogs.break_dialog</action>
+                <give_flag>GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_4_stalker_devil_help">
+    <dont_has_flag>GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_STOP_DIALOG_INFO</dont_has_flag>	
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_help_1</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_help_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_help_0</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_help_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__gar_smart_terrain_4_stalker_devil_help_2</action>
+
+                <text>gar_smart_terrain_4_stalker_devil_help_2</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_STOP_DIALOG_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_10_bandit_major_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_start_dialog_0</action>
+
+                <text>gar_smart_terrain_10_bandit_major_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog">
+        <dont_has_flag>GAR_SMART_TERRAIN_10_BANDIT_MAJOR_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <phrase id="1">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_1</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_1</text>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_2</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_2</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_4</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_4</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_3</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_3</text>
+                <next>5</next>
+            </phrase>
+            <phrase id="5">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_5</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_5</text>
+                <next>7</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_0</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="7">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_7</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_7</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>GAR_SMART_TERRAIN_10_BANDIT_MAJOR_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO</give_flag>
+                <give_flag>GAR_SMART_TERRAIN_10_BANDIT_MAJOR_THE_MEETING_PLACE_CANNOT_BE_CHANGED_GOOD_INFO</give_flag>
+            </phrase>
+            <phrase id="6">
+                <action>coop_pda_phrases.say__gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_6</action>
+
+                <text>gar_smart_terrain_10_bandit_major_the_meeting_place_cannot_be_changed_start_dialog_6</text>
+                <action>dialogs.break_dialog</action>
+                <give_flag>GAR_SMART_TERRAIN_10_BANDIT_MAJOR_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO</give_flag>
+                <give_flag>GAR_SMART_TERRAIN_10_BANDIT_MAJOR_THE_MEETING_PLACE_CANNOT_BE_CHANGED_BAD_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <!-- Duty checkpoint commander, the SoC dialog gar_dolg_blokpost: closed until the pass (case / money / boars), phrase ids are the SoC ones -->
+    <dialog id="gar_duty_pass_start_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>2</next>
+                <next>1</next>
+                <next>3</next>
+            </phrase>
+            <!-- the boar wave is over and a player killed a boar (SoC gar_kill_boars objective 2): the commander thanks him, the report completes the task, the reward is his -->
+            <phrase id="2">
+                <precondition>coop_scn_garbage_soc.report_open</precondition>
+                <action>coop_scn_garbage_soc.say_duty_1231</action>
+                <text>gar_dolg_blokpost_1231</text>
+                <next>12311</next>
+            </phrase>
+            <phrase id="12311">
+                <action>coop_scn_garbage_soc.say_duty_12311</action>
+                <action>coop_scn_garbage_soc.report_pay</action>
+                <text>gar_dolg_blokpost_12311</text>
+            </phrase>
+            <phrase id="1">
+                <precondition>coop_scn_garbage_duty.pass_closed</precondition>
+                <text />
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_start_dialog_0</action>
+                <text>gar_smart_terrain_8_duty_prapor_start_dialog_0</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_0</action>
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_0</text>
+                <next>1111</next>
+            </phrase>
+            <phrase id="1111">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_1</action>
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_1</text>
+                <next>11111</next>
+                <next>11112</next>
+                <next>1111211</next>
+                <next>1111212</next>
+                <next>111122</next>
+            </phrase>
+            <phrase id="11111">
+                <precondition>coop_scn_garbage_duty.case_missing</precondition>
+                <text>gar_duty_pass_i_see</text>
+                <next>111111</next>
+            </phrase>
+            <phrase id="111111">
+                <text>gar_duty_pass_rules</text>
+            </phrase>
+            <phrase id="11112">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_2</action>
+                <precondition>coop_scn_garbage_duty.case_have</precondition>
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_2</text>
+                <next>111121</next>
+            </phrase>
+            <phrase id="111121">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_3</action>
+                <action>coop_scn_garbage_duty.give_pass_case</action>
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_3</text>
+                <next>123</next>
+            </phrase>
+            <phrase id="123">
+                <action>coop_pda_phrases.say__gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_4</action>
+                <text>gar_smart_terrain_8_duty_prapor_the_destination_is_a_bar_4</text>
+                <next>33</next>
+            </phrase>
+            <phrase id="1111211">
+                <precondition>coop_scn_garbage_duty.can_pay</precondition>
+                <action>coop_scn_garbage_duty.give_pass_money</action>
+                <text>gar_duty_pass_pay</text>
+                <next>11112111</next>
+            </phrase>
+            <phrase id="11112111">
+                <text>gar_duty_pass_paid</text>
+            </phrase>
+            <!-- SoC "What's the favor?": kill the boars, the passage is paid (the wave is the one of the Duty zone; the pass comes with a won wave, patch garbage_duty) -->
+            <phrase id="1111212">
+                <precondition>coop_scn_garbage_soc.favor_open</precondition>
+                <action>coop_scn_garbage_soc.say_duty_1111212</action>
+                <text>gar_dolg_blokpost_1111212</text>
+                <next>11112121</next>
+            </phrase>
+            <phrase id="11112121">
+                <action>coop_scn_garbage_soc.say_duty_11112121</action>
+                <text>gar_dolg_blokpost_11112121</text>
+                <next>111121211</next>
+            </phrase>
+            <phrase id="111121211">
+                <action>coop_scn_garbage_soc.say_duty_111121211</action>
+                <action>coop_scn_garbage_soc.favor_start</action>
+                <text>gar_dolg_blokpost_111121211</text>
+                <next>1111212111</next>
+            </phrase>
+            <phrase id="1111212111">
+                <action>coop_scn_garbage_soc.say_duty_1111212111</action>
+                <text>gar_dolg_blokpost_1111212111</text>
+            </phrase>
+            <phrase id="111122">
+                <precondition>coop_scn_garbage_duty.cannot_pay</precondition>
+                <text>gar_duty_pass_no_money</text>
+                <next>111123</next>
+            </phrase>
+            <phrase id="111123">
+                <text>gar_duty_pass_no_pass</text>
+            </phrase>
+            <phrase id="3">
+                <precondition>coop_scn_garbage_duty.pass_open</precondition>
+                <text />
+                <next>33</next>
+            </phrase>
+            <phrase id="33">
+                <text>gar_duty_pass_say_hi</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+</game_dialogs>

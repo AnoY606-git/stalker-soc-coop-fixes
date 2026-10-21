@@ -1,0 +1,125 @@
+-------------------------------------------------------------------------------------------------------
+-- Cordon story after the flash drive, original Shadow of Chernobyl (patch cordon).
+--  1. PDA archive lines for Sidorovich's "military case" talk (SoC escape_trader_jobs) and for the bridge talk with Major Kuznetsov
+--     (SoC esc_bridge_soldiers_start); same helper calls as coop_soc_opening.say
+--  2. the bridge pass costs 500 rubles (SoC): precondition and payment. Any player can pay; the pass is the shared story flag
+--     ESC_START_5_BOTTLES_OF_VODKA_FOR_KUZNETSOV_QUEST_TASK_INFO (name kept from the vodka version: the bridge zone trigger and the
+--     soldiers' logic read it), so the whole group is let through.
+-------------------------------------------------------------------------------------------------------
+
+local BRIBE = 500
+
+local function emit(tid, speaker, first, second)
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = speaker end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+end
+
+-- Sidorovich: phrase 0 is the player's question, then npc / actor alternate (SoC phrases 0, 6, 61, 611, 6111, 61111, 611111, 6111111, 61111111, 611111111)
+local function job(i, a, b)
+	emit("coop_soc_job_" .. i, (i % 2 == 0) and "actor" or "npc", a, b)
+end
+function say_job_0(a, b) job(0, a, b) end
+function say_job_1(a, b) job(1, a, b) end
+function say_job_2(a, b) job(2, a, b) end
+function say_job_3(a, b) job(3, a, b) end
+function say_job_4(a, b) job(4, a, b) end
+function say_job_5(a, b) job(5, a, b) end
+function say_job_6(a, b) job(6, a, b) end
+function say_job_7(a, b) job(7, a, b) end
+function say_job_8(a, b) job(8, a, b) end
+function say_job_9(a, b) job(9, a, b) end
+
+-- bridge soldiers (SoC phrase ids 11, 12, 13, 14, 15, 21, 24, 25)
+local BRIDGE = { ["11"] = "npc", ["12"] = "actor", ["13"] = "npc", ["14"] = "actor", ["15"] = "npc", ["21"] = "npc", ["24"] = "actor", ["25"] = "npc" }
+local function bridge(k, a, b)
+	emit("coop_soc_bridge_" .. k, BRIDGE[k], a, b)
+end
+function say_bridge_11(a, b) bridge("11", a, b) end
+function say_bridge_12(a, b) bridge("12", a, b) end
+function say_bridge_13(a, b) bridge("13", a, b) end
+function say_bridge_14(a, b) bridge("14", a, b) end
+function say_bridge_15(a, b) bridge("15", a, b) end
+function say_bridge_21(a, b) bridge("21", a, b) end
+function say_bridge_24(a, b) bridge("24", a, b) end
+function say_bridge_25(a, b) bridge("25", a, b) end
+
+-- SoC escape_dialog.has_soldiers_bribe: the talking player (the local player: dialog preconditions run on his machine) has the money
+function has_bridge_bribe(a, b)
+	local la = getLocalActor()
+	return la ~= nil and la:money() >= BRIBE
+end
+
+-- SoC escape_dialog.give_soldiers_bribe: the money is taken from the talking player only (xrMPE dialogs helper, same call as the mod's transfer_1000)
+function give_bridge_bribe(a, b)
+	dialogs.relocate_money_from_actor(a, b, BRIBE)
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. the level maker's helicopters (esc_helicopter_go_to_agroprom_1/2/3) are removed from the server
+--    The three objects have an `on_timer = 3000 | %=destroy_object%` in their logic, but the logic only runs while the helicopter binder
+--    updates (db.actor set, section activated), so in the test the object stayed online 12 s after the flash drive hand-in and no
+--    "releasing object" line appeared. The original SoC has no such flight. So the server releases them itself: tick_heli() is called once a
+--    second by the opening script's server tick (coop_soc_opening.tick_server) as soon as ESC_HELICOPTER_GO_TO_AGROPROM_INFO is set (silently
+--    given by the flash drive hand-in), which also covers a level that loads with the flag already set.
+--    The fourth one, esc_smart_terrain_5_helicopter (radio flyover after the Tolik / Petruha talks, before the hand-in), has no flag to wait for:
+--    its logic file is the same idle-and-remove one and tick_heli() releases the object 8 s after the first tick on the level (3 scans).
+-------------------------------------------------------------------------------------------------------
+local HELI_FLAG = "ESC_HELICOPTER_GO_TO_AGROPROM_INFO"
+local heli_scans = 0          -- full object scans done (the first finds them, one later one catches a late spawn)
+local heli_next = 0           -- time_global() of the next scan
+
+local FLYOVER = "esc_smart_terrain_5_helicopter"   -- the radio flyover after the Tolik / Petruha talks (before the hand-in); SoC has none
+local flyover_scans = 0       -- scans done for it (the first finds it, a later one catches a late spawn)
+local flyover_next = nil      -- time_global() of the next scan
+
+local function is_esc_heli(so, flyover)
+	local nm = ""
+	pcall(function() nm = so:name() or "" end)
+	if flyover then return nm == FLYOVER end
+	return string.find(nm, "esc_helicopter_go_to_agroprom", 1, true) ~= nil
+end
+
+-- releases every esc helicopter server object (flyover = true: the Tolik / Petruha radio flyover instead of the three after the hand-in);
+-- returns how many were released
+function release_helis(flyover)
+	if OnClient() then return 0 end
+	local n = 0
+	for id = 1, 65534 do
+		local so = nil
+		pcall(function() so = alife():object(id) end)
+		if so ~= nil and is_esc_heli(so, flyover) then
+			local nm = ""
+			pcall(function() nm = so:name() end)
+			local ok = pcall(function() alife():release(so, true) end)
+			if ok then
+				n = n + 1
+				printf("coop_soc_cordon: releasing helicopter [%s]", tostring(nm))
+			end
+		end
+	end
+	return n
+end
+
+function tick_heli(now)
+	if OnClient() then return end
+	if level.name() == "coop_l01_escape" and flyover_scans < 3 then
+		-- the flyover helicopter exists from the start of the level: release it 8 s after the first tick (a player is in), then twice more
+		-- 4 s apart; no flag is needed (it flies after the Tolik / Petruha talks, long before the hand-in)
+		if flyover_next == nil then flyover_next = now + 8000 end
+		if now >= flyover_next then
+			flyover_scans = flyover_scans + 1
+			flyover_next = now + 4000
+			local okf, nf = pcall(release_helis, true)
+			printf("coop_soc_cordon: flyover helicopter scan %d released %s", flyover_scans, tostring(okf and nf or "error"))
+		end
+	end
+	if heli_scans >= 3 then return end
+	if now < heli_next then return end
+	local okf, flag = pcall(story_flags.has_flag, HELI_FLAG)
+	if not (okf and flag) then return end
+	if level.name() ~= "coop_l01_escape" then return end
+	heli_scans = heli_scans + 1
+	heli_next = now + 4000
+	local ok, n = pcall(release_helis, false)
+	printf("coop_soc_cordon: helicopter scan %d released %s", heli_scans, tostring(ok and n or "error"))
+end

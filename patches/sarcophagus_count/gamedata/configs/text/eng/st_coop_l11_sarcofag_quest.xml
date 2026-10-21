@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_sar_start_get_to_the_monolith_quest_task_name">
-		<text>Mystery of the Zone</text>
+		<text>Wish granter</text>
 	</string>
 	<string id="st_sar_start_get_to_the_monolith_quest_task_descr">
-		<text>Reach the Monolith</text>	
+		<text>Get to Monolith\n\nI heard the call of the Monolith. He called me to him. Now I ought to go to him and get the answers to all my questions.</text>	
 	</string>
 
 
@@ -25,9 +25,9 @@
 
 
 	<string id="st_sar_start_open_the_door_to_monolith_management_quest_task_name">
-		<text>Time to end it all!</text>
+		<text>Secret lab</text>
 	</string>
 	<string id="st_sar_start_open_the_door_to_monolith_management_quest_task_descr">
-		<text>Use the decoder and open the door to Monolith Control</text>	
+		<text>Open it using the decoder.</text>	
 	</string>
 </string_table>

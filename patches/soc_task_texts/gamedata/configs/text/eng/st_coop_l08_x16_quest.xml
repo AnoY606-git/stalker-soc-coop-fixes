@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_x16_start_find_the_installation_quest_task_name">
+		<text>Turn off psi-emission</text>
+	</string>
+	<string id="st_x16_start_find_the_installation_quest_task_descr">
+		<text>Turn off psi-emission\n\nSakharov: "Well done, Marked One, you've made it to the laboratory after all. It is extremely important for us to study the mechanism that is based in the laboratory. Try to disable it so that we can investigate it.\n\n ...listen, the prototype will not be able to protect you against severe radiation. I've thought of this beforehand, so there is a timer in our armor that will start ticking when you come under strong exposure. When the time is up, the prototype will stop protecting you. Be most careful and don't forget about the timer."</text>
+	</string>	
+	
+
+	<string id="st_x16_start_turn_off_the_switch_1_task_name">
+		<text>Turn off psi-emission</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_1_task_descr">
+		<text>Turn off the 1st control module</text>
+	</string>
+	
+	<string id="st_x16_start_turn_off_the_switch_2_task_name">
+		<text>Turn off psi-emission</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_2_task_descr">
+		<text>Turn off the 2nd control module</text>
+	</string>
+	
+	<string id="st_x16_start_turn_off_the_switch_3_task_name">
+		<text>Turn off psi-emission</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_3_task_descr">
+		<text>Turn off the 3rd control module</text>
+	</string>
+	
+	<string id="st_x16_start_turn_off_the_switch_4_task_name">
+		<text>Turn off psi-emission</text>
+	</string>
+	<string id="st_x16_start_turn_off_the_switch_4_task_descr">
+		<text>Unplug the mechanism</text>
+	</string>
+	
+	
+	<string id="st_x16_start_get_out_of_the_lab_task_name">
+		<text>Get out of the lab</text>
+	</string>
+	<string id="st_x16_start_get_out_of_the_lab_task_descr">
+		<text>Get out of the lab\n\nThe device is turned off. You will just have to get out of there alive.</text>
+	</string>	
+</string_table>

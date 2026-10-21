@@ -1,0 +1,92 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Основной квест(Пробраться в комнату управления)
+[con_start_sneak_into_the_control_room_quest_task]
+icon 									= ui_inGame2_con_start_sneak_into_the_control_room_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_sneak_into_the_control_room_quest_task_name
+descr 									= st_con_start_sneak_into_the_control_room_quest_task_descr
+target 									= con_lab_primary_switcher
+condlist_0 								= {+CON_LAB_PRIMARY_SWITCHER_DEACTIVATE_INFO} complete %=give_task(con_start_destroy_the_monolith_installation_1_quest_task)%
+
+;Основной квест(Уничтожить установку "Монолит")
+[con_start_destroy_the_monolith_installation_1_quest_task]
+icon 									= ui_inGame2_con_start_destroy_the_monolith_installation_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_destroy_the_monolith_installation_quest_task_name
+descr 									= st_con_start_destroy_the_monolith_installation_quest_task_descr
+target 									= con_monolith_generator_1
+condlist_0								= {+CON_MONOLITH_GENERATOR_1_INFO +CON_MONOLITH_GENERATOR_2_INFO +CON_MONOLITH_GENERATOR_3_INFO +CON_MONOLITH_GENERATOR_4_INFO +CON_MONOLITH_GENERATOR_5_INFO +CON_MONOLITH_GENERATOR_6_INFO} complete
+
+[con_start_destroy_the_monolith_installation_2_quest_task]
+icon 									= ui_inGame2_con_start_destroy_the_monolith_installation_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_destroy_the_monolith_installation_quest_task_name
+descr 									= st_con_start_destroy_the_monolith_installation_quest_task_descr
+target 									= con_monolith_generator_2
+condlist_0 								= {+CON_MONOLITH_GENERATOR_2_INFO} complete %=give_task(con_start_destroy_the_monolith_installation_5_quest_task)%
+
+[con_start_destroy_the_monolith_installation_3_quest_task]
+icon 									= ui_inGame2_con_start_destroy_the_monolith_installation_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_destroy_the_monolith_installation_quest_task_name
+descr 									= st_con_start_destroy_the_monolith_installation_quest_task_descr
+target 									= con_monolith_generator_3
+condlist_0 								= {+CON_MONOLITH_GENERATOR_3_INFO} complete %=give_task(con_start_destroy_the_monolith_installation_4_quest_task)%
+
+[con_start_destroy_the_monolith_installation_4_quest_task]
+icon 									= ui_inGame2_con_start_destroy_the_monolith_installation_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_destroy_the_monolith_installation_quest_task_name
+descr 									= st_con_start_destroy_the_monolith_installation_quest_task_descr
+target 									= con_monolith_generator_4
+condlist_0 								= {+CON_MONOLITH_GENERATOR_4_INFO} complete %=give_task(con_start_talk_to_the_representative_awareness_quest_task)%
+
+[con_start_destroy_the_monolith_installation_5_quest_task]
+icon 									= ui_inGame2_con_start_destroy_the_monolith_installation_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_destroy_the_monolith_installation_quest_task_name
+descr 									= st_con_start_destroy_the_monolith_installation_quest_task_descr
+target 									= con_monolith_generator_5
+condlist_0 								= {+CON_MONOLITH_GENERATOR_5_INFO} complete %=give_task(con_start_destroy_the_monolith_installation_3_quest_task)%
+
+[con_start_destroy_the_monolith_installation_6_quest_task]
+icon 									= ui_inGame2_con_start_destroy_the_monolith_installation_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_destroy_the_monolith_installation_quest_task_name
+descr 									= st_con_start_destroy_the_monolith_installation_quest_task_descr
+target 									= con_monolith_generator_6
+condlist_0 								= {+CON_MONOLITH_GENERATOR_6_INFO} complete %=give_task(con_start_destroy_the_monolith_installation_2_quest_task)%
+
+[con_start_talk_to_the_representative_awareness_quest_task]
+icon 									= ui_inGame2_con_start_talk_to_the_representative_awareness_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_talk_to_the_representative_awareness_quest_task_name
+descr 									= st_con_start_talk_to_the_representative_awareness_quest_task_descr
+target 									= con_smart_terrain_13_ecolog_representative_awareness
+condlist_0								= {+CON_SMART_TERRAIN_13_ECOLOG_REPRESENTATIVE_AWARENESS_6_DIALOG_STOP_INFO} complete
+
+[con_start_kill_all_representatives_of_awareness_quest_task]
+icon 									= ui_inGame2_con_start_kill_all_representatives_of_awareness_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_con_start_kill_all_representatives_of_awareness_quest_task_name
+descr 									= st_con_start_kill_all_representatives_of_awareness_quest_task_descr
+target 									= aes_2_zone_teleport_18_space_restrictor
+condlist_0 								= {+AES_2_TEST_000_INFO} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+
+; soc_aes_quests: the five other generator steps and the kill-all-representatives step are hidden (configs\misc\coop_hidden_tasks.ltx);
+; SoC has ONE objective "Solve the Monolith's secret" (done when all six generators are down) and only TALKS to C-Consciousness.

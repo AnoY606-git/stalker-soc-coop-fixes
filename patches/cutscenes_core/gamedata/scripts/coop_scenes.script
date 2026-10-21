@@ -368,6 +368,11 @@ function client_movie_stopped()
 	C.movie_stopped_at = time_global()
 end
 
+-- id of the scene running on THIS client (nil = none); used to keep NPC talk closed while his scripted voice plays
+function client_running()
+	return C.run and C.run.id or nil
+end
+
 local function send_ack(R)
 	if R.acked then return end
 	R.acked = true

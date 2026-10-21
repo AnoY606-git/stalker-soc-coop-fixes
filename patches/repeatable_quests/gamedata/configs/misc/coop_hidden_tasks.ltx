@@ -1,0 +1,85 @@
+; Tasks that are never given (client_tasks.dscript, give_task_to_client). Not in original SoC, they complete nothing else: no give_task chain,
+; no info set at completion, nothing refers to the task id. The story logic runs on infos set by dialogs and restrictors, not by these tasks.
+
+; Cordon after the flash drive (patch cordon): the level maker's helicopter task, the Fox detour and the vodka pass are replaced by the original SoC chain.
+; Their sections stay in tm_coop_l01_escape.ltx (a save may hold them) but are never given again; nothing reads their completion.
+
+[list]
+esc_start_main_quest_task
+esc_start_5_bottles_of_vodka_for_kuznetsov_quest_task
+esc_start_kill_dogs_quest_task
+gar_start_save_the_stalker_yurik_from_bandits_quest_task
+gar_start_talk_to_yurik_quest_task
+gar_start_help_the_gray_to_fight_off_the_bandits_quest_task
+yan_start_wait_for_the_measurements_to_finish_1_quest_task
+yan_start_wait_for_the_measurements_to_finish_2_quest_task
+yan_start_wait_for_the_measurements_to_finish_3_quest_task
+yan_start_return_to_the_measurement_location_1_quest_task
+yan_start_return_to_the_measurement_location_2_quest_task
+yan_start_return_to_the_measurement_location_3_quest_task
+esc_start_talk_to_the_sidorovich_quest_1_task
+esc_start_talk_to_the_fox_quest_1_task
+esc_start_talk_to_the_fox_quest_2_task
+
+; Dark Valley / X18 / Bar X18 job (patch soc_dv_x18_quests): the level maker's SOS, fake Gauss, document, poltergeist and exit steps and the Sidorovich document step have no SoC objective;
+; the SoC steps replacing them come from coop_soc_dv.script. Their sections stay in the tm_coop files (old saves).
+bar_start_sneak_into_the_x_18_lab_quest_task
+val_start_go_to_the_sos_signal_1_quest_task
+val_start_go_to_the_sos_signal_2_quest_task
+val_start_fake_gauss_1_quest_task
+val_start_fake_gauss_2_quest_task
+val_start_show_documents_to_sidorovich_quest_task
+x18_start_go_to_x18_doc_1_task
+x18_start_go_to_x18_doc_2_task
+x18_start_go_to_x18_doc_3_task
+x18_start_find_the_password_x18_codedoor_1_task
+x18_start_find_the_password_x18_codedoor_2_task
+x18_start_kill_the_flame_poltergeist_quest_task
+x18_start_get_out_of_the_lab_quest_task
+
+; Bar and Rostok (patch bar_soc_quests): "The meeting place cannot be changed" x3 is a mod-only story (the informant dialog that started it is gone);
+; ros_start_go_to_yantar repeated the Bar task: SoC has ONE task bar_x16_documents (bar_start_go_to_yantar_quest_task, its text and marker follow the objectives).
+ros_start_go_to_yantar_quest_task
+bar_start_the_meeting_place_cannot_be_changed_1_quest_task
+bar_start_the_meeting_place_cannot_be_changed_2_quest_task
+bar_start_the_meeting_place_cannot_be_changed_3_quest_task
+
+; Army Warehouses (patch soc_mil_quests): SoC has ONE "Destroy the Duty squad" objective (not Skull + 8 men), 3 snipers (not 4) and no
+; "go to the Radar" step on this level (the Radar job comes from the Barkeep).
+mil_start_go_to_radar_quest_task
+mil_start_kill_the_snipers_4_quest_task
+mil_start_kill_the_duty_1_quest_task
+mil_start_kill_the_duty_2_quest_task
+mil_start_kill_the_duty_3_quest_task
+mil_start_kill_the_duty_4_quest_task
+mil_start_kill_the_duty_5_quest_task
+mil_start_kill_the_duty_6_quest_task
+mil_start_kill_the_duty_7_quest_task
+mil_start_kill_the_duty_8_quest_task
+
+; Yantar and the X16 lab (patch soc_yan_x16_quests): the SoC tasks are one task each (yan_find_scientist, yan_find_vasilyev_task, yan_kill_brain_task, yan_kill_brain_task_2);
+; the level maker's per-step tasks have no SoC objective of their own, "configuring helmets" is not in SoC (the helmet comes from Sakharov's dialog),
+; bar_x16_documents is the single Barkeep task of patch bar_soc_quests. Their sections stay in the tm_coop files (old saves).
+yan_start_go_to_yantar_quest_task
+yan_start_take_measurements_1_quest_task
+yan_start_take_measurements_2_quest_task
+yan_start_take_measurements_3_quest_task
+yan_start_talk_to_the_saharov_quest_task
+yan_start_configuring_helmets_quest_task
+yan_start_talk_to_the_saharov_x16_lab_quest_task
+x16_start_turn_off_the_switch_1_task
+x16_start_turn_off_the_switch_2_task
+x16_start_turn_off_the_switch_3_task
+x16_start_turn_off_the_switch_4_task
+
+; Sarcophagus and Control Monolith (patch soc_aes_quests): the Preacher is not in SoC (the decoder comes from the Pripyat hotel stash), SoC has ONE
+; "Solve the Monolith's secret" objective (con_start_destroy_the_monolith_installation_1_quest_task, done when all six generators are down) and only
+; TALKS to C-Consciousness (no kill-all step; its completion flag AES_2_TEST_000_INFO is never set by anything).
+sar_start_kill_the_monolith_preacher_quest_task
+sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task
+con_start_destroy_the_monolith_installation_2_quest_task
+con_start_destroy_the_monolith_installation_3_quest_task
+con_start_destroy_the_monolith_installation_4_quest_task
+con_start_destroy_the_monolith_installation_5_quest_task
+con_start_destroy_the_monolith_installation_6_quest_task
+con_start_kill_all_representatives_of_awareness_quest_task

@@ -1,0 +1,55 @@
+[logic@agr_smart_terrain_7_walker_alarm]
+suitable 											= {=check_npc_name(sim_default_stalker_3)} true
+active 												= walker@agr_smart_terrain_7_walker_alarm
+prior 												= 300
+
+[walker@agr_smart_terrain_7_walker_alarm]
+path_walk 											= walker_alarm_1_walk
+path_look 											= walker_alarm_1_look 
+def_state_standing 									= threat_danger
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run
+meet 												= no_meet
+combat_ignore_cond									= {=check_enemy_name(sim_default_military_0)} true 
+on_info 											= {-AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO +AGR_STALKER_HELP_1_INFO} %=play_sound(stalker_help_1)%
+on_info2 											= {+AGR_SMART_TERRAIN_7_STALKER_MOLE_TALK_TO_THE_STALKER_MOLE_STOP_DIALOG_INFO +AGR_STALKER_HELP_1_INFO} walker@agr_smart_terrain_7_walker_attack
+on_signal 											= sound_end | walker@agr_smart_terrain_7_walker_stalker_help_2
+  
+[walker@agr_smart_terrain_7_walker_stalker_help_2]                                                                                                                                                 
+path_walk 											= walker_alarm_1_walk
+path_look 											= walker_alarm_1_look                                                                                                                                    
+def_state_standing 									= threat
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run                                                                                                                                               
+meet 												= no_meet
+on_info 											= {+AGR_STALKER_HELP_1_INFO} %=play_sound(stalker_help_2) =scenario_autosave(st_go_to_the_agroprom)%
+on_signal 											= sound_end | walker@agr_smart_terrain_7_walker_attack 
+
+
+[walker@agr_smart_terrain_7_walker_attack]                                                                                                                                                 
+path_walk 											= walker_alarm_2_walk
+path_look 											= walker_alarm_2_look                                                                                                                                    
+def_state_standing 									= threat
+def_state_moving1 									= run
+def_state_moving2 									= run
+def_state_moving3 									= run                                                                                                                                               
+meet 												= no_meet    
+
+[meet@hello_players]
+close_snd_hello 									= nil
+close_snd_bye   									= nil
+close_anim 											= threat_danger
+close_victim 										= actor
+far_anim 											= threat_danger
+far_victim 											= actor
+close_distance  									= 0
+far_distance 										= 0
+close_snd_distance 									= 20
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false                                                                                                                                                                                                                                                                           
+
+;================================================    

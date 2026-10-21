@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="safe_box_hint">
+		<text>Ящик для вещей</text>
+	</string>
+	<string id="safe_box_hint_esc_bunker">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]Бункер Сидоровича.</text>
+	</string>
+	<string id="safe_box_hint_esc_village">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]Лагерь новичков.</text>
+	</string>
+	<string id="safe_box_hint_gar_duty">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]Блокпост Долга.</text>
+	</string>
+	<string id="safe_box_hint_bar_100rads">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]Бар 100 рентген.</text>
+	</string>
+	<string id="safe_box_hint_bar_duty">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]Территория Долга.</text>
+	</string>
+	<string id="safe_box_hint_yan_sakharov">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]Бункер Сахарова.</text>
+	</string>
+	<string id="safe_box_hint_mil_freedom">
+		<text>%c[255,238,155,23]Ящик для вещей\n%c[default]База Свободы.</text>
+	</string>
+</string_table>

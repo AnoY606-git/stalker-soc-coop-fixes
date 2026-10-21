@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+
+	<string id="st_bar_start_the_destination_is_a_bar_quest_task_name">
+		<text>Destination - Bar</text>
+	</string>
+	<string id="st_bar_start_the_destination_is_a_bar_quest_task_descr">
+		<text>Take all the information found to the Barkeep. Surely, he'll find something important in all these papers and flash drive files.</text>	
+	</string>	
+
+
+
+	<string id="st_bar_start_sneak_into_the_x_18_lab_quest_task_name">
+		<text>Find the documents in the underground lab</text>
+	</string>
+	<string id="st_bar_start_sneak_into_the_x_18_lab_quest_task_descr">
+		<text>Take the key to the lab from Borov\n\nBarkeep: "According to the documents you brought from Agroprom, things are starting to clear up, but some data is missing. There is evidence to suggest the presence of a Brain Scorcher which blocks the road to the North, but no one knows exactly what it is. Also, there is mention of Lab X18 whose description matches that of abandoned underground structures in the Dark Valley. Its present activity is unknown and besides, bandits have now set up their base in the Dark Valley.\n Several Duty scouts went there very recently, but so far there is no news from them.\n To get inside the lab, you will need two electronic keys; I will give you one, but the second one you will have to take from Borov, the bandit leader. \n\n So, you need to take the second key to the lab from Borov, then sneak inside the lab and get the documents.</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_go_to_yantar_quest_task_name">
+		<text>Find the documents in X16 lab</text>
+	</string>
+	<string id="st_bar_start_go_to_yantar_quest_task_descr">
+		<text>Talk to the scientists\n\nBarkeep: "You need to get through to the scientists and find out where Lab X16 is located to find the missing documents."</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_go_to_military_quest_task_name">
+		<text>Turn off the Brain Scorcher</text>
+	</string>
+	<string id="st_bar_start_go_to_military_quest_task_descr">
+		<text>Reach the antennae</text>	
+	</string>
+	
+	
+	<string id="st_bar_start_find_the_family_gun_quest_task_name">
+		<text>Find the family rifle</text>
+	</string>
+	<string id="st_bar_start_find_the_family_gun_quest_task_descr">
+		<text>Find the family rifle\n\nHunter: "Bring back the rifle. I lost it by the place where bloodsuckers live. I'll upload you the co-ordinates. And be careful, those bastards ain't no joke."</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_1_quest_task_name">
+		<text>The meeting place cannot be changed</text>
+	</string>
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_1_quest_task_descr">
+		<text>Head to the Garbage and meet the client.</text>	
+	</string>
+	
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_2_quest_task_name">
+		<text>The meeting place cannot be changed</text>
+	</string>
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_2_quest_task_descr">
+		<text>Head to the Garbage and take up a covering position.</text>	
+	</string>	
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_3_quest_task_name">
+		<text>The meeting place cannot be changed</text>
+	</string>
+	<string id="st_bar_start_the_meeting_place_cannot_be_changed_3_quest_task_descr">
+		<text>Wait for the client.</text>	
+	</string>
+
+
+
+	<string id="st_bar_start_sq_art_1_quest_task_name">
+		<text>Order for "Wrenched"</text>
+	</string>
+	<string id="st_bar_start_sq_art_1_quest_task_descr">
+		<text>Find and bring the "Wrenched" artifact</text>
+	</string>	
+	<string id="st_bar_start_sq_art_2_quest_task_name">
+		<text>Order for "Gravi"</text>
+	</string>
+	<string id="st_bar_start_sq_art_2_quest_task_descr">
+		<text>Find and bring the "Gravi" artifact</text>
+	</string>
+	<string id="st_bar_start_sq_art_3_quest_task_name">
+		<text>Order for "Goldfish"</text>
+	</string>
+	<string id="st_bar_start_sq_art_3_quest_task_descr">
+		<text>Find and bring the "Goldfish" artifact</text>
+	</string>
+
+
+	<string id="st_bar_start_sq_mutant_psevdodog_part_1_quest_task_name">
+		<text>Order for "Pseudodog Tail"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_psevdodog_part_1_quest_task_descr">
+		<text>Find and bring 5 "Pseudodog Tails"</text>
+	</string>	
+	<string id="st_bar_start_sq_mutant_snork_part_2_quest_task_name">
+		<text>Order for "Snork Foot"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_snork_part_2_quest_task_descr">
+		<text>Find and bring 4 "Snork Feet"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_krovosos_part_3_quest_task_name">
+		<text>Order for "Bloodsucker Tentacles"</text>
+	</string>
+	<string id="st_bar_start_sq_mutant_krovosos_part_3_quest_task_descr">
+		<text>Find and bring 3 "Bloodsucker Tentacles"</text>
+	</string>
+	
+	
+	<string id="st_bar_start_sq_killer_mutants_1_quest_task_name">
+		<text>Order for mutants "NoN"</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_1_quest_task_descr">
+		<text>Kill mutants 1</text>
+	</string>	
+	<string id="st_bar_start_sq_killer_mutants_2_quest_task_name">
+		<text>Order for mutants "NoN"</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_2_quest_task_descr">
+		<text>Kill mutants 2</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_3_quest_task_name">
+		<text>Order for mutants "NoN"</text>
+	</string>
+	<string id="st_bar_start_sq_killer_mutants_3_quest_task_descr">
+		<text>Kill mutants 3</text>
+	</string>
+</string_table>

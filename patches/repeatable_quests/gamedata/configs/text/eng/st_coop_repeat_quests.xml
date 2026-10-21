@@ -603,4 +603,502 @@
 	<string id="rq_handin_rq_sak_find">
 		<text>I found it: Recover a lost detector</text>
 	</string>
+	<string id="rq_handin_fetch">
+		<text>I'm here for the job.</text>
+	</string>
+	<string id="rq_handin_sid_ask">
+		<text>What job do you want to talk about?</text>
+	</string>
+	<string id="rq_handin_bar_ask">
+		<text>And what do you want to talk about?</text>
+	</string>
+	<string id="rq_handin_sak_ask">
+		<text>What is the job you would like to talk about?</text>
+	</string>
+	<string id="rq_handin_fre_ask">
+		<text>So what is it that you want to discuss?</text>
+	</string>
+	<string id="rq_sid_art1_name">
+		<text>Find the Jellyfish artifact</text>
+	</string>
+	<string id="rq_sid_art1_descr">
+		<text>Find the Jellyfish artifact formed in the Springboard anomaly. Hand it in to Sidorovich. Reward: 1500 RU and a bottle of vodka.</text>
+	</string>
+	<string id="rq_sid_art1_offer">
+		<text>Find the Jellyfish artifact</text>
+	</string>
+	<string id="rq_sid_art1_npc">
+		<text>Some guy from the Big Land asked for a Jellyfish. It's not a lot of money, but it's a milk run. Take it!</text>
+	</string>
+	<string id="rq_sid_art1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sid_art1">
+		<text>Find the Jellyfish artifact</text>
+	</string>
+	<string id="rq_sid_art1_done">
+		<text>Job's done... and here's the reward!</text>
+	</string>
+	<string id="rq_sid_art2_name">
+		<text>Find the Stone Flower artifact</text>
+	</string>
+	<string id="rq_sid_art2_descr">
+		<text>Find the Stone Flower artifact formed in the Springboard anomaly. The pay is supposed to be pretty good. Hand it in to Sidorovich. Reward: 3000 RU and a bottle of vodka.</text>
+	</string>
+	<string id="rq_sid_art2_offer">
+		<text>Find the Stone Flower artifact</text>
+	</string>
+	<string id="rq_sid_art2_npc">
+		<text>I have a request for the Stone Flower. The order is from the jewellers, by the way, so let's try to make the pretty ladies happy, eh? If you get it, you'll get the money and a bottle to drink to their health...</text>
+	</string>
+	<string id="rq_sid_art2_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sid_art2">
+		<text>Find the Stone Flower artifact</text>
+	</string>
+	<string id="rq_sid_art2_done">
+		<text>Job's done... and here's the reward!</text>
+	</string>
+	<string id="rq_sid_art4_name">
+		<text>Find the artifact called Chunk of Meat</text>
+	</string>
+	<string id="rq_sid_art4_descr">
+		<text>Find the wound-healing artifact called Chunk of Meat. Hand it in to Sidorovich. Reward: 2500 RU and 3 army medkits.</text>
+	</string>
+	<string id="rq_sid_art4_offer">
+		<text>Find the artifact called Chunk of Meat</text>
+	</string>
+	<string id="rq_sid_art4_npc">
+		<text>There's an order for an artifact, the kind that heals wounds, called Chunk of Meat! They have a clinic of some sort. If you get it you'll get paid and help people at the same time.</text>
+	</string>
+	<string id="rq_sid_art4_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sid_art4">
+		<text>Find the artifact called Chunk of Meat</text>
+	</string>
+	<string id="rq_sid_art4_done">
+		<text>Job's done... and here's the reward!</text>
+	</string>
+	<string id="rq_sid_part1_name">
+		<text>Bring the jaw of the bloodsucker</text>
+	</string>
+	<string id="rq_sid_part1_descr">
+		<text>So the tooth of the bloodsucker brings good luck? Let's see if it'll bring luck to the bloodsucker. Hand it in to Sidorovich. Reward: 3000 RU and 5 boxes of 12x76 Dart shells.</text>
+	</string>
+	<string id="rq_sid_part1_offer">
+		<text>Bring the jaw of the bloodsucker</text>
+	</string>
+	<string id="rq_sid_part1_npc">
+		<text>I heard a superstition that the tooth of a bloodsucker brings good luck. As if the one who wears that tooth around his neck gets past the anomalies, and artifacts fall right into his hands. Anyway, it's all bullshit, but there are some dopes who believe it all and are ready to pay well for it. If you bring the jaw of a bloodsucker, I'll pay you well.</text>
+	</string>
+	<string id="rq_sid_part1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sid_part1">
+		<text>Bring the jaw of the bloodsucker</text>
+	</string>
+	<string id="rq_sid_part1_done">
+		<text>Job's done... and here's the reward!</text>
+	</string>
+	<string id="rq_sid_part2_name">
+		<text>Bring over the tail of the pseudodog</text>
+	</string>
+	<string id="rq_sid_part2_descr">
+		<text>Bring over the tail of the pseudodog. Hand it in to Sidorovich. Reward: 1500 RU and 5 boxes of 12x76 Dart shells.</text>
+	</string>
+	<string id="rq_sid_part2_offer">
+		<text>Bring over the tail of the pseudodog</text>
+	</string>
+	<string id="rq_sid_part2_npc">
+		<text>Winter's coming soon. And what do chicks like to wear there on the Big Land during winter? That's right - furs. So now there's a new fashion going around, making various accessories from the tails of pseudodogs. It's some sort of special fur! Bottom line, there's an order for such a tail. Will you take it?</text>
+	</string>
+	<string id="rq_sid_part2_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sid_part2">
+		<text>Bring over the tail of the pseudodog</text>
+	</string>
+	<string id="rq_sid_part2_done">
+		<text>Job's done... and here's the reward!</text>
+	</string>
+	<string id="rq_bar_art1_name">
+		<text>Find the Meat chunk artifact</text>
+	</string>
+	<string id="rq_bar_art1_descr">
+		<text>Find the Meat chunk artifact that heals ailments and injuries. Hand it in to the Barman. Reward: 2500 RU and 2 science medkits.</text>
+	</string>
+	<string id="rq_bar_art1_offer">
+		<text>Find the Meat chunk artifact</text>
+	</string>
+	<string id="rq_bar_art1_npc">
+		<text>Some padres have stopped by, left an order for a Meat chunk. You know, they have a certain interest in this healing artifact... those rotten miracle-workers! Anyway... You gonna do it? It's up to you.</text>
+	</string>
+	<string id="rq_bar_art1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_art1">
+		<text>Find the Meat chunk artifact</text>
+	</string>
+	<string id="rq_bar_art1_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_bar_art2_name">
+		<text>Find the Crystal Thorn artifact</text>
+	</string>
+	<string id="rq_bar_art2_descr">
+		<text>Find the Crystal Thorn artifact that protects against psi-attacks. Hand it in to the Barman. Reward: 2500 RU, 2 science medkits and 2 Antirads.</text>
+	</string>
+	<string id="rq_bar_art2_offer">
+		<text>Find the Crystal Thorn artifact</text>
+	</string>
+	<string id="rq_bar_art2_npc">
+		<text>A "crone"?.. No, that's not it. "Crystal corn"?.. No, wrong again... Bugger! "Crystal Thorn", that's it! So here's the deal: I have an order for this artifact, "Crystal Thorn". Have you heard of it? They say that if you've got one, no creature will be able to mess with your brain. So what do you say?</text>
+	</string>
+	<string id="rq_bar_art2_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_art2">
+		<text>Find the Crystal Thorn artifact</text>
+	</string>
+	<string id="rq_bar_art2_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_bar_art3_name">
+		<text>Find the Night Star artifact</text>
+	</string>
+	<string id="rq_bar_art3_descr">
+		<text>Find the Night Star artifact to help the national military research effort. Hand it in to the Barman. Reward: a Berill-5M armored suit and 3 F-1 grenades.</text>
+	</string>
+	<string id="rq_bar_art3_offer">
+		<text>Find the Night Star artifact</text>
+	</string>
+	<string id="rq_bar_art3_npc">
+		<text>I need the Night Star artifact. I'm sorry to say it doesn't grant any wishes, been there, done that, but it can make you wealthy. Scientists pay a lot for it. They say they make some military things out of it...So, are you up for it?</text>
+	</string>
+	<string id="rq_bar_art3_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_art3">
+		<text>Find the Night Star artifact</text>
+	</string>
+	<string id="rq_bar_art3_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_bar_art4_name">
+		<text>Find the artifact Flash</text>
+	</string>
+	<string id="rq_bar_art4_descr">
+		<text>Find the artifact Flash. Hand it in to the Barman. Reward: 5000 RU.</text>
+	</string>
+	<string id="rq_bar_art4_offer">
+		<text>Find the artifact Flash</text>
+	</string>
+	<string id="rq_bar_art4_npc">
+		<text>The assignment is simple and the pay is good. You have to find the artifact Flash. Don't even ask who ordered it and why. Well, will you do it?</text>
+	</string>
+	<string id="rq_bar_art4_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_art4">
+		<text>Find the artifact Flash</text>
+	</string>
+	<string id="rq_bar_art4_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_bar_art5_name">
+		<text>Find artifact Goldfish</text>
+	</string>
+	<string id="rq_bar_art5_descr">
+		<text>Find artifact Goldfish. Hand it in to the Barman. Reward: an LR-300, an M203 grenade launcher, a SUSAT scope and a silencer.</text>
+	</string>
+	<string id="rq_bar_art5_offer">
+		<text>Find artifact Goldfish</text>
+	</string>
+	<string id="rq_bar_art5_npc">
+		<text>Marked One, you know the story about the fairytale about the Goldfish? Yeah, yeah, that's the one. There are a bunch of jokes about it too. So anyway, there's this old man who keeps on wanting to catch it. Bottom line, I need the one-of-a-kind artifact called Goldfish, the client is from the outside, respectable. Will you help out?</text>
+	</string>
+	<string id="rq_bar_art5_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_art5">
+		<text>Find artifact Goldfish</text>
+	</string>
+	<string id="rq_bar_art5_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_bar_part1_name">
+		<text>Obtain the flesh's eye</text>
+	</string>
+	<string id="rq_bar_part1_descr">
+		<text>Obtain the flesh's eye. Hand it in to the Barman. Reward: 500 RU and 3 cans of food.</text>
+	</string>
+	<string id="rq_bar_part1_offer">
+		<text>Obtain the flesh's eye</text>
+	</string>
+	<string id="rq_bar_part1_npc">
+		<text>Soon we're having a party, there'll be a fancy dinner, and certain local gourmets who are in especially high spirits (we don't need to point fingers) will definitely want to try my special recipie - eyes of "flesh" under a pork sauce. That is, in its own juices under mayonnaise. Basically, I need the eye of that beast, and quickly.</text>
+	</string>
+	<string id="rq_bar_part1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_part1">
+		<text>Obtain the flesh's eye</text>
+	</string>
+	<string id="rq_bar_part1_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_bar_part2_name">
+		<text>Bring the hoof of a boar</text>
+	</string>
+	<string id="rq_bar_part2_descr">
+		<text>Bring the hoof of a boar. Hand it in to the Barman. Reward: 1500 RU.</text>
+	</string>
+	<string id="rq_bar_part2_offer">
+		<text>Bring the hoof of a boar</text>
+	</string>
+	<string id="rq_bar_part2_npc">
+		<text>Do you know that we prepare horns and hooves? This is a big rarity. They make great jewelry from the local mutated hooves - I know a jeweler, he's interested. So go on ahead, find the boar's hoof, and there'll be cash in your pocket.</text>
+	</string>
+	<string id="rq_bar_part2_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_bar_part2">
+		<text>Bring the hoof of a boar</text>
+	</string>
+	<string id="rq_bar_part2_done">
+		<text>Great job, award well deserved!</text>
+	</string>
+	<string id="rq_sak_art1_name">
+		<text>Bring the Fireball artifact</text>
+	</string>
+	<string id="rq_sak_art1_descr">
+		<text>Bring the Fireball artifact to the scientists for researches. Hand it in to Sakharov. Reward: a "Pellicle" artifact.</text>
+	</string>
+	<string id="rq_sak_art1_offer">
+		<text>Bring the Fireball artifact</text>
+	</string>
+	<string id="rq_sak_art1_npc">
+		<text>We've managed to obtain the artifact in laboratory conditions! This is a breakthrough! Now all the world will hear about our success. And the Nobel Prize will be close at hand! This is the unique artifact - "Pellicle", it's main quality is to protect from the chemical burns. Do you want me to give it to you on behalf of science? However, I do have one request - in return I need the artifact "Fireball", do you know about such? Unique thermal qualities of its surface require thorough research.</text>
+	</string>
+	<string id="rq_sak_art1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_art1">
+		<text>Bring the Fireball artifact</text>
+	</string>
+	<string id="rq_sak_art1_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_art2_name">
+		<text>Find the "Gravi" artifact</text>
+	</string>
+	<string id="rq_sak_art2_descr">
+		<text>Bring the "Gravi" artifact to the hands of the scientists. Hand it in to Sakharov. Reward: 5000 RU and a science medkit.</text>
+	</string>
+	<string id="rq_sak_art2_offer">
+		<text>Find the "Gravi" artifact</text>
+	</string>
+	<string id="rq_sak_art2_npc">
+		<text>We've approached closely to the comprehension of the nature of gravitation, practically, soon enough we'll be able to create a new generation of engines on the antigravity basis, and quite probably the path to the stars will open to us. For that, we need "Gravi" artifact, and fast.</text>
+	</string>
+	<string id="rq_sak_art2_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_art2">
+		<text>Find the "Gravi" artifact</text>
+	</string>
+	<string id="rq_sak_art2_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_art3_name">
+		<text>Find the "Jellyfish" artifact</text>
+	</string>
+	<string id="rq_sak_art3_descr">
+		<text>The scientists need the "Jellyfish" artifact to carry out researches in the field of space-time. Hand it in to Sakharov. Reward: 2500 RU and a science medkit.</text>
+	</string>
+	<string id="rq_sak_art3_offer">
+		<text>Find the "Jellyfish" artifact</text>
+	</string>
+	<string id="rq_sak_art3_npc">
+		<text>Our research team is on the brink of discovering the mystery of space-time. The possibility of teleportation is no longer fantasy! The Vortex is an anomaly which squeezes space rather than just gravitationally affecting objects, as believe some of my ossified opponents-theorists, who sit in the warm research facility earnestly chewing chalk. Their glasses will fog up when they find out what results science can achieve when you work in the field! Please get me the artifact "Jellyfish".</text>
+	</string>
+	<string id="rq_sak_art3_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_art3">
+		<text>Find the "Jellyfish" artifact</text>
+	</string>
+	<string id="rq_sak_art3_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_art4_name">
+		<text>Find the "Moonlight" artifact</text>
+	</string>
+	<string id="rq_sak_art4_descr">
+		<text>Provide "Moonlight" to the scientists at Yantar. A good artifact... Hand it in to Sakharov. Reward: 10000 RU and 3 science medkits.</text>
+	</string>
+	<string id="rq_sak_art4_offer">
+		<text>Find the "Moonlight" artifact</text>
+	</string>
+	<string id="rq_sak_art4_npc">
+		<text>We desperately need materials for continuing our research in the field of energetics. You see, we learned to generate energy with the help of artifacts. Granted, this works while the KPD isn't high enough. We were able to get the best results with the artifact Moonlight. Please bring us a sample for experiments.</text>
+	</string>
+	<string id="rq_sak_art4_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_art4">
+		<text>Find the "Moonlight" artifact</text>
+	</string>
+	<string id="rq_sak_art4_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_art5_name">
+		<text>Find the artifact called Sea Urchin</text>
+	</string>
+	<string id="rq_sak_art5_descr">
+		<text>The scientists need the Sea Urchin artifact to improve their suits. Hand it in to Sakharov. Reward: a SEVA bodysuit.</text>
+	</string>
+	<string id="rq_sak_art5_offer">
+		<text>Find the artifact called Sea Urchin</text>
+	</string>
+	<string id="rq_sak_art5_npc">
+		<text>You are probably aware of the fact that our suits provide the best defence against radiation. The secret lies in the fact that we saturate them with a lotion made out of quite a rare artifact. To manufacture another series of these suits we need such an artifact. You call it "Sea Urchin".</text>
+	</string>
+	<string id="rq_sak_art5_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_art5">
+		<text>Find the artifact called Sea Urchin</text>
+	</string>
+	<string id="rq_sak_art5_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_part1_name">
+		<text>Bring a part of the snork's body</text>
+	</string>
+	<string id="rq_sak_part1_descr">
+		<text>It's a piece of cake getting a fragment of a snork in these parts. Hand it in to Sakharov. Reward: 2500 RU and a science medkit.</text>
+	</string>
+	<string id="rq_sak_part1_offer">
+		<text>Bring a part of the snork's body</text>
+	</string>
+	<string id="rq_sak_part1_npc">
+		<text>We got acquainted with Semenov back in the university where I was giving lectures on genetics, and he was my student. Thus I became his scientific chief. Back then, we were only slightly unveiling the curtain of mystery of genome modification. So what was I saying? Oh, right. For genetic experiments we will need the samples of fresh cells of the muscular tissue of snork. You will have to search the bogs for this genic material. There is a hypothesis that snorks as species are the new level of human's evolution. In order to know this for sure, DNA test must be procured!</text>
+	</string>
+	<string id="rq_sak_part1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_part1">
+		<text>Bring a part of the snork's body</text>
+	</string>
+	<string id="rq_sak_part1_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_part2_name">
+		<text>Bring the eye of a flesh</text>
+	</string>
+	<string id="rq_sak_part2_descr">
+		<text>I'd better keep my body away from these eggheads just in case! Very well, I'll get them a flesh's eye, and they can do all they want with their volunteers. Hand it in to Sakharov. Reward: 1000 RU and a SUSAT scope.</text>
+	</string>
+	<string id="rq_sak_part2_offer">
+		<text>Bring the eye of a flesh</text>
+	</string>
+	<string id="rq_sak_part2_npc">
+		<text>Good news, young man: we have a very interesting assignment for you! I think as an intellectual being with quite a bit of experience you will be able to appreciate my colleagues' theories. The thing is, our research revealed: the eyes of the creatures called flesh in the common language, are equipped with... are you following me?... with olfactory receptors! Thus, they can not only see with their eyes, but smell with them as well! We're getting ready for an operation on transplanting this miraculous eye to one of ... one of our voluntary assistants. I believe we're about to start a craze! By the way, would you like to become a recepient of this rather amazing organ?</text>
+	</string>
+	<string id="rq_sak_part2_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_part2">
+		<text>Bring the eye of a flesh</text>
+	</string>
+	<string id="rq_sak_part2_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_part3_name">
+		<text>Bring the tail of a blind dog</text>
+	</string>
+	<string id="rq_sak_part3_descr">
+		<text>Well, look at Science! Trying to find a second brain in humans?.. Poor dogs, one of them will have to do without a tail now. Hand it in to Sakharov. Reward: 2000 RU and 3 boxes of 12x76 Dart shells.</text>
+	</string>
+	<string id="rq_sak_part3_offer">
+		<text>Bring the tail of a blind dog</text>
+	</string>
+	<string id="rq_sak_part3_npc">
+		<text>Welcome, eh... traveler! I'm so glad you dropped by: we are in need of a man to take part in a highly important experiment. My colleague Brenter wants to try and cook a meal using local fauna for a practical experiment to study the influence of mutated protein on human body. For a start, we decided to try the boars. We need ham. A boar's leg, do you undestand? And if you agree to do it, please select the healthiest specimen.</text>
+	</string>
+	<string id="rq_sak_part3_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_part3">
+		<text>Bring the tail of a blind dog</text>
+	</string>
+	<string id="rq_sak_part3_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_part4_name">
+		<text>Bring the leg of a boar</text>
+	</string>
+	<string id="rq_sak_part4_descr">
+		<text>Gourmet thrillseekers... Alright, I'll get them some ham. Hand it in to Sakharov. Reward: 3000 RU and a science medkit.</text>
+	</string>
+	<string id="rq_sak_part4_offer">
+		<text>Bring the leg of a boar</text>
+	</string>
+	<string id="rq_sak_part4_npc">
+		<text>Good day, colleague! I hope you know that dogs belong to the vertebrates subtype... meaning their vertebral column starts with the head and ends with the tail. And here's the catch! One of my young collegues proved theoretically that the spine of the blind dogs - this is how you named this type of animals - starts from the tail, not from the head! Think of it, it totally turns upside down our assumptions pertaining to this area of knowledge. There are already some rather daring theories about human beings having around their sacrum a... well, this is a subject of many discussions. In short, we need the head of the dog, the blind dog, which through ignorance we considered to be its tail.</text>
+	</string>
+	<string id="rq_sak_part4_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_part4">
+		<text>Bring the leg of a boar</text>
+	</string>
+	<string id="rq_sak_part4_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_sak_part5_name">
+		<text>Bring the bloodsucker's jaw</text>
+	</string>
+	<string id="rq_sak_part5_descr">
+		<text>What they are going to do with bloodsucker's jaw, I don't care. I care about how much they will give me for this rarity. Hand it in to Sakharov. Reward: 6000 RU and a science medkit.</text>
+	</string>
+	<string id="rq_sak_part5_offer">
+		<text>Bring the bloodsucker's jaw</text>
+	</string>
+	<string id="rq_sak_part5_npc">
+		<text>Oh, stalker, glad to see you! Listen... You already met bloodsuckers in your adventures, right? If not, then we want it to happen. Bring us the lower jaw of the representative of this species, with all his so to say tableware. Unfortunately, I can't disclose the details of the experiment, besides it will negatively impact the stability of your psyche. We'll be waiting.</text>
+	</string>
+	<string id="rq_sak_part5_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_sak_part5">
+		<text>Bring the bloodsucker's jaw</text>
+	</string>
+	<string id="rq_sak_part5_done">
+		<text>You did a great job! Allow me to present you with your reward.</text>
+	</string>
+	<string id="rq_fre_part1_name">
+		<text>Bring a boar's leg</text>
+	</string>
+	<string id="rq_fre_part1_descr">
+		<text>Bring a boar's leg. Hand it in to Lukash. Reward: 1000 RU and a bottle of vodka.</text>
+	</string>
+	<string id="rq_fre_part1_offer">
+		<text>Bring a boar's leg</text>
+	</string>
+	<string id="rq_fre_part1_npc">
+		<text>We're planning a dinner party to celebrate Bob Marley's birthday. So why don't you get us some delicious ham? The more the better! Jah will never forget you!</text>
+	</string>
+	<string id="rq_fre_part1_accept">
+		<text>I'm up for it.</text>
+	</string>
+	<string id="rq_handin_rq_fre_part1">
+		<text>Bring a boar's leg</text>
+	</string>
+	<string id="rq_fre_part1_done">
+		<text>Here's a fine young man! Excellent job, here's your money.</text>
+	</string>
 </string_table>

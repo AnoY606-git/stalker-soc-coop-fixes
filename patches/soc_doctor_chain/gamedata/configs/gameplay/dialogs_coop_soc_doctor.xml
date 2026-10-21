@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<game_dialogs>
+    <!-- SoC esc_provodnik_start, branch 12 to 16: the topic is offered once Ghost's documents are taken and until the Guide has spoken -->
+    <dialog id="soc_doc_guide_dialog">
+        <precondition>coop_soc_doctor.st_g_open</precondition>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_doctor.say_g0</action>
+                <text>coop_soc_doc_g_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_doctor.say_g1</action>
+                <text>coop_soc_doc_g_1</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_doctor.say_g2</action>
+                <text>coop_soc_doc_g_2</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_doctor.say_g3</action>
+                <text>coop_soc_doc_g_3</text>
+                <give_flag>ESC_FIND_DOCTOR_START</give_flag>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_doctor.say_g4</action>
+                <text>coop_soc_doc_g_4</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <!-- SoC cit_doctor_hello_dialog: first meeting / after the talk -->
+    <dialog id="soc_doc_hello_dialog">
+        <phrase_list>
+            <phrase id="0">
+                <text />
+                <next>1</next>
+                <next>2</next>
+            </phrase>
+            <phrase id="1">
+                <text />
+                <precondition>coop_soc_doctor.st_h_first</precondition>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_doctor.say_dh11</action>
+                <text>coop_soc_doc_d_h11</text>
+            </phrase>
+            <phrase id="2">
+                <text />
+                <precondition>coop_soc_doctor.st_h_after</precondition>
+                <next>21</next>
+            </phrase>
+            <phrase id="21">
+                <action>coop_soc_doctor.say_dh21</action>
+                <text>coop_soc_doc_d_h21</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <!-- SoC cit_doctor_main_dialog 0 to 4 (41 and 5 answer "where are we": the Dead City jail, which the mod does not have). Gives the stash task and the diary text -->
+    <dialog id="soc_doc_main_dialog">
+        <precondition>coop_soc_doctor.st_d_open</precondition>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_doctor.say_d0</action>
+                <text>coop_soc_doc_d_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_doctor.say_d1</action>
+                <text>coop_soc_doc_d_1</text>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_doctor.say_d11</action>
+                <text>coop_soc_doc_d_11</text>
+                <next>2</next>
+            </phrase>
+            <phrase id="2">
+                <action>coop_soc_doctor.say_d2</action>
+                <text>coop_soc_doc_d_2</text>
+                <next>21</next>
+            </phrase>
+            <phrase id="21">
+                <action>coop_soc_doctor.say_d21</action>
+                <text>coop_soc_doc_d_21</text>
+                <next>3</next>
+            </phrase>
+            <phrase id="3">
+                <action>coop_soc_doctor.say_d3</action>
+                <text>coop_soc_doc_d_3</text>
+                <next>31</next>
+            </phrase>
+            <phrase id="31">
+                <action>coop_soc_doctor.say_d31</action>
+                <text>coop_soc_doc_d_31</text>
+                <next>4</next>
+            </phrase>
+            <phrase id="4">
+                <action>coop_soc_doctor.say_d4</action>
+                <text>coop_soc_doc_d_4</text>
+                <give_flag>CIT_JAIL_DOCTOR_PRYP_TASK</give_flag>
+                <give_flag>CIT_DOCTOR_MEET_CONCLUSION_INFO</give_flag>
+            </phrase>
+        </phrase_list>
+    </dialog>
+</game_dialogs>

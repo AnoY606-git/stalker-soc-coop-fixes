@@ -1,0 +1,143 @@
+[logic@gar_smart_terrain_6_walker_bandit_1]
+suitable = {=check_npc_name(sim_default_bandit_1)} true
+active = walker@gar_smart_terrain_6_walker_bandit_1_idle
+prior = 300
+
+[walker@gar_smart_terrain_6_walker_bandit_1_idle]
+path_walk = walker_3_look
+path_look = walker_2_look
+def_state_standing = hide_na
+def_state_moving = assault
+invulnerable = true
+meet = no_meet
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_info = {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_6_walker_bandit_1_attack
+
+[walker@gar_smart_terrain_6_walker_bandit_1_attack]
+path_walk = walker_2_look
+path_look = walker_5_look
+def_state_moving = assault
+meet = no_meet
+
+;================================================
+
+[logic@gar_smart_terrain_6_walker_bandit_2]
+suitable = {=check_npc_name(sim_default_bandit_1)} true
+active = walker@gar_smart_terrain_6_walker_bandit_2_idle
+prior = 300
+
+[walker@gar_smart_terrain_6_walker_bandit_2_idle]
+path_walk = walker_2_walk
+path_look = walker_2_look
+def_state_standing = hide_fire
+def_state_moving = assault
+invulnerable = true
+meet = no_meet
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_info = {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_6_walker_bandit_2_attack
+
+[walker@gar_smart_terrain_6_walker_bandit_2_attack]
+path_walk = walker_2_look
+path_look = walker_5_look
+def_state_moving = assault
+meet = no_meet
+
+;================================================
+
+[logic@gar_smart_terrain_6_walker_bandit_3]
+suitable = {=check_npc_name(sim_default_bandit_1)} true
+active = walker@gar_smart_terrain_6_walker_bandit_3_idle
+prior = 300
+
+[walker@gar_smart_terrain_6_walker_bandit_3_idle]
+path_walk = walker_3_walk
+path_look = walker_3_look
+def_state_standing = hide
+def_state_moving = assault
+invulnerable = true
+meet = no_meet
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_info = {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_6_walker_bandit_3_attack
+
+[walker@gar_smart_terrain_6_walker_bandit_3_attack]
+path_walk = walker_5_look
+path_look = walker_2_look
+def_state_moving = assault
+meet = no_meet
+
+;================================================
+
+[logic@gar_smart_terrain_6_walker_bandit_4]
+suitable = {=check_npc_name(sim_default_bandit_1)} true
+active = walker@gar_smart_terrain_6_walker_bandit_4_idle
+prior = 300
+
+[walker@gar_smart_terrain_6_walker_bandit_4_idle]
+path_walk = walker_4_walk
+path_look = walker_4_look
+def_state_standing = hide
+def_state_moving = assault
+invulnerable = true
+meet = no_meet
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_info = {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_6_walker_bandit_4_attack
+
+[walker@gar_smart_terrain_6_walker_bandit_4_attack]
+path_walk = walker_2_look
+path_look = walker_5_look
+def_state_moving = assault
+meet = no_meet
+
+;================================================
+
+[logic@gar_smart_terrain_6_walker_bandit_5]
+suitable = {=check_npc_name(sim_default_bandit_1)} true
+active = walker@gar_smart_terrain_6_walker_bandit_5_idle
+prior = 300
+
+[walker@gar_smart_terrain_6_walker_bandit_5_idle]
+path_walk = walker_5_walk
+path_look = walker_5_look
+def_state_standing = hide_fire
+def_state_moving = assault
+invulnerable = true
+meet = no_meet
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_info = {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_6_walker_bandit_5_attack
+
+[walker@gar_smart_terrain_6_walker_bandit_5_attack]
+path_walk = walker_5_look
+path_look = walker_2_look
+def_state_moving = assault
+meet = no_meet
+
+;================================================
+
+[logic@gar_smart_terrain_6_walker_bandit_6]
+suitable = {=check_npc_name(sim_default_bandit_1)} true
+active = walker@gar_smart_terrain_6_walker_bandit_6_idle
+prior = 300
+
+[walker@gar_smart_terrain_6_walker_bandit_6_idle]
+path_walk = walker_4_look
+path_look = walker_5_look
+def_state_standing = hide
+def_state_moving = assault
+invulnerable = true
+meet = no_meet
+combat_ignore_cond = true
+combat_ignore_keep_when_attacked = true
+on_info = {+GAR_THE_ORDER_TO_KILL_GRAY_INFO} walker@gar_smart_terrain_6_walker_bandit_6_attack
+
+[walker@gar_smart_terrain_6_walker_bandit_6_attack]
+path_walk = walker_5_look
+path_look = walker_2_look
+def_state_moving = assault
+meet = no_meet
+
+;================================================

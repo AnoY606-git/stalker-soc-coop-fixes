@@ -1,0 +1,31 @@
+; patch soc_mil_courier: Ara, the informer (SoC mil_Killer_informator, walker1 / remark1 / walker2 of the level.spawn logic).
+; Created when Pavlik has made his call (flag MIL_SOC_COURIER_CALL). He runs along the bodyguard way (the mod's path
+; mil_smart_terrain_1_walker_6_walk) to the farmstead; the server tick gives MIL_SOC_ARA_ARRIVE when he is there, then he stands
+; and looks at Pavlik; after MIL_SOC_ARA_END he runs out along mil_smart_terrain_1_walker_2_walk (the SoC way out to the west).
+[logic]
+active = walker@mil_soc_ara_go
+
+[walker@mil_soc_ara_go]
+path_walk = mil_smart_terrain_1_walker_6_walk
+meet = no_meet
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+on_info = {+MIL_SOC_ARA_ARRIVE} remark@mil_soc_ara_meet
+
+[remark@mil_soc_ara_meet]
+anim = wait_rac
+target = story|mil_soc_pavlik
+meet = no_meet
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false
+on_info = {+MIL_SOC_ARA_END} walker@mil_soc_ara_leave
+
+[walker@mil_soc_ara_leave]
+path_walk = mil_smart_terrain_1_walker_2_walk
+def_state_moving = run
+meet = no_meet
+gather_items_enabled = false
+help_wounded_enabled = false
+corpse_detection_enabled = false

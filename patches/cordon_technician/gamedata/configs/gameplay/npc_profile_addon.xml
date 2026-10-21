@@ -246,4 +246,7 @@
 	<character id="esc_rookie_technician">
 		<class>esc_rookie_technician</class>
 	</character>
+	<character id="yan_soc_semenov">
+		<class>yan_soc_semenov</class>
+	</character>
 </xml>

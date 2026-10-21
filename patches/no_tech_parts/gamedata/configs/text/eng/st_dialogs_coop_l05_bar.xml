@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_0">
+        <text>About the documents from X-18, here they are.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_1">
+        <text>Hand them over. Alright. The situation is clearing up. As I suspected, the Brain Scorcher is man-made. It's an experimental Kaymanov emitter; its parts were being manufactured right there in lab X-18. These documents contain a reference to lab X-16, where the finished units were sent. It's located on the territory of the factory complex near Lake Yantar. There's a scientist camp nearby, they can surely tell you more.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_2">
+        <text>Go on.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_3">
+        <text>It's not a simple situation: you need to get to the scientists and find out where lab X-16 is located to retrieve the missing part of the documents. Well, are you ready?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_4">
+        <text>Of course.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_5">
+        <text>Excellent. I'll be waiting.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_6">
+        <text>...</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_0">
+        <text>How are things with the documents? Learn anything?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_1">
+        <text>Here's the deal. Based on the documents you brought from Agroprom, things are starting to clear up, but we're missing data. There is a mention of a certain lab X-18, the description matches the abandoned underground facilities in the Dark Valley. You'll have to go there and retrieve the missing information. The lab is locked, and to open it, you'll need two electronic keys. I'll give you one, and you'll have to take the second one from Borov in the Dark Valley.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_2">
+        <text>Go on.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_3">
+        <text>All you need to do is get the second key to lab X-18, infiltrate it, and retrieve the missing part of the documents. Here, from me personally—suits with good radiation protection. You won't last long down there without them. Well, boys, will you take the job?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_4">
+        <text>Where else is there to go? It's foolish to turn back halfway.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_0">
+        <text>That's it, we have the prototypes. They work perfectly. Sakharov is a wizard.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_1">
+        <text>Well guys, all that's left is to deal with the "Scorcher" and the path to the North is open. Ready to move out?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_2">
+        <text>Ready!</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_3">
+        <text>Listen up. You have the prototypes to protect you from the Scorcher. I know the coordinates of the bunker and I've sent them to your PDA. You must break through to the bunker under the antennas as quickly as possible and turn off the Scorcher. I don't know what happens next, but I feel it: it's worth it. I know one thing for sure: the road to the center of the Zone will be open. Good luck!</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_4">
+        <text>See you.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_0">
+        <text>Who else can offer work?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_1">
+        <text>There are a couple of guys here: the hunter Pavlik, the mechanic-electrician Senka, Arny.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_2">
+        <text>Can you tell me more about Pavlik?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_3">
+        <text>Can you tell me more about Senka?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_4">
+        <text>Pavlik is our local retired hunter. He used to track and kill particularly dangerous mutants. Now he sits at his place among taxidermy trophies and hands out tasks; they say he pays pretty well. You can ask him.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_5">
+        <text>He sits in our garage and builds things. Buys up all sorts of junk from stalkers. A scavenger, in a word.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_6">
+        <text>Got it, thanks.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_7">
+        <text>Can you tell me more about Arny?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog_8">
+        <text>He organizes fights at the arena and takes bets. You can participate too.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_break_dialog_0">
+        <text>I'll think about it.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_start_dialog_0">
+        <text>So, stalker. What brought you to me? Want to buy information? Or maybe sell some?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_break_dialog_0">
+        <text>See you.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_0">
+        <text>Hey, stalker, what the hell do you need a cake for?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_1">
+        <text>What business is it of yours? Who are you anyway?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_2">
+        <text>Don't get heated, I'm not asking out of malice. I'm genuinely interested.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_3">
+        <text>It's my birthday, a friend dragged this cake in. Ordered it from the Barman.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_4">
+        <text>Good friend. Did you come to the Zone together, or did you become buddies here? Care to tell the story?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_5">
+        <text>Eh, alright. My name is Vlad, but everyone calls me Volchara. Once, I lived in a city called Kislovodsk. Studies, work—everything went as usual. At 28, I married the charming Olesya; the wedding was top-notch, the whole works. And then—the terrible explosion at the CNPP. Since then, my hometown started being called the Doomed City.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_6">
+        <text>Doomed City? I've heard something like that.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_7">
+        <text>Uh-huh. When it blew, I was completely lost, didn't know what to do or where to go. But luckily, I had a loyal friend named Danya Voron. The guy has a good head on his shoulders! He's always ready to help and offer a way out of any mess. So we decided to get out of the Doomed City. Our journey was long and hard, but we finally made it to the Zone.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_8">
+        <text>Quite a story, you guys had it rough. Where are you headed next?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_9">
+        <text>I'm waiting for my friend, Danya Voron, to return from a raid. He said he knows where to get some good body armor! When he gets back, we'll celebrate my birthday, have a bite, prep our gear, and hit the road in search of new adventures. And you know, good friends are more valuable than all the artifacts in the Zone.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_good_story_dialog_10">
+        <text>Good luck in the Zone, bye!</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_vlad_volchara_start_dialog_0">
+        <text>What do you need?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_0">
+        <text>Stay healthy. We have the documents. And here's something else—Strelok's flash drive. Heard of him?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_1">
+        <text>Strelok? I've heard. Not a stalker—a legend! Great work, guys. Now I need to sort through this mess, maybe I'll figure out how to break through to the North. Hand over the case.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_2">
+        <text>Take it.</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_start_dialog_0">
+        <text>Greetings, how's life?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_0">
+        <text>Which one?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_1">
+        <text>Choose:</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_10">
+        <text>Fight against boars: reward 4000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_11">
+        <text>Fight against bloodsuckers: reward 10000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_12">
+        <text>Special opponent: reward 25000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_13">
+        <text>Fight against dogs, 1 minute: reward 4000 | bet 2000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_14">
+        <text>Fight against pseudodogs, 1 minute: reward 6000 | bet 3000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_15">
+        <text>Fight against boars, 1 minute: reward 8000 | bet 4000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_16">
+        <text>Fight against bloodsuckers, 1 minute: reward 20000 | bet 10000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_17">
+        <text>Special opponent, 1 minute: reward 50000 | bet 25000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_4">
+        <text>Bet on a fight</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_7">
+        <text>Who are we betting on?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_18">
+        <text>On stalkers: reward 15000 | bet 5000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_19">
+        <text>On mutants: reward 15000 | bet 5000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_22">
+        <text>I changed my mind</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_2">
+        <text>Fight against mutants</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_20">
+        <text>I changed my mind</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_21">
+        <text>I changed my mind</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_23">
+        <text>Accepted, go!</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_29">
+        <text>Let's go!</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_3">
+        <text>Timed fight against mutants</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_5">
+        <text>Who will you fight?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_6">
+        <text>Who will you fight?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_8">
+        <text>Fight against dogs: reward 2000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_arena_dialog_9">
+        <text>Fight against pseudodogs: reward 3000</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_start_dialog_0">
+        <text>Hello fighters! There's a fight for you, want to earn some money?</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_0">
+        <text>I want to collect my reward</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_1">
+        <text>Take it!</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_2">
+        <text>Fight against dogs</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_3">
+        <text>Fight against pseudodogs</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_4">
+        <text>Fight against boars</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_5">
+        <text>Fight against bloodsuckers</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_6">
+        <text>Special opponent</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_7">
+        <text>Timed fight against dogs</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_8">
+        <text>Timed fight against pseudodogs</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_9">
+        <text>Timed fight against boars</text>
+    </string>	
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_10">
+        <text>Timed fight against bloodsuckers</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_11">
+        <text>Special opponent timed</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_12">
+        <text>Bet on stalkers</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_13">
+        <text>Bet on mutants</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_14">
+        <text>Nothing</text>
+    </string>
+    <string id="bar_smart_terrain_2_stalker_arny_victory_arena_dialog_15">
+        <text>Nothing</text>
+    </string>
+    <string id="bar_smart_terrain_4_duty_petrenko_start_dialog_0">
+        <text>How can I help?</text>
+    </string>	
+    <string id="bar_smart_terrain_9_stalker_hunter_start_dialog_0">
+        <text>How are things, hunters?</text>
+    </string>
+    <string id="bar_smart_terrain_10_stalker_plyushkin_start_dialog_0">
+        <text>Hello. Something broken?</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_start_dialog_0">
+        <text>Hello friends, how is it?</text>
+    </string>	
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_0">
+        <text>Can you play something on the guitar?</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_1">
+        <text>No problem, something sad or something funny?</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_2">
+        <text>Something sad, probably.</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_3">
+        <text>Give me something cheerful!</text>
+    </string>
+    <string id="bar_smart_terrain_12_stalker_skamarokh_order_music_dialog_4">
+        <text>I changed my mind.</text>
+    </string>
+    <string id="bar_smart_terrain_4_duty_voronin_start_dialog_0">
+        <text>Spill it, why did you come?</text>
+    </string>
+	
+	
+
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_0">
+        <text>0</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_1">
+        <text>1</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_2">
+        <text>2</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_3">
+        <text>3</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_4">
+        <text>4</text>
+    </string>
+	
+	
+	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_0">
+        <text>I need work, have anything in mind?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_1">
+        <text>There is something...</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_2">
+        <text>Find an artifact...</text>
+    </string>	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_6">
+        <text>Choose:</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_7">
+        <text>Find "Wretched"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_14">
+        <text>Find "Gravi"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_15">
+        <text>Find "Goldfish"</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_5">
+        <text>Find a mutant part...</text>
+    </string>	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_12">
+        <text>Choose:</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_13">
+        <text>Find 5 "Pseudodog Tails"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_20">
+        <text>Find 4 "Snork Feet"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_21">
+        <text>Find 3 "Bloodsucker Tentacles"</text>
+    </string>
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_dialog_22">
+        <text>Nothing</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_0">
+        <text>About the job...</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_1">
+        <text>Well, speak up</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_2">
+        <text>I brought the "Wretched" artifact</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_3">
+        <text>I brought the "Gravi" artifact</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_4">
+        <text>I brought the "Goldfish" artifact</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_11">
+        <text>I brought the "Pseudodog Tails"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_12">
+        <text>I brought the "Snork Feet"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_13">
+        <text>I brought the "Bloodsucker Tentacles"</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_idle_dialog_14">
+        <text>Nothing</text>
+    </string>
+	
+	
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_0">
+        <text>I want to cancel the job...</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_1">
+        <text>Which one?</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_11">
+        <text>I cancel the "Pseudodog Tails" order</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_12">
+        <text>I cancel the "Snork Feet" order</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_13">
+        <text>I cancel the "Bloodsucker Tentacles" order</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_14">
+        <text>Nothing</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_2">
+        <text>I cancel the "Wretched" order</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_3">
+        <text>I cancel the "Gravi" order</text>
+    </string>
+    <string id="bar_smart_terrain_1_trader_barmen_secondary_quests_fail_dialog_4">
+        <text>I cancel the "Goldfish" order</text>
+    </string>
+
+	
+	
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_0">
+        <text>I need work, have anything in mind?</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_1">
+        <text>There is something...</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_4">
+        <text>Clear the area of mutants...</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_10">
+        <text>Choose:</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_11">
+        <text>Kill mutant 1</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_18">
+        <text>Kill mutant 2</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_19">
+        <text>Kill mutant 3</text>
+    </string>	
+
+
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_dialog_22">
+        <text>Nothing</text>
+    </string>
+
+
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_0">
+        <text>About the job...</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_1">
+        <text>I'm listening</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_8">
+        <text>I killed mutant "1"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_9">
+        <text>I killed mutant "2"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_10">
+        <text>I killed mutant "3"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_idle_dialog_14">
+        <text>Nothing</text>
+    </string>
+	
+	
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_0">
+        <text>I want to cancel the job...</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_1">
+        <text>Which one?</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_8">
+        <text>I cancel the order for mutant "1"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_9">
+        <text>I cancel the order for mutant "2"</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_10">
+        <text>I cancel the order for mutant "3Kill mutant "</text>
+    </string>
+    <string id="bar_smart_terrain_9_stalker_hunter_secondary_quests_fail_dialog_14">
+        <text>Nothing</text>
+    </string>	
+	
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_break_dialog_0">
+        <text>See you.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_0">
+        <text>What happened?</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_1">
+        <text>Damn it, I lost my family rifle in the Wild Territory. Thought I'd shoot some bloodsuckers, but barely escaped with my life. Damn! Listen, brother, if you bring my rifle back, I'll thank you. I earned a little bit here, I'll give it all to you, just return the rifle. It's a family heirloom, passed from father to son. And here I am—lost it. I practically grew attached to it, became kin, and now this mess.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_2">
+        <text>Alright, I'll try to get the rifle.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_3">
+        <text>I'll give you everything, friend, just return the rifle, I beg you. I lost it near the bloodsucker lair, I'll send you the coordinates of the place now. And be careful there, those beasts are very vicious.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_4">
+        <text>We'll see.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_0">
+        <text>About your rifle...</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_1">
+        <text>Hello. Any news? Found it???</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_2">
+        <text>Found it, here's your rifle.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_3">
+        <text>No. I have more important things to do right now.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_4">
+        <text>What? Found the rifle? Wow!!! Brother, bro, bruv... I just have no words. Thank you. THANK YOU, damn it! Eh, you really helped, you really helped!!! Yesss! Here, take my humble reward, it's all I have. Sorry it's not as big as your help. And I won't forget, damn me, how you helped me. Hope I can help you the same way in time. Thank you. Listen, I'll tell you something. Next to the place where you got my rifle, there's another thing, a strange boarded-up house. Nobody knows what's in there, but through the windows you can see there are a lot of anomalies. Maybe there are artifacts too, only I don't know how to get in there.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_5">
+        <text>It's up to you, but I hope you change your mind.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_6">
+        <text>See you.</text>
+    </string>
+    <string id="bar_smart_terrain_1_stalker_bad_hunter_start_dialog_0">
+        <text>Eh... if only someone would help...</text>
+    </string>
+</string_table>

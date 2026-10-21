@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>	
+	<string id="st_agr_start_save_the_stalker_mole_quest_task_name">
+		<text>Спасти Крота</text>
+	</string>
+	<string id="st_agr_start_save_the_stalker_mole_quest_task_descr">
+		<text>Помочь Кроту отбиться от военных\n\nКрот : "Помогите. Сейчас убьют!"</text>
+	</string>
+
+
+	<string id="st_agr_start_follow_the_stalker_mole_quest_task_name">
+		<text>Получить информацию о Стрелке</text>
+	</string>		
+	<string id="st_agr_start_follow_the_stalker_mole_quest_task_descr">
+		<text>Встретиться с группировкой Крота</text>
+	</string>
+	
+	
+	<string id="st_agr_start_talk_to_the_stalker_mole_quest_task_name">
+		<text>Получить информацию о Стрелке</text>
+	</string>		
+	<string id="st_agr_start_talk_to_the_stalker_mole_quest_task_descr">
+		<text>Получить информацию от Крота</text>
+	</string>	
+
+
+	<string id="st_agr_start_go_to_the_agroprom_underground_quest_task_name">
+		<text>Найти тайник группировки Стрелка</text>
+	</string>
+	<string id="st_agr_start_go_to_the_agroprom_underground_quest_task_descr">
+		<text>Найти тайник группировки Стрелка.\n\nКрот: ".. вниз по винтовой лестнице в комнату с колоннами, потом до выхода, попадаем в большую комнату с трубами на потолке. Оттуда вниз ко второму выходу, выходим в туннель и поворачиваем налево. В конце будет ход направо. Там маленькая комната, пересекаем ее и поворачиваем направо. Ищем на левой стене дыру, рядом надпись "Не влезай - убьет!". Это и есть вход в тайник Стрелка."</text>
+	</string>	
+	
+	
+	<string id="st_agr_start_break_into_a_military_base_quest_task_name">
+		<text>Найти документы военных</text>
+	</string>
+	<string id="st_agr_start_break_into_a_military_base_quest_task_descr">
+		<text>Выкрасть военные документы\n\nВоенных донимают крысы, которые лезут из коллекторов. Провинившихся военных отправляют в коллекторы.</text>	
+	</string>
+	
+	
+	<string id="st_agr_start_the_destination_is_a_bar_quest_task_name">
+		<text>Найти документы военных</text>
+	</string>
+	<string id="st_agr_start_the_destination_is_a_bar_quest_task_descr">
+		<text>Отнести документы бармену</text>	
+	</string>	
+</string_table>

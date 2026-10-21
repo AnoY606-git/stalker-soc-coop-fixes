@@ -158,3 +158,22 @@ The v2 release ships only `bar_smart_terrain_6_guard_arny.ltx` (Arnie can be tal
 files are parked in `wip\` (not built) until the root cause is fixed. The cats package's copy is parked in `patches\cutscenes_pkg_cats\wip\`.
 Likely cause to check next: `type = no_save` + `sr_idle@idle_reset` runs again whenever the restrictor comes back online
 (players teleported into the pit), and clears the flags mid-fight.
+
+## Fix 2026-10-21 (v1.4.2): players frozen after an Arena round
+Reports on v1.4.1: "after the arena we stand staring at the wall" and a player frozen upright in Arnie's room.
+Cause (stock 8.1 cat-scene restrictor, `bar_actor_cat_scene_space_restrictor.ltx`): when a round ends
+(`*_SQUAD_DEAD`), the restrictor goes straight back to `idle_start_cat_scene` while the players are still in the pit
+(the server teleports them out only 20 s later). `on_player_inside` (local player) fires again, runs `disable_ui`
+(input off, HUD hidden, weapon holstered) and waits for `START_CAT_SCENE_INFO`, which the same transition just cleared.
+Nothing runs `enable_ui` again, so the player is teleported back to Arnie's room still frozen. Our test bots never
+noticed because they do not use input.
+Fix (`tools\make_cat_scene.py` builds the file from the mod's stock copy, cp1251/CRLF kept):
+- the cutscene arms only while a fight is requested and not yet running: `{+START_CAT_SCENE_INFO -START_ARENA_GO}`;
+- after a round the restrictor goes to the new `sr_idle@cat_wait_leave` and arms again only once the local player has left the pit;
+- every exit from a disabled state runs `enable_ui`; timers make sure input cannot stay off: 5 s waiting without the
+  cutscene flag, 30 s for the cutscene itself.
+Only the cat-scene file changed; the start/stop restrictors stay stock (see v2 decision above). Not tested in the game.
+
+Кратко: после боя на арене логика катсцены снова отключала управление игроку, пока он ещё стоял в яме, и больше
+не включала (игрок «смотрит в стену», потом застывает в комнате Арни). Теперь катсцена срабатывает только перед боем,
+после боя ждёт, пока игрок выйдет из ямы, а управление всегда возвращается (плюс таймеры 5 и 30 с).

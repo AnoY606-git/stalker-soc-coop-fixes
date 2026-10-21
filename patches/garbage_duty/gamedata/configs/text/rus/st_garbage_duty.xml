@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="gar_duty_pass_i_see">
+		<text>Понятно.</text>
+	</string>
+	<string id="gar_duty_pass_rules">
+		<text>Таковы наши правила.</text>
+	</string>
+	<string id="gar_duty_pass_pay">
+		<text>Нет, я лучше заплачу за проход (2000 руб.). Вот, держи.</text>
+	</string>
+	<string id="gar_duty_pass_paid">
+		<text>Отлично, теперь проходи, и лучше чтобы у тебя действительно было важное дело к бармену. Будь осторожнее, дальше по дороге много аномалий.</text>
+	</string>
+	<string id="gar_duty_pass_no_money">
+		<text>У меня нет денег.</text>
+	</string>
+	<string id="gar_duty_pass_no_pass">
+		<text>Тогда в бар тебе прохода нет.</text>
+	</string>
+	<string id="gar_duty_pass_say_hi">
+		<text>Будешь у бармена, передай привет от меня. Да, не забудь, в проходе много аномалий, будь осторожен.</text>
+	</string>
+	<string id="gar_dolg_blokpost_bio">
+		<text>Сталкер группировки "Долг". Детальная информация отсутствует.</text>
+	</string>
+	<string id="gar_duty_rush_win">
+		<text>Отлично Меченый, ты действительно нам сильно помог. Будем считать, что ты оплатил свой пропуск. Можешь идти на Бар.</text>
+	</string>
+	<string id="gar_duty_rush_lose">
+		<text>Ну и слабак ты, Меченый, пользы от тебя ноль. Так что и благодарности от нас ты не дождешься. Не за что тебя благодарить.</text>
+	</string>
+	<string id="st_gar_duty_lang_probe">
+		<text>Язык</text>
+	</string>
+</string_table>

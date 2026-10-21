@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<string_table>
+	<string id="gar_duty_pass_i_see">
+		<text>I see.</text>
+	</string>
+	<string id="gar_duty_pass_rules">
+		<text>Those are the rules.</text>
+	</string>
+	<string id="gar_duty_pass_pay">
+		<text>I'd rather pay (2000 RU). Here.</text>
+	</string>
+	<string id="gar_duty_pass_paid">
+		<text>Good! You can go, but you better have some really important business with the Barkeep, you hear? And be careful - there's lots of anomalies ahead.</text>
+	</string>
+	<string id="gar_duty_pass_no_money">
+		<text>I don't have the money.</text>
+	</string>
+	<string id="gar_duty_pass_no_pass">
+		<text>Well, you can't go through to the bar then.</text>
+	</string>
+	<string id="gar_duty_pass_say_hi">
+		<text>Say "hi" for the Barkeep from me when you see him. Oh, and don't forget - there are lots of anomalies on the way, so be careful.</text>
+	</string>
+	<string id="gar_dolg_blokpost_bio">
+		<text>Duty stalker. No detailed information.</text>
+	</string>
+	<string id="gar_duty_rush_win">
+		<text>Excellent, Marked One, you really helped us out there. I say that's payment enough for your pass. Go on to the Bar.</text>
+	</string>
+	<string id="gar_duty_rush_lose">
+		<text>You're rubbish, Marked One. Totally useless! Don't expect gratitude - there's nothing to thank you for!</text>
+	</string>
+	<string id="st_gar_duty_lang_probe">
+		<text>Language</text>
+	</string>
+</string_table>

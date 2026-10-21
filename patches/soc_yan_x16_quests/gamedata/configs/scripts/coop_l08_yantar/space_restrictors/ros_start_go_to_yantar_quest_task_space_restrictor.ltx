@@ -1,0 +1,8 @@
+[logic]
+active 												= sr_idle@start_quest_idle
+
+[sr_idle@start_quest_idle]
+on_info 											= {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} sr_idle@nil %+ROS_START_GO_TO_YANTAR_QUEST_TASK_INFO%
+;on_info 											= {-BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} sr_idle@nil %+ROS_START_GO_TO_YANTAR_QUEST_TASK_INFO%
+
+[sr_idle@nil]

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="gar_seriy_start_22"><text>Thanks for the help, things got pretty hairy. What are you doing here anyway?</text></string>
+	<string id="gar_seriy_start_221"><text>I am looking for information about Strelok. Fox told me about you, so I came for a chat.</text></string>
+	<string id="gar_seriy_start_2211"><text>OK, you helped me out for free so I'll tell you. One of the guys, a former "digger" called Mole is waiting for me. He dug up Strelok's stash but I don't know if he found anything there. Here are the coordinates of our meeting place. Tell him I sent you. They'll be looking for me now, so I am going to disappear for a while. Here's some cash for your help too.</text></string>
+	<string id="gar_seriy_start_2212"><text>Thanks for the information.</text></string>
+	<string id="gar_seriy_start_222"><text>I am looking for information about Strelok, maybe you know something?</text></string>
+	<string id="gar_seriy_start_2221"><text>OK, you helped me out for free, so I'll tell you. One of the guys, a former "digger" called Mole, is waiting for me. He dug up Strelok's stash and found documents that explain a few things. He had some bandits on his tail so he had to leave the documents but he remembered the place. They'll be looking for me now so I am gonna disappear for a while. Here are the coordinates of the meeting place with Mole. Tell him I sent you. I'll upload some info to your PDA. Here's some cash for your help too.</text></string>
+	<string id="gar_seriy_start_2222"><text>Thanks for the information.</text></string>
+	<string id="gar_dolg_blokpost_1111212"><text>What's the favor?</text></string>
+	<string id="gar_dolg_blokpost_11112121"><text>Nothing much. There is a herd of boars wandering nearby that needs to be killed. Take 'em out and consider your passage paid for.</text></string>
+	<string id="gar_dolg_blokpost_111121211"><text>Deal.</text></string>
+	<string id="gar_dolg_blokpost_1111212111"><text>Good luck, stalker.</text></string>
+	<string id="gar_dolg_blokpost_1231"><text>Thanks for helping us fighting off the boars, take the deserved reward.</text></string>
+	<string id="gar_dolg_blokpost_12311"><text>Thanks!</text></string>
+	<string id="st_gar_soc_duty_report_task_descr"><text>Talk with the Duty commander</text></string>
+</string_table>

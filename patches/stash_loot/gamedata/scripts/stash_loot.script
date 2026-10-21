@@ -265,13 +265,13 @@ function spawn_loot(obj, e)
 			number = math.ceil(math.random(lo, hi))
 		end
 		if d.ammo[section] then
-			if number > 0 and math.random(100) <= rnd then
+			if number > 0 and math.random() * 100 < rnd then  -- real-number roll: SoC's integer roll made chances below 1 % impossible
 				create_ammo(section, pos_near(obj), obj:level_vertex_id(), obj:game_vertex_id(), 65535, number)
 				table.insert(list, section .. "*" .. number)
 			end
 		else
 			for n = 1, number do
-				if math.random(100) <= rnd then make(obj, section, list) end
+				if math.random() * 100 < rnd then make(obj, section, list) end
 			end
 		end
 	end

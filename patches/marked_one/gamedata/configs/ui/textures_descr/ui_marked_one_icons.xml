@@ -2,5 +2,6 @@
 	<file name="ui\ui_marked_one_icons">
 		<texture id="stalker_marked_one" x="0" y="0" width="120" height="120" />
 		<texture id="ui_actor_p_stalker_marked_one" x="0" y="128" width="165" height="108" />
+		<texture id="ui_marked_one_hero" x="256" y="0" width="153" height="108" />
 	</file>
 </w>

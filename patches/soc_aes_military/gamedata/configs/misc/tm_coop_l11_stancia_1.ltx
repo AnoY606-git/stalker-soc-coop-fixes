@@ -1,0 +1,29 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Основной квест(Добраться до Саркофага)
+[aes_1_start_go_to_sarcofag_quest_task]
+icon 									= ui_inGame2_aes_1_start_go_to_sarcofag_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_aes_1_start_go_to_sarcofag_quest_task_name
+descr 									= st_aes_1_start_go_to_sarcofag_quest_task_descr
+target 									= aes_1_level_changer
+condlist_0 								= {+AES_1_START_GO_TO_SARCOFAG_QUEST_TASK_INFO} complete %=give_task(sar_start_get_to_the_monolith_quest_task)%
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- soc_aes_military: SoC aes_military_task "Operation Monolith" (tasks_aes.xml). Given by coop_soc_aes_military.script to EVERY player on CNPP-1 after
+;-- the military action plan was found; done at the sarcophagus (SoC infoportion aes_found_sarcofag). No reward (SoC pays nothing).
+;--------------------------------------------------------------------------------------------------------------------------------------
+[aes_military_task]
+icon 									= ui_inGame2_aes_1_start_go_to_sarcofag_quest_task
+prior 									= 190
+storyline 								= true
+title 									= st_aes_military_name
+descr 									= {+SOC_AESM_MONO2} st_aes_military_4_descr, {+SOC_AESM_MONO1} st_aes_military_3_descr, {+SOC_AESM_GATE} st_aes_military_2_descr, st_aes_military_1_descr
+target 									= aes_1_level_changer
+condlist_0 								= {+SOC_AESM_FOUND} complete

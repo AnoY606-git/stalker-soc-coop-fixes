@@ -9,7 +9,8 @@ storyline 								= true
 title 									= st_sar_start_get_to_the_monolith_quest_task_name
 descr 									= st_sar_start_get_to_the_monolith_quest_task_descr
 target 									= sar_monolith
-condlist_0 								= {+SAR_MONOLITH_WISH_SPACE_RESTRICTOR_INFO} complete %=give_task(sar_start_search_the_preacher_body_and_retrieve_the_decoder_quest_task)%
+condlist_0								= {+SAR_MONOLITH_WISH_SPACE_RESTRICTOR_INFO} complete
+condlist_1								= {+SAR_ENTER_COMMAND_CENTER} complete
 
 ;Основной квест(Убить Проповедника "Монолита")
 [sar_start_kill_the_monolith_preacher_quest_task]
@@ -40,8 +41,72 @@ storyline 								= true
 title 									= st_sar_start_open_the_door_to_monolith_management_quest_task_name
 descr 									= st_sar_start_open_the_door_to_monolith_management_quest_task_descr
 target 									= sar_codedoor_left_decoder
-condlist_0 								= {+SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_1_SQUAD_DEAD +SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_2_SQUAD_DEAD +SAR_SMART_TERRAIN_18_ORDINARY_MONOLITH_3_SQUAD_DEAD} complete %=give_task(con_start_sneak_into_the_control_room_quest_task)%
+condlist_0								= {+LOCKED_START_OPEN_INFO} complete
+condlist_1								= {+SAR_ENTER_COMMAND_CENTER} complete
 
 ;--------------------------------------------------------------------------------------------------------------------------------------
 ;-- Второстепенные квесты:
 ;--------------------------------------------------------------------------------------------------------------------------------------
+
+; soc_aes_quests: SoC sar_monolith (tasks_sarcofag.xml): objective 0 is sar_start_get_to_the_monolith_quest_task above (open until the Wish Granter is reached),
+; objectives 1 and 2 follow. The Preacher steps and the decoder search step above are hidden (the decoder comes from the Pripyat hotel stash, coop_soc_aes.script).
+
+[sar_soc_sneak_in_task]
+icon 									= ui_inGame2_sar_start_get_to_the_monolith_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_soc_wish_name
+descr 									= st_sar_soc_sneak_in_descr
+target 									= nil
+condlist_0 								= {+SAR_MONOLITH_FIND} complete
+condlist_1 								= {+SAR_MONOLITH_WISH_SPACE_RESTRICTOR_INFO} complete
+condlist_2 								= {+SAR_ENTER_COMMAND_CENTER} complete
+
+
+[sar_soc_find_wish_task]
+icon 									= ui_inGame2_sar_start_get_to_the_monolith_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_soc_wish_name
+descr 									= st_sar_soc_find_wish_descr
+target 									= sar_monolith
+condlist_0 								= {+SAR_MONOLITH_WISH_SPACE_RESTRICTOR_INFO} complete
+condlist_1 								= {+SAR_ENTER_COMMAND_CENTER} complete
+
+
+; SoC sar_secret_lab: 1 enter the secret bunker (+ the Doctor's briefing), 2 find the hidden door, 3 open it using the decoder (sar_start_open_the_door... above),
+; 4 find out what is behind the door (until the party is on the Control Monolith level)
+[sar_soc_lab_1_task]
+icon 									= ui_inGame2_sar_start_open_the_door_to_monolith_management_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_soc_lab_name
+descr 									= st_sar_soc_lab_1_descr
+target 									= nil
+condlist_0 								= {+SAR_SOC_BUNKER} complete
+condlist_1 								= {+SAR_SECRET_DOOR_FIND} complete
+condlist_2 								= {+LOCKED_START_OPEN_INFO} complete
+condlist_3 								= {+SAR_ENTER_COMMAND_CENTER} complete
+
+
+[sar_soc_lab_2_task]
+icon 									= ui_inGame2_sar_start_open_the_door_to_monolith_management_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_soc_lab_name
+descr 									= st_sar_soc_lab_2_descr
+target 									= sar_codedoor_left_decoder
+condlist_0 								= {+SAR_SECRET_DOOR_FIND} complete
+condlist_1 								= {+LOCKED_START_OPEN_INFO} complete
+condlist_2 								= {+SAR_ENTER_COMMAND_CENTER} complete
+
+
+[sar_soc_lab_4_task]
+icon 									= ui_inGame2_sar_start_open_the_door_to_monolith_management_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_sar_soc_lab_name
+descr 									= st_sar_soc_lab_4_descr
+target 									= sar_codedoor_left_decoder
+condlist_0 								= {+SAR_ENTER_COMMAND_CENTER} complete
+

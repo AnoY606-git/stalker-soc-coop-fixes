@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding="windows-1251"?>
+<xml>
+	<!-- soc_doctor_chain: the Doctor of the original SoC (profile id used by the spawn section soc_cit_doctor) -->
+	<character id="soc_cit_doctor">
+		<class>soc_cit_doctor</class>
+	</character>
+</xml>

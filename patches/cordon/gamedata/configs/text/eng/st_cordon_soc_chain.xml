@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="coop_soc_job_0"><text>Got any special missions for me?</text></string>
+	<string id="coop_soc_job_1"><text>Listen, Marked One... I've done some thinking, and here's what I'd like to offer... Generally speaking, what you really need is to find Strelok. Right?</text></string>
+	<string id="coop_soc_job_2"><text>Let's assume I do.</text></string>
+	<string id="coop_soc_job_3"><text>Anyway, here's the thing about Strelok. There's a stalker that goes by this name. They say he's found a path to the northern reaches of the Zone. And that is a virgin area, a real goldmine for artifacts... Yeah... Anyway, I can help you find him... However... As you can imagine, it won't be a free ride. You'll have to work it off... But in the long run we will both benefit: You're going to waste that Strelok fella and find out what's happened to you... And I'll find... well, I mean... I'll get my share of our mutual profit, he-he... So what do you say? Deal?</text></string>
+	<string id="coop_soc_job_4"><text>Go on.</text></string>
+	<string id="coop_soc_job_5"><text>Alright, listen... You mean business, I can see that... And I... I mean, we need guys like you. We're doing sort of an investigation with some other traders. We want to open up the path to the North, to the center of the Zone. And near the center someone or something is trying to hamper our progress... How the heck this Strelok managed to sneak through, I don't know... You see, there's this one area where your brain starts boiling. An eerie place... Anyway, to cut a long story short - a couple of guys have been spying on them grunts for me, not far from here. Apparently, the ones at the Agroprom Research Institute, have dug up something. Something major. I'm positive it has something to do with the center of the Zone. Anyway, whatever they've dug up, it's secured somewhere on the third floor of the Institute. And we really need this stuff. You see what I mean?</text></string>
+	<string id="coop_soc_job_6"><text>I think so.</text></string>
+	<string id="coop_soc_job_7"><text>Once you have the briefcase, don't bring it here. Take it straight to the Barman. He runs the stalker bar, the 100 Rads, I'll upload the coordinates and all the data you need to your PDA. Clear?</text></string>
+	<string id="coop_soc_job_8"><text>Gotcha.</text></string>
+	<string id="coop_soc_job_9"><text>You'll have to go North through the Garbage, then turn West. You'll end up at the Agroprom Research Institute after a few kilometers. And be careful, the radiation level is way too high at the Garbage. So I suggest you cough up for some antirad or vodka. Well, good luck.</text></string>
+	<string id="coop_soc_bridge_11"><text>This area is off limits, stalker.</text></string>
+	<string id="coop_soc_bridge_12"><text>But I need to go there.</text></string>
+	<string id="coop_soc_bridge_13"><text>Tough luck. Unless you REALLY need to go, then the price is 500.</text></string>
+	<string id="coop_soc_bridge_14"><text>Here you are.</text></string>
+	<string id="coop_soc_bridge_15"><text>Now listen up. We'll pretend for a moment it's nothing but mosquitoes and butterflies around here. What happens beyond this point is your own damn business.</text></string>
+	<string id="coop_soc_bridge_21"><text>Alright, keep moving! Get your ass outta here, before we change our mind.</text></string>
+	<string id="coop_soc_bridge_24"><text>I don't have that kind of money.</text></string>
+	<string id="coop_soc_bridge_25"><text>Then go back where you came from and get it. And don't you try and sneak past us, you hear? Trust me, it's not worth dying for.</text></string>
+	<string id="coop_soc_task_trader_job_name"><text>Work for the trader</text></string>
+	<string id="coop_soc_task_trader_job_descr"><text>Get the special task from the trader</text></string>
+	<string id="coop_soc_task_railroad_name"><text>Get to the railroad embankment</text></string>
+	<string id="coop_soc_task_railroad_descr"><text>Before deepening into the Zone, it's necessary to traverse the old railroad embankment. The only safe passage there is guarded by the militaries. However, there's a small tunnel to the left, rookies usually go through it. There you'll be awaited by one of my debtors.</text></string>
+	<string id="coop_soc_task_documents_name"><text>Find the militaries' documents</text></string>
+	<string id="coop_soc_task_documents_descr"><text>Agroprom Research Institute: steal the militaries' documents, then take them to the Barkeep.</text></string>
+	<string id="coop_soc_task_pass_name"><text>Pass the army outpost</text></string>
+	<string id="coop_soc_task_pass_descr"><text>To get past the army outpost at the railway bridge we have to give Major Kuznetsov 500 rubles.</text></string>
+</string_table>

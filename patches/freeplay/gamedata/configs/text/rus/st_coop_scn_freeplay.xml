@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="scn_freeplay_caption">
+		<text>Зона</text>
+	</string>
+	<string id="scn_freeplay_msg">
+		<text>Зона вас не отпускает. Группа возвращается в деревню новичков на Кордоне, вся Зона остаётся открытой.</text>
+	</string>
+</string_table>

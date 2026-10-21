@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_x18_start_go_to_x18_doc_1_task_name">
+		<text>Найти документы в Х-18</text>
+	</string>
+	<string id="st_x18_start_go_to_x18_doc_1_task_descr">
+		<text>Найти документы</text>
+	</string>
+
+	<string id="st_x18_start_find_the_password_x18_codedoor_1_task_name">
+		<text>Открыть кодовую дверь</text>
+	</string>
+	<string id="st_x18_start_find_the_password_x18_codedoor_1_task_descr">
+		<text>Найти код к двери\n\nОтлично, Коллега. Я рад, что Вы получили доступ 2го уровня. Наконец Вы узнаете, чем занимается наша лаборатория. Ваш код доступа - 1243. Зав. лаборатории Х-18, Калугин Петр Ильич.</text>
+	</string>	
+
+	<string id="st_x18_start_go_to_x18_doc_2_task_name">
+		<text>Найти документы в Х-18</text>
+	</string>
+	<string id="st_x18_start_go_to_x18_doc_2_task_descr">
+		<text>Найти документы</text>
+	</string>	
+
+	<string id="st_x18_start_find_the_password_x18_codedoor_2_task_name">
+		<text>Открыть дверь в командный центр</text>
+	</string>
+	<string id="st_x18_start_find_the_password_x18_codedoor_2_task_descr">
+		<text>Найти код к двери\n\nКоллега, напоминаю, что Вы с завтрашнего дня приступаете к обслуживанию резервуаров в центральной лаборатории. Необходимо проверять их с периодичностью в два часа. Обо всем докладывать мне лично. Код к центральной лаборатории: 9524. Зав. лаборатории Х-18, Калугин Петр Ильич.</text>
+	</string>	
+
+	<string id="st_x18_start_kill_the_flame_poltergeist_quest_task_name">
+		<text>"Не опять, а снова заперто!"</text>
+	</string>
+	<string id="st_x18_start_kill_the_flame_poltergeist_quest_task_descr">
+		<text>Необходимо убить полтергейста</text>
+	</string>
+
+	<string id="st_x18_start_go_to_x18_doc_3_task_name">
+		<text>Найти документы в Х-18</text>
+	</string>
+	<string id="st_x18_start_go_to_x18_doc_3_task_descr">
+		<text>Найти документы</text>
+	</string>
+
+	<string id="st_x18_start_get_out_of_the_lab_quest_task_name">
+		<text>На выход!</text>
+	</string>
+	<string id="st_x18_start_get_out_of_the_lab_quest_task_descr">
+		<text>Выбраться из лаборатории</text>
+	</string>	
+</string_table>

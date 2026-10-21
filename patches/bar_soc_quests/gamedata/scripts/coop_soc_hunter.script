@@ -1,0 +1,91 @@
+-------------------------------------------------------------------------------------------------------
+-- The hunter's family rifle of the original Shadow of Chernobyl (SoC bar_bar_hunter_start / bar_bar_hunter_quest_start /
+-- bar_bar_hunter_quest_finish), patch bar_soc_quests. The mod's hunter (bar_smart_terrain_1_stalker_bad_hunter) keeps his flags:
+--   BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO        the quest was accepted (SoC bar_bar_hunter_quest_start)
+--   BAR_HUNTER_RIFLE_FOUND                                 a player holds the rifle (SoC bar_bar_hunter_quest_find_rifle), set by coop_soc_barros.script
+--   BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO   the rifle was handed over (SoC bar_bar_hunter_quest_finish)
+--  * hunter greeting states (st_*) come from the shared flags only (same on every machine)
+--  * say_<id>: PDA archive line for every player (SoC has no voice recording for any hunter line)
+--  * the hand-in takes the rifle and pays 4000 (SoC bar_dialogs.give_hunters_toz / have_hunter_reward)
+-------------------------------------------------------------------------------------------------------
+
+local FLAG = {
+	ACCEPT = "BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO",
+	FOUND  = "BAR_HUNTER_RIFLE_FOUND",
+	DONE   = "BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO",
+}
+local RIFLE = "wpn_toz34_m2"
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+function state()
+	if has(FLAG.DONE) then return "done" end
+	if has(FLAG.ACCEPT) then return "wait" end
+	return "new"
+end
+
+function st_new(a, b) return state() == "new" end
+function st_wait(a, b) return state() == "wait" end
+function st_done(a, b) return state() == "done" end
+
+local function actor_of(a, b)
+	local ok, npc, act = pcall(function() return dialogs.who_is_npc(a, b) end)
+	if ok and act ~= nil then return act end
+	return a
+end
+
+local function any_has(section)
+	if db.mp_actors == nil then return false end
+	for pid, p in pairs(db.mp_actors) do
+		if p ~= nil and p:alive() then
+			local ok, o = pcall(function() return p:object(section) end)
+			if ok and o ~= nil then return true end
+		end
+	end
+	return false
+end
+
+-- the talking player holds the rifle. No soft-lock: the party found it once (flag) and nobody carries it any more -> open to everybody
+function has_rifle(a, b)
+	local act = actor_of(a, b)
+	if act ~= nil and act:object(RIFLE) ~= nil then return true end
+	return has(FLAG.FOUND) and not any_has(RIFLE)
+end
+
+function take_rifle(a, b)
+	local act = actor_of(a, b)
+	if act ~= nil and act:object(RIFLE) ~= nil then
+		pcall(function() dialogs_item.transfer_family_gun(a, b) end)
+	end
+end
+
+-- SoC bar_dialogs.have_hunter_reward: 4000
+function reward(a, b)
+	dialogs_money.give_money_to_actor_4000(a, b)
+end
+
+-- PDA archive line (who speaks: the hunter or the player)
+local NPC = { ["problem"] = 1, ["news"] = 1, ["thanks"] = 1, ["q_1"] = 1, ["q_111"] = 1, ["q_121"] = 1, ["f_1"] = 1 }
+
+local function say(id, first, second)
+	local tid = "coop_soc_hunter_" .. id
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = NPC[id] and "npc" or "actor" end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+end
+
+function say_problem(a, b) say("problem", a, b) end
+function say_news(a, b) say("news", a, b) end
+function say_thanks(a, b) say("thanks", a, b) end
+function say_q_0(a, b) say("q_0", a, b) end
+function say_q_1(a, b) say("q_1", a, b) end
+function say_q_11(a, b) say("q_11", a, b) end
+function say_q_111(a, b) say("q_111", a, b) end
+function say_q_1111(a, b) say("q_1111", a, b) end
+function say_q_12(a, b) say("q_12", a, b) end
+function say_q_121(a, b) say("q_121", a, b) end
+function say_q_1212(a, b) say("q_1212", a, b) end
+function say_f_0(a, b) say("f_0", a, b) end
+function say_f_1(a, b) say("f_1", a, b) end

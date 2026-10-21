@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<xml>
+	<character id="bar_dolg_guard_commander">
+		<class>bar_dolg_guard_commander</class>
+	</character>
+	<character id="bar_dolg_ivancov">
+		<class>bar_dolg_ivancov</class>
+	</character>
+	<character id="bar_crazy_veterans_lucky">
+		<class>bar_crazy_veterans_lucky</class>
+	</character>
+	<character id="bar_crazy_veterans_1">
+		<class>bar_crazy_veterans_1</class>
+	</character>
+	<character id="bar_crazy_veterans_2">
+		<class>bar_crazy_veterans_2</class>
+	</character>
+	<character id="bar_killer_ambush_tiran">
+		<class>bar_killer_ambush_tiran</class>
+	</character>
+	<character id="soc_duty_merc_1">
+		<class>soc_duty_merc_1</class>
+	</character>
+	<character id="soc_duty_merc_2">
+		<class>soc_duty_merc_2</class>
+	</character>
+	<character id="soc_duty_merc_3">
+		<class>soc_duty_merc_3</class>
+	</character>
+	<character id="soc_duty_merc_4">
+		<class>soc_duty_merc_4</class>
+	</character>
+</xml>

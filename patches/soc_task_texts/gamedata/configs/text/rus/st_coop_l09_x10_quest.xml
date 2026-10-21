@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_x10_start_turn_off_the_radar_quest_task_name">
+		<text>Отключить Выжигатель Мозгов</text>
+	</string>
+	<string id="st_x10_start_turn_off_the_radar_quest_task_descr">
+		<text>Отключить установку</text>	
+	</string>
+
+
+	<string id="st_x10_start_leave_the_bunker_and_go_to_pripyat_quest_task_name">
+		<text>Найти вход в Саркофаг на ЧАЭС</text>
+	</string>
+	<string id="st_x10_start_leave_the_bunker_and_go_to_pripyat_quest_task_descr">
+		<text>Найти вход в Саркофаг на ЧАЭС\n\nБармен: "Тут все просто с ума посходили, когда узнали! Все кто мог тут же ринулись пробиваться к центру зоны, одиночки, Свобода, Долг, даже наемники. Кто первый доберется тот и получит все! Исполнитель желаний, клондайк артефактов и, черт его знает, что еще. Поспеши, если Исполнитель действительно в саркофаге станции, то тот кто первый доберется, того желание и исполнится. Сейчас как раз перед Припятью собирается отряд ветеранов. Если поспешишь, пойдешь с ними."</text>	
+	</string>
+</string_table>

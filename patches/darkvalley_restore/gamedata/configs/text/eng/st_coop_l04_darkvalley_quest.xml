@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_val_start_sneak_into_the_x_18_lab_1_quest_task_name">
-		<text>Infiltrate laboratory X-18</text>
+		<text>Find the documents in X18</text>
 	</string>
 	<string id="st_val_start_sneak_into_the_x_18_lab_1_quest_task_descr">
-		<text>Infiltrate the abandoned laboratory and find any documents.</text>
+		<text>Find the documents\n\nIt's necessary to find the documents about the researches previously done in lab x-18. They can shed some light on the "Brain Scorcher".</text>
 	</string>	
 	
 	
 	<string id="st_val_start_take_the_documents_to_the_barmen_quest_task_name">
-		<text>Return to the Barkeep</text>
+		<text>Find the documents in X18</text>
 	</string>
 	<string id="st_val_start_take_the_documents_to_the_barmen_quest_task_descr">
-		<text>Leave the laboratory and hand the documents over to the Barkeep. Surely, he will be pleased.</text>
+		<text>Bring the documents to the Barkeep</text>
 	</string>
 	
 
@@ -47,23 +47,23 @@
 
 
 	<string id="st_val_start_follow_the_bullet_quest_task_name">
-		<text>Unwilling Captive</text>
+		<text>Free the Dutyer</text>
 	</string>
 	<string id="st_val_start_follow_the_bullet_quest_task_descr">
-		<text>Follow Bullet</text>
+		<text>Follow Bullet to the ambush location\n\nDuty member Bullet wants me to rescue his partner who was captured by bandits. He is soon to be escorted to the deserted factory.</text>
 	</string>
 
 	<string id="st_val_start_save_the_prisoner_quest_task_name">
-		<text>Unwilling Captive</text>
+		<text>Free the Dutyer</text>
 	</string>
 	<string id="st_val_start_save_the_prisoner_quest_task_descr">
-		<text>Wait for the bandits and save the prisoner</text>
+		<text>Kill the bandits and rescue the Dutyer</text>
 	</string>	
 	<string id="st_val_start_get_out_via_south_gate_quest_task_name">
-		<text>Leave Dark Valley</text>
+		<text>Get out of the Dark Valley</text>
 	</string>
 	<string id="st_val_start_get_out_via_south_gate_quest_task_descr">
-		<text>The military has blocked the way to the Garbage. Leave Dark Valley by the old road through the south gate, it leads to the Cordon.</text>
+		<text>Return to the trader</text>
 	</string>
 	<string id="st_val_start_show_documents_to_sidorovich_quest_task_name">
 		<text>Show the documents to the trader</text>

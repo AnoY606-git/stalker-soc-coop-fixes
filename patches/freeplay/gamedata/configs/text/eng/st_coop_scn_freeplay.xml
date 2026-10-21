@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="scn_freeplay_caption">
+		<text>The Zone</text>
+	</string>
+	<string id="scn_freeplay_msg">
+		<text>The Zone is not done with you. The group returns to the Cordon rookie village, and the whole Zone stays open.</text>
+	</string>
+</string_table>

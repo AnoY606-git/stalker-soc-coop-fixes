@@ -1,0 +1,262 @@
+[logic@mil_smart_terrain_14_walker_skull]
+suitable 											= {=check_npc_name(mil_smart_terrain_18_duty_skull)} true
+active 												= walker@mil_smart_terrain_14_walker_skull
+level_spot 											= quest_npc
+prior 												= 300
+
+[walker@mil_smart_terrain_14_walker_skull]
+path_walk 											= walker_skull_walk
+path_look 											= walker_skull_look
+meet 												= meet@hello_players_1
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_18_DUTY_SKULL_1_STOP_DIALOG_INFO} walker@mil_smart_terrain_14_walker_skull_idle
+on_info2 											= {+MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_smart_terrain_14_walker_skull_ambush_no_players_idle
+
+[walker@mil_smart_terrain_14_walker_skull_idle]
+path_walk 											= walker_skull_walk
+path_look 											= walker_skull_look
+meet 												= meet@hello_players_2
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_info 											= {+MIL_SMART_TERRAIN_18_DUTY_SKULL_TALK_TO_SKULL_ABOUT_THE_ASSAULT_STOP_DIALOG_INFO} walker@mil_smart_terrain_14_walker_skull_ambush_idle %=scenario_autosave(st_ambush_base_freedom)%
+on_info2 											= {+MIL_SMART_TERRAIN_3_FREEDOM_LUKASH_HELP_FREEDOM_STOP_DIALOG_INFO} walker@mil_smart_terrain_14_walker_skull_ambush_no_players_idle
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_idle]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 5000 | %=play_sound(mil_dolg_cherep_command_1)%
+on_signal 											= sound_end | walker@mil_smart_terrain_14_walker_skull_ambush_idle_1
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_no_players_idle]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 5000 | %=play_sound(mil_dolg_cherep_command_1)%
+on_signal 											= sound_end | walker@mil_smart_terrain_14_walker_skull_ambush_no_players_idle_1
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_idle_1]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 10000 | %=play_sound(mil_dolg_cherep_command_2)%
+on_signal 											= sound_end | walker@mil_smart_terrain_14_walker_skull_ambush_salutuiu %+MIL_SMART_TERRAIN_14_WALKER_SKULL_AMBUSH_SALUTUIU_INFO%
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_no_players_idle_1]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 10000 | %=play_sound(mil_dolg_cherep_command_2)%
+on_signal 											= sound_end | walker@mil_smart_terrain_14_walker_skull_ambush_no_players_salutuiu %+MIL_SMART_TERRAIN_14_WALKER_SKULL_AMBUSH_SALUTUIU_INFO%
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_salutuiu]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= salut
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 2000 | walker@mil_smart_terrain_14_walker_skull_ambush_volno
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_no_players_salutuiu]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= salut
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 2000 | walker@mil_smart_terrain_14_walker_skull_ambush_no_players_volno
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_volno]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= salut_free
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 2000 | walker@mil_smart_terrain_14_walker_skull_players_idle
+
+[walker@mil_smart_terrain_14_walker_skull_ambush_no_players_volno]
+path_walk 											= walker_skull_ambush_idle_walk
+path_look 											= walker_skull_ambush_idle_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= salut_free
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+on_timer 											= 2000 | walker@mil_smart_terrain_14_walker_skull_no_players_idle
+
+[walker@mil_smart_terrain_14_walker_skull_players_idle]
+path_walk 											= walker_skull_ambush_start_walk
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_SKULL_PARTNER_AMBUSH_GO_INFO} walker@mil_smart_terrain_14_skull_ambush_go
+
+[walker@mil_smart_terrain_14_walker_skull_no_players_idle]
+path_walk 											= walker_skull_ambush_start_walk
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_SKULL_PARTNER_AMBUSH_GO_INFO} walker@mil_smart_terrain_14_skull_ambush_no_players_go
+
+[walker@mil_smart_terrain_14_skull_ambush_go]
+path_walk 											= walker_skull_ambush_go_walk
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_SMART_TERRAIN_16_FREEDOM_1_SQUAD_DEAD} walker@mil_smart_terrain_14_walker_skull_kill_lukash
+
+[walker@mil_smart_terrain_14_skull_ambush_no_players_go]
+path_walk 											= walker_skull_ambush_go_walk
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+MIL_SMART_TERRAIN_16_FREEDOM_1_SQUAD_DEAD} walker@mil_smart_terrain_14_walker_skull_kill_lukash_no_players
+
+[walker@mil_smart_terrain_14_walker_skull_kill_lukash]
+path_walk 											= walker_skull_kill_lukash_walk
+path_look 											= walker_skull_kill_lukash_look
+meet 												= no_meet
+invulnerable 										= true
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+
+[walker@mil_smart_terrain_14_walker_skull_kill_lukash_no_players]
+path_walk 											= walker_skull_kill_lukash_walk
+path_look 											= walker_skull_kill_lukash_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= ward_short
+def_state_moving 									= assault
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+
+[meet@hello_players_1]
+close_snd_hello 									= mil_dolg_cherep
+close_snd_bye   									= mil_dolg_about_sniper
+close_anim 											= hello_wpn
+close_victim 										= actor
+far_anim 											= hello_wpn
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false
+
+[meet@hello_players_2]
+close_snd_hello 									= nil
+close_snd_bye   									= nil
+close_anim 											= ward_short
+close_victim 										= actor
+far_anim 											= ward_short
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= {=actor_enemy} false, true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= false
+
+
+;================================================

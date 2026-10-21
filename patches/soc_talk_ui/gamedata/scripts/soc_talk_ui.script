@@ -1,0 +1,247 @@
+-- Shadow of Chernobyl style decoration of the talk window (see patches/soc_talk_ui/NOTES.md).
+-- The CoP engine builds the talk window from talk.xml only (speech list, answer list, one button) and has no character
+-- panels. This script draws what SoC drew around it: top and bottom shade, the two frame headers with the speakers' names,
+-- the player's panel (top left) and the partner's panel (top right) with portrait, name, rank, group and relation.
+-- It is a plain render-only window (get_hud():AddDialogToRender), never takes input, and every call is guarded: on any error
+-- the talk window simply works as before without the decoration.
+-- Hook: scripts/pda.dscript (engine calls pda.actor_menu_mode(10) when the talk window opens and (11) when it closes).
+
+local TAG = "[soc_talk_ui]"
+local NO_ID = 65535
+
+local wnd = nil
+local in_render = false
+
+-- CoP statics have no SetText: their text lives in TextControl(); CUITextWnd has SetText. Works for both.
+local function set_text(w, t)
+	if w == nil then return end
+	if not pcall(function() w:SetText(t) end) then
+		pcall(function() w:TextControl():SetText(t) end)
+	end
+end
+
+local function logf(fmt, ...)
+	local args = { ... }
+	pcall(function() printf_msg(TAG .. " " .. fmt, unpack(args)) end)
+end
+
+local function tr(id)
+	local ok, s = pcall(game.translate_string, id)
+	if ok and s ~= nil then
+		return s
+	end
+	return id
+end
+
+-- rank name of a character: "game_relations:rating" is "novice, 300, experienced, 600, veteran, 900, master"
+local function rank_text(obj)
+	local ok, r = pcall(function() return obj:character_rank() end)
+	if not ok or r == nil then
+		return nil
+	end
+	local ok2, s = pcall(function() return system_ini():r_string("game_relations", "rating") end)
+	if not ok2 or s == nil then
+		return nil
+	end
+	local t = {}
+	for tok in string.gmatch(s, "[^,]+") do
+		table.insert(t, (string.gsub(tok, "^%s*(.-)%s*$", "%1")))
+	end
+	-- t = { name1, limit1, name2, limit2, ..., last_name }
+	local i = 1
+	while i <= #t do
+		local limit = tonumber(t[i + 1])
+		if limit == nil or r < limit then
+			return tr(t[i])
+		end
+		i = i + 2
+	end
+	return nil
+end
+
+local function community_text(obj)
+	local ok, c = pcall(function() return obj:character_community() end)
+	if not ok or c == nil or c == "" then
+		return nil
+	end
+	if c == "actor" or c == "stalker" then
+		local s = tr("ui_soc_talk_loner")
+		if s ~= "ui_soc_talk_loner" then
+			return s
+		end
+		return tr("stalker")
+	end
+	return tr(c)
+end
+
+local function relation_text(npc, actor)
+	local ok, rel = pcall(function() return npc:relation(actor) end)
+	if not ok or rel == nil then
+		return nil
+	end
+	if rel == game_object.friend then
+		return tr("friendly")
+	elseif rel == game_object.enemy then
+		return tr("enemy")
+	end
+	return tr("neutral")
+end
+
+local function find_partner(actor)
+	local ok, id = pcall(function() return actor:get_talk_partner_id() end)
+	if ok and id ~= nil and id ~= NO_ID then
+		local o = level.object_by_id(id)
+		if o ~= nil then
+			return o
+		end
+	end
+	-- fallback: the closest online object that reports is_talking()
+	local best, bd = nil, 25
+	local ap = actor:position()
+	for id2, st in pairs(db.storage) do
+		local o = st.object
+		if o ~= nil and o:id() ~= actor:id() then
+			local ok2, talking = pcall(function() return o:is_talking() end)
+			if ok2 and talking then
+				local d = o:position():distance_to(ap)
+				if d < bd then
+					best, bd = o, d
+				end
+			end
+		end
+	end
+	return best
+end
+
+local function local_actor()
+	local ok, a = pcall(function() return getLocalActor() end)
+	if ok and a ~= nil then
+		return a
+	end
+	return db.actor
+end
+
+-- ---------------------------------------------------------------------------------------------------- window
+class "soc_talk_info_wnd" (CUIScriptWnd)
+
+function soc_talk_info_wnd:__init() super()
+	local xml = CScriptXmlInit()
+	xml:ParseFile("soc_talk_info.xml")
+	xml:InitWindow("info", 0, self)
+	self.s = {}
+	local names = {
+		"top_bg", "bot_bg", "header1", "header2", "title_npc", "title_actor",
+		"l_panel", "r_panel", "l_name", "r_name", "l_icon", "r_icon",
+		"l_rank_c", "l_rank_v", "l_comm_c", "l_comm_v", "l_rel_c", "l_rel_v",
+		"r_rank_c", "r_rank_v", "r_comm_c", "r_comm_v", "r_rel_c", "r_rel_v",
+	}
+	for _, n in ipairs(names) do
+		self.s[n] = xml:InitStatic(n, self)
+	end
+end
+
+function soc_talk_info_wnd:__finalize()
+	if in_render then
+		pcall(function() get_hud():RemoveDialogToRender(self) end)
+		in_render = false
+	end
+end
+
+local function set_row(w, caption, value)
+	-- hides the row when the value is unknown
+	local on = (value ~= nil and value ~= "")
+	if on then
+		set_text(w[2], value)
+	end
+	w[1]:Show(on)
+	w[2]:Show(on)
+end
+
+local function fill_side(self, side, obj, with_relation, actor)
+	local s = self.s
+	local name = nil
+	pcall(function() name = obj:character_name() end)
+	if name == nil or name == "" then
+		pcall(function() name = obj:name() end)
+	end
+	set_text(s[side .. "_name"], name or "")
+	local icon = nil
+	pcall(function() icon = obj:character_icon() end)
+	if icon ~= nil and icon ~= "" then
+		pcall(function()
+			s[side .. "_icon"]:InitTexture(icon)
+			s[side .. "_icon"]:SetStretchTexture(true)
+		end)
+		s[side .. "_icon"]:Show(true)
+	else
+		s[side .. "_icon"]:Show(false)
+	end
+	set_row({ s[side .. "_rank_c"], s[side .. "_rank_v"] }, nil, rank_text(obj))
+	set_row({ s[side .. "_comm_c"], s[side .. "_comm_v"] }, nil, community_text(obj))
+	if with_relation then
+		set_row({ s[side .. "_rel_c"], s[side .. "_rel_v"] }, nil, relation_text(obj, actor))
+	else
+		s[side .. "_rel_c"]:Show(false)
+		s[side .. "_rel_v"]:Show(false)
+	end
+	return name
+end
+
+function soc_talk_info_wnd:refresh()
+	local actor = local_actor()
+	if actor == nil then
+		return
+	end
+	local npc = find_partner(actor)
+	local aname = fill_side(self, "l", actor, false, nil)
+	if npc ~= nil then
+		local nname = fill_side(self, "r", npc, true, actor)
+		set_text(self.s.title_npc, nname or "")
+		self.s.r_panel:Show(true)
+	else
+		-- no partner found: keep the frames and the player panel, hide the partner panel
+		for k, v in pairs(self.s) do
+			if string.sub(k, 1, 2) == "r_" then
+				v:Show(false)
+			end
+		end
+		set_text(self.s.title_npc, "")
+	end
+	set_text(self.s.title_actor, aname or "")
+end
+
+-- ---------------------------------------------------------------------------------------------------- hooks (pda.dscript)
+function on_show()
+	local ok, err = pcall(function()
+		if wnd == nil then
+			wnd = soc_talk_info_wnd()
+		end
+		wnd:refresh()
+		wnd:Show(true)
+		if not in_render then
+			get_hud():AddDialogToRender(wnd)
+			in_render = true
+		end
+		logf("shown")
+	end)
+	if not ok then
+		logf("show failed: %s", tostring(err))
+	end
+end
+
+function is_shown()
+	return in_render
+end
+
+function on_hide()
+	local ok, err = pcall(function()
+		if wnd ~= nil and in_render then
+			get_hud():RemoveDialogToRender(wnd)
+			in_render = false
+		end
+		logf("hidden")
+	end)
+	if not ok then
+		logf("hide failed: %s", tostring(err))
+	end
+end

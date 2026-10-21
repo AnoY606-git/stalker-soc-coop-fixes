@@ -1,0 +1,25 @@
+[logic]
+active 												= sr_idle
+
+[sr_idle]
+on_info1 											= {-bar_player_music_info -bar_megafon_alarm =dist_to_actor_le(150)} sr_idle@wait  %=play_sound(megafon)%
+on_info2 											= {+ESC_DEAD_MEGAFON} ph_idle@esc_dead_megafon %=stop_sound%
+on_info3 											= {+ESC_SIRENA_START_INFO} sr_idle@esc_sirena_start %=stop_sound%
+
+[sr_idle@wait]
+on_game_timer 										= 450 | sr_idle
+on_info1 											= {+bar_player_music_info} sr_idle
+on_info2 											= {+ESC_DEAD_MEGAFON} ph_idle@esc_dead_megafon %=stop_sound%
+on_info3 											= {+ESC_SIRENA_START_INFO} sr_idle@esc_sirena_start %=stop_sound%
+
+[sr_idle@esc_sirena_start]
+on_info1 											= {-bar_player_music_info -bar_megafon_alarm =dist_to_actor_le(150)} sr_idle@esc_sirena_wait  %=play_sound(esc_sirena)%
+on_info2 											= {+ESC_DEAD_MEGAFON} ph_idle@esc_dead_megafon %=stop_sound%
+
+[sr_idle@esc_sirena_wait]
+on_game_timer 										= 1 | sr_idle@esc_sirena_start
+on_info 											= {+bar_player_music_info} sr_idle@esc_sirena_start
+on_info2 											= {+ESC_DEAD_MEGAFON} ph_idle@esc_dead_megafon %=stop_sound%
+
+[ph_idle@esc_dead_megafon]
+on_info 											= {+ESC_DEAD_MEGAFON} nil

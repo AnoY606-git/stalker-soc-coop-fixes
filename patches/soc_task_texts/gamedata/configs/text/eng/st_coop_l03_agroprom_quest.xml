@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>	
+	<string id="st_agr_start_save_the_stalker_mole_quest_task_name">
+		<text>Save Mole</text>
+	</string>
+	<string id="st_agr_start_save_the_stalker_mole_quest_task_descr">
+		<text>Help Mole fight off the soldiers\n\nMole: "Help me, I'm gonna get killed!"</text>
+	</string>
+
+
+	<string id="st_agr_start_follow_the_stalker_mole_quest_task_name">
+		<text>Get information about Strelok</text>
+	</string>		
+	<string id="st_agr_start_follow_the_stalker_mole_quest_task_descr">
+		<text>Meet Mole's group</text>
+	</string>
+	
+	
+	<string id="st_agr_start_talk_to_the_stalker_mole_quest_task_name">
+		<text>Get information about Strelok</text>
+	</string>		
+	<string id="st_agr_start_talk_to_the_stalker_mole_quest_task_descr">
+		<text>Get info from Mole</text>
+	</string>	
+
+
+	<string id="st_agr_start_go_to_the_agroprom_underground_quest_task_name">
+		<text>Find Strelok's group's stash</text>
+	</string>
+	<string id="st_agr_start_go_to_the_agroprom_underground_quest_task_descr">
+		<text>Find Strelok's group's stash\n\nFollow the spiral staircase down into the room with the columns. Move across the room towards the exit and enter a large room with pipes in the ceiling. Go down to the second exit, enter the tunnel and turn left. There will be a right turn at the end. Go directly to the exit from the small room and turn right. Look for a hole in the left wall next to the words "Don't enter - you'll die". That's the entrance to Strelok's stash.</text>
+	</string>	
+	
+	
+	<string id="st_agr_start_break_into_a_military_base_quest_task_name">
+		<text>Find the militaries' documents</text>
+	</string>
+	<string id="st_agr_start_break_into_a_military_base_quest_task_descr">
+		<text>Steal the militaries' documents\n\nThe army is annoyed by rats which climb out of the collectors. They punish soldiers by sending them into the collectors.</text>	
+	</string>
+	
+	
+	<string id="st_agr_start_the_destination_is_a_bar_quest_task_name">
+		<text>Find the militaries' documents</text>
+	</string>
+	<string id="st_agr_start_the_destination_is_a_bar_quest_task_descr">
+		<text>Take the documents to the Barkeep</text>	
+	</string>	
+</string_table>

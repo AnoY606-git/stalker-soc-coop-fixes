@@ -1,0 +1,12 @@
+[logic]
+active 												= sr_idle@mil_cap_pda_1_idle
+
+[sr_idle@mil_cap_pda_1_idle]
+on_info 											= {+MIL_CAP_PDA_1_STOP_INFO} sr_idle@nil
+on_actor_inside 									= {-MIL_CAP_PDA_1_STOP_INFO =isClient} sr_idle@mil_cap_pda_1_start
+
+[sr_idle@mil_cap_pda_1_start]
+on_info 											= {-MIL_CAP_PDA_1_STOP_INFO =isClient} %=play_sound(mil_cap_pda_1) +MIL_CAP_PDA_1_STOP_INFO =scenario_autosave(st_talk_to_the_cap)%
+on_signal 											= sound_end | sr_idle@nil
+
+[sr_idle@nil]

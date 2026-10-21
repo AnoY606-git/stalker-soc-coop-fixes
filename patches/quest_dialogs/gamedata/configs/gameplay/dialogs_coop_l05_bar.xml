@@ -91,43 +91,6 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog">
-        <has_flag>BAR_SMART_TERRAIN_1_TRADER_BARMEN_AGR_DOC_INFO</has_flag>
-        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_DARKVALLEY_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_1</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_2</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_3</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_4</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_darkvalley_dialog_4</text>
-                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_DARKVALLEY_STOP_DIALOG_INFO</give_flag>
-				<action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="bar_smart_terrain_1_trader_barmen_where_else_can_I_earn_money_dialog">
         <phrase_list>
             <phrase id="2">
@@ -733,93 +696,6 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog">
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog_1</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog_0</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog_2</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_what_kind_of_junk_is_needed_dialog_2</text>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog">
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_1</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_1</text>
-                <next>2</next>
-                <next>3</next>
-                <next>4</next>
-                <next>5</next>
-                <next>6</next>
-                <next>7</next>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_5</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_5</text>
-				<precondition>dialogs_item.if_actor_has_materials_transistor_3x</precondition>
-                <action>dialogs_item.transfer_materials_transistor_3x</action>
-                <action>dialogs_money.give_money_to_actor_1000</action>
-            </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_6</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_6</text>
-				<precondition>dialogs_item.if_actor_has_materials_wire_3x</precondition>
-                <action>dialogs_item.transfer_materials_wire_3x</action>
-                 <action>dialogs_money.give_money_to_actor_1000</action>
-			</phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_3</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_3</text>
-				<precondition>dialogs_item.if_actor_has_materials_capacitor_3x</precondition>
-                <action>dialogs_item.transfer_materials_capacitor_3x</action>
-                <action>dialogs_money.give_money_to_actor_1000</action>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_4</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_4</text>
-				<precondition>dialogs_item.if_actor_has_materials_textolite_3x</precondition>
-                <action>dialogs_item.transfer_materials_textolite_3x</action>
-                <action>dialogs_money.give_money_to_actor_1000</action>
-            </phrase>
-            <phrase id="7">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_7</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_7</text>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_0</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_2</action>
-
-                <text>bar_smart_terrain_10_stalker_plyushkin_hand_over_the_trash_dialog_2</text>
-				<precondition>dialogs_item.if_actor_has_materials_acetone_3x</precondition>
-                <action>dialogs_item.transfer_materials_acetone_3x</action>
-                <action>dialogs_money.give_money_to_actor_1000</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="bar_smart_terrain_12_stalker_skamarokh_start_dialog">
         <phrase_list>
             <phrase id="0">
@@ -866,166 +742,12 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog">
-        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_1_x18</precondition>
-        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_2_x18</precondition>
-        <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_3_x18</precondition>
-        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_1</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_1</text>
-				<action>dialogs_coop_l05_bar.transfer_dev_document_1_x18</action>
-				<action>dialogs_coop_l05_bar.transfer_dev_document_2_x18</action>
-				<action>dialogs_coop_l05_bar.transfer_dev_document_3_x18</action>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_2</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_3</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_4</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_4</text>
-                <next>5</next>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_5</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_5</text>
-                <next>6</next>
-            </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_6</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_1_has_documents_darkvalley_dialog_6</text>
-                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO</give_flag>
-                <action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="bar_smart_terrain_1_trader_barmen_start_dialog">
         <phrase_list>
             <phrase id="0">
                 <action>coop_pda_phrases.say__bar_smart_terrain_1_trader_barmen_start_dialog_0</action>
 
                 <text>bar_smart_terrain_1_trader_barmen_start_dialog_0</text>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog">
-        <precondition>dialogs_coop_l05_bar.if_actor_has_agr_safe_container_1</precondition>
-        <dont_has_flag>BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_1</action>
-
-                <text>bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_0</action>
-
-                <text>bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_2</action>
-
-                <text>bar_smart_terrain_1_trader_barmen_has_documents_agroprom_dialog_2</text>
-				<action>dialogs_coop_l05_bar.transfer_agr_safe_container_1</action>	
-				<action>dialogs_coop_l05_bar.transfer_dev_flash_agru</action>					
-                <give_flag>BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO</give_flag>
-				<action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog">
-        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_INFORMANT_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_1</action>
-
-                <text>bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_2</action>
-
-                <text>bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_3</action>
-
-                <text>bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_4</action>
-
-                <text>bar_smart_terrain_1_stalker_informant_the_meeting_place_cannot_be_changed_dialog_4</text>
-                <give_flag>BAR_SMART_TERRAIN_1_STALKER_INFORMANT_THE_MEETING_PLACE_CANNOT_BE_CHANGED_STOP_DIALOG_INFO</give_flag>
-				<action>dialogs.break_dialog</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_barmen_go_to_military_dialog">
-        <has_flag>YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO</has_flag>	
-        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_MILITARY_STOP_DIALOG_INFO</dont_has_flag>
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_1</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_1</text>
-                <next>2</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_2</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_2</text>
-                <next>3</next>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_3</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_3</text>
-                <next>4</next>
-            </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_4</action>
-
-                <text>bar_smart_terrain_1_stalker_barmen_go_to_military_dialog_4</text>
-                <action>dialogs.break_dialog</action>
-                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_MILITARY_STOP_DIALOG_INFO</give_flag>
             </phrase>
         </phrase_list>
     </dialog>
@@ -1301,15 +1023,6 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_bad_hunter_start_dialog">
-        <phrase_list>
-            <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_start_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_start_dialog_0</text>
-            </phrase>
-        </phrase_list>
-    </dialog>
     <dialog id="bar_smart_terrain_1_stalker_bad_hunter_break_dialog">
         <phrase_list>
             <phrase id="0">
@@ -1320,91 +1033,487 @@
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog">
-        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO</dont_has_flag>
+    <dialog id="bar_soc_barmen_start_dialog">
         <phrase_list>
+            <!-- original SoC bar_bar_barmen_start (phrase ids are the SoC ids); the greeting is chosen by the state of the job -->
+            <phrase id="0">
+                <text />
+                <next>1</next>
+                <next>15</next>
+                <next>12</next>
+                <next>13</next>
+                <next>16</next>
+                <next>19</next>
+                <next>18</next>
+                <next>17</next>
+                <next>3</next>
+            </phrase>
             <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_1</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_1</text>
+                <text />
+                <precondition>coop_soc_bar.st_agroprom</precondition>
                 <next>2</next>
             </phrase>
             <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_2</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_2</text>
-                <next>3</next>
+                <action>coop_soc_bar.say_2</action>
+                <text>coop_soc_barman_2</text>
+                <next>21</next>
+                <next>22</next>
             </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_3</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_3</text>
-                <next>4</next>
+            <phrase id="21">
+                <action>coop_soc_bar.say_21</action>
+                <text>coop_soc_barman_21</text>
+                <next>211</next>
             </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_4</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_4</text>
-                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO</give_flag>
+            <phrase id="211">
+                <action>coop_soc_bar.say_211</action>
+                <text>coop_soc_barman_211</text>
+                <next>2111</next>
+            </phrase>
+            <phrase id="2111">
+                <action>coop_soc_bar.say_2111</action>
+                <text>coop_soc_barman_2111</text>
                 <action>dialogs.break_dialog</action>
             </phrase>
+            <phrase id="22">
+                <action>coop_soc_bar.say_22</action>
+                <text>coop_soc_barman_22</text>
+                <precondition>coop_soc_bar.has_agroprom_docs</precondition>
+                <next>221</next>
+            </phrase>
+            <phrase id="221">
+                <action>coop_soc_bar.say_221</action>
+                <text>coop_soc_barman_221</text>
+                <next>2211</next>
+            </phrase>
+            <phrase id="2211">
+                <action>coop_soc_bar.say_2211</action>
+                <text>coop_soc_barman_2211</text>
+                <action>coop_soc_bar.take_agroprom_docs</action>
+                <action>coop_soc_bar.reward_agroprom</action>
+                <give_flag>BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO</give_flag>
+                <give_flag>BAR_SMART_TERRAIN_1_TRADER_BARMEN_AGR_DOC_INFO</give_flag>
+                <next>151</next>
+            </phrase>
+            <phrase id="15">
+                <text />
+                <precondition>coop_soc_bar.st_offer</precondition>
+                <next>151</next>
+            </phrase>
+            <phrase id="151">
+                <action>coop_soc_bar.say_151</action>
+                <text>coop_soc_barman_151</text>
+                <next>1511</next>
+            </phrase>
+            <phrase id="1511">
+                <action>coop_soc_bar.say_1511</action>
+                <text>coop_soc_barman_1511</text>
+                <next>15111</next>
+            </phrase>
+            <phrase id="15111">
+                <action>coop_soc_bar.say_15111</action>
+                <text>coop_soc_barman_15111</text>
+                <next>15112</next>
+                <next>15114</next>
+            </phrase>
+            <phrase id="15112">
+                <action>coop_soc_bar.say_15112</action>
+                <text>coop_soc_barman_15112</text>
+                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_DARKVALLEY_STOP_DIALOG_INFO</give_flag>
+                <next>15113</next>
+            </phrase>
+            <phrase id="15113">
+                <action>coop_soc_bar.say_15113</action>
+                <text>coop_soc_barman_15113</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="15114">
+                <action>coop_soc_bar.say_15114</action>
+                <text>coop_soc_barman_15114</text>
+                <next>15115</next>
+            </phrase>
+            <phrase id="15115">
+                <action>coop_soc_bar.say_15115</action>
+                <text>coop_soc_barman_15115</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="18">
+                <text />
+                <precondition>coop_soc_bar.st_wait</precondition>
+                <next>181</next>
+            </phrase>
+            <phrase id="181">
+                <action>coop_soc_bar.say_181</action>
+                <text>coop_soc_barman_181</text>
+            </phrase>
+            <phrase id="17">
+                <text />
+                <precondition>coop_soc_bar.st_docs</precondition>
+                <next>171</next>
+            </phrase>
+            <phrase id="171">
+                <action>coop_soc_bar.say_171</action>
+                <text>coop_soc_barman_171</text>
+                <next>172</next>
+                <next>173</next>
+            </phrase>
+            <phrase id="172">
+                <action>coop_soc_bar.say_172</action>
+                <text>coop_soc_barman_172</text>
+                <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_1_x18</precondition>
+                <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_2_x18</precondition>
+                <precondition>dialogs_coop_l05_bar.if_actor_has_dev_document_3_x18</precondition>
+                <action>coop_soc_bar.take_x18_docs</action>
+                <action>coop_soc_bar.reward_x18</action>
+                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO</give_flag>
+                <next>1721</next>
+            </phrase>
+            <phrase id="173">
+                <action>coop_soc_bar.say_173</action>
+                <text>coop_soc_barman_173</text>
+                <next>1731</next>
+            </phrase>
+            <phrase id="1731">
+                <action>coop_soc_bar.say_1731</action>
+                <text>coop_soc_barman_1731</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1721">
+                <action>coop_soc_bar.say_1721</action>
+                <text>coop_soc_barman_1721</text>
+                <next>17211</next>
+            </phrase>
+            <phrase id="17211">
+                <action>coop_soc_bar.say_17211</action>
+                <text>coop_soc_barman_17211</text>
+                <next>17212</next>
+            </phrase>
+            <phrase id="17212">
+                <action>coop_soc_bar.say_17212</action>
+                <text>coop_soc_barman_17212</text>
+                <next>17213</next>
+                <next>17214</next>
+            </phrase>
+            <phrase id="17213">
+                <action>coop_soc_bar.say_17213</action>
+                <text>coop_soc_barman_17213</text>
+                <give_flag>BAR_X16_DOCUMENTS_START</give_flag>
+                <next>172131</next>
+            </phrase>
+            <phrase id="172131">
+                <action>coop_soc_bar.say_172131</action>
+                <text>coop_soc_barman_172131</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="17214">
+                <action>coop_soc_bar.say_17214</action>
+                <text>coop_soc_barman_17214</text>
+                <next>172141</next>
+            </phrase>
+            <phrase id="172141">
+                <action>coop_soc_bar.say_172141</action>
+                <text>coop_soc_barman_172141</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="19">
+                <text />
+                <precondition>coop_soc_bar.st_x16offer</precondition>
+                <next>1721</next>
+            </phrase>
+            <phrase id="12">
+                <text />
+                <precondition>coop_soc_bar.st_x16docs</precondition>
+                <next>121</next>
+            </phrase>
+            <phrase id="121">
+                <action>coop_soc_bar.say_121</action>
+                <text>coop_soc_barman_121</text>
+                <next>1211</next>
+                <next>1212</next>
+            </phrase>
+            <phrase id="1211">
+                <action>coop_soc_bar.say_1211</action>
+                <text>coop_soc_barman_1211</text>
+                <precondition>coop_soc_bar.has_x16_docs</precondition>
+                <action>coop_soc_bar.take_x16_docs</action>
+                <give_flag>BAR_X16_DOCUMENTS_DONE</give_flag>
+                <next>131</next>
+            </phrase>
+            <phrase id="1212">
+                <action>coop_soc_bar.say_1212</action>
+                <text>coop_soc_barman_1212</text>
+                <next>12121</next>
+            </phrase>
+            <phrase id="12121">
+                <action>coop_soc_bar.say_12121</action>
+                <text>coop_soc_barman_12121</text>
+                <next>121211</next>
+            </phrase>
+            <phrase id="121211">
+                <action>coop_soc_bar.say_121211</action>
+                <text>coop_soc_barman_121211</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="13">
+                <text />
+                <precondition>coop_soc_bar.st_radaroffer</precondition>
+                <next>131</next>
+            </phrase>
+            <phrase id="131">
+                <action>coop_soc_bar.say_131</action>
+                <text>coop_soc_barman_131</text>
+                <next>1312</next>
+                <next>132</next>
+            </phrase>
+            <phrase id="1312">
+                <action>coop_soc_bar.say_1312</action>
+                <text>coop_soc_barman_1312</text>
+                <give_flag>BAR_DEACTIVATE_RADAR_START</give_flag>
+                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_MILITARY_STOP_DIALOG_INFO</give_flag>
+                <next>13121</next>
+            </phrase>
+            <phrase id="13121">
+                <action>coop_soc_bar.say_13121</action>
+                <text>coop_soc_barman_13121</text>
+                <next>1313</next>
+            </phrase>
+            <phrase id="1313">
+                <action>coop_soc_bar.say_1313</action>
+                <text>coop_soc_barman_1313</text>
+                <next>1314</next>
+            </phrase>
+            <phrase id="1314">
+                <action>coop_soc_bar.say_1314</action>
+                <text>coop_soc_barman_1314</text>
+                <next>1315</next>
+            </phrase>
+            <phrase id="1315">
+                <action>coop_soc_bar.say_1315</action>
+                <text>coop_soc_barman_1315</text>
+                <next>1316</next>
+            </phrase>
+            <phrase id="1316">
+                <action>coop_soc_bar.say_1316</action>
+                <text>coop_soc_barman_1316</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="132">
+                <action>coop_soc_bar.say_132</action>
+                <text>coop_soc_barman_132</text>
+                <next>1321</next>
+            </phrase>
+            <phrase id="1321">
+                <action>coop_soc_bar.say_1321</action>
+                <text>coop_soc_barman_1321</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="16">
+                <text />
+                <precondition>coop_soc_bar.st_radar</precondition>
+                <next>161</next>
+            </phrase>
+            <phrase id="161">
+                <action>coop_soc_bar.say_161</action>
+                <text>coop_soc_barman_161</text>
+            </phrase>
+            <phrase id="3">
+                <text />
+                <precondition>coop_soc_bar.st_default</precondition>
+                <next>31</next>
+            </phrase>
+            <phrase id="31">
+                <action>coop_pda_phrases.say__bar_smart_terrain_1_trader_barmen_start_dialog_0</action>
+                <text>bar_smart_terrain_1_trader_barmen_start_dialog_0</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="bar_soc_hunter_start_dialog">
+        <phrase_list>
+            <!-- original SoC bar_bar_hunter_start; the greeting is chosen by the state of the rifle quest -->
             <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_dialog_0</text>
+                <text />
+                <next>1</next>
+                <next>2</next>
+                <next>3</next>
+            </phrase>
+            <phrase id="1">
+                <text />
+                <precondition>coop_soc_hunter.st_new</precondition>
+                <next>11</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_hunter.say_problem</action>
+                <text>coop_soc_hunter_problem</text>
+            </phrase>
+            <phrase id="2">
+                <text />
+                <precondition>coop_soc_hunter.st_wait</precondition>
+                <next>21</next>
+            </phrase>
+            <phrase id="21">
+                <action>coop_soc_hunter.say_news</action>
+                <text>coop_soc_hunter_news</text>
+            </phrase>
+            <phrase id="3">
+                <text />
+                <precondition>coop_soc_hunter.st_done</precondition>
+                <next>31</next>
+            </phrase>
+            <phrase id="31">
+                <action>coop_soc_hunter.say_thanks</action>
+                <text>coop_soc_hunter_thanks</text>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="bar_soc_hunter_quest_dialog">
+        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO</dont_has_flag>
+        <phrase_list>
+            <!-- original SoC bar_bar_hunter_quest_start; accepting sets the mod flag that gives the task -->
+            <phrase id="0">
+                <action>coop_soc_hunter.say_q_0</action>
+                <text>coop_soc_hunter_q_0</text>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_hunter.say_q_1</action>
+                <text>coop_soc_hunter_q_1</text>
+                <next>11</next>
+                <next>12</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_hunter.say_q_11</action>
+                <text>coop_soc_hunter_q_11</text>
+                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO</give_flag>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_hunter.say_q_111</action>
+                <text>coop_soc_hunter_q_111</text>
+                <next>1111</next>
+            </phrase>
+            <phrase id="1111">
+                <action>coop_soc_hunter.say_q_1111</action>
+                <text>coop_soc_hunter_q_1111</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="12">
+                <action>coop_soc_hunter.say_q_12</action>
+                <text>coop_soc_hunter_q_12</text>
+                <next>121</next>
+            </phrase>
+            <phrase id="121">
+                <action>coop_soc_hunter.say_q_121</action>
+                <text>coop_soc_hunter_q_121</text>
+                <next>1212</next>
+            </phrase>
+            <phrase id="1212">
+                <action>coop_soc_hunter.say_q_1212</action>
+                <text>coop_soc_hunter_q_1212</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="bar_soc_hunter_finish_dialog">
+        <has_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO</has_flag>
+        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO</dont_has_flag>
+        <precondition>coop_soc_hunter.has_rifle</precondition>
+        <phrase_list>
+            <!-- original SoC bar_bar_hunter_quest_finish; rifle, money and flag in the SAME phrase so a cut-off talk cannot lose any of them -->
+            <phrase id="0">
+                <action>coop_soc_hunter.say_f_0</action>
+                <text>coop_soc_hunter_f_0</text>
+                <action>coop_soc_hunter.take_rifle</action>
+                <action>coop_soc_hunter.reward</action>
+                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO</give_flag>
+                <next>1</next>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_hunter.say_f_1</action>
+                <text>coop_soc_hunter_f_1</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_dolg_leader_join">
+        <dont_has_flag>MIL_SOC_RG6_START</dont_has_flag>
+        <phrase_list>
+            <phrase id="11121">
+                <action>coop_soc_milc_say.say_vo_join_11121</action>
+                <text>coop_soc_milc_vo_join_11121</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1112">
+                <action>coop_soc_milc_say.say_vo_join_1112</action>
+                <text>coop_soc_milc_vo_join_1112</text>
+                <next>11121</next>
+            </phrase>
+            <phrase id="111">
+                <action>coop_soc_milc_say.say_vo_join_111</action>
+                <text>coop_soc_milc_vo_join_111</text>
+                <next>1111</next>
+                <next>1112</next>
+            </phrase>
+            <phrase id="11">
+                <action>coop_soc_milc_say.say_vo_join_11</action>
+                <text>coop_soc_milc_vo_join_11</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="1111">
+                <action>coop_soc_milc_say.say_vo_join_1111</action>
+                <text>coop_soc_milc_vo_join_1111</text>
+                <give_flag>MIL_SOC_RG6_START</give_flag>
+                <next>11111</next>
+            </phrase>
+            <phrase id="11111">
+                <action>coop_soc_milc_say.say_vo_join_11111</action>
+                <text>coop_soc_milc_vo_join_11111</text>
+                <action>dialogs.break_dialog</action>
+            </phrase>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_vo_join_1</action>
+                <text>coop_soc_milc_vo_join_1</text>
+                <next>11</next>
+            </phrase>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_vo_join_0</action>
+                <text>coop_soc_milc_vo_join_0</text>
                 <next>1</next>
             </phrase>
         </phrase_list>
     </dialog>
-    <dialog id="bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog">
-        <has_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO</has_flag>	
-        <dont_has_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO</dont_has_flag>
+    <dialog id="mil_soc_dolg_leader_quest_rg6_finish">
+        <precondition>coop_soc_milc.has_rg6</precondition>
+        <has_flag>MIL_SOC_RG6_START</has_flag>
+        <dont_has_flag>MIL_SOC_RG6_DONE</dont_has_flag>
         <phrase_list>
             <phrase id="1">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_1</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_1</text>
-                <next>2</next>
-                <next>3</next>
-            </phrase>
-            <phrase id="2">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_2</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_2</text>
-			    <precondition>dialogs_item.if_actor_has_family_gun</precondition>
-                <action>dialogs_item.transfer_family_gun</action>
-                <next>4</next>
+                <action>coop_soc_milc_say.say_vo_quest_rg6_finish_1</action>
+                <text>coop_soc_milc_vo_quest_rg6_finish_1</text>
+                <action>coop_soc_milc.give_suit</action>
+                <action>dialogs.break_dialog</action>
             </phrase>
             <phrase id="0">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_0</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_0</text>
+                <action>coop_soc_milc_say.say_vo_quest_rg6_finish_0</action>
+                <text>coop_soc_milc_vo_quest_rg6_finish_0</text>
+                <action>coop_soc_milc.take_rg6</action>
+                <give_flag>MIL_SOC_RG6_DONE</give_flag>
                 <next>1</next>
             </phrase>
-            <phrase id="4">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_4</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_4</text>
-                <next>6</next>
+        </phrase_list>
+    </dialog>
+    <dialog id="mil_soc_dolg_leader_rg6_late">
+        <precondition>coop_soc_milc.suit_pending</precondition>
+        <has_flag>MIL_SOC_RG6_DONE</has_flag>
+        <phrase_list>
+            <phrase id="0">
+                <action>coop_soc_milc_say.say_vo_late_0</action>
+                <text>coop_soc_milc_vo_late_0</text>
+                <next>1</next>
             </phrase>
-            <phrase id="6">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_6</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_6</text>
-                <give_flag>BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO</give_flag>
+            <phrase id="1">
+                <action>coop_soc_milc_say.say_vo_late_1</action>
+                <text>coop_soc_milc_vo_late_1</text>
+                <action>coop_soc_milc.give_suit</action>
                 <action>dialogs.break_dialog</action>
-            </phrase>
-            <phrase id="5">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_5</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_5</text>
-            </phrase>
-            <phrase id="3">
-                <action>coop_pda_phrases.say__bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_3</action>
-
-                <text>bar_smart_terrain_1_stalker_bad_hunter_find_the_family_gun_quest_idle_dialog_3</text>
-                <action>dialogs.break_dialog</action>
-                <next>5</next>
             </phrase>
         </phrase_list>
     </dialog>

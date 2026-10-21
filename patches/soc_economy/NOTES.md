@@ -157,9 +157,44 @@ the zones stay idle. Holstering while talking to an NPC (engine behaviour) is un
 `scope_status = 2` with silencer_name set (SoC: scope 0). Only hit_power was changed here. `wpn_val_m1` has `scope_name = wpn_addon_scope` and its zoom keys
 are covered by the val_special_scope patch. `wpn_colt1911_m1` inherits `wpn_fort` (probably a typo in weapon_upgrades, left alone).
 
+## C. Knife: 2 primary hits (LMB) or 1 strong hit (RMB) kill a typical human NPC (2026-10-21, maintainer FOSTER)
+Files: `configs\weapons\w_knife.ltx` (full copy of the xrMPE file, only `[wpn_knife]` hit_power / hit_power_2 changed) and `configs\mp\weapons_mp\weapons_mp.ltx` (full copy of the mod's file, only `[mp_wpn_knife]` changed). No other patch ships either file.
+**Measured 2026-10-21 (listen-host run, `tests\knife_vest_hooks.lua`): the knife a player really holds in slot 1 is `wpn_knife`, NOT `mp_wpn_knife`** (`default_items` in `cooperative_game.ltx` says `mp_wpn_knife`, but `no_mp_items` swaps the MP items for the normal ones). The first version of this change only edited `mp_wpn_knife` and so did nothing in the game; the live values are now read from the section of the knife in slot 1.
+The NPC knife is the SAME section `wpn_knife` (old `w_knife.ltx`: hit_power 1.0, hit_power_2 1.5, both `wound`), so an NPC that strikes with a knife now hits players harder too (NPCs rarely melee). `mp_wpn_knife` keeps the same numbers (no player holds it).
+| key (`wpn_knife`, shown as the 4 difficulty values `x, x, x, x` in the file) | before | now |
+|---|---|---|
+| hit_power (LMB) | 1.0 (`mp_wpn_knife`: 1.4) | 2.6 |
+| hit_type | wound | wound (unchanged) |
+| hit_power_2 (RMB, strong stab) | 1.5 (`mp_wpn_knife`: 2.2) | 4.2 |
+| hit_type_2 | wound (the file had `wound ;wound_2`, a comment) | wound (unchanged; `mp_wpn_knife`: wound_2 -> wound) |
+Why hit_type_2 became `wound`: the capture file of every NPC visual (`models\capture\stalker_*.ltx`, `immunities_sect = no_resistance / low_ / medium_ / high_resistance`) sets only `wound_immunity`
+(0.32 / 0.27 / 0.22 / 0.18 in this mod); `wound_2_immunity` exists only in `stalker_immunities` (1.0) and mutants have none, so what the engine uses for a wound_2 hit on an NPC cannot be read from the configs and was never
+measured. With `wound` both attacks go through the immunity path that WAS measured (below), so the numbers are predictable.
+Calibration (scripted hits, 2026-10-20, `scratchpad\dmg\res_types2`, bandit `sim_default_bandit_0`, bone spine1, type wound, power 1.0, attacker = the player): at x1.0 the first stab took 0.24
+(= power x bone scale 0.75 x immunity 0.32), every later stab 0.09 (0.375 of the first; the engine shrinks repeated wound hits, the cause is not known); at x1.5 0.36 then 0.135. Death is at health <= 0.
+The calibration used power 1.0, which is the real old `wpn_knife` value (the 1.4 / 2.2 of `mp_wpn_knife` were never held by a player).
+Model: first hit = 0.75 x imm x mult x power, later hits = 0.28125 x imm x mult x power (later assumed proportional to the immunity). Hits to kill (mult = `player_damage_mult`, torso bones; head x3, limbs x0.4-0.6):
+| NPC class (immunity) | LMB before (power 1.4, NOT the real old 1.0: add about 40% more hits) x1.0 / x1.5 | LMB now x1.0 / x1.5 | RMB now x1.0 / x1.5 |
+|---|---|---|---|
+| no_resistance 0.32 (rank 0 bandit, novice jacket) | 7 / 4 | 3 / 2 | 1 / 1 |
+| low 0.27 (bandit rank 1-4, neutral_2, merc 1-3, Freedom/Duty 1-2) | 8 / 5 | 4 / 2 | 2 / 1 |
+| medium 0.22 (Freedom 3, soldiers 2-3, CS 2-3) | 10 / 7 | 5 / 3 | 3 / 1 |
+| high 0.18 (exoskeleton, Duty 3-4, merc 4, neutral 3-4) | 13 / 8 | 6 / 4 | 4 / 2 |
+LMB 2.6 is the largest value that does not one-shot a rank 0 bandit (one hit kills from 2.78 at x1.5) and still gives 2 hits to the low class (needs 2.39 at x1.5): about 9% margin.
+Armored classes (medium, high) take 3 to 4 primary hits, they are not "typical". RMB 4.2 kills every class up to medium in one hit at x1.5. Cost: mutants (their own `wound_immunity`, 0.15 to 0.9) take
+about 1.9x the old LMB damage (2.6 / 1.4); the RMB on a mutant now goes through `wound_immunity` instead of an unknown `wound_2` value, so it can differ either way.
+The numbers hold for `player_damage_mult = 1.5` (shipped). A host that sets 1.0 in `coop_settings.ltx` sees 3 LMB hits on a rank 0 bandit and 4 on rank 1+.
+**Measured in game (2026-10-21, `tests\knife_vest_hooks.lua`, Cordon, listen host, `player_damage_mult` 1.5 read live, quiet spot, one NPC at a time, scripted `hit.wound` hits from the player, bone `bip01_spine1`, one per second, power read from `[wpn_knife]` = 2.6 / 4.2; the hit goes through `coop_balance.on_npc_hit`):**
+| NPC | LMB (2.6) hits to kill | RMB (4.2) hits to kill |
+|---|---|---|
+| `sim_default_bandit_0` (rank 0) | 2 (health 1.000 -> 0.289 -> dead) | 1 |
+| `sim_default_bandit_3` (rank 3) | 2 (health 1.000 -> 0.435 -> dead) | 1 |
+This matches the targets (LMB 2, RMB 1); `knife_vest_hooks.lua` asserts it. Not done: a real knife strike (this engine build has no `level.press_action`, the harness has no non-input way to attack), the x1.0 multiplier case and armored classes; real strikes may pass armor or the aim-bullet flag differently from scripted hits.
+Test hook: `tests\knife_vest_hooks.lua` (also the Clear Sky vest check of marked_one). Run: `run_coop.ps1 -Map coop_l01_escape -Mode listen -Clients 1 -Owner knife -Hooks <it> -DbFile <db> -SoakSeconds 200`.
+
 ## Files
 Also new: `configs\misc\coop_balance.ltx`, `scripts\coop_balance.script`, `scripts\xr_motivator.script`, `scripts\trade_manager.script`; one line added to bind_monster.script in darkvalley_restore and mutant_loot; `supplies_start_ammo` sections appended to the five trader files.
-New in this patch: `configs\gameplay\character_desc_general.xml`, `configs\misc	rade\{esc_smart_terrain_1_trader_sidorovich,bar_smart_terrain_1_trader_barman,bar_smart_terrain_4_duty_petrenko,mil_smart_terrain_2_trader_miser}.ltx`,
+New in this patch: `configs\weapons\w_knife.ltx` and `configs\mp\weapons_mp\weapons_mp.ltx` (knife only, section C), `configs\gameplay\character_desc_general.xml`, `configs\misc	rade\{esc_smart_terrain_1_trader_sidorovich,bar_smart_terrain_1_trader_barman,bar_smart_terrain_4_duty_petrenko,mil_smart_terrain_2_trader_miser}.ltx`,
 `configs\scripts\sr_no_weapon_space_restrictor.ltx`, `configs\scripts\coop_l02_garbage\space_restrictors\gar_player_meeting_place_space_restrictor.ltx`.
 Edited in place in other patches: yantar_restore (Sakharov trade file: detector lines only) and no_mp_items (artefacts.ltx: aliases).
 Encoding kept (cp1251), CRLF kept, no control characters other than tab/CR/LF.
@@ -173,4 +208,5 @@ Encoding kept (cp1251), CRLF kept, no control characters other than tab/CR/LF.
 Артефакты: все обычные af_* наследуют SoC-версии, CoP-артефакты заменены на ближайшие SoC. Детекторы продаются у Сидоровича, Бармена, Петренко, Сахарова; у зомбированных сталкеров их нет.
 Урон и цены по SoC отклонены, всё откачено. Вместо этого: один множитель урона игроков по всем NPC и мутантам (coop_balance.ltx, player_damage_mult = 1.5) и запас патронов у торговцев растёт с числом игроков (ammo_per_extra_player).
 Зоны запрета оружия отключены.
+Нож (v1.4, просьба FOSTER): у игрока в слоте 1 на самом деле `wpn_knife` (не `mp_wpn_knife`), файл `configs\weapons\w_knife.ltx`: hit_power 1.0 -> 2.6 (ЛКМ), hit_power_2 1.5 -> 4.2 (ПКМ, сильный удар), тип обоих wound. Замер в игре 21.10 (хост, множитель x1.5, скриптовые удары от игрока): бандит rank 0 и rank 3 умирают от 2 ударов ЛКМ или 1 удара ПКМ; в броне среднего и тяжёлого класса нужно 3-4 удара ЛКМ (расчёт). Нож NPC: тот же раздел `wpn_knife`, поэтому NPC с ножом тоже бьёт сильнее. Настоящий удар ножом не проверялся (только скриптовые удары).
 Множитель урона (v1.4): раньше он ЛЕЧИЛ цель. Свойство `health` в этом движке относительное (obj.health = x прибавляет x), а скрипт писал obj.health = hp - extra, то есть лечил почти на всё здоровье при каждом попадании игрока и сводил попадание на нет (поэтому у FOSTER бандит держал 12 патронов ПМ в корпус и 2-3 в голову). Теперь лишний урон снимается отрицательным числом после урона движка и пропорционально реально снятому здоровью (голова, кость, броня учитываются). Замер в игре, бандит Кордона, патрон ПМ: x1.0: корпус 3 / голова 1; x1.5 до правки: корпус никогда (здоровье 100%) / голова 2; x1.5 после правки: корпус 2 / голова 1. Настройка hit_amount_scale убрана. player_scaling не делает NPC крепче (только больше NPC), с множителем они не гасят друг друга.

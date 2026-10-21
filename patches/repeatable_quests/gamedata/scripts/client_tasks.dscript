@@ -7,3 +7,27 @@ function update_delayed_tasks()
 		coop_repeat_quests.update()
 	end
 end
+
+-- Tasks the mod's level maker added that SoC does not have and nothing depends on (see NOTES.md, "Task audit") are never given: every
+-- give_task() (restrictors, dialogs, other tasks) ends in this function. The list is configs/misc/coop_hidden_tasks.ltx.
+local rq_hidden = nil
+local function rq_is_hidden(task_id)
+	if rq_hidden == nil then
+		rq_hidden = {}
+		local ok = pcall(function()
+			local ini = ini_file("misc\\coop_hidden_tasks.ltx")
+			local n = ini:line_count("list")
+			for i = 0, n - 1 do
+				local _, id, _ = ini:r_line("list", i, "", "")
+				rq_hidden[id] = true
+			end
+		end)
+	end
+	return rq_hidden[tostring(task_id)] == true
+end
+
+local rq_orig_give_task_to_client = give_task_to_client
+function give_task_to_client(task_id, gameID)
+	if rq_is_hidden(task_id) then return end
+	return rq_orig_give_task_to_client(task_id, gameID)
+end

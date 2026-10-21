@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_mil_start_talk_to_the_cap_quest_task_name">
-		<text>Barrier Defense</text>
+		<text>Assist at Freedom's Barrier outpost.</text>
 	</string>
 	<string id="st_mil_start_talk_to_the_cap_quest_task_descr">
-		<text>Talk to Cap.</text>	
+		<text>Talk to Barrier outpost commander\n\nIt's imperative to protect the barrier from attack from the direction of the Brain Scorcher.</text>	
 	</string>
 	<string id="st_mil_start_protect_the_barrier_quest_task_name">
-		<text>Barrier Defense</text>
+		<text>Assist at Freedom's Barrier outpost.</text>
 	</string>
 	<string id="st_mil_start_protect_the_barrier_quest_task_descr">
-		<text>Destroy the Monolith squad.</text>	
+		<text>Help destroy the Monolith's strike squad</text>	
 	</string>
 	
 	<string id="st_mil_start_go_to_radar_quest_task_name">
-		<text>Time to head to the Center of the Zone!</text>
+		<text>Turn off the Brain Scorcher</text>
 	</string>
 	<string id="st_mil_start_go_to_radar_quest_task_descr">
-		<text>Head to the Radar.</text>	
+		<text>Reach the antennae</text>	
 	</string>
 	
 	<string id="st_mil_start_kill_the_sniper_on_the_tower_quest_task_name">
-		<text>For Duty!</text>
+		<text>Kill the tower sniper</text>
 	</string>
 	<string id="st_mil_start_kill_the_sniper_on_the_tower_quest_task_descr">
-		<text>Kill the sniper on the tower.</text>	
+		<text>Kill the tower sniper</text>	
 	</string>
 	<string id="st_mil_start_talk_to_skull_about_the_assault_quest_task_name">
-		<text>For Duty!</text>
+		<text>Kill the tower sniper</text>
 	</string>
 	<string id="st_mil_start_talk_to_skull_about_the_assault_quest_task_descr">
-		<text>Talk to Skull.</text>	
+		<text>Return to Skull</text>	
 	</string>
 	<string id="st_mil_start_kill_lukash_quest_task_name">
-		<text>For Duty!</text>
+		<text>Kill Lukash</text>
 	</string>
 	<string id="st_mil_start_kill_lukash_quest_task_descr">
-		<text>Kill Lukash.</text>	
+		<text>Kill Lukash</text>	
 	</string>
 	<string id="st_mil_start_kill_the_snipers_quest_task_name">
-		<text>For Duty!</text>
+		<text>Kill Lukash</text>
 	</string>
 	<string id="st_mil_start_kill_the_snipers_quest_task_descr">
-		<text>Kill the Snipers.</text>	
+		<text>Get rid of the sniper</text>	
 	</string>	
 	
 	<string id="st_mil_start_report_to_max_quest_task_name">
-		<text>For Freedom!</text>
+		<text>Destroy the Duty company</text>
 	</string>
 	<string id="st_mil_start_report_to_max_quest_task_descr">
-		<text>Report to Max.</text>	
+		<text>Report to Max.\n\nLukash decided to carry out a counterattack on the Duty detachment at the cottage. Max, one of the veterans from Freedom, will head the operation. My job is to help them.</text>	
 	</string>
 	<string id="st_mil_start_kill_skull_quest_task_name">
-		<text>For Freedom!</text>
+		<text>Destroy the Duty company</text>
 	</string>
 	<string id="st_mil_start_kill_skull_quest_task_descr">
-		<text>Kill Skull.</text>	
+		<text>Destroy the Duty squad.</text>	
 	</string>
 	<string id="st_mil_start_kill_the_duty_quest_task_name">
-		<text>For Freedom!</text>
+		<text>Destroy the Duty company</text>
 	</string>
 	<string id="st_mil_start_kill_the_duty_quest_task_descr">
-		<text>Kill the Duty members.</text>	
+		<text>Destroy the Duty squad.</text>	
 	</string>
 	<string id="st_mil_start_max_flash_quest_task_name">
-		<text>Madman's flash drive</text>
+		<text>Get a flash drive from the crazy sniper.</text>
 	</string>
 	<string id="st_mil_start_max_flash_quest_task_descr">
-		<text>Take the flash drive from the insane stalker</text>
+		<text>Get a flash drive from the crazy sniper.</text>
 	</string>
 	<string id="st_mil_start_max_flash_return_quest_task_name">
-		<text>Return the flash drive to Max</text>
+		<text>Get a flash drive from the crazy sniper.</text>
 	</string>
 	<string id="st_mil_start_max_flash_return_quest_task_descr">
-		<text>Give the flash drive to Max and get the promised gun.</text>
+		<text>Give Max the flash drive.</text>
 	</string>
 </string_table>

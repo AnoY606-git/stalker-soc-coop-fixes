@@ -81,9 +81,9 @@ local function machine()
 				S.step = 3; S.st = now
 			end
 		elseif S.step == 3 then
-			local has = story_flags.has_flag("SAR_START_OPEN_THE_DOOR_TO_MONOLITH_MANAGEMENT_QUEST_TASK_INFO")
+			local has = story_flags.has_flag("PRI_MONOLITH_DECODER_GOT")   -- patch soc_aes_quests: the decoder task is gone, its tick sets the SoC info
 			if has or now - S.st > 10000 then
-				qa.assert("SC task chain: wish -> decoder task completes with decoder -> open-door task info", has == true, tostring(has))
+				qa.assert("SC decoder in hand -> PRI_MONOLITH_DECODER_GOT (soc_aes_quests tick), the open-door step follows", has == true, tostring(has))
 				S.step = 31; S.st = now
 			end
 		elseif S.step == 31 then

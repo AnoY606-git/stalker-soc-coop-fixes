@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_ros_start_go_to_yantar_quest_task_name">
+		<text>Найти документы в лаборатории X16</text>
+	</string>
+	<string id="st_ros_start_go_to_yantar_quest_task_descr">
+		<text>Поговорить с учеными\n\nБармен: "Надо пробраться к ученым и узнать, где находится лаборатория Х16, чтобы достать недостающую часть документов."</text>	
+	</string>
+	
+	
+	<string id="st_ros_start_help_kruglov_quest_task_name">
+		<text>Встретиться с Кругловым</text>
+	</string>
+	<string id="st_ros_start_help_kruglov_quest_task_descr">
+		<text>Пробиться к Круглову\n\nКруглов: "Cталкер, помоги! На нас напали наемники, половина наших погибла. Помоги нам, мы в долгу не останемся"\n \n "...ты там осторожней, их человек пятнадцать, точно мы не знаем"</text>	
+	</string>
+	
+	
+	<string id="st_ros_start_escort_kruglov_to_yantar_quest_task_name">
+		<text>Вывести Круглова на Янтарь</text>
+	</string>
+	<string id="st_ros_start_escort_kruglov_to_yantar_quest_task_descr">
+		<text>Вывести Круглова к выходу на Янтарь\n\nКруглов: "Мы возвращались с Янтаря, когда нас сбили наемники. Говорят что им информация нужна, но я то знаю - перестреляют они нас. Выведи меня к Янтарю и я поделюсь с тобой тем, что знаю о вашем "выжигателе мозгов", а бармен тебе за это хорошо заплатит. Боец из меня плохой, но я знаю дорогу, поэтому я буду вести, а ты прикрывай нас по пути."</text>	
+	</string>
+</string_table>

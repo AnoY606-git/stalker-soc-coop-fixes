@@ -1,0 +1,26 @@
+-- loaded by the Scene Director like every coop_scn_*.script: starts the Yantar / X16 chain tick (coop_soc_yan.script) and registers the PDA tip
+-- that shows when Vasiliev's PDA is picked up (SoC: the PDA tip "Vasiliev's audio recording", storyline_vasilyev_tip)
+pcall(function() coop_soc_yan.install() end)
+
+pcall(function()
+	coop_scenes.register {
+		id        = "yan_vasilyev_tip",
+		kind      = "sequence",
+		once      = true,
+		skip      = "none",
+		length_ms = 2500,
+		grace_ms  = 20000,
+		settle_ms = 2000,
+		trigger   = function(ctx) return ctx.flag("YAN_SOC_VAS_PDA") end,
+		steps     = function(var, env)
+			return {
+				{ ["do"] = "fn", fn = function(e)
+					pcall(function()
+						e.actor:give_game_news(game.translate_string("st_tip"), game.translate_string("coop_soc_yan_vasilyev_tip"), "ui_iconsTotal_grouping", 0, 6000, 0)
+					end)
+				end },
+				{ ["do"] = "wait", ms = 1000 },
+			}
+		end,
+	}
+end)

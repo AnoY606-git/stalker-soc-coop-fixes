@@ -1,0 +1,11 @@
+<w>
+	<file name="ui\ui_rq_task_icons">
+		<texture id="ui_rq_job_trader" x="0" y="0" width="83" height="47" />
+		<texture id="ui_rq_job_barman" x="83" y="0" width="83" height="47" />
+		<texture id="ui_rq_job_scientist" x="166" y="0" width="83" height="47" />
+		<texture id="ui_rq_task_kill" x="0" y="47" width="83" height="47" />
+		<texture id="ui_rq_task_camp" x="83" y="47" width="83" height="47" />
+		<texture id="ui_rq_task_defend" x="166" y="47" width="83" height="47" />
+		<texture id="ui_rq_task_find" x="0" y="94" width="83" height="47" />
+	</file>
+</w>

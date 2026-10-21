@@ -1,0 +1,176 @@
+-------------------------------------------------------------------------------------------------------
+-- Bar and Rostok (Wild Territory) quest chain of the original Shadow of Chernobyl (patch bar_soc_quests).
+--  * Barkeep job "Find the documents in X16 lab" (bar_x16_documents): the job is accepted in his dialog (flag BAR_X16_DOCUMENTS_START), ONE task
+--    follows the objectives (talk to the scientists, find the X16 documents, bring them to the Barkeep); YAN_X16_DOCUMENTS_GAIN = the party holds
+--    the documents, BAR_X16_DOCUMENTS_DONE = the Barkeep took them (dialog, SoC bar_x16_documents_done)
+--  * Barkeep job "Turn off the Brain Scorcher" (bar_radar_deactivate): accepted in his dialog (BAR_DEACTIVATE_RADAR_START), then the Military / Radar steps
+--  * the hunter's family rifle (bar_hunter_rifle): find the rifle, return it to the hunter
+--  * Kruglov (bar_resque_information, bar_resque_information_2): reach him, talk to him (he walks off), lead him to Yantar, talk to him there
+-- Everything is driven by SHARED story flags (saved, synced to every player) plus a server tick (1 s), like coop_soc_dv.script:
+--  1. progress(): derives the SoC infos from the world (items in the inventories of the living players) and makes the chain monotonic
+--  2. every task whose stage is open is given to EVERY living player once per level load (stock give_task hands a task to the first player only), so late
+--     joiners get all open tasks; the engine ignores a task a player already has
+-- A dead NPC never blocks anything: every wait is a flag; an item lost with a dead player is replaced by the flag the party already had.
+-------------------------------------------------------------------------------------------------------
+
+local F = {
+	DONE18       = "BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO",     -- X18 documents handed to the Barkeep
+	X16_START    = "BAR_X16_DOCUMENTS_START",                                                              -- Barkeep job accepted (dialog)
+	X16_GAIN     = "YAN_X16_DOCUMENTS_GAIN",                                                               -- the party holds the X16 documents
+	X16_DONE     = "BAR_X16_DOCUMENTS_DONE",                                                               -- documents handed to the Barkeep (dialog)
+	GHOST_DOCS   = "X16_GHOST_DOCS_TAKEN",                                                                 -- patch yantar_restore: Ghost's documents taken
+	X16_LAB_DONE = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO",        -- the psi installation of the X16 lab is off
+	RADAR        = "BAR_DEACTIVATE_RADAR_START",                                                           -- Scorcher job accepted (dialog)
+	RADAR_DONE   = "BAR_DEACTIVATE_RADAR_DONE",                                                            -- SoC bar_deactivate_radar_done
+	RADAR_SWITCH = "X10_LAB_PRIMARY_SWITCHER_2_DEACTIVATE_INFO",                                           -- the Brain Scorcher is switched off (X-10 logic)
+	GO_MIL       = "BAR_SMART_TERRAIN_1_STALKER_BARMEN_GO_TO_MILITARY_STOP_DIALOG_INFO",                  -- mod flag set with the Scorcher job (Military / Radar restrictors read it)
+	MIL_RADAR    = "MIL_START_GO_TO_RADAR_QUEST_TASK_INFO",                                                -- a player is on the Radar level (restrictor)
+	H_ACCEPT     = "BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO",         -- hunter quest accepted (dialog)
+	H_FOUND      = "BAR_HUNTER_RIFLE_FOUND",                                                               -- the party holds the rifle
+	H_DONE       = "BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_IDLE_STOP_DIALOG_INFO",    -- rifle handed over (dialog)
+	KR_CALL_END  = "ROS_SMART_TERRAIN_3_KRUGLOV_HELP_SPACE_RESTRICTOR_END_INFO",                           -- Kruglov's radio call is over (restrictor)
+	KR_KILLERS   = "ROS_SMART_TERRAIN_3_KILLER_1_SQUAD_DEAD",                                              -- the Mercs around Kruglov are dead (squad on_death)
+	KR_FOLLOW    = "BAR_KRUGLOV_FOLLOW_ACTOR",                                                             -- a player reached Kruglov, he walks off (his logic)
+	KR_YAN       = "YAN_SMART_TERRAIN_1_WALKER_KRUGLOV_GO_TO_SAXAROV_INFO",                                -- a player reached Yantar (restrictor), Kruglov is there
+	KR_YAN_TALK  = "YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INFO",                  -- the first talk with Kruglov on Yantar
+}
+local X16_ITEM = "lab_x16_documents"
+local RIFLE = "wpn_toz34_m2"
+
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has(f) then pcall(story_flags.give_flag, f) end
+end
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCBARROS " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCBARROS " .. tostring(s)) end
+end
+
+-- any living player holds the item (the same check as xr_conditions.any_actor_has_item, which the stock task conditions use on the server)
+local function any_has(section)
+	if db.mp_actors == nil then return false end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then
+			local ok, o = pcall(function() return a:object(section) end)
+			if ok and o ~= nil then return true end
+		end
+	end
+	return false
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. progress: the SoC infos
+-------------------------------------------------------------------------------------------------------
+function progress()
+	-- X16 documents: found = a player holds them (Ghost's body on Yantar), or the party took them before (yantar_restore flag), or the lab was
+	-- finished another way (no soft-lock: the Barkeep hand-in is open then, see coop_soc_bar.has_x16_docs)
+	if any_has(X16_ITEM) or has(F.GHOST_DOCS) or has(F.X16_LAB_DONE) then give(F.X16_GAIN) end
+	if has(F.X16_DONE) then give(F.X16_START); give(F.X16_GAIN) end
+	if has(F.RADAR) then give(F.X16_START); give(F.X16_GAIN); give(F.X16_DONE) end
+	if has(F.RADAR_SWITCH) then give(F.RADAR_DONE) end
+	-- hunter: the rifle exists only after the quest was accepted
+	if has(F.H_DONE) then give(F.H_ACCEPT); give(F.H_FOUND) end
+	if has(F.H_ACCEPT) and any_has(RIFLE) then give(F.H_FOUND) end
+	-- Kruglov: reaching Yantar means he was reached before
+	if has(F.KR_YAN) or has(F.KR_YAN_TALK) then give(F.KR_FOLLOW) end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. the stages: task id, open while ... (the same condition completes the task in tm_coop_l05_bar.ltx / tm_coop_l06_rostok.ltx)
+-------------------------------------------------------------------------------------------------------
+STAGES = {
+	-- Barkeep job bar_x16_documents (ONE task, its text and marker follow the flags)
+	{ id = "bar_start_go_to_yantar_quest_task", open = function()
+		return has(F.X16_START) and not has(F.X16_DONE) end },
+	-- Barkeep job bar_radar_deactivate: ONE task from the Bar over the Military level (marker: its exit to the Radar) until the party is on the Radar level,
+	-- where the Radar tasks of patch soc_mil_quests take over (the level maker's "go to the Radar" step of the Military level is hidden)
+	{ id = "bar_start_go_to_military_quest_task", open = function()
+		return has(F.RADAR) and not has(F.MIL_RADAR) end },
+	-- the hunter's rifle (bar_hunter_rifle)
+	{ id = "bar_start_find_the_family_gun_quest_task", open = function()
+		return has(F.H_ACCEPT) and not has(F.H_FOUND) end },
+	{ id = "bar_soc_hunter_return_task", open = function()
+		return has(F.H_FOUND) and not has(F.H_DONE) end },
+	-- Kruglov (bar_resque_information, bar_resque_information_2)
+	{ id = "ros_start_help_kruglov_quest_task", open = function()
+		return has(F.KR_CALL_END) and not has(F.KR_KILLERS) and not has(F.KR_FOLLOW) end },
+	{ id = "ros_soc_kruglov_talk_task", open = function()
+		return has(F.KR_KILLERS) and not has(F.KR_FOLLOW) end },
+	{ id = "ros_start_escort_kruglov_to_yantar_quest_task", open = function()
+		return has(F.KR_FOLLOW) and not has(F.KR_YAN) end },
+	{ id = "ros_soc_kruglov_bring_task", open = function()
+		return has(F.KR_YAN) and not has(F.KR_YAN_TALK) end },
+}
+
+local given = {}        -- task id -> { player id -> true }
+local t_srv = 0
+local gen = 0
+last = ""
+
+-- one pass: returns the list of "task|player" given in this pass (tests)
+function step()
+	local out = {}
+	local okp, errp = pcall(progress)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	if db.mp_actors == nil then return out end
+	for _, st in ipairs(STAGES) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+						out[#out + 1] = st.id .. "|" .. tostring(pid)
+						last = st.id .. " -> " .. tostring(pid)
+					end
+				end
+			end
+		end
+	end
+	return out
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step()
+end
+
+-- tests: the player ids that got a task from this tick (server side)
+function who(task_id)
+	local r = {}
+	for pid, v in pairs(given[task_id] or {}) do r[#r + 1] = pid end
+	return r
+end
+
+-- tests: forget who got what
+function reset_given()
+	given = {}
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

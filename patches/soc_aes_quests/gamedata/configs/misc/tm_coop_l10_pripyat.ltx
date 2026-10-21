@@ -1,0 +1,84 @@
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Основные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Основной квест(Добраться до ЧАЭС)
+[pri_start_go_to_cnpp_quest_task]
+icon 									= ui_inGame2_pri_start_go_to_cnpp_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_pri_start_go_to_cnpp_quest_task_name
+descr 									= st_pri_start_go_to_cnpp_quest_task_descr
+target 									= pri_level_changer
+condlist_0								= {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} complete %=give_task(aes_1_start_go_to_sarcofag_quest_task)%
+condlist_1								= {+AES_1_START_GO_TO_SARCOFAG_QUEST_TASK_INFO} complete
+condlist_2								= {+SOC_AES_SAR_ARRIVED} complete
+
+;--------------------------------------------------------------------------------------------------------------------------------------
+;-- Второстепенные квесты:
+;--------------------------------------------------------------------------------------------------------------------------------------
+;Дополнительный квест(Встретиться с группой сталкеров)
+[pri_start_meet_a_group_of_stalkers_quest_task]
+icon 									= ui_inGame2_pri_start_meet_a_group_of_stalkers_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_pri_start_meet_a_group_of_stalkers_quest_task_name
+descr 									= st_pri_start_meet_a_group_of_stalkers_quest_task_descr
+target 									= pri_smart_terrain_1_stalker_leader_squad
+condlist_0								= {+PRI_SMART_TERRAIN_1_WALKER_LEADER_IDLE_INFO} complete
+condlist_1								= {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} complete
+condlist_2								= {+SOC_AES_CNPP_ARRIVED} complete
+;condlist_0 								= {+PRI_SMART_TERRAIN_1_WALKER_LEADER_IDLE_INFO} complete %=give_task(pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task)%
+
+;Дополнительный квест(Помочь сталкерам добраться до подземной парковки)
+[pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task]
+icon 									= ui_inGame2_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task
+prior 									= 200
+storyline 								= true
+title 									= st_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task_name
+descr 									= st_pri_start_help_the_stalkers_get_to_the_underground_parking_quest_task_descr
+target 									= pri_smart_terrain_1_stalker_leader_squad
+condlist_0								= {+PRI_SMART_TERRAIN_19_ORDINARY_MONOLITH_1_SQUAD_DEAD +PRI_SMART_TERRAIN_19_ORDINARY_MONOLITH_2_SQUAD_DEAD} complete
+condlist_1								= {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} complete
+condlist_2								= {+SOC_AES_CNPP_ARRIVED} complete
+
+; soc_aes_quests: SoC cit_doctor_task "Secret stash at Pripyat" (tasks_deadcity.xml): hotel, the room, the stash with the decoder.
+; Given by coop_soc_aes.script when the party is on Pripyat; fails when the party has left for CNPP-1 without the decoder (the Sarcophagus then has its own copy).
+
+[pri_soc_stash_1_task]
+icon 									= ui_inGame2_pri_start_go_to_cnpp_quest_task
+prior 									= 150
+storyline 								= true
+title 									= st_pri_soc_stash_name
+descr 									= st_pri_soc_stash_1_descr
+target 									= nil
+condlist_0 								= {+PRI_ACTOR_IN_HOTEL} complete
+condlist_1 								= {+PRI_ACTOR_IN_HIDING_PLACE} complete
+condlist_2 								= {+PRI_MONOLITH_DECODER_GOT} complete
+condlist_3 								= {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} fail
+condlist_4 								= {+SOC_AES_CNPP_ARRIVED} fail
+
+
+[pri_soc_stash_2_task]
+icon 									= ui_inGame2_pri_start_go_to_cnpp_quest_task
+prior 									= 150
+storyline 								= true
+title 									= st_pri_soc_stash_name
+descr 									= st_pri_soc_stash_2_descr
+target 									= nil
+condlist_0 								= {+PRI_ACTOR_IN_HIDING_PLACE} complete
+condlist_1 								= {+PRI_MONOLITH_DECODER_GOT} complete
+condlist_2 								= {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} fail
+condlist_3 								= {+SOC_AES_CNPP_ARRIVED} fail
+
+
+[pri_soc_stash_3_task]
+icon 									= ui_inGame2_pri_start_go_to_cnpp_quest_task
+prior 									= 150
+storyline 								= true
+title 									= st_pri_soc_stash_name
+descr 									= st_pri_soc_stash_3_descr
+target 									= nil
+condlist_0 								= {+PRI_MONOLITH_DECODER_GOT} complete
+condlist_1 								= {+PRI_START_GO_TO_CNPP_QUEST_TASK_INFO} fail
+condlist_2 								= {+SOC_AES_CNPP_ARRIVED} fail
+
