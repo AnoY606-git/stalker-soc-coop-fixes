@@ -85,3 +85,20 @@ carried by `darkvalley_restore`, so that must be merged there).
 Причина падения по статике не доказана (лога нет). Исправлено то, что отличает техника от рабочих NPC: пара вершин (уровень/игровой граф) теперь
 согласована, создание ждёт игрока, убрана запись угла, добавлена позиция spawned_vertex, логика запускается скриптом если движок её не прочитал.
 Не проверено в игре.
+
+
+## Moved to the basement (2026-10-20)
+FOSTER: the mechanic should stand in the basement, not in a village house. `SPOT` in `coop_scn_esc_technician.script` is now Sidorovich's bunker
+(the only real cellar of the village, floor y -24.8), next to the work cabinet `esc_shkaf_work_01` and the tech-material items:
+x -246.4, y -24.8, z -133.7 = AI node 204839 (level.ai of the mod Cordon; the bunker has 43 nodes, rooms at x -250.6 to -249.2 and x -247.1 to -242.2, the
+door `esc_trader_door` between them opens when a player is near). Sidorovich's seat is 1.7 m east. The logic, profile, dialogs and upgrades are unchanged;
+the spawn code is unchanged (game vertex = nearest graph vertex of the level to the spot). Saves that already hold him keep him in the old house.
+The old text above ("workshop house", x -219.1 z -165.2) describes the first version.
+Test (listen mode, `tests/tech_basement.lua`): created at 32 s, `alive=true`, position -246.40 -24.79 -133.70, level vertex 204839, active scheme
+`remark@esc_rookie_technician`, profile `esc_rookie_technician` ("Stepan Gaika"), `is_talk_enabled=true`; player teleported 1.5 m from him, `run_talk_dialog`
+returned ok and `actor:is_talking()` was true 3 s later (the dialog window itself cannot be photographed, see the lobby note in the campfires NOTES).
+No level crash in any Cordon run of this session (eight listen census runs, Cordon boot checks). Repair / upgrade lists were not touched, not re-tested.
+
+### Кратко
+Механик перенесён в подвал деревни (бункер Сидоровича, x -246.4 y -24.8 z -133.7, узел 204839, рядом со шкафом-верстаком). Тест: создан, жив, логика
+`remark` активна, диалог открывается (`is_talking = true`). Старые сохранения оставляют его в доме.

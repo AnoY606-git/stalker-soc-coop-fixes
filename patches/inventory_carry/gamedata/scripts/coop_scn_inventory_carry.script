@@ -1,133 +1,343 @@
--- Inventory carry-over across level changes (patch inventory_carry).
--- Observed: after a map change the HOST player (the listen-server player) starts again with only the default items, so a worn armor
--- and helmet (and everything else) are lost. The server keeps a small record of every living player's inventory in a file; when a
--- player spawns on a new level with fewer of an item than the record says, the missing items are created in his inventory
--- (an outfit and a helmet put into an empty slot are worn at once). Players the engine already restores lose nothing, because
--- only the missing count is created. A player who dies loses his record (death is not a level change).
+-- Inventory carry-over after a save is loaded (patch inventory_carry).
+--
+-- Root cause (found by dumping every body on server and client around game_sv.saveGame / loadLastSave):
+-- a save keeps every player's body (actor entity) with all its items and slots, but after the load the engine does NOT hand that body
+-- back to the reconnecting player. It spawns a NEW body with only the start kit (knife, torch, binoculars, PDA, bolts) and the saved
+-- body stays in the world as a body nobody controls ("orphan", named actor_the_main_character on a dedicated server). The host often
+-- keeps his saved body (the engine knows his connection), clients never do: they come back with no outfit, no weapons, no money.
+-- Because the old and the new body can both show up under one name, the slotted weapon/outfit a player sees can also be the wrong one.
+--
+-- Fix (server only, own 500 ms loop):
+--  * every living player body is remembered in a story flag PBODY_<NAME>_<body id> (story flags are written into the save and are
+--    restored by the load, like the PSC_ flags of player_scaling),
+--  * when a player has two bodies (a flagged saved body that is still in the world plus a newer body of that name), the items of the
+--    old body are moved to the new one with transfer_item, slotted items first in slot order (they take the empty slots again: the
+--    same weapons/outfit end up in the same slots), the money is moved too, and the empty old body is released.
+--    Start-kit sections the new body already holds are not moved a second time, so nothing is duplicated; items are MOVED (same id),
+--    never re-created, so conditions, ammo in the magazine and upgrades stay as they were.
 -- Loaded by the scene director's package discovery (coop_scn_*); acts on the server only.
 
-local FILE = "coop_inventory_carry.txt"
-local TRACK_EVERY_MS = 3000
-local SETTLE_MS = 6000           -- a new actor must exist this long before the record is applied
-local players = {}                -- per player name: { since, applied, last }
-local records = nil               -- name -> { {section, count, cond, worn} ... }
+local PREFIX = "PBODY_"
+local SETTLE_MS = 5000        -- the new body must exist this long (its start kit is complete) before items are moved
+local STEP_MS = 500
+local BATCH = 6               -- items moved per step
+local VERIFY_TIMEOUT_MS = 20000
+local MAX_PASSES = 3
 
-local function say(m) printf("[inventory_carry] %s", tostring(m)) end
+local born = {}               -- body id -> time_global when first seen
+local flagged = {}            -- NAME -> { [body id] = true }  (mirror of the story flags)
+local jobs = {}               -- NAME -> restore job
+local ctrl = {}               -- NAME -> { id = body id the player controls (client ping), t = last ping, since = first ping of this id }
+local started_at = nil
+local flags_read = false
 
-local function fpath() return getFS():update_path("$app_data_root$", FILE) end
-
-local function load_records()
-	records = {}
+local function say(m)
+	printf("[inventory_carry] %s", tostring(m))
 	pcall(function()
-		local f = io.open(fpath(), "r")
-		if not f then return end
-		for line in f:lines() do
-			local name, sect, count, cond, worn = string.match(line, "^([^|]+)|([^|]+)|(%d+)|([%d%.]+)|(%d)$")
-			if name then
-				records[name] = records[name] or {}
-				table.insert(records[name], { sect = sect, count = tonumber(count), cond = tonumber(cond), worn = worn == "1" })
-			end
-		end
-		f:close()
+		local f = io.open(getFS():update_path("$logs$", "coop_inventory_carry.log"), "a")
+		if f then f:write(string.format("[%d] %s", time_global(), tostring(m)), string.char(10)); f:close() end
 	end)
 end
 
-local function save_records()
-	pcall(function()
-		local f = io.open(fpath(), "w")
-		if not f then return end
-		for name, items in pairs(records) do
-			for _, it in ipairs(items) do
-				f:write(string.format("%s|%s|%d|%.3f|%d", name, it.sect, it.count, it.cond, it.worn and 1 or 0), string.char(10))
-			end
-		end
-		f:close()
-	end)
+local function key_of_name(n)
+	local r = string.gsub(tostring(n or ""), "[^%w]", "_")
+	return string.upper(r)
 end
 
--- section -> {count, cond (min), worn}
-local function snapshot(p)
-	local by = {}
-	local order = {}
-	local worn_id = nil
-	local w = p:get_current_outfit()
-	if w then worn_id = w:id() end
-	local helm = p:item_in_slot(12)
-	local helm_id = helm and helm:id() or nil
-	p:iterate_inventory(function(_, it)
-		local s = it:section()
-		local e = by[s]
-		if not e then
-			e = { sect = s, count = 0, cond = 1.0, worn = false }
-			by[s] = e
-			order[#order + 1] = e
-		end
-		e.count = e.count + 1
-		local ok, c = pcall(function() return it:condition() end)
-		if ok and c and c < e.cond then e.cond = c end
-		if it:id() == worn_id or it:id() == helm_id then e.worn = true end
-	end, p)
-	return order
-end
-
-local function counts(p)
-	local c = {}
-	p:iterate_inventory(function(_, it) local s = it:section() c[s] = (c[s] or 0) + 1 end, p)
-	return c
-end
-
-local function apply(p, rec)
-	local have = counts(p)
-	-- worn pieces first so they land in the empty outfit / helmet slots
-	table.sort(rec, function(a, b) return (a.worn and 1 or 0) > (b.worn and 1 or 0) end)
-	local made = 0
-	for _, it in ipairs(rec) do
-		local missing = it.count - (have[it.sect] or 0)
-		if missing > 0 and system_ini():section_exist(it.sect) then
-			for i = 1, missing do
-				alife():create(it.sect, p:position(), p:level_vertex_id(), p:game_vertex_id(), p:id())
-				made = made + 1
+local function read_flags()
+	flags_read = true
+	flagged = {}
+	local sf = story_flags.story_flags
+	if type(sf) ~= "table" then return end
+	for k, v in pairs(sf) do
+		if v then
+			local nm, id = string.match(tostring(k), "^" .. PREFIX .. "([%w_]+)_(%d+)$")
+			if nm then
+				flagged[nm] = flagged[nm] or {}
+				flagged[nm][tonumber(id)] = true
 			end
 		end
 	end
-	say(string.format("%s: restored %d item(s)", p:name(), made))
+end
+
+local function set_flag(nm, id, on)
+	local fname = PREFIX .. nm .. "_" .. tostring(id)
+	pcall(function() story_flags.set_flag(fname, on and true or nil) end)
+	if on then
+		flagged[nm] = flagged[nm] or {}
+		flagged[nm][id] = true
+	elseif flagged[nm] then
+		flagged[nm][id] = nil
+	end
+end
+
+local function living_bodies()
+	local by = {}
+	if type(db.mp_actors) ~= "table" then return by end
+	for id, p in pairs(db.mp_actors) do
+		if p ~= nil then
+			local ok, alive = pcall(function() return p:alive() and p:section() ~= "spectator" end)
+			if ok and alive then by[id] = p end
+		end
+	end
+	return by
+end
+
+local function items_of(p)
+	local list = {}
+	p:iterate_inventory(function(_, it) list[#list + 1] = it end, p)
+	return list
+end
+
+-- slot number (2..12 and the worn outfit counts as slot 7) of an item, or nil when it sits in the backpack/belt
+local function slot_of(p, it)
+	local id = it:id()
+	for s = 1, 12 do
+		local ok, o = pcall(function() return p:item_in_slot(s) end)
+		if ok and o and o:id() == id then return s end
+	end
+	return nil
+end
+
+local function plan_add(acc, orph_obj, from_id)
+	for _, it in ipairs(items_of(orph_obj)) do
+		local s = it:section()
+		local sl = slot_of(orph_obj, it)
+		if (acc.have[s] or 0) > 0 then
+			acc.have[s] = acc.have[s] - 1      -- start kit item the new body already has
+		elseif sl ~= nil then
+			acc.slotted[#acc.slotted + 1] = { id = it:id(), sect = s, slot = sl, from = from_id }
+		else
+			acc.rest[#acc.rest + 1] = { id = it:id(), sect = s, from = from_id }
+		end
+	end
+end
+
+local function plan_finish(job, acc)
+	table.sort(acc.slotted, function(a, b) return a.slot < b.slot end)
+	local out = {}
+	for _, e in ipairs(acc.slotted) do out[#out + 1] = e end
+	job.n_slotted = #acc.slotted
+	for _, e in ipairs(acc.rest) do out[#out + 1] = e end
+	return out
+end
+
+local function release_body(id)
+	pcall(function()
+		local se = alife():object(id)
+		if se ~= nil then alife():release(se, true) end
+	end)
+end
+
+local function finish(job, ok, why)
+	say(string.format("%s: restore %s (%s) moved=%d", job.name, ok and "done" or "FAILED", why, job.moved or 0))
+	if ok then
+		for _, oid in ipairs(job.orph) do
+			set_flag(job.name, oid, false)
+			release_body(oid)
+		end
+		set_flag(job.name, job.new_id, true)
+	end
+	jobs[job.name] = nil
+end
+
+local function run_job(job, bodies, now)
+	local new_body = bodies[job.new_id]
+	if new_body == nil then jobs[job.name] = nil return end
+	local cc = ctrl[job.name]
+	if cc == nil or cc.id ~= job.new_id then jobs[job.name] = nil return end        -- the player is no longer in this body, or the body is gone
+	if now - (born[job.new_id] or now) < SETTLE_MS then return end
+	local orphs = {}
+	for _, oid in ipairs(job.orph) do
+		if bodies[oid] ~= nil then orphs[#orphs + 1] = oid end
+	end
+	if #orphs == 0 then jobs[job.name] = nil return end
+	job.orph = orphs
+
+	if job.plan == nil then
+		local acc = { have = {}, slotted = {}, rest = {} }
+		for _, it in ipairs(items_of(new_body)) do
+			local sct = it:section()
+			acc.have[sct] = (acc.have[sct] or 0) + 1
+		end
+		job.money = 0
+		for _, oid in ipairs(orphs) do
+			local ob = bodies[oid]
+			plan_add(acc, ob, oid)
+			local ok, m = pcall(function() return ob:money() end)
+			if ok and type(m) == "number" then job.money = job.money + math.floor(m) end
+		end
+		job.plan = plan_finish(job, acc)
+		job.pos = 1; job.moved = 0; job.pass = 1
+		say(string.format("%s: restoring %d item(s) and %d money from %d old body(ies) %s into body %d", job.name, #job.plan, job.money, #orphs, table.concat(orphs, ","), job.new_id))
+		job.last_step = 0
+		return
+	end
+
+	if job.phase == nil then
+		if now - job.last_step < STEP_MS then return end
+		job.last_step = now
+		local n = 0
+		while job.pos <= #job.plan and n < BATCH do
+			local e = job.plan[job.pos]
+			local from = bodies[e.from]
+			local io = level.object_by_id(e.id)
+			if from ~= nil and io ~= nil then
+				local ok, err = pcall(function() from:transfer_item(io, new_body) end)
+				if not ok then say("transfer error " .. tostring(err)) end
+			end
+			job.pos = job.pos + 1
+			n = n + 1
+			if job.n_slotted ~= nil and job.pos == job.n_slotted + 1 then break end   -- slotted items travel alone, then a pause
+		end
+		if job.pos > #job.plan then job.phase = "verify"; job.verify_from = now end
+		return
+	end
+
+	if job.phase == "verify" then
+		if now - job.last_step < STEP_MS then return end
+		job.last_step = now
+		local missing = {}
+		for _, e in ipairs(job.plan) do
+			local io = level.object_by_id(e.id)
+			local par = nil
+			if io ~= nil then pcall(function() local pr = io:parent(); par = pr and pr:id() or nil end) end
+			if io ~= nil and par ~= job.new_id then missing[#missing + 1] = e end
+		end
+		if #missing == 0 then
+			if job.money and job.money > 0 and not job.money_done then
+				pcall(function() new_body:give_money(job.money) end)
+				job.money_done = true
+				job.verify_from = now
+				return
+			end
+			job.moved = #job.plan
+			finish(job, true, "all items moved")
+		elseif now - job.verify_from > VERIFY_TIMEOUT_MS then
+			if job.pass < MAX_PASSES then
+				job.pass = job.pass + 1
+				job.plan = missing; job.pos = 1; job.n_slotted = nil; job.phase = nil; job.verify_from = now
+				say(string.format("%s: %d item(s) not moved yet, pass %d", job.name, #missing, job.pass))
+			else
+				finish(job, false, string.format("%d item(s) could not be moved, old body kept", #missing))
+			end
+		end
+	end
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- who plays which body: every client tells the server, once per 2 s, which player he is (name remembered from his own new spawn,
+-- a body bound by the engine after a load carries a generic name) and the server learns the body from the caller id.
+-----------------------------------------------------------------------------------------------------------------
+local GENERIC = "ACTOR_THE_MAIN_CHARACTER"
+local registered = {}
+local my_name = nil
+local my_last_ping = 0
+
+local function srv_ping(nm, id)
+	local now = time_global()
+	local c = ctrl[nm]
+	if c ~= nil and c.id == id and now - c.t < 8000 then c.t = now
+	else ctrl[nm] = { id = id, t = now, since = now } end
+end
+
+local function register_ping(nm)
+	if registered[nm] or game_sv == nil then return end
+	registered[nm] = true
+	game_sv["coop_inv_ping_" .. nm] = function(initiator_id) srv_ping(nm, initiator_id) end
+end
+
+local function name_file() return getFS():update_path("$logs$", "coop_inventory_carry_name.txt") end
+
+local function client_tick(now)
+	local me = LocalActor()
+	if me == nil or me == 0 then return end
+	local o = level.object_by_id(me)
+	if o == nil then return end
+	local ok, alive = pcall(function() return o:alive() and o:section() ~= "spectator" end)
+	if not ok or not alive then return end
+	local nm = key_of_name(o:name())
+	if nm ~= "" and nm ~= GENERIC and nm ~= my_name then
+		my_name = nm
+		pcall(function() local f = io.open(name_file(), "w") if f then f:write(nm); f:close() end end)
+	end
+	if my_name == nil then
+		pcall(function() local f = io.open(name_file(), "r") if f then my_name = f:read("*l"); f:close() end end)
+	end
+	if my_name == nil or my_name == "" then return end
+	if now - my_last_ping < 2000 then return end
+	my_last_ping = now
+	if OnServer() then
+		register_ping(my_name)
+		srv_ping(my_name, me)
+	else
+		game_cl.executeFunctionOnServer("coop_inv_ping_" .. my_name)
+	end
+end
+
+local function owner_of(id, p, id2name)
+	local ok, nm = pcall(function() return key_of_name(p:name()) end)
+	if ok and nm ~= "" and nm ~= GENERIC then return nm end
+	return id2name[id]
 end
 
 local function tick()
-	if not OnServer() or type(db.mp_actors) ~= "table" then return false end
-	if records == nil then load_records() end
 	local now = time_global()
-	local dirty = false
-	for id, p in pairs(db.mp_actors) do
-		local ok, err = pcall(function()
-			local name = p:name()
-			local st = players[name]
-			if st == nil or st.id ~= id then
-				st = { id = id, since = now, applied = false, last = 0 }
-				players[name] = st
-			end
-			if not p:alive() then
-				if records[name] then records[name] = nil dirty = true end
-				st.applied = true
-				return
-			end
-			if not st.applied then
-				if now - st.since >= SETTLE_MS then
-					st.applied = true
-					if records[name] then apply(p, records[name]) end
-					st.last = now
-				end
-				return
-			end
-			if now - st.last >= TRACK_EVERY_MS then
-				st.last = now
-				records[name] = snapshot(p)
-				dirty = true
-			end
-		end)
-		if not ok then say("tick error: " .. tostring(err)) end
+	if not OnServer() then
+		pcall(client_tick, now)
+		return false
 	end
-	if dirty then save_records() end
+	if type(db.mp_actors) ~= "table" then return false end
+	pcall(client_tick, now)            -- the host of a listen game plays too
+	if started_at == nil then started_at = now end
+	if not flags_read then read_flags() end
+	local bodies = living_bodies()
+	for id, p in pairs(bodies) do
+		if born[id] == nil then born[id] = now end
+		local okn, nm = pcall(function() return key_of_name(p:name()) end)
+		if okn and nm ~= "" and nm ~= GENERIC then register_ping(nm) end
+	end
+	for nm in pairs(flagged) do register_ping(nm) end
+
+	local id2name = {}
+	for nm, ids in pairs(flagged) do for id in pairs(ids) do id2name[id] = nm end end
+	for nm, c in pairs(ctrl) do
+		if now - c.t < 8000 and bodies[c.id] ~= nil then
+			if id2name[c.id] ~= nm then set_flag(nm, c.id, true); id2name[c.id] = nm end   -- remembered at once
+		end
+	end
+
+	for nm, c in pairs(ctrl) do
+		if jobs[nm] == nil and now - c.t < 8000 and now - c.since >= SETTLE_MS and bodies[c.id] ~= nil then
+			local orph = {}
+			for id, p in pairs(bodies) do
+				if id ~= c.id and owner_of(id, p, id2name) == nm then
+					local controlled = false
+					for nm2, c2 in pairs(ctrl) do if c2.id == id and now - c2.t < 8000 then controlled = true end end
+					if not controlled then orph[#orph + 1] = id end
+				end
+			end
+			if #orph > 0 then
+				table.sort(orph)
+				jobs[nm] = { name = nm, new_id = c.id, orph = orph }
+				say(string.format("%s: playing body %d, old bodies %s", nm, c.id, table.concat(orph, ",")))
+			end
+		end
+	end
+
+	-- forget flags of bodies that are gone (not right after a load: the saved bodies are still being registered)
+	if now - started_at > 30000 then
+		for nm, ids in pairs(flagged) do
+			for id in pairs(ids) do
+				if bodies[id] == nil then set_flag(nm, id, false) end
+			end
+		end
+	end
+
+	for _, job in pairs(jobs) do
+		local ok, err = pcall(run_job, job, bodies, now)
+		if not ok then say("job error " .. tostring(err)); jobs[job.name] = nil end
+	end
 	return false
 end
 

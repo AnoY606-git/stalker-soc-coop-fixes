@@ -74,3 +74,9 @@ The decoder task `sar_start_search_the_preacher_body_and_retrieve_the_decoder_qu
 Теперь: 22 бойца на патрулях + 3 группы по 2 за дверью декодера = 28 (около 1.4x от оригинала). Проповедник и 6 фанатиков
 удалены; декодер лежит на уровне там, где стоял Проповедник; квест и дверь больше не требуют смерти Проповедника.
 Масштабирование по числу игроков в Саркофаге отключено (skip_levels). Опциональный FPS-фикс по умолчанию теперь 100%.
+
+
+## Cordon village statists (2026-10-20)
+`configs/misc/simulation.ltx` is also used for the Cordon fix in `patches/campfires` (NOTES there, section "rookie village fire, no chair sitter"): the start
+positions of the village squads `esc_smart_terrain_1_stalker_2/3/4_squad` are commented out (16 generic village stalkers become 7, as in SoC). Do not ship
+another copy of this file.

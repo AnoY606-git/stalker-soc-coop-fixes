@@ -10,3 +10,5 @@ __pycache__/
 patches/soc_levels/
 # throwaway copies of shipped files
 patches/yantar_restore/wip_heli/from_working_tree_*/
+# python-lzo venv made by tools/pack.py on first --compress
+tools/.lzovenv/

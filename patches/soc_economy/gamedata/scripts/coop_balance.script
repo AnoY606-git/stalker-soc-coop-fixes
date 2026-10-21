@@ -1,12 +1,12 @@
 -- Co-op balance for Shadow of COOP (server only). Settings: configs\misc\coop_balance.ltx
---  A. on_npc_hit(): extra damage of players' weapons against NPCs and mutants (global multiplier).
+--  A. on_npc_hit(): extra damage of players' weapons against NPCs and mutants (global multiplier; v1.4 fix: it used to heal).
 --  B. trader_ammo(): trader ammo stock grows with the number of players (called from trade_manager.update).
 -- Both are inert when the multiplier is <= 1 / the factor is 0.
 
 local cache = nil
 local in_extra = false
 
-local defaults = { player_damage_mult = 1.5, hit_amount_scale = 0.01, log = true, ammo_per_extra_player = 1.0, max_players = 4 }
+local defaults = { player_damage_mult = 1.5, log = true, ammo_per_extra_player = 1.0, max_players = 4 }
 
 function cfg()
 	if cache ~= nil then return cache end
@@ -21,12 +21,12 @@ function cfg()
 				else c[key] = ini:r_float(sect, key) end
 			end
 		end
-		rd("damage", "player_damage_mult"); rd("damage", "hit_amount_scale"); rd("damage", "log")
+		rd("damage", "player_damage_mult"); rd("damage", "log")
 		rd("ammo", "ammo_per_extra_player"); rd("ammo", "max_players")
 	end)
 	cache = c
-	clog("coop_balance config: damage_mult=%.2f amount_scale=%.4f ammo_per_extra_player=%.2f max_players=%d",
-		c.player_damage_mult, c.hit_amount_scale, c.ammo_per_extra_player, c.max_players)
+	clog("coop_balance config: damage_mult=%.2f ammo_per_extra_player=%.2f max_players=%d",
+		c.player_damage_mult, c.ammo_per_extra_player, c.max_players)
 	return c
 end
 
@@ -63,6 +63,64 @@ end
 -----------------------------------------------------------------------------------------------------------------
 -- A. damage
 -----------------------------------------------------------------------------------------------------------------
+-- Measured in game (2026-10-20): the stalker hit callback runs BEFORE the engine applies the hit (the monster one AFTER), and the script property
+-- `health` is RELATIVE in this engine (obj.health = x adds x to the health; vanilla does db.actor.health = -0.05 to hurt).
+-- The first version of this function wrote obj.health = hp - extra, i.e. it HEALED the target by almost its whole health on every
+-- player hit and cancelled the hit (a chest shot with a 1.5 multiplier left the bandit at full health).
+-- So the extra damage is applied as a negative number, after the engine has applied the hit, from the health that was really lost:
+-- extra = lost * (mult - 1). That also keeps bone scale (head x3, limbs less), armor and immunities in the multiplied hit.
+local pending = {}          -- npc id -> { hp0, t0, t1, who_id }: hits of one burst, handled together when the burst ends
+local tick_on = false
+
+local function apply_extra(id, p)
+	local obj = level.object_by_id(id)
+	if obj == nil or not obj:alive() then return end
+	local c = cfg()
+	local hp = obj.health
+	if hp == nil then return end
+	local lost = p.sum or (p.hp0 - hp)                           -- monsters: sum of the callback amounts (see on_npc_hit)
+	if lost <= 0.0005 then return end                          -- the hit did nothing (armor, friendly, already counted)
+	local extra = lost * (c.player_damage_mult - 1.0)
+	if extra <= 0 then return end
+	if hp - extra > 0.005 then
+		obj.health = -extra                                 -- relative: plain health loss, no armor re-applied, no new callback
+	else
+		-- the extra damage is lethal: kill with a real hit so death, loot and kill credit run normally
+		local who = p.who_id and level.object_by_id(p.who_id) or nil
+		in_extra = true
+		local h = hit()
+		if who ~= nil then h.draftsman = who end
+		h.type = hit.fire_wound
+		h.direction = who ~= nil and obj:position():sub(who:position()) or vector():set(0, 0, 1)
+		h.power = 10
+		h.impulse = 0
+		pcall(function() h:bone(IsStalker(obj) and "bip01_spine" or "pelvis") end)
+		obj:hit(h)
+		in_extra = false
+	end
+end
+
+local tick_t = 0
+
+-- runs every frame while hits are pending; returns true (and unregisters itself) when nothing is pending any more
+local function pending_tick()
+	local now = time_global()
+	tick_t = now
+	for id, p in pairs(pending) do
+		if now - p.t1 >= 120 or now - p.t0 >= 600 then
+			pending[id] = nil
+			local ok, err = pcall(apply_extra, id, p)
+			in_extra = false
+			if not ok then clog("apply_extra error: %s", tostring(err)) end
+		end
+	end
+	return next(pending) == nil
+end
+
+local function tick_done()
+	tick_on = false
+end
+
 -- Called first thing from the hit callbacks of the NPC binder (xr_motivator) and the monster binder (bind_monster).
 function on_npc_hit(obj, amount, who, bone_index)
 	if in_extra then return end
@@ -74,26 +132,26 @@ function on_npc_hit(obj, amount, who, bone_index)
 	if who:id() == obj:id() then return end
 	local ok, err = pcall(function()
 		if not obj:alive() or obj:invulnerable() then return end
-		local extra = amount * (c.player_damage_mult - 1.0) * c.hit_amount_scale
-		local hp = obj.health
-		if hp == nil or extra <= 0 then return end
-		if hp - extra > 0.005 then
-			obj.health = hp - extra                          -- plain health loss: no armor re-applied, no new callback
+		local now = time_global()
+		-- Stalkers: the callback runs BEFORE the hit is applied and amount is hit power x 100, so the loss is measured afterwards.
+		-- Monsters (bind_monster, measured with a dog): the callback runs AFTER the hit and amount is the health that was lost
+		-- (0.4139 for 1.0 -> 0.5861), so the amounts are summed instead.
+		local mon = false
+		pcall(function() mon = IsMonster(obj) and true or false end)
+		local p = pending[obj:id()]
+		if p ~= nil and mon then p.sum = (p.sum or 0) + amount end
+		if p == nil then
+			pending[obj:id()] = { hp0 = obj.health, sum = mon and amount or nil, t0 = now, t1 = now, who_id = who:id() }
+			if not tick_on or now - tick_t > 3000 then      -- (re)register; the second test heals a call dropped by a level change
+				tick_on = true
+				tick_t = now
+				level.add_call(pending_tick, tick_done)
+			end
 		else
-			-- the extra damage is lethal: kill with a real hit so death, loot and kill credit run normally
-			in_extra = true
-			local h = hit()
-			h.draftsman = who
-			h.type = hit.fire_wound
-			h.direction = obj:position():sub(who:position())
-			h.power = 10
-			h.impulse = 0
-			pcall(function() h:bone(IsStalker(obj) and "bip01_spine" or "pelvis") end)
-			obj:hit(h)
-			in_extra = false
+			p.t1 = now                                       -- same burst: hp0 stays, the whole burst is multiplied once
+			p.who_id = who:id()
 		end
 	end)
-	in_extra = false
 	if not ok then clog("on_npc_hit error: %s", tostring(err)) end
 end
 

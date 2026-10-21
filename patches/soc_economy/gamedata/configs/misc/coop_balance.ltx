@@ -4,11 +4,10 @@
 [damage]
 ; Extra damage that weapons of PLAYERS deal to every NPC and mutant. 1.0 = off, 1.5 = +50%, 2.0 = +100%.
 ; (Maintainer request: raise by +0.5 to +1.0, tune here.) NPC against NPC and mutant against NPC fights are not affected.
+; The extra is (mult - 1) times the health the hit really took (after bone scale, armor and immunities), so a headshot
+; stays a headshot and a hit on a hand stays small. Measured on Cordon bandits with one Makarov round (hit power 0.55):
+; 1.0 = 3 hits to the body / 1 to the head; 1.25 = 3 / 1; 1.5 = 2 / 1; 2.0 = 2 / 1.
 player_damage_mult = 1.5
-; Units of the script "hit amount" per unit of engine hit power. The vanilla scripts compare the amount with health*100,
-; so the amount is a percentage of full health: extra health lost = amount * (mult - 1) * hit_amount_scale. Change only if
-; the extra damage looks 100 times too weak or too strong in the log (cb.log).
-hit_amount_scale = 0.01
 log = true
 
 [ammo]

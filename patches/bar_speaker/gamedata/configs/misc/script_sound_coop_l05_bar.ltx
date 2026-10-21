@@ -5,14 +5,7 @@ duty_hangar_1
 bar_informer
 
 bar_megafon
-bar_megafon_speech
-bar_megafon_music_1
-bar_megafon_music_2
-bar_megafon_music_3
-bar_megafon_music_4
-bar_megafon_music_5
-bar_megafon_music_6
-bar_megafon_music_7
+bar_dolg_speech
 bar_radio_soc
 
 bar_barman_meet_greet
@@ -35,67 +28,20 @@ bar_hunter
 bar_veteran
 bar_visitor
 
-; Bar loudspeaker (see patches/bar_speaker/NOTES.md): 10 Duty announcements as one random theme, each music track its own theme.
-[bar_megafon_speech]
+; Bar loudspeaker (see patches/bar_speaker/NOTES.md): the SoC dolg_speech theme. One pool, random entry, never the same entry twice in a row
+; (select_next_sound), a random 5-15 s pause after every entry (idle), like SoC's ph_sound min_idle 5000 / max_idle 15000.
+; Files 1-9: the add-on's barman/Duty announcements; files 10-12: the SoC tracks megafon_music_1..3 (patch bar_speaker ships them).
+[bar_dolg_speech]
 type = 3d
 path = characters_voice\scenario\coop_l05_bar\bar_megafon_speech_
 shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_1]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_15
-shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_2]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_16
-shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_3]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_4
-shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_4]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_5
-shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_5]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_7
-shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_6]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_12
-shuffle = rnd
-idle = 0,0,100
-sync = true
-
-[bar_megafon_music_7]
-type = 3d
-path = characters_voice\scenario\coop_l05_bar\bar_megafon_14
-shuffle = rnd
-idle = 0,0,100
+idle = 5,15,100
 sync = true
 
 ; patch soc_music: original SoC Bar radio track (sounds\characters_voice\scenario\bar\radio_music\bar_radio_soc_1.ogg)
 [bar_radio_soc]
 type = 3d
 path = characters_voice\scenario\bar\radio_music\bar_radio_soc_
-shuffle = seq
+shuffle = rnd
 idle = 0,0,100
 sync = true

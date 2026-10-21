@@ -1,0 +1,119 @@
+-------------------------------------------------------------------------------------------------------
+-- Cordon opening, original Shadow of Chernobyl style (patch cutscenes_pkg_opening).
+--  1. glue for the SoC start dialog of Sidorovich (escape_trader_start_dialog, experienced branch only):
+--     PDA archive line for every player + the original voice lines 3 and 321 on the talking player's machine
+--  2. start task chain for EVERY player: the stock xr_effects.give_task hands a task to the first player only
+--     (and client_tasks.give_task_to_client returns early when the host already has it), so the other players never saw
+--     "The beginning of beginnings" / "Important mission" and the flash drive tasks. A server tick gives each task to each
+--     player once while its stage of the chain is open (the engine ignores a task a player already has).
+-------------------------------------------------------------------------------------------------------
+
+local MAP = "coop_l01_escape"
+
+-------------------------------------------------------------------------------------------------------
+-- 1. dialog glue
+-------------------------------------------------------------------------------------------------------
+local SPEAKER = { ["3"] = "npc", ["32"] = "actor", ["321"] = "npc", ["3211"] = "actor", ["32111"] = "npc", ["321111"] = "actor" }
+local VOICE = {
+	["3"]   = "characters_voice\\dialogs\\escape_trader_start_dialog_3",
+	["321"] = "characters_voice\\dialogs\\escape_trader_start_dialog_321",
+}
+local keep_snd = nil
+local last = { key = nil, t = 0 }
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCOPEN " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCOPEN " .. tostring(s)) end
+end
+
+local function say(key, first, second)
+	local tid = "coop_soc_open_" .. key
+	pcall(function() coop_pda_phrases.phrase_speaker[tid] = SPEAKER[key] end)
+	pcall(function() coop_pda_archive_sync.emit_phrase(first, second, tid) end)
+	if not OnClient() then return end
+	local la = getLocalActor()
+	if la == nil or first == nil or second == nil then return end
+	if first:id() ~= la:id() and second:id() ~= la:id() then return end
+	local now = time_global()
+	if last.key == key and now - last.t < 1500 then return end
+	last.key, last.t = key, now
+	qlog("SAY " .. key)
+	local v = VOICE[key]
+	if v == nil then return end
+	if not getFS():exist("$game_sounds$", v .. ".ogg") then qlog("NOVOICE " .. v); return end
+	pcall(function()
+		if keep_snd ~= nil and keep_snd:playing() then keep_snd:stop() end
+		keep_snd = sound_object(v)
+		keep_snd:play(la, 0, sound_object.s2d)
+	end)
+end
+
+function say_3(a, b) say("3", a, b) end
+function say_32(a, b) say("32", a, b) end
+function say_321(a, b) say("321", a, b) end
+function say_3211(a, b) say("3211", a, b) end
+function say_32111(a, b) say("32111", a, b) end
+function say_321111(a, b) say("321111", a, b) end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. start task chain for every player (server)
+-------------------------------------------------------------------------------------------------------
+local function has(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+-- task id, open while ...
+local CHAIN = {
+	{ id = "esc_start_main_quest_task",                 open = function() return not has("all_good_boy") end },
+	{ id = "esc_start_talk_to_the_sidorovich_quest_task", open = function() return not has("ESC_START_TALK_TO_THE_SIDOROVICH_QUEST_TASK_INFO") end },
+	{ id = "esc_start_find_stalker_shustry_quest_task", open = function()
+		return has("ESC_START_TALK_TO_THE_SIDOROVICH_QUEST_TASK_INFO") and not has("ESC_SMART_TERRAIN_1_TRADER_SIDOROVICH_FLESH_STOP_DIALOG_INFO") end },
+	{ id = "esc_start_talk_to_the_wolf_quest_task",     open = function()
+		return has("ESC_START_TALK_TO_THE_SIDOROVICH_QUEST_TASK_INFO") and not has("ESC_START_TALK_TO_THE_WOLF_QUEST_TASK_INFO") end },
+}
+local given = {}      -- task id -> { player id -> true }
+local t_srv = 0
+local installed_gen = 0
+local gen = 0
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	if level.name() ~= MAP then return end
+	if db.mp_actors == nil then return end
+	for _, st in ipairs(CHAIN) do
+		local ok, isopen = pcall(st.open)
+		if ok and isopen then
+			for pid, a in pairs(db.mp_actors) do
+				if a ~= nil and a:alive() and (given[st.id] == nil or not given[st.id][pid]) then
+					local ready = true
+					pcall(function() ready = IsActorNetReady(pid) end)
+					if ready then
+						given[st.id] = given[st.id] or {}
+						given[st.id][pid] = true
+						local ok2, err = pcall(function() GiveTaskToClient(st.id, pid) end)
+						qlog("GIVE_TASK " .. st.id .. " player=" .. tostring(pid) .. " " .. (ok2 and "ok" or tostring(err)))
+					end
+				end
+			end
+		end
+	end
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

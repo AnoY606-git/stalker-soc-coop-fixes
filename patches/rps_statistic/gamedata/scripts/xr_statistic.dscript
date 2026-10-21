@@ -1,0 +1,11 @@
+-- Shadow of COOP 8.0 bind_stalker.script calls xr_statistic.inc_rps_games_won when a player wins rock-paper-scissors
+-- (gesture game within 5 m), but the base xrMPE xr_statistic.script does not define it (only the Call of Pripyat add-on copy does):
+-- "attempt to call field 'inc_rps_games_won' (a nil value)" is a FATAL ERROR in this engine.
+-- This .dscript is appended to the base xr_statistic.script. The counter is not saved or sent, so the save/net format is unchanged.
+function inc_rps_games_won(id)
+	if actor_statistic[id] == nil then
+		inc_surges_counter(id)                       -- creates the player's table through the base helper
+		actor_statistic[id].surges = actor_statistic[id].surges - 1
+	end
+	actor_statistic[id].rps_games_won = (actor_statistic[id].rps_games_won or 0) + 1
+end

@@ -1,0 +1,18 @@
+New in v1.4
+
+Crashes and bugs
+- @rps_statistic: The game closing when one player wins the rock-paper-scissors gesture game against another (missing statistics function)
+- @bandit_jacket: Crash when wearing the bandit jacket or the black trench coat (missing hands model)
+- @cordon: Cordon story start: the flash drive hand-in to Sidorovich can no longer get stuck when the dialog is cut off, and the helicopter flight and the next task now start reliably
+- @bar_speaker: Bar loudspeaker no longer repeats a single phrase
+- @campfires: Cordon village: the stalkers around the campfire no longer take the seats of Sidorovich and the guide
+- @stash_loot: Breakable boxes (wooden boxes, metal cases) drop their contents again
+
+Restored from the original Shadow of Chernobyl
+- @soc_main_menu: The original main menu: brick wall artwork, animated Chernobyl sky and fire, the metal selector bar with gears
+- @cutscenes_pkg_opening,cordon: Cordon opening: all players start in Sidorovich's bunker, with the original start dialog and the opening scene
+- @marked_one: The Marked One looks like the Shadow of Chernobyl hero (model and every outfit)
+- @cordon_technician: A technician in the Cordon rookie village (repair and upgrades)
+- @soc_music: More of the original Bar radio music
+- @lobby_text: Lobby text without the beta wording
+- @soc_economy: Economy and balance settings updated (weapon zones, artifacts)

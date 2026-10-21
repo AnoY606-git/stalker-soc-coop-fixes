@@ -43,6 +43,7 @@ local function load_cfg()
 		q.fail = ini:r_string(id, "fail")
 		q.kind = str("kind", nil)
 		q.smart = str("smart", nil)
+		q.site = str("site", nil)
 		q.item = str("item", nil)
 		q.cd = default_cd
 		if ini:line_exist(id, "cooldown_min") then q.cd = ini:r_float(id, "cooldown_min") end
@@ -115,6 +116,7 @@ end
 -- can the quest be (re)started on this level?
 local function can_spawn(q)
 	if q.kind ~= nil then
+		if q.site ~= nil then return true end
 		return q.smart ~= nil and smart_obj(q.smart) ~= nil
 	end
 	for _, sp in ipairs(q.spawn) do
@@ -129,15 +131,36 @@ local function give_to_all(task_id)
 	xr_effects.give_task(nil, nil, {task_id})
 end
 
+-- map spots: the hint is the job's own string (name + short description, string id rq_spot_<job>). The spot is added on the server
+-- (map_add_object_spot_ser) and pushed to every connected client (map_sync_spot, like the mod's treasure_manager); a client that
+-- joins later gets it in catch_up(). Removal: map_remove_object_spot on the server drops it everywhere; it is called without
+-- the has-spot guard (the guard is false for squads that were already released) and repeated while a duplicate is left.
 local function add_spot(q, obj_id)
 	if obj_id == nil then return end
-	local ok = pcall(level.map_add_object_spot_ser, obj_id, SPOT[q.kind] or "red_location", game.translate_string("rq_spot_" .. q.id))
+	local typ = SPOT[q.kind] or "red_location"
+	local ok, err = pcall(level.map_add_object_spot_ser, obj_id, typ, game.translate_string("rq_spot_" .. q.id))
+	local ok2, err2 = pcall(level.map_sync_spot, obj_id, typ, SV_OBJECT_ID)
+	printf_msg("[RQ] %s: spot on %s type %s add=%s sync=%s %s", q.id, tostring(obj_id), typ, tostring(ok), tostring(ok2), tostring(err2 or err))
 	if ok then set_flag(q.key .. "_P" .. obj_id) end
+end
+
+local function remove_spot(q, id)
+	local typ = SPOT[q.kind] or "red_location"
+	for _ = 1, 3 do
+		pcall(level.map_remove_object_spot, id, typ)
+		local ok, has = pcall(level.map_has_object_spot, id, typ)
+		if not ok or has == 0 then break end
+	end
+end
+
+-- client side (called from sim_squad_scripted_cl_manager.dscript when a squad is removed): drop the local copy of a job spot that sat on it
+function on_squad_removed(squad_id)
+	pcall(level.map_remove_object_spot, squad_id, "red_location")
 end
 
 local function clear_tracking(q)
 	for _, id in ipairs(find_nums(q.key .. "_P")) do
-		pcall(xr_effects.remove_spot_from_map, id, SPOT[q.kind] or "red_location")
+		remove_spot(q, id)
 		clr_flag(q.key .. "_P" .. id)
 	end
 	for _, id in ipairs(find_nums(q.key .. "_S")) do clr_flag(q.key .. "_S" .. id) end
@@ -145,14 +168,52 @@ local function clear_tracking(q)
 	for _, id in ipairs(find_nums(q.key .. "_T")) do clr_flag(q.key .. "_T" .. id) end
 end
 
+-- where a generated job puts its targets: the game graph vertex "site" (outside bases / safe zones / level exits), else the smart terrain
+local function site_info(q)
+	if q.site == nil then return nil end
+	local nums = {}
+	for w in string.gmatch(q.site, "[-%d%.]+") do table.insert(nums, tonumber(w)) end
+	local ok, info = pcall(function()
+		if #nums >= 5 then
+			-- "x, y, z, level vertex id, game vertex id": a node of the level's AI map
+			local v = game_graph():vertex(nums[5])
+			if alife():level_name(v:level_id()) ~= level.name() then return nil end
+			return {position = vector():set(nums[1], nums[2], nums[3]), m_level_vertex_id = nums[4], m_game_vertex_id = nums[5]}
+		end
+		-- a single number: a game graph vertex
+		local v = game_graph():vertex(nums[1])
+		if alife():level_name(v:level_id()) ~= level.name() then return nil end
+		return {position = v:level_point(), m_level_vertex_id = v:level_vertex_id(), m_game_vertex_id = nums[1]}
+	end)
+	if ok then return info end
+	printf_msg("[RQ] %s: site %s unusable: %s", q.id, tostring(q.site), tostring(info))
+	return nil
+end
+
+-- like sim_board:create_squad, but the squad is created at a bare position and assigned to NO smart terrain: it stays where it was
+-- created (a smart terrain would send the members to its jobs, i.e. into the base that lives there, and overflow its job slots)
+local function create_squad_at(board, site, sec, id)
+	local squad = alife():create(sec, site.position, site.m_level_vertex_id, site.m_game_vertex_id)
+	site.name = function() return id .. "_site" end
+	squad:create_npc(site)
+	squad:set_squad_relation()
+	for k in squad:squad_members() do
+		squad.board:setup_squad_and_group(k.object)
+	end
+	sim_squad_scripted_cl_manager.get_squad_manager():add_squad_sv(squad)
+	return squad
+end
+
 -- spawn the targets of a generated job; returns true when something exists to hunt / find
 local function spawn_generated(q)
+	local site = site_info(q)
 	local smart = smart_obj(q.smart)
-	if smart == nil then return false end
+	local where = site or smart
+	if where == nil then return false end
 	local spot_obj = nil
 	if q.kind == "gen_find" then
 		local ok, se = pcall(function()
-			return alife():create(q.item, smart.position, smart.m_level_vertex_id, smart.m_game_vertex_id)
+			return alife():create(q.item, where.position, where.m_level_vertex_id, where.m_game_vertex_id)
 		end)
 		if not ok or se == nil then
 			printf_msg("[RQ] %s: item spawn failed %s", q.id, tostring(se))
@@ -163,8 +224,14 @@ local function spawn_generated(q)
 	else
 		local board = sim_board.get_sim_board()
 		for _, sec in ipairs(q.squads) do
-			local ok, sq = pcall(board.create_squad, board, smart, sec)
+			local ok, sq
+			if site ~= nil then
+				ok, sq = pcall(create_squad_at, board, site, sec, q.id)
+			else
+				ok, sq = pcall(board.create_squad, board, smart, sec)
+			end
 			if ok and sq ~= nil then
+				printf_msg("[RQ] %s: squad %s (id %s) created %s", q.id, sec, tostring(sq.id), site ~= nil and ("at site " .. tostring(q.site)) or ("in smart " .. tostring(q.smart)))
 				set_flag(q.key .. "_S" .. sq.id)
 				spot_obj = spot_obj or sq.id
 			else
@@ -336,6 +403,9 @@ local function catch_up()
 			for _, id in ipairs(fresh) do
 				client_tasks.give_task_to_client(q.id, id)
 				printf_msg("[RQ] late join: task %s -> actor %s", q.id, tostring(id))
+				for _, pid in ipairs(find_nums(q.key .. "_P")) do
+					pcall(level.map_sync_spot, pid, SPOT[q.kind] or "red_location", id)
+				end
 			end
 		end
 	end

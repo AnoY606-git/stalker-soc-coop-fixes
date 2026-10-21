@@ -94,7 +94,8 @@ local function place_marked_one(env)
 	if a == nil or a:section() ~= MAIN_SECTION then return end
 	local tr = vector():set(TRADER.x, TRADER.y, TRADER.z)
 	local me = vector():set(BUNKER.x, BUNKER.y, BUNKER.z)
-	if a:position():distance_to(me) < 1.5 then return end
+	-- the Cordon co-op spawn points are inside the bunker now (patch level.game): only move a player who is far from it
+	if a:position():distance_to(me) < 6.0 then return end
 	a:set_actor_position(me)
 	local dx, dz = tr.x - me.x, tr.z - me.z
 	pcall(function() a:set_actor_direction(-math.atan2(dx, dz)) end)
@@ -145,7 +146,7 @@ end
 -------------------------------------------------------------------------------------------------------
 coop_scenes.register{
 	id = "intro", kind = "movie", level = MAP, once = true,
-	tutorial = "soc_intro", length_ms = 185000, grace_ms = 20000, skip = "majority", settle_ms = 8000,
+	tutorial = "soc_intro", length_ms = 185000, grace_ms = 20000, skip = "majority", settle_ms = 1500,
 	need = { tex = { "intro\\intro_stalker.ogm" }, snd = { "characters_voice\\scenario\\video\\intro_stalker_l.ogg" } },
 	-- the Marked One is moved to the bunker while the movie covers the screen
 	steps = function(var, env)
@@ -169,7 +170,7 @@ coop_scenes.register{
 		end
 		if out == 0 then first_out = nil; return false end
 		first_out = first_out or ctx.now
-		return lobby == 0 or ctx.now - first_out > 45000
+		return lobby == 0 or ctx.now - first_out > 10000
 	end,
 }
 
@@ -348,3 +349,6 @@ end
 pcall(function()
 	game_sv.coop_opening_pda_yes = function(i) coop_scn_opening.on_pda_yes(i) end
 end)
+
+-- start task chain for every player + SoC start dialog glue (coop_soc_opening.script)
+pcall(function() coop_soc_opening.install() end)

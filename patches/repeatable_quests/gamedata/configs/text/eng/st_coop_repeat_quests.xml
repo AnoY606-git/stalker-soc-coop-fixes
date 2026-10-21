@@ -31,7 +31,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_sid_camp">
-		<text>Targets</text>
+		<text>Clear the bandit camp\nA bandit gang set up a camp and robs my customers. Wipe it out.</text>
 	</string>
 	<string id="rq_handin_rq_sid_camp">
 		<text>I found it: Clear the bandit camp</text>
@@ -52,7 +52,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_sid_kill">
-		<text>Targets</text>
+		<text>Hunt down a bandit patrol\nA bandit patrol is cutting the road to my bunker. Find them and kill them all.</text>
 	</string>
 	<string id="rq_handin_rq_sid_kill">
 		<text>I found it: Hunt down a bandit patrol</text>
@@ -73,7 +73,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_sid_defend">
-		<text>Camp under attack</text>
+		<text>Repel a bandit raid\nBandits are about to hit the village. Hold the camp and kill every one of them.</text>
 	</string>
 	<string id="rq_handin_rq_sid_defend">
 		<text>I found it: Repel a bandit raid</text>
@@ -94,7 +94,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_wolf_camp1">
-		<text>Targets</text>
+		<text>Clear the bandit hideout\nA hideout full of bandits is too close to our people. Clear it out.</text>
 	</string>
 	<string id="rq_handin_rq_wolf_camp1">
 		<text>I found it: Clear the bandit hideout</text>
@@ -115,7 +115,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_wolf_camp2">
-		<text>Targets</text>
+		<text>Clear the dog lair\nMutant dogs have a lair nearby. Kill every pack you find there.</text>
 	</string>
 	<string id="rq_handin_rq_wolf_camp2">
 		<text>I found it: Clear the dog lair</text>
@@ -136,7 +136,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_shu_find">
-		<text>Item</text>
+		<text>Find a lost pistol\nSomebody dropped a Fort pistol at the marked spot. Bring it to me, I will pay you well.</text>
 	</string>
 	<string id="rq_handin_rq_shu_find">
 		<text>I found it: Find a lost pistol</text>
@@ -157,7 +157,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_bar_kill1">
-		<text>Targets</text>
+		<text>Kill the mercenaries\nA mercenary squad is hanging around the Bar and my customers are scared. Take them out.</text>
 	</string>
 	<string id="rq_handin_rq_bar_kill1">
 		<text>I found it: Kill the mercenaries</text>
@@ -178,7 +178,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_bar_kill2">
-		<text>Targets</text>
+		<text>Kill the bandit gang\nBandits have been seen near the Bar. Find them and kill them all.</text>
 	</string>
 	<string id="rq_handin_rq_bar_kill2">
 		<text>I found it: Kill the bandit gang</text>
@@ -199,7 +199,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_bar_camp1">
-		<text>Targets</text>
+		<text>Clear the dog nest\nDogs keep attacking the people who come here. Clear their nest.</text>
 	</string>
 	<string id="rq_handin_rq_bar_camp1">
 		<text>I found it: Clear the dog nest</text>
@@ -220,7 +220,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_bar_camp2">
-		<text>Targets</text>
+		<text>Clear the mutant lair\nA boar and flesh lair is too close to the Bar. Kill them.</text>
 	</string>
 	<string id="rq_handin_rq_bar_camp2">
 		<text>I found it: Clear the mutant lair</text>
@@ -241,7 +241,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_bar_defend">
-		<text>Camp under attack</text>
+		<text>Defend the stalker camp\nBandits are going to raid a stalker camp near the Bar. Defend it and kill the raiders.</text>
 	</string>
 	<string id="rq_handin_rq_bar_defend">
 		<text>I found it: Defend the stalker camp</text>
@@ -262,7 +262,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_vor_camp1">
-		<text>Targets</text>
+		<text>Eliminate the bandit camp\nDuty does not tolerate bandits near the Bar. Eliminate the camp.</text>
 	</string>
 	<string id="rq_handin_rq_vor_camp1">
 		<text>I found it: Eliminate the bandit camp</text>
@@ -283,7 +283,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_vor_camp2">
-		<text>Targets</text>
+		<text>Eliminate the Freedom outpost\nA Freedom outpost has appeared near our territory. Eliminate it.</text>
 	</string>
 	<string id="rq_handin_rq_vor_camp2">
 		<text>I found it: Eliminate the Freedom outpost</text>
@@ -304,7 +304,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_vor_kill">
-		<text>Targets</text>
+		<text>Kill the Freedom scouts\nFreedom scouts are probing our defences. Find them and kill them.</text>
 	</string>
 	<string id="rq_handin_rq_vor_kill">
 		<text>I found it: Kill the Freedom scouts</text>
@@ -325,7 +325,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_vor_defend">
-		<text>Camp under attack</text>
+		<text>Defend the Duty post\nBandits plan to attack our post. Hold the line and kill them all.</text>
 	</string>
 	<string id="rq_handin_rq_vor_defend">
 		<text>I found it: Defend the Duty post</text>
@@ -346,7 +346,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_vor_find">
-		<text>Item</text>
+		<text>Recover the lost weapon\nA Duty soldier lost his AKSU. Recover it from the marked place and bring it to me.</text>
 	</string>
 	<string id="rq_handin_rq_vor_find">
 		<text>I found it: Recover the lost weapon</text>
@@ -367,7 +367,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_vor_camp3">
-		<text>Targets</text>
+		<text>Clear the mercenary camp\nMercenaries set up a camp on the army road. Clear it.</text>
 	</string>
 	<string id="rq_handin_rq_vor_camp3">
 		<text>I found it: Clear the mercenary camp</text>
@@ -388,7 +388,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_pet_kill">
-		<text>Targets</text>
+		<text>Hunt the mercenaries\nA squad of mercenaries is working in the area. Find and destroy them.</text>
 	</string>
 	<string id="rq_handin_rq_pet_kill">
 		<text>I found it: Hunt the mercenaries</text>
@@ -409,7 +409,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_hun_camp">
-		<text>Targets</text>
+		<text>Hunt the mutants\nI need a mutant lair cleared so my hunting grounds are safe again.</text>
 	</string>
 	<string id="rq_handin_rq_hun_camp">
 		<text>I found it: Hunt the mutants</text>
@@ -430,7 +430,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_inf_kill">
-		<text>Targets</text>
+		<text>Silence a renegade group\nA renegade stalker group has been selling my clients out. Kill them.</text>
 	</string>
 	<string id="rq_handin_rq_inf_kill">
 		<text>I found it: Silence a renegade group</text>
@@ -451,7 +451,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_inf_find">
-		<text>Item</text>
+		<text>Retrieve a lost weapon\nA customer lost a Desert Eagle at the marked place. Bring it back to me.</text>
 	</string>
 	<string id="rq_handin_rq_inf_find">
 		<text>I found it: Retrieve a lost weapon</text>
@@ -472,7 +472,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_inf_camp">
-		<text>Targets</text>
+		<text>Eliminate the Duty outpost\nA Duty outpost is blocking the freedom of movement here. Eliminate it.</text>
 	</string>
 	<string id="rq_handin_rq_inf_camp">
 		<text>I found it: Eliminate the Duty outpost</text>
@@ -493,7 +493,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_inf_defend">
-		<text>Camp under attack</text>
+		<text>Defend the Freedom camp\nDuty is about to attack a friendly camp. Defend it and kill the attackers.</text>
 	</string>
 	<string id="rq_handin_rq_inf_defend">
 		<text>I found it: Defend the Freedom camp</text>
@@ -514,7 +514,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_zho_find">
-		<text>Item</text>
+		<text>Find my bottle\nI lost a bottle of vodka somewhere near the marked place. Bring it back, friend.</text>
 	</string>
 	<string id="rq_handin_rq_zho_find">
 		<text>I found it: Find my bottle</text>
@@ -535,7 +535,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_ska_kill">
-		<text>Targets</text>
+		<text>Kill the bandits\nSome bandits crossed me. Find them and put them down.</text>
 	</string>
 	<string id="rq_handin_rq_ska_kill">
 		<text>I found it: Kill the bandits</text>
@@ -556,7 +556,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_sak_camp1">
-		<text>Targets</text>
+		<text>Eliminate the snork nest\nSnorks threaten our research team. Eliminate the nest.</text>
 	</string>
 	<string id="rq_handin_rq_sak_camp1">
 		<text>I found it: Eliminate the snork nest</text>
@@ -577,7 +577,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_sak_camp2">
-		<text>Targets</text>
+		<text>Eliminate the bloodsucker lair\nA bloodsucker lair near the lab must be destroyed.</text>
 	</string>
 	<string id="rq_handin_rq_sak_camp2">
 		<text>I found it: Eliminate the bloodsucker lair</text>
@@ -598,7 +598,7 @@
 		<text>I will take it.</text>
 	</string>
 	<string id="rq_spot_rq_sak_find">
-		<text>Item</text>
+		<text>Recover a lost detector\nOne of our detectors was lost in the marked area. Recover it and bring it to me.</text>
 	</string>
 	<string id="rq_handin_rq_sak_find">
 		<text>I found it: Recover a lost detector</text>

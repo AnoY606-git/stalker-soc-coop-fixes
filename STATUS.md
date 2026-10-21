@@ -12,6 +12,7 @@ Owner decision 2026-10-18: to save usage, agents whose code was written were sto
 - task_guard (dedicated server: give_task with no spawned player no longer crashes; the held task reached the player after spawn).
   The released 8.1 dedicated server crashes this way on Cordon about 40 s after start when no player has spawned yet (2 of 2 runs).
 - soc_music (SoC Bar radio song and menu music restored; tracks load with SoC lengths; PASS) and bar_speaker sound paths repaired
+- soc_main_menu (original SoC main menu: brick wall art, animated Chernobyl sky and fire, metal selector bar with gears; 4:3 and 16:9 engine screenshots of every button page, no missing texture / script errors; the bar following a real mouse is not driven by the harness)
 - no_mp_items (players spawn with the normal knife, torch and binoculars instead of mp_* versions; PASS)
 
 ## Written, not tested in game
@@ -37,3 +38,4 @@ Owner decision 2026-10-18: to save usage, agents whose code was written were sto
 ## v1.4 queue (2026-10-19)
 - mutant_loot: DONE, 2 real clients on Cordon 24 PASS (one part per corpse, no duplicate), default chance no crash; bind_monster.script merged into darkvalley_restore. Ship together with darkvalley_restore.
 - In progress: host armor reset + spawn direction + weapon_upgrades/npc_attachments boot-safety (gear agent), CNPP lag (cnpp agent), Kruglov follow + Ghost corpse (yantar agent), Sarcophagus door/wave chain proof.
+- inventory_carry (2026-10-21): rewritten. Root cause of 'clients lose their kit after a load' and 'wrong weapon in the slot': after a load the engine spawns a NEW start-kit body per player and leaves the saved body as an uncontrolled orphan. Fix moves items and money (transfer_item, slots first) from the old body to the live one and releases the old body. Proven: dedicated + 1 client, first load (slots, money, item counts, 1 body). Not yet proven: second load in a row and 2 clients with the final ping-based version (host PC ran out of commit memory, firefox leak). NOT in the release skip list any more only after those runs.

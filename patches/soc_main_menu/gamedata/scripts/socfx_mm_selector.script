@@ -1,0 +1,269 @@
+-- SoC main menu selector ("shniaga") and picture layout for the xrMPE main menu.
+-- The original SoC menu has a metal bar with a glass pane that glides to the button under the cursor, with a gear on each side
+-- (turning while it moves) and a grating at each end. The xrMPE engine only draws the buttons, so the bar is made of plain
+-- statics (socfx_bar, socfx_roll_l/r, socfx_grating_l/r in ui_mm_main.xml) that are moved from ui_main_menu.script:
+--   pre()       (UE4 styles) builds the picture statics (black, video, shutter panel) BELOW the buttons, before the menu is built
+--   init()      builds the bar statics and places everything, called when the menu window is created
+--   on_mouse()  remembers the button row under the mouse
+--   update()    glides the bar to that row every frame and turns the gears; hides it while the menu buttons are hidden;
+--               re-places everything when the screen size changes
+-- The style (soc | ue4_a | ue4_b) and its numbers come from configs\misc\socfx_mm.ltx, which is written together with
+-- configs\ui\ui_mm_main.xml (tools\gen_ui_mm_main.py). Numbers are in the 1080 high space of the xml.
+-- Everything is wrapped in pcall: if anything is missing the menu still works, only the bar / picture layout is left out.
+
+local ROW_H = 49            -- button pitch = pitch of the shutters of the SoC picture (SoC rows: 30)
+local BTN_W = 551           -- SoC: 392
+local GLASS_C = 56.5        -- the centre of the glass pane is 56.5 below the bar top (SoC: magnifire y 22, height 36)
+local BAR_W = 551           -- SoC bar width 392 x 1.40625 (unscaled, bar-left relative numbers below)
+-- name, left, top, width, height inside the unscaled bar
+local PARTS = {
+	{ "socfx_bar", 0, 0, 551, 103 },
+	{ "socfx_roll_l", 22, 13, 77, 77 },
+	{ "socfx_roll_r", 439, 13, 77, 77 },
+	{ "socfx_grating_l", 0, 6, 77, 94 },
+	{ "socfx_grating_r", 474, 6, 77, 94 },
+}
+local COUNTS = { menu_main = 4, menu_main_coop_mm = 7, menu_main_logout = 5, menu_main_mm = 5, menu_network_game = 3 }
+-- the 20 frames of the gears in ui\socfx_mm_sheet (SoC ui_menu_roll_L_01..20 / R_01..20, 55x55)
+local ROLL_L = { { 0, 768 }, { 55, 768 }, { 110, 768 }, { 165, 768 }, { 220, 768 }, { 275, 768 }, { 330, 768 }, { 385, 768 }, { 440, 768 }, { 495, 768 },
+	{ 550, 768 }, { 605, 768 }, { 660, 768 }, { 715, 768 }, { 770, 768 }, { 825, 768 }, { 880, 768 }, { 935, 768 }, { 0, 823 }, { 55, 823 } }
+local ROLL_R = { { 110, 823 }, { 165, 823 }, { 220, 823 }, { 275, 823 }, { 330, 823 }, { 385, 823 }, { 440, 823 }, { 495, 823 }, { 550, 823 }, { 605, 823 },
+	{ 660, 823 }, { 715, 823 }, { 770, 823 }, { 825, 823 }, { 880, 823 }, { 935, 823 }, { 0, 878 }, { 55, 878 }, { 110, 878 }, { 165, 878 } }
+local SPEED = 600           -- units per second, at least
+local STEP = 7              -- units of travel per gear frame
+
+-- The UI works in screen pixels: window rects, SetWndPos and the mouse position are pixels, the xml numbers (1080 high space) are
+-- scaled by height/1080 when the xml is read. Everything here is kept in 1080 space and converted at the edges.
+local function kscale()
+	return device().height / 1080
+end
+
+local cfg = nil
+local function config()
+	if cfg then
+		return cfg
+	end
+	local ok, t = pcall(function()
+		local ini = ini_file("misc\\socfx_mm.ltx")
+		local c = { style = ini:r_string("menu", "style") }
+		for _, key in ipairs({ "col_cx", "row0_y", "bar_f", "panel_cx", "panel_cy", "panel_w", "panel_h" }) do
+			if ini:line_exist("menu", key) then
+				c[key] = ini:r_float("menu", key)
+			end
+		end
+		return c
+	end)
+	if ok and t then
+		cfg = t
+	else
+		printf_msg("socfx_mm_selector: no socfx_mm.ltx, using the SoC style (%s)", tostring(t))
+		cfg = { style = "soc" }
+	end
+	return cfg
+end
+
+-- Where everything is, in the 1080 high space. soc: the SoC picture is centred, the buttons sit on its shutters.
+-- ue4_*: the 1920x1080 video is shown whole (fitted to the screen, black bars at the sides or top and bottom) and the buttons / panel
+-- keep their place inside the video, so that they sit on the planks at the right on every screen.
+local function layout()
+	local c = config()
+	local k = kscale()
+	local W = device().width / k
+	if c.style == "soc" then
+		return { k = k, W = W, col_left = W / 2 + 109, row0 = 586, bar_f = 0.65, bar_dx = 13 }
+	end
+	local vw, vh, vl, vt
+	if W >= 1919.5 then
+		vw, vh, vl, vt = 1920, 1080, (W - 1920) / 2, 0
+	else
+		vw = W
+		vh = W * 9 / 16
+		vl, vt = 0, (1080 - vh) / 2
+	end
+	local sv = vw / 1920
+	local L = { k = k, W = W, vl = vl, vt = vt, vw = vw, vh = vh, sv = sv, bar_f = c.bar_f or 0.65, bar_dx = 0 }
+	-- the xml anchors the button window to the RIGHT edge of the screen (fixed distance, fixed height): the buttons, the bar and the
+	-- panel are placed from there; only the video is fitted to the screen
+	L.col_left = W - (1920 - (c.col_cx or 1640)) - BTN_W / 2
+	L.row0 = c.row0_y or 560
+	if c.panel_cx then
+		L.panel_x = W - (1920 - c.panel_cx) - (c.panel_w or 305) / 2
+		L.panel_y = c.panel_cy - (c.panel_h or 506) / 2
+	end
+	return L
+end
+
+local function page(menu)
+	if level.present() then
+		return "menu_main_coop_mm"
+	end
+	return menu.socfx_page or "menu_main"
+end
+
+local function count(menu)
+	return COUNTS[page(menu)] or 4
+end
+
+local function row_y(L, row)   -- y of the centre of the glass of the bar = the centre of the row
+	return L.row0 + row * ROW_H + ROW_H / 2
+end
+
+local function set_pos_size(wnd, x, y, w, h, k)
+	wnd:SetWndPos(vector2():set(x * k, y * k))
+	if w then
+		wnd:SetWndSize(vector2():set(w * k, h * k))
+	end
+end
+
+-- (re)places the UE4 picture statics (video, black, panel); only needed for the ue4 styles
+local function place_picture(menu)
+	local c = config()
+	if c.style == "soc" then
+		return
+	end
+	local L = layout()
+	local k = L.k
+	if menu.socfx_black then
+		set_pos_size(menu.socfx_black, 0, 0, L.W, 1080, k)
+	end
+	if menu.socfx_video then
+		set_pos_size(menu.socfx_video, L.vl, L.vt, L.vw, L.vh, k)
+	end
+	if menu.socfx_panel and L.panel_x then
+		set_pos_size(menu.socfx_panel, L.panel_x, L.panel_y, nil, nil, k)
+	end
+	menu.socfx_place_w = device().width
+	menu.socfx_place_h = device().height
+end
+
+function pre(menu, xml)
+	local c = config()
+	if c.style == "soc" then
+		return
+	end
+	local ok, err = pcall(function()
+		menu.socfx_black = xml:InitStatic("socfx_ue4_black", menu)
+		menu.socfx_black:Enable(false)
+		menu.socfx_video = xml:InitStatic("socfx_ue4_video", menu)
+		menu.socfx_video:Enable(false)
+		if c.panel_cx then
+			menu.socfx_panel = xml:InitStatic("socfx_ue4_panel", menu)
+			menu.socfx_panel:Enable(false)
+		end
+		place_picture(menu)
+		printf_msg("socfx_mm_selector: picture ready (%s)", c.style)
+	end)
+	if not ok then
+		printf_msg("socfx_mm_selector.pre failed: %s", tostring(err))
+	end
+end
+
+local function place(menu)
+	local L = layout()
+	local bar_cx = L.col_left + BTN_W / 2 + L.bar_dx
+	local bar_top = menu.socfx_y - GLASS_C * L.bar_f
+	local k = L.k
+	for _, p in ipairs(menu.socfx_parts) do
+		-- every part keeps its place inside the bar, the whole bar is scaled by bar_f around its horizontal centre
+		local left = bar_cx + (p.dx + p.w / 2 - BAR_W / 2) * L.bar_f - p.w * L.bar_f / 2
+		p.wnd:SetWndPos(vector2():set(left * k, (bar_top + p.dy * L.bar_f) * k))
+	end
+end
+
+local function set_roll(wnd, rects, f)
+	local r = rects[f + 1]
+	wnd:SetTextureRect(Frect():set(r[1], r[2], r[1] + 55, r[2] + 55))
+end
+
+function init(menu, xml)
+	local ok, err = pcall(function()
+		menu.socfx_parts = {}
+		for _, p in ipairs(PARTS) do
+			local wnd = xml:InitStatic(p[1], menu)
+			wnd:Enable(false)
+			table.insert(menu.socfx_parts, { wnd = wnd, dx = p[2], dy = p[3], w = p[4], h = p[5] })
+			if p[1] == "socfx_roll_l" then menu.socfx_roll_l = wnd end
+			if p[1] == "socfx_roll_r" then menu.socfx_roll_r = wnd end
+		end
+		place_picture(menu)
+		menu.socfx_row = 0
+		menu.socfx_y = row_y(layout(), 0)
+		menu.socfx_target = menu.socfx_y
+		menu.socfx_travel = 0
+		place(menu)
+		printf_msg("socfx_mm_selector: ready, style %s, %d parts", config().style, #menu.socfx_parts)
+	end)
+	if not ok then
+		menu.socfx_parts = nil
+		printf_msg("socfx_mm_selector.init failed: %s", tostring(err))
+	end
+end
+
+-- screen position (pixels) of the middle of a button row; used by the automated menu test to simulate the mouse
+function test_point(row)
+	local L = layout()
+	return (L.col_left + BTN_W / 2) * L.k, (L.row0 + row * ROW_H + ROW_H / 2) * L.k
+end
+
+function on_mouse(menu, x, y, action)
+	if not menu.socfx_parts or action ~= 6 then -- WINDOW_MOUSE_MOVE
+		return
+	end
+	local L = layout()
+	x = x / L.k
+	y = y / L.k
+	if x < L.col_left or x > L.col_left + BTN_W then
+		return
+	end
+	local row = math.floor((y - L.row0) / ROW_H)
+	if row < 0 or row >= count(menu) then
+		return
+	end
+	menu.socfx_row = row
+	menu.socfx_target = row_y(L, row)
+end
+
+function update(menu)
+	if not menu.socfx_parts then
+		return
+	end
+	local ok, err = pcall(function()
+		if menu.socfx_place_w ~= device().width or menu.socfx_place_h ~= device().height then
+			place_picture(menu)   -- the screen changed size
+			menu.socfx_target = row_y(layout(), menu.socfx_row)
+			menu.socfx_y = menu.socfx_target
+		end
+		local shown = menu.shniaga:IsShown()
+		for _, p in ipairs(menu.socfx_parts) do
+			p.wnd:Show(shown)
+		end
+		if menu.socfx_row >= count(menu) then
+			menu.socfx_row = count(menu) - 1
+			menu.socfx_target = row_y(layout(), menu.socfx_row)
+		end
+		local d = menu.socfx_target - menu.socfx_y
+		if d == 0 then
+			place(menu)
+			return
+		end
+		local dt = device().f_time_delta
+		if not dt or dt <= 0 or dt > 0.2 then
+			dt = 1 / 60
+		end
+		local step = math.max(SPEED * dt, math.abs(d) * math.min(1, 8 * dt))
+		if step >= math.abs(d) then
+			step = math.abs(d)
+		end
+		local mv = (d > 0) and step or -step
+		menu.socfx_y = menu.socfx_y + mv
+		menu.socfx_travel = menu.socfx_travel + mv
+		local f = math.floor(menu.socfx_travel / STEP) % 20
+		set_roll(menu.socfx_roll_l, ROLL_L, f)
+		set_roll(menu.socfx_roll_r, ROLL_R, f)
+		place(menu)
+	end)
+	if not ok then
+		menu.socfx_parts = nil
+		printf_msg("socfx_mm_selector.update failed: %s", tostring(err))
+	end
+end

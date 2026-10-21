@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+	<string id="coop_soc_open_3"><text>The choice is yours. Either I brainwash you like I usually do with all the rookies or I treat you like a real stalker and give you a mission straight away.</text></string>
+	<string id="coop_soc_open_32"><text>Just give me a mission.</text></string>
+	<string id="coop_soc_open_321"><text>Got a job for you, Marked One... I want you to find a stalker called Nimble, he was carrying some very important information. He disappeared somewhere near the bridge. Find him, dead or alive - I don't care, I need the flash drive with the info. Visit Wolf from the local camp, and ask him. He certainly knows where that guy can be.</text></string>
+	<string id="coop_soc_open_3211"><text>Go on.</text></string>
+	<string id="coop_soc_open_32111"><text>That's all for now. Bring me the flash drive and we'll consider the fact that you've partially paid me for saving you.</text></string>
+	<string id="coop_soc_open_321111"><text>OK, I'll try.</text></string>
+</string_table>

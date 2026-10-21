@@ -1,0 +1,10 @@
+-- Appended to sim_squad_scripted_cl_manager.script (xrMPE .dscript). Every client gets a "squad removed" message when a squad dies / is
+-- released. A repeatable-quest map spot sits on its target squad; the server drops its own copy of the spot together with the squad, so
+-- the client has to drop its copy here (the spot was sent to the clients with map_sync_spot and nothing else removes it).
+local rq_orig_remove_squad = sim_squad_cl_manager.remove_squad
+function sim_squad_cl_manager:remove_squad(squad_id)
+	if coop_repeat_quests ~= nil then
+		pcall(coop_repeat_quests.on_squad_removed, squad_id)
+	end
+	return rq_orig_remove_squad(self, squad_id)
+end

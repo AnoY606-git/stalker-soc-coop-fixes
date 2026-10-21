@@ -192,9 +192,7 @@
 		<text>Получено достижение «Сизифов труд».</text>
 	</string>
 	<string id="st_coop_desc">
-		<text>«S.T.A.L.K.E.R. Shadow of COOP» - аддон для мультиплеерной модификации «X-Ray Multiplayer Extension», позволяющий пройти переработанный сюжет игры Shadow Of Chernobyl в кооперативе, рассчитанный от 2 до 4 игроков.
-		\n-Инвентарь сохраняется перед переходом на следующую локацию.
-		\n-Выбор карты вручную: F5, затем голосование за карту, на которой вы остановились.</text>
+		<text>«S.T.A.L.K.E.R. Shadow of COOP» - аддон для мультиплеерной модификации «X-Ray Multiplayer Extension», позволяющий пройти переработанный сюжет игры Shadow Of Chernobyl в кооперативе, рассчитанный от 2 до 4 игроков.</text>
 	</string>
 	<string id="st_coop_name">
 		<text>S.T.A.L.K.E.R. Shadow of COOP</text>

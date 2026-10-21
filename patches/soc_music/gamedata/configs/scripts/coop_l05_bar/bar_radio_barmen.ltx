@@ -1,15 +1,18 @@
 [logic]
 active = sr_idle
 
-; patch soc_music: the original SoC Bar radio track (bar_radio_soc), played again and again like SoC's ph_sound radio_music.
-; on_timer (real ms) instead of on_game_timer: the game clock does not advance on a dedicated server.
+; patch soc_music. Original SoC (bar_radio.ltx: ph_sound1, snd = radio_music, no conditions, no pause): the radio plays its one track again and
+; again for as long as it is online; nothing stops it and no player distance gates it. The sound itself (min 2 m, max 30 m, volume 2.0 in the ogg)
+; limits where it is heard. Here: ask for the track every 0.25 s; play_sound ignores the call while it is still playing, and the theme
+; bar_radio_soc (sync = true) is started by the server on every client.
 [sr_idle]
-on_info = {-bar_player_music_info -bar_megafon_alarm =dist_to_actor_le(15)} sr_idle@play %=play_sound(bar_radio_soc)%
-
-[sr_idle@play]
-on_signal = sound_end | sr_idle@wait
-on_info = {+bar_player_music_info} sr_idle
+on_info = sr_idle@wait %=play_sound(bar_radio_soc)%
 
 [sr_idle@wait]
-on_timer = 2000 | sr_idle
-on_info = {+bar_player_music_info} sr_idle
+on_timer = 250 | sr_idle
+
+; Sections of the earlier versions (saved games keep the name of the active section; a name that no longer exists crashes the load):
+; each one just goes back to sr_idle.
+
+[sr_idle@play]
+on_info = sr_idle

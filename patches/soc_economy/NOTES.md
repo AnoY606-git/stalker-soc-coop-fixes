@@ -1,6 +1,6 @@
 # SoC economy, artifacts, damage and weapon zones - notes
 
-Status: code and config only, written from static analysis. **Nothing here was run in game (untested).**
+Status: the damage multiplier (section A) was run and measured in game on 2026-10-20 (listen server, Cordon). The rest is code and config written from static analysis.
 
 ## Where the SoC values come from
 The reference folder `soc_ai_port\extracted\src` holds no weapon, ammo or outfit configs, so the values were read
@@ -63,14 +63,69 @@ Players' weapons deal `mult` times the damage to every NPC and mutant. 1.0 = off
 How: `scripts\coop_balance.script`, function `on_npc_hit`, is called as the first line of the two hit callbacks that cover every NPC and mutant:
 `motivator_binder:hit_callback` (all stalkers, `scripts\xr_motivator.script`, copy of the xrMPE one with one line added) and
 `generic_object_binder:hit_callback` (all monsters, `bind_monster.script`, one line added). If the attacker (`who`) is a player (`db.mp_actors`)
-and the target is alive and not invulnerable, extra health `amount * (mult - 1) * hit_amount_scale` is removed. If that would kill the target, a real
+and the target is alive and not invulnerable, the hits of one burst are collected; about 0.12 s after the last one (the engine has applied them by then)
+`(mult - 1) * (health the burst really took)` more health is removed. If that would kill the target, a real
 fire-wound `hit()` with the player as draftsman is applied instead, so death, loot and kill credit run through the normal paths.
 Why this way (instead of immunity factors): the immunity sections are static config, cannot read one tunable number, and would also change
 NPC-versus-NPC fights; a per-NPC binder callback gets the attacker, so only players' shots are boosted and the value is read from one ltx at server start.
 Why not a second `set_callback(callback.hit)`: it would replace the binder's own callback (a game_object has one slot), breaking wounded/combat logic.
-Assumption to check first in game: the callback `amount` is a percentage of full health (the vanilla scripts compare it with `health*100`), hence
-`hit_amount_scale = 0.01`. If shots look 100 times too weak or strong, change that one number. `cb.log` (logs folder) lists errors and the config line.
-Not covered: `bind_gigant.script` (the big boss mutant), fights between NPCs, explosions fired by NPCs. Players' grenades count (the attacker is the player).
+`cb.log` (logs folder) lists errors and the config line.
+
+### v1.4 fix: the multiplier healed the target (found 2026-10-20, FOSTER: "12 PM rounds to the body, 2-3 to the head")
+Measured in the game (listen server, Cordon, scripted hits of one PM round, hit power 0.89 x k_hit 0.62 = 0.55, attacker = the player):
+- The callback `amount` is hit power x 100 (55.18 for 0.5518) and the callback runs BEFORE the engine applies the hit (health is still 1.0 inside it).
+- The script property `health` is RELATIVE in this engine: `obj.health = 0.8` adds 0.8, `obj.health = -0.2` took 1.0 to 0.8 (vanilla scripts hurt with
+  `db.actor.health = -0.05`). The first version wrote `obj.health = hp - extra`, i.e. it healed the target by about its whole health on every
+  player hit, which cancels the hit: a chest shot with x1.5 left the bandit at 100% in 9 hits out of 9 (fixed point about 70% health). Only head, leg and arm
+  hits, which take more than that, killed him: that is the "12 rounds to the body, 2-3 to the head" report. The same code ran for mutants.
+- Now the extra is taken off after the engine's own damage as a negative number and is proportional to the damage that really happened, so bone scale
+  (head x3, hand x0.1), armor and immunities still count. The `hit_amount_scale` setting is gone (the fix does not need it).
+- Other things checked and found fine: NPC health regeneration is off in this build (a wounded bandit stayed at 0.5861 for 10 s, although
+  `satiety_health_v = 0.1` in the config; SoC has 0.0), `player_scaling` does not change NPC toughness at all (it only adds members and reinforcement squads,
+  so the two never cancel; with one player `player_count` = 1, mp_actors = get_players_count = 1; a dead player or spectator is not counted).
+
+Hits needed to kill a Cordon bandit (`sim_default_bandit_0`, no armor) with PM-sized hits, one per second, 1 player, same test before/after the fix:
+| player_damage_mult | body (spine1), before | body, after | head, before | head, after |
+|---|---|---|---|---|
+| 1.0 (off) | 3 | 3 | 1 | 1 |
+| 1.25 | never (9 hits: health stays 100%) | 3 | - | - |
+| 1.5 (shipped) | never (9 hits: health stays 100%) | 2 | 2 | 1 |
+| 2.0 | never (9 hits) | 2 | - | - |
+Stock mod without any fix patch (measured separately, same test): 3 body hits / 1 head. v1.3 (x1.5): body never / head 2. Fixed (x1.5): 2 / 1.
+The v1.3 release was checked file by file: the only damage-relevant changes in it are `coop_balance` and its two hook lines; it ships no ammo
+section and no weapon hit values (`w_val.ltx` differs from the mod only in two bone lists), `player_scaling` only adds NPCs. So there is no reason to
+raise `hit_power` of the guns: that would also raise what NPCs deal to players, while `player_damage_mult` is a single player-only knob for all guns.
+The 3rd body hit at x1.0 and the 2nd at x1.5 are the finishing hit on a wounded NPC (health under about 0.2). Limbs at x1.5: hand never dies in 9
+hits (x0.1 bone scale), arm and calf 5 hits (before: never).
+
+SoC compared (original game files; PM, stalker difficulty): hit_power 0.34 (0.30/0.34/0.37/0.40 by difficulty) x ammo k_hit 1.0 = 0.34 per round vs 0.55 here;
+bone scale spine 1.0, spine1/spine2 0.5, pelvis 1.0, head 2.0 (SoC `stalker_damage`) vs 0.75 and 3.0 here (`stalker_damage_half`); SoC jacket armor 0.15 with
+ammo k_pierce 1.0 passes 85% of the damage, here the Cordon bandits wear armor 0 (`models\capture\stalker_bandit_1` -> `body_damage_1`). In SoC a
+jacketed bandit takes about 3.5 (spine) to 7 (spine1/2) PM rounds, a headshot kills; here the base game needs 3 and 1, and 2 and 1 with x1.5.
+Not changed (the maintainer rejected SoC damage values, see Task 2). Not measured with real bullets: bandits of rank 1 and up wear `body_damage_2`
+(armor 0.1) against FMJ k_ap 0.15, which the CoP armor formula lets through at about 33% (SoC: k_pierce 1.0).
+Per weapon type (Cordon bandit, real hit powers and types of this mod, attacker = the player; a volley is every hit of one trigger pull in the same
+frame, one volley per second; hits to kill, x1.0 = stock, x1.5 = shipped):
+| Type (power per hit) | x1.0 | x1.5 |
+|---|---|---|
+| PM, fire_wound 0.55, 1 hit | 3 | 2 |
+| AK-74 burst of 3, fire_wound 0.43 each | 2 volleys | 1 volley |
+| Shotgun buckshot, 5 pellets of 0.36 in one frame | 2 volleys | 1 volley |
+| SVD, fire_wound 1.09 | 2 | 1 |
+| Knife, wound 1.0 | never in 9 stabs (health 0.13) | 6 |
+| F-1 style explosion 0.5 / RPG explosion 1.0 | 1 | 1 |
+Bursts and pellets are multiplied once as a whole (the burst loss is measured after the engine has applied all of it), so a burst is not over or under
+multiplied. Nothing misbehaved. The knife is weak even without the multiplier: `wound` damage goes through `wound_immunity = 0.32` of the `no_resistance`
+section (SoC stalkers have 1.0); not touched here. Client hits: dedicated server plus one client with the client as attacker gave the same numbers as the
+host (x1.5: body 1.0 -> 0.38 -> dead = 2 hits, head 1), and `player_count` = 1 with `get_players_count` = 2.
+Not measurable here: armored targets with real bullets. A shooter NPC spawned with a single weapon never fired in 16 trials (bare spawned NPCs run no
+combat logic), and the `hit` script class has no armor-piercing field, so scripted hits cannot show armor. Config values only: bandit ranks 2-4 and Freedom rank 2
+wear armor 0.1, Freedom rank 3 armor 0.3, against k_ap 0.15 (PM FMJ), 0.45 (AK-74 FMJ), 0.8 (SVD 7h1).
+Mutants (v1.4): the monster callback differs from the stalker one: it runs AFTER the hit and `amount` is the health already lost (a dog at 1.0 went to
+0.5861 with amount 0.4139), so for monsters the amounts of a burst are summed instead of measuring the health afterwards. Measured on `dog_normal` with the same
+PM-sized hit: x1.0 = 3 hits, x1.5 = 2 hits (before this change the monster path also did nothing useful). `bind_gigant.script` (the two gigant bosses, one
+`bind_gigant` copy in this patch) now calls the same function, except for the light-anomaly boss whose health is scripted; that copy was not run (one added line; no boss exists on Cordon).
+Not covered: fights between NPCs, explosions fired by NPCs. Players' grenades count (the attacker is the player).
 `bind_monster.script` is shipped by two patches (darkvalley_restore and mutant_loot, the second marked do-not-merge); the same one line was added to both.
 
 ## B. Trader ammo scales with the player count (`[ammo]` in `coop_balance.ltx`)
@@ -117,4 +172,5 @@ Encoding kept (cp1251), CRLF kept, no control characters other than tab/CR/LF.
 ## Кратко (RU)
 Артефакты: все обычные af_* наследуют SoC-версии, CoP-артефакты заменены на ближайшие SoC. Детекторы продаются у Сидоровича, Бармена, Петренко, Сахарова; у зомбированных сталкеров их нет.
 Урон и цены по SoC отклонены, всё откачено. Вместо этого: один множитель урона игроков по всем NPC и мутантам (coop_balance.ltx, player_damage_mult = 1.5) и запас патронов у торговцев растёт с числом игроков (ammo_per_extra_player).
-Зоны запрета оружия отключены. Ничего не проверялось в игре.
+Зоны запрета оружия отключены.
+Множитель урона (v1.4): раньше он ЛЕЧИЛ цель. Свойство `health` в этом движке относительное (obj.health = x прибавляет x), а скрипт писал obj.health = hp - extra, то есть лечил почти на всё здоровье при каждом попадании игрока и сводил попадание на нет (поэтому у FOSTER бандит держал 12 патронов ПМ в корпус и 2-3 в голову). Теперь лишний урон снимается отрицательным числом после урона движка и пропорционально реально снятому здоровью (голова, кость, броня учитываются). Замер в игре, бандит Кордона, патрон ПМ: x1.0: корпус 3 / голова 1; x1.5 до правки: корпус никогда (здоровье 100%) / голова 2; x1.5 после правки: корпус 2 / голова 1. Настройка hit_amount_scale убрана. player_scaling не делает NPC крепче (только больше NPC), с множителем они не гасят друг друга.

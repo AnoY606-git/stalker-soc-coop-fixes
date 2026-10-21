@@ -1,0 +1,12 @@
+[logic]
+active = sr_idle
+
+; patch soc_music: SoC has one Bar radio (bar_radio, see bar_radio_barmen.ltx) and one Duty loudspeaker. This add-on object played the
+; add-on's own non-SoC music, so it stays silent.
+[sr_idle]
+
+; Sections of the earlier versions (saved games keep the name of the active section; a name that no longer exists crashes the load):
+; each one just goes back to sr_idle.
+
+[sr_idle@wait]
+on_info = sr_idle

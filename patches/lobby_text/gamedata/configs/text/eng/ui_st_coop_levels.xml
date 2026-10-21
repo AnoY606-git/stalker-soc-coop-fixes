@@ -2,9 +2,7 @@
 <string_table>
 ;===========================COOP=============================================================================================================================================================================================================================================
 	<string id="st_coop_desc">
-		<text>«S.T.A.L.K.E.R. Shadow of COOP» is an addon for the multiplayer modification «X-Ray Multiplayer Extension» that lets you play through the reworked Shadow Of Chernobyl storyline in co-op, designed for 2 to 4 players.
-		\n-Inventory is saved before moving to the next location.
-		\n-To pick a map manually, press F5 and vote for the map where you left off.</text>
+		<text>«S.T.A.L.K.E.R. Shadow of COOP» is an addon for the multiplayer modification «X-Ray Multiplayer Extension» that lets you play through the reworked Shadow Of Chernobyl storyline in co-op, designed for 2 to 4 players.</text>
 	</string>
 	<string id="coop_l01_escape">
 		<text>Cordon</text>

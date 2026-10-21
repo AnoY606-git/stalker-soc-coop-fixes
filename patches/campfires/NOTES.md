@@ -87,3 +87,67 @@ index, so all players need the same patch (as always).
 (3 костра), Армейских складах (2 костра) используют kamp: круг радиусом 1,9 - 2,4 м вокруг костра, лицом к огню, разные позы. Песни: у голосов
 stalker и bandit гитара уже играла песни ТЧ (guitar_17..27 = guitar_1..11 ТЧ), лишние песни CoP (guitar_30, 28, 29) заменены песнями ТЧ, у csky
 тоже; добавлена гармоника ТЧ. Не проверено в игре.
+
+
+## Update 2026-10-20: rookie village fire, no chair sitter, SoC head count
+Report (maintainer FOSTER, Cordon, the fire between the brick shed and the plastered house): about 9 stalkers around the fire, "more precisely the
+one sitting on the chair"; none sits on a chair there in SoC.
+
+### What SoC has at that fire (reference: original SoC 1.0006 `alife_l01_escape` spawn dump)
+Smart terrain `esc_lager` (capacity 13): seven novices `esc_lager1..7` (character `esc_stalker_novice`), Wolf (`esc_wolf`, 4.4 m from the fire) and, only after
+the quest flag `esc_fanat_spawn`, Fanatic. Next to the fire (2.6 to 3.2 m) sit `esc_lager2`, `esc_lager3`, `esc_lager5`; `esc_lager1` is 8 m, `esc_lager6`
+13 m and `esc_lager7` 20 m away. Nobody sits on a chair.
+
+### Measured before (stock v1.3 stage, listen server, 4 samples between 60 and 340 s after spawn)
+Stalkers within 15 m of the fire: 10 to 13 (all online), the village smart terrain held 18 NPCs. At 60 s: 6 on `kamp` seats 1 to 6 (1.3 to 3 m), 1 on the
+**chair** (`sim_default_stalker_0`, job `logic@esc_smart_terrain_1_animpoint_7`, 2.1 m from the fire), 3 standing guards (`guard_6_walk` 4.3 m, `guard_2_walk`
+12 m, plus the stalker on `animpoint_8`, 12 m, sitting on the steps), Wolf (8.6 m).
+Who the chair sitter is: one of the 16 generic village stalkers of the mod (squads `esc_smart_terrain_1_stalker_1..6_squad`: 3+3+3+3+2+2 members of
+`sim_default_stalker_0`). He is NOT the Cordon technician (`cordon_technician`), and not from `alife_roaming` (that patch only moves squads).
+The chair is the smart cover `esc_smart_terrain_1_animpoint_7` (`animpoint_sit_normal`, in all.spawn 1.7 m from the fire): the base script
+`gulag_general.script` makes a generic job (prior 15) for every cover named `<smart>_animpoint_<N>`, so every cover placed by the map author is used.
+The five other seated stalkers were our own `kamp` seats (this patch, six at the fire).
+
+### Fix
+1. `scripts/gulag_general.script` (copy of the xrMPE base file, the mod does not change it; verified in game that this flat file is the one loaded):
+   the generic animpoint loop skips the covers listed in the smart terrain ini line `[smart_terrain] skip_animpoints = N, M`. Nothing else changed
+   (3 added lines plus one `if`). Other smart terrains have no such line, so nothing changes on other levels.
+2. `smart/esc_smart_terrain_1.ltx`: `skip_animpoints = 7` (the chair). Kamp seats 4 to 6 of the village fire removed (the fire keeps seats 1 to 3 = the three
+   SoC novices; the second fire keeps seats 7 and 8). `esc_smart_terrain_1_kamp.ltx`: sections 4 to 6 removed.
+3. `configs/misc/simulation.ltx` (file owned by `sarcophagus_count`, edited there): the village statist squads `esc_smart_terrain_1_stalker_2/3/4_squad` are
+   no longer created at the start (16 generic stalkers become 7, SoC has 7 `esc_lager` novices). The squad definitions stay in `squad_descr_coop_l01_escape.ltx`.
+   Wolf, Sidorovich and the guide (Globus, appears with his quest) are untouched; the rest of the Cordon squads are untouched.
+
+### Measured after (same stage plus this fix, same run length)
+Stalkers within 15 m of the fire: 4 at every sample (3 sitting on the `kamp` seats at 2.3 to 2.8 m, Wolf at 8.6 m); nobody on `animpoint_7`; the village
+smart terrain holds 9 NPCs (Wolf, Sidorovich, 7 statists: 3 on the village fire, 2 on the second fire, 2 guards). Test hook: `patches/cordon/tests/fire_count.lua`
+(`run_coop.ps1 -Mode listen -Clients 1`, logs `FIRE ...` lines with name, section, job, scheme, distance).
+
+### Limits
+- The stalkers that SoC places 8 to 20 m from the fire (`esc_lager1`, `6`, `7`) are on guard paths of the map now, so only 4 stand within 15 m (SoC has about 6).
+- `skip_animpoints` only removes the generic job; the cover object stays in all.spawn (nobody uses it).
+- The chair-free fire needs the same patch on host and clients (scripts and ltx are part of the db).
+
+### Кратко по-русски
+У костра в деревне новичков на Кордоне было 10 to 13 сталкеров, один сидел на стуле (смарт-ковёр `esc_smart_terrain_1_animpoint_7`, обычный
+сталкер `sim_default_stalker_0` из 16 статистов мода; это не техник и не `alife_roaming`). В оригинальной ТЧ у костра сидят трое новичков, на стуле никто.
+Исправлено: `gulag_general.script` пропускает ковры из строки `skip_animpoints` в ini смарт-террейна (для деревни: 7); мест `kamp` у главного костра теперь 3
+(было 6); статистов деревни 7 вместо 16 (как `esc_lager1..7` в ТЧ; правка в `simulation.ltx` патча `sarcophagus_count`). Замер в игре: до 10 to 13 сталкеров в 15 м от
+костра, после 4 (трое у костра и Волк); на стуле никого. Волк, Сидорович и проводник не тронуты.
+
+
+### Follow-up 2026-10-20: chair sitters in the village houses
+FOSTER's new screenshots show a rookie village house room (sofa, nightstand with a candle) with a stalker sitting on a chair and one standing at the wall.
+SoC has no such stalkers anywhere in the village: the cover objects `esc_smart_terrain_1_animpoint_1..11` (CoP `animpoint_sit_normal`, `sit_high`,
+`stay_wall`) were placed by the map author, and the base `gulag_general.script` turns every one of them into a generic job (prior 15). Measured before
+(16 statists as in v1.3, same census as above, 390 s): 5 statists on animpoint jobs (6 and 8 `sit_normal` in the guide house and the house at the fire,
+9 `sit_high`, 10 `stay_wall`, 11 `sit_normal` in the west hut); visuals `stalker_neutral_0_N` (novice models).
+Fix: `skip_animpoints = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11` in `smart/esc_smart_terrain_1.ltx` (all village covers). Sidorovich (cover 3) and the guide
+(cover 4) keep their exclusive jobs, which are separate job sections. After: 0 animpoint jobs at all four samples (60 to 390 s), the village holds 9 NPCs
+(Wolf, Sidorovich, 5 on `kamp` seats, 2 on guard paths). Test hook `patches/cordon/tests/all_stalkers.lua` (whole-level census with job, scheme, visual).
+Not proven: the exact NPC of the screenshots (no engine screenshot is possible, the harness lobby window covers the scene); the dead stalkers on the floor in
+the screenshot are not part of this logic.
+
+### Кратко (дополнение)
+Все ковры `esc_smart_terrain_1_animpoint_1..11` (стулья/стены в домах деревни, нет в ТЧ) отключены строкой `skip_animpoints`; до: 5 статистов на этих заданиях,
+после: 0. Сидорович и проводник не затронуты.

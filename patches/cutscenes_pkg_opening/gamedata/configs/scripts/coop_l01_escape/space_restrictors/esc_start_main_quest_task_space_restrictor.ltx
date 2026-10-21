@@ -2,11 +2,7 @@
 active 												= sr_idle@start_quest
 ;Начало игры(Начало начал, Важное поручение):
 [sr_idle@start_quest]
-; cutscenes_pkg_opening: wait for the opening movie (scene director flag), with a safety timer if it never runs
-on_info 											= {+SCN_INTRO_PLAYED} sr_idle@start_quest_go
-on_game_timer 										= 6000 | sr_idle@start_quest_go
-
-[sr_idle@start_quest_go]
+; stock logic (patch cutscenes_pkg_opening v1.3 waited for the opening movie flag or 6000 game seconds, so the tasks came late or never)
 on_game_timer 										= 10 | sr_idle@esc_helicopter_go_to_agroprom %=give_task(esc_start_main_quest_task) =give_task(esc_start_talk_to_the_sidorovich_quest_task) =scenario_autosave(st_save_esc_game_start)%
 
 [sr_idle@esc_helicopter_go_to_agroprom]

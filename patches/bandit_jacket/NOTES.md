@@ -42,3 +42,5 @@ Host and clients must all install the same outfit.ltx (configs are checked/synce
 
 ## Test
 Start a coop game, spawn/buy bandit_outfit and black_coat_outfit, equip each as host and as a client, then drink vodka while wearing each. Expect no crash and bandit hands in first person.
+
+- Also: outfit.ltx here carries the worn-suit actor_visual lines of the marked_one patch (they point at actors/marked_one/*.ogf, shipped by marked_one). Build both patches together.

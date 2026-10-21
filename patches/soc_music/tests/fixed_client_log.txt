@@ -1,0 +1,11 @@
+[74] BMC observer (client) started t=66076
+[75] BMC HEARD t=66606 theme=bar_dolg_speech playing (client sound object started)
+[75] BMC HEARD t=66606 theme=bar_radio_soc playing (client sound object started)
+[75] BMC HEARD t=66606 theme=play_guitar playing (client sound object started)
+[93] BMC ENDED t=85061 theme=play_guitar after 18.5 s
+[103] BMC ENDED t=95216 theme=bar_dolg_speech after 28.6 s
+[103] BMC PLAY  t=95250 obj=bar_dolg_megafone id=3459 pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#3 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_3 start_from=nil dist_to_me=141.9
+[125] BMC PLAY  t=116640 obj=bar_dolg_megafone id=3459 pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#11 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_11 start_from=nil dist_to_me=141.9
+[212] BMC PLAY  t=203945 obj=bar_dolg_megafone id=3459 pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#7 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_7 start_from=nil dist_to_me=141.9
+[245] BMC PLAY  t=237410 obj=bar_dolg_megafone id=3459 pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#12 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_12 start_from=nil dist_to_me=141.9
+[248] BMC PLAY  t=240251 obj=bar_radio_barmen id=3619 pos=128.1,-2.9,19.4 theme=bar_radio_soc file=#1 characters_voice\scenario\bar\radio_music\bar_radio_soc_1 start_from=nil dist_to_me=41.5

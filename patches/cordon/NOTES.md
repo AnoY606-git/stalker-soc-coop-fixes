@@ -87,3 +87,7 @@
 - REVERTED the go_to_fox precondition change: it again requires ESC_HELICOPTER_GO_TO_AGROPROM_INFO (that flag also gates the Kuznetsov vodka chain and the "talk to Sidorovich" task, so bypassing it risked new breakage).
 - ADDED a fallback in configs/scripts/coop_l01_escape/space_restrictors/esc_start_main_quest_task_space_restrictor.ltx: once the flash-drive flag is set, if the helicopter hasn't set its flag within 1800 game-seconds (~3 real min), the restrictor gives the flag and the esc_start_talk_to_the_sidorovich_quest_1_task task itself. If the helicopter fires first, the fallback just follows it.
 - KEPT: flash flag + money moved to phrase 2 (fixes the cut-off dialog softlock), and the door on_use removal.
+
+## Opening (2026-10-21)
+The four co-op spawn points of this level are now inside Sidorovich's bunker (`levels\coop_l01_escape\level.game`) and his start dialog is the original SoC one
+(`dialogs_coop_l01_escape.xml`, only the experienced answer). Details, tests and the Russian summary: `patches\cutscenes_pkg_opening\NOTES.md`.

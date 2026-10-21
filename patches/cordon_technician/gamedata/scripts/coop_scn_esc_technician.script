@@ -21,8 +21,8 @@ SECTION    = "esc_rookie_technician"
 STORY_ID   = "esc_rookie_technician"
 LOGIC_FILE = "scripts\\coop_l01_escape\\esc_rookie_technician.ltx"
 
--- inside the workshop house of the village (x, y, z of the floor)
-SPOT = { x = -219.0, y = -19.5, z = -166.0 }
+-- in the basement of the village: Sidorovich's bunker, next to the work cabinet (esc_shkaf_work_01), AI node 204839
+SPOT = { x = -246.4, y = -24.8, z = -133.7 }
 
 local checked_at = 0
 local created_n = 0

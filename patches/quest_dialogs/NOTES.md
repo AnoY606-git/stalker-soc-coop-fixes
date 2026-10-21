@@ -18,3 +18,7 @@ Run the script again if the mod's dialog files or `patches/cordon`'s Escape dial
 
 ## Кратко (RU)
 Пункты "Я хочу отказаться от заказа..." и "Я по поводу задания..." теперь видны только когда у игрока есть активное задание от этого НПС.
+
+## 2026-10-21
+`dialogs_coop_l01_escape.xml` was regenerated on top of `patches/cordon`'s copy again after the Sidorovich start dialog became the original SoC opening
+(see `patches\cutscenes_pkg_opening\NOTES.md`); the only difference to cordon's copy is still the two `<precondition>` lines.

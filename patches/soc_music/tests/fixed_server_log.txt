@@ -1,0 +1,13 @@
+[88] BM observer (server) started t=80490
+[88] BM START t=80750 id=3459 obj=bar_dolg_megafone pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#10 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_10 sync=true
+[88] BM START t=80750 id=3619 obj=bar_radio_barmen pos=128.1,-2.9,19.4 theme=bar_radio_soc file=#1 characters_voice\scenario\bar\radio_music\bar_radio_soc_1 sync=true
+[112] BM END   t=104779 id=3459 bar_dolg_speech played 24.0 s
+[118] BM START t=110911 id=3459 obj=bar_dolg_megafone pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#3 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_3 sync=true
+[129] BM END   t=121620 id=3459 bar_dolg_speech played 10.7 s
+[140] BM START t=132552 id=3459 obj=bar_dolg_megafone pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#11 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_11 sync=true
+[210] BM END   t=203112 id=3459 bar_dolg_speech played 70.6 s
+[226] BM START t=219132 id=3459 obj=bar_dolg_megafone pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#7 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_7 sync=true
+[242] BM END   t=234634 id=3459 bar_dolg_speech played 15.5 s
+[257] BM START t=249777 id=3459 obj=bar_dolg_megafone pos=158.0,13.7,115.6 theme=bar_dolg_speech file=#12 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_12 sync=true
+[263] BM END   t=255716 id=3619 bar_radio_soc played 175.0 s
+[263] BM START t=255970 id=3619 obj=bar_radio_barmen pos=128.1,-2.9,19.4 theme=bar_radio_soc file=#1 characters_voice\scenario\bar\radio_music\bar_radio_soc_1 sync=true

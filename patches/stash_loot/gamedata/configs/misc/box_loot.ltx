@@ -1,0 +1,81 @@
+; Loot of boxes that had NO loot data in the original Shadow of Chernobyl (patch stash_loot).
+; Boxes that did have data (dropped by SoC: 300+ of them) keep the original SoC tables and are not affected by this file.
+; Rule suggested by FOSTER: consumables in boxes, 30 percent in wooden boxes, 50 percent in metal boxes.
+;
+; Wooden and metal breakable boxes roll once, when the box is broken. Plain inventory boxes (containers you
+; open, without a stash story) roll once, server side, the first time the box comes online; the result is
+; remembered in a story flag, so the box is never refilled after a reload or a level change.
+; Everything is created on the server only, one roll per box (not per player).
+
+[settings]
+; false = switch the whole fallback off (the boxes without SoC data stay empty like in SoC)
+enabled            = true
+fallback_breakable = true
+fallback_inventory = true
+; percent chance per box
+wood_chance        = 30
+metal_chance       = 50
+inventory_chance   = 50
+; how many items a successful roll gives (each is picked by the weights below)
+items_per_roll     = 1
+; ammo stack size when "ammo" is picked (capped by the ammo box size)
+ammo_min           = 10
+ammo_max           = 30
+
+[consumables]
+; section = weight. "ammo" means: one of the ammo types of the current level (tier lists below).
+; Sections that do not exist in the game are ignored.
+bread     = 20
+kolbasa   = 20
+conserva  = 15
+vodka     = 10
+bandage   = 15
+medkit    = 8
+antirad   = 6
+ammo      = 26
+
+; ammo by level tier (space or comma separated). tier_default is used by levels without their own list.
+[tier_default]
+ammo = ammo_9x18_fmj, ammo_5.45x39_fmj
+
+; Cordon, Garbage, Agroprom, Dark Valley, X18: pistol and shotgun ammo, 5.45 from Garbage on
+[tier_coop_l01_escape]
+ammo = ammo_9x18_fmj, ammo_12x70_buck
+[tier_coop_l02_garbage]
+ammo = ammo_9x18_fmj, ammo_12x70_buck, ammo_5.45x39_fmj
+[tier_coop_l03_agroprom]
+ammo = ammo_9x18_fmj, ammo_12x70_buck, ammo_5.45x39_fmj
+[tier_coop_l03_agroprom_underground]
+ammo = ammo_9x18_fmj, ammo_5.45x39_fmj
+[tier_coop_l04_darkvalley]
+ammo = ammo_9x18_fmj, ammo_12x70_buck, ammo_5.45x39_fmj
+[tier_coop_l04_x18]
+ammo = ammo_9x18_fmj, ammo_5.45x39_fmj, ammo_9x19_fmj
+
+; Bar, Rostok, Military: rifle ammo
+[tier_coop_l05_bar]
+ammo = ammo_9x19_fmj, ammo_5.45x39_fmj
+[tier_coop_l06_rostok]
+ammo = ammo_9x19_fmj, ammo_5.45x39_fmj, ammo_12x70_buck
+[tier_coop_l07_military]
+ammo = ammo_5.45x39_fmj, ammo_5.56x45_ss190, ammo_9x19_fmj
+
+; Yantar, Radar, X16, X10, Pripyat, Chernobyl: armour piercing and 7.62
+[tier_coop_l08_x16]
+ammo = ammo_5.45x39_fmj, ammo_9x19_fmj
+[tier_coop_l08_yantar]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_9x19_fmj
+[tier_coop_l09_radar]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1
+[tier_coop_l09_x10]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1
+[tier_coop_l10_pripyat]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1
+[tier_coop_l11_stancia_1]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1
+[tier_coop_l11_stancia_2]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1
+[tier_coop_l11_control_monolith]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1
+[tier_coop_l11_sarcofag]
+ammo = ammo_5.45x39_ap, ammo_5.56x45_ss190, ammo_7.62x54_7h1

@@ -1,0 +1,13 @@
+[197] BM observer (server) started t=182120
+[300] BM START t=285558 id=3619 obj=bar_radio_barmen pos=128.1,-2.9,19.4 theme=bar_radio_soc file=#1 characters_voice\scenario\bar\radio_music\bar_radio_soc_1 sync=true
+[300] BM START t=285558 id=3238 obj=bar_dolg_megafone_0000 pos=158.1,5.3,66.6 theme=bar_megafon_music_2 file=#1 characters_voice\scenario\coop_l05_bar\bar_megafon_16 sync=true
+[346] BM END   t=331163 id=12716 play_harmonica played 40.0 s
+[355] BM END   t=340243 id=3238 bar_megafon_music_2 played 54.7 s
+[361] BM START t=346039 id=3238 obj=bar_dolg_megafone_0000 pos=158.1,5.3,66.6 theme=bar_megafon_speech file=#2 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_2 sync=true
+[381] BM END   t=365661 id=3238 bar_megafon_speech played 19.6 s
+[390] BM START t=375449 id=3238 obj=bar_dolg_megafone_0000 pos=158.1,5.3,66.6 theme=bar_megafon_speech file=#4 characters_voice\scenario\coop_l05_bar\bar_megafon_speech_4 sync=true
+[401] BM END   t=385668 id=3238 bar_megafon_speech played 10.2 s
+[416] BM START t=401310 id=3238 obj=bar_dolg_megafone_0000 pos=158.1,5.3,66.6 theme=bar_megafon_music_3 file=#1 characters_voice\scenario\coop_l05_bar\bar_megafon_4 sync=true
+[420] BM END   t=405294 id=12757 play_guitar played 30.9 s
+[434] BM END   t=418746 id=12716 play_harmonica played 36.1 s
+[478] BM END   t=463474 id=3619 bar_radio_soc played 177.9 s

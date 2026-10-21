@@ -1,175 +1,141 @@
 [logic]
 active = sr_idle
 
-; Original SoC (ph_sound@idle, theme dolg_speech): random Duty announcement or music, 5-15 s pause, repeat.
-; Here: announcement, pause, announcement, pause, music track k, pause, ... through all tracks.
+; Original SoC: the ONE Duty loudspeaker (ph_sound@idle: snd = dolg_speech, min_idle = 5000, max_idle = 15000) plays a random entry of its
+; list, never the same twice in a row, then pauses 5-15 s and repeats. Here that is the sound theme bar_dolg_speech (random entry, idle = 5,15):
+; the theme itself enforces the pause, this section only asks for a sound every 0.5 s. The two extra loudspeaker objects the add-on added
+; (bar_dolg_megafone_0000 / _0001, same cfg) stay silent: SoC has one speaker, and three speakers talking out of phase is not SoC.
 [sr_idle]
-on_info = {-bar_player_music_info -bar_megafon_alarm} sr_idle@s0 %=play_sound(bar_megafon_speech)%
+on_info = {=check_npc_name(megafone$)} sr_idle@wait %=play_sound(bar_dolg_speech)%
+
+[sr_idle@wait]
+on_timer = 500 | sr_idle
+
+; Sections of the earlier versions (saved games keep the name of the active section; a name that no longer exists crashes the load):
+; each one just goes back to sr_idle.
 
 [sr_idle@s0]
-on_signal = sound_end | sr_idle@p0
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p0]
-on_timer = 5000 | sr_idle@s1 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s1]
-on_signal = sound_end | sr_idle@p1
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p1]
-on_timer = 9000 | sr_idle@s2 %=play_sound(bar_megafon_music_1)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s2]
-on_signal = sound_end | sr_idle@p2
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p2]
-on_timer = 15000 | sr_idle@s3 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s3]
-on_signal = sound_end | sr_idle@p3
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p3]
-on_timer = 7000 | sr_idle@s4 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s4]
-on_signal = sound_end | sr_idle@p4
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p4]
-on_timer = 12000 | sr_idle@s5 %=play_sound(bar_megafon_music_2)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s5]
-on_signal = sound_end | sr_idle@p5
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p5]
-on_timer = 5000 | sr_idle@s6 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s6]
-on_signal = sound_end | sr_idle@p6
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p6]
-on_timer = 9000 | sr_idle@s7 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s7]
-on_signal = sound_end | sr_idle@p7
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p7]
-on_timer = 15000 | sr_idle@s8 %=play_sound(bar_megafon_music_3)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s8]
-on_signal = sound_end | sr_idle@p8
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p8]
-on_timer = 7000 | sr_idle@s9 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s9]
-on_signal = sound_end | sr_idle@p9
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p9]
-on_timer = 12000 | sr_idle@s10 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s10]
-on_signal = sound_end | sr_idle@p10
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p10]
-on_timer = 5000 | sr_idle@s11 %=play_sound(bar_megafon_music_4)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s11]
-on_signal = sound_end | sr_idle@p11
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p11]
-on_timer = 9000 | sr_idle@s12 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s12]
-on_signal = sound_end | sr_idle@p12
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p12]
-on_timer = 15000 | sr_idle@s13 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s13]
-on_signal = sound_end | sr_idle@p13
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p13]
-on_timer = 7000 | sr_idle@s14 %=play_sound(bar_megafon_music_5)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s14]
-on_signal = sound_end | sr_idle@p14
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p14]
-on_timer = 12000 | sr_idle@s15 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s15]
-on_signal = sound_end | sr_idle@p15
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p15]
-on_timer = 5000 | sr_idle@s16 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s16]
-on_signal = sound_end | sr_idle@p16
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p16]
-on_timer = 9000 | sr_idle@s17 %=play_sound(bar_megafon_music_6)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s17]
-on_signal = sound_end | sr_idle@p17
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p17]
-on_timer = 15000 | sr_idle@s18 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s18]
-on_signal = sound_end | sr_idle@p18
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p18]
-on_timer = 7000 | sr_idle@s19 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s19]
-on_signal = sound_end | sr_idle@p19
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p19]
-on_timer = 12000 | sr_idle@s20 %=play_sound(bar_megafon_music_7)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@s20]
-on_signal = sound_end | sr_idle@p20
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
 
 [sr_idle@p20]
-on_timer = 5000 | sr_idle@s0 %=play_sound(bar_megafon_speech)%
-on_info = {+bar_player_music_info} sr_idle, {+bar_megafon_alarm} sr_idle
+on_info = sr_idle
