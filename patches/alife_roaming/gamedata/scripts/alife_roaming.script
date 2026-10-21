@@ -30,19 +30,39 @@ local function split(s)
 	return t
 end
 
+-- Settings the host may change in coop_settings.ltx, section [roaming] (patch host_settings; server only, read at every level start).
+-- Not listed on purpose: the job-safety limits (max_npc_per_smart, max_squads_per_smart, max_mutant_squads_per_smart, max_squad_size).
+local HOST_NUM = { start_delay = true, stay_min = true, stay_max = true, max_moving = true, go_home_chance = true, min_players_dist = true }
+local HOST_BOOL = { enabled = true, allow_online_move = true, mutants = true }
+
+-- drops the cached settings (coop_host_cfg.reload, tests)
+function host_reload()
+	cfg = nil
+end
+
 local function num(sect, key, def)
+	local r = def
 	if cfg_ini:section_exist(sect) and cfg_ini:line_exist(sect, key) then
 		local v = tonumber(cfg_ini:r_string(sect, key))
-		if v ~= nil then return v end
+		if v ~= nil then r = v end
 	end
-	return def
+	if sect == "roaming" and HOST_NUM[key] then
+		local ok, h = pcall(function() return coop_host_cfg.num("roaming", key, r) end)
+		if ok and h ~= nil then r = h end
+	end
+	return r
 end
 
 local function str(sect, key, def)
+	local r = def
 	if cfg_ini:section_exist(sect) and cfg_ini:line_exist(sect, key) then
-		return cfg_ini:r_string(sect, key)
+		r = cfg_ini:r_string(sect, key)
 	end
-	return def
+	if sect == "roaming" and HOST_BOOL[key] then
+		local ok, h = pcall(function() return coop_host_cfg.bool("roaming", key, r == "true") end)
+		if ok and h ~= nil then r = h and "true" or "false" end
+	end
+	return r
 end
 
 local function set_of(list)

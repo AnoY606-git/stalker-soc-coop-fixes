@@ -23,6 +23,7 @@ local STEP_MS = 500
 local BATCH = 6               -- items moved per step
 local VERIFY_TIMEOUT_MS = 20000
 local MAX_PASSES = 3
+local SPARE_MS = 30000       -- a generic-named unclaimed start-kit body must have stood unused this long before it is released
 
 local born = {}               -- body id -> time_global when first seen
 local flagged = {}            -- NAME -> { [body id] = true }  (mirror of the story flags)
@@ -30,6 +31,8 @@ local jobs = {}               -- NAME -> restore job
 local ctrl = {}               -- NAME -> { id = body id the player controls (client ping), t = last ping, since = first ping of this id }
 local started_at = nil
 local flags_read = false
+local flags_at = 0
+local last_state = ""
 
 local function say(m)
 	printf("[inventory_carry] %s", tostring(m))
@@ -229,7 +232,8 @@ end
 -- who plays which body: every client tells the server, once per 2 s, which player he is (name remembered from his own new spawn,
 -- a body bound by the engine after a load carries a generic name) and the server learns the body from the caller id.
 -----------------------------------------------------------------------------------------------------------------
-local GENERIC = "ACTOR_THE_MAIN_CHARACTER"
+-- names the engine gives a body bound by a load (the section names of the first / the other players)
+local GENERIC_NAMES = { ACTOR_THE_MAIN_CHARACTER = true, ACTOR_PARTNER_REGULAR = true }
 local registered = {}
 local my_name = nil
 local my_last_ping = 0
@@ -257,8 +261,8 @@ local function client_tick(now)
 	local ok, alive = pcall(function() return o:alive() and o:section() ~= "spectator" end)
 	if not ok or not alive then return end
 	local nm = key_of_name(o:name())
-	if nm ~= "" and nm ~= GENERIC and nm ~= my_name then
-		my_name = nm
+	if nm ~= "" and not GENERIC_NAMES[nm] and my_name == nil then
+		my_name = nm        -- the first real name seen in this game session; a later body may carry another player's name (same address)
 		pcall(function() local f = io.open(name_file(), "w") if f then f:write(nm); f:close() end end)
 	end
 	if my_name == nil then
@@ -276,9 +280,26 @@ local function client_tick(now)
 end
 
 local function owner_of(id, p, id2name)
+	if id2name[id] ~= nil then return id2name[id] end          -- remembered / confirmed by a client ping: beats the name
 	local ok, nm = pcall(function() return key_of_name(p:name()) end)
-	if ok and nm ~= "" and nm ~= GENERIC then return nm end
-	return id2name[id]
+	if ok and nm ~= "" and not GENERIC_NAMES[nm] then return nm end
+	return nil
+end
+
+local START_KIT = { wpn_knife = true, device_torch = true, wpn_binoc = true, device_pda = true, bolt = true }
+
+-- true when the body holds nothing but start-kit items (and no money)
+local function spare_ok(p)
+	local okm, m = pcall(function() return p:money() end)
+	if okm and type(m) == "number" and m > 0 then return false end
+	local clean = true
+	p:iterate_inventory(function(_, it) if not START_KIT[it:section()] then clean = false end end, p)
+	return clean
+end
+
+local function jobs_busy()
+	for _ in pairs(jobs) do return true end
+	return false
 end
 
 local function tick()
@@ -290,28 +311,52 @@ local function tick()
 	if type(db.mp_actors) ~= "table" then return false end
 	pcall(client_tick, now)            -- the host of a listen game plays too
 	if started_at == nil then started_at = now end
-	if not flags_read then read_flags() end
+	if not flags_read or now - flags_at >= 2000 then flags_at = now; read_flags() end
 	local bodies = living_bodies()
 	for id, p in pairs(bodies) do
 		if born[id] == nil then born[id] = now end
 		local okn, nm = pcall(function() return key_of_name(p:name()) end)
-		if okn and nm ~= "" and nm ~= GENERIC then register_ping(nm) end
+		if okn and nm ~= "" and not GENERIC_NAMES[nm] then register_ping(nm) end
 	end
 	for nm in pairs(flagged) do register_ping(nm) end
+
+	-- state line (only when it changes), so a failed restore can be read from coop_inventory_carry.log
+	do
+		local parts = {}
+		for id, p in pairs(bodies) do
+			local okn, n = pcall(function() return p:name() end)
+			parts[#parts + 1] = tostring(id) .. ":" .. tostring(okn and n or "?")
+		end
+		table.sort(parts)
+		local fl = {}
+		for nm, ids in pairs(flagged) do for id in pairs(ids) do fl[#fl + 1] = nm .. "_" .. id end end
+		table.sort(fl)
+		local cs = {}
+		for nm, c in pairs(ctrl) do cs[#cs + 1] = nm .. "=" .. c.id .. (now - c.t < 8000 and "" or "(stale)") end
+		table.sort(cs)
+		local st = "bodies " .. table.concat(parts, ",") .. " | flags " .. table.concat(fl, ",") .. " | ctrl " .. table.concat(cs, ",")
+		if st ~= last_state then last_state = st; say(st) end
+	end
 
 	local id2name = {}
 	for nm, ids in pairs(flagged) do for id in pairs(ids) do id2name[id] = nm end end
 	for nm, c in pairs(ctrl) do
 		if now - c.t < 8000 and bodies[c.id] ~= nil then
-			if id2name[c.id] ~= nm then set_flag(nm, c.id, true); id2name[c.id] = nm end   -- remembered at once
+			-- remembered at once, but only a body that carries this player's own name: right after a load the client may still point at
+			-- another player's saved body for a few seconds, and that must never become "his" body
+			local okn, bn = pcall(function() return key_of_name(bodies[c.id]:name()) end)
+			if id2name[c.id] == nil and okn and bn == nm then set_flag(nm, c.id, true); id2name[c.id] = nm end
 		end
 	end
 
 	for nm, c in pairs(ctrl) do
-		if jobs[nm] == nil and now - c.t < 8000 and now - c.since >= SETTLE_MS and bodies[c.id] ~= nil then
+		if jobs[nm] == nil and now - c.t < 8000 and now - c.since >= SETTLE_MS and bodies[c.id] ~= nil
+			and (id2name[c.id] == nil or id2name[c.id] == nm) then
 			local orph = {}
 			for id, p in pairs(bodies) do
-				if id ~= c.id and owner_of(id, p, id2name) == nm then
+				-- only OLDER bodies of this player are merged into the body he plays (lower id = spawned earlier); an unused newer body is
+				-- a spare (handled below), never a source
+				if id < c.id and owner_of(id, p, id2name) == nm and now - (born[id] or now) >= SETTLE_MS then
 					local controlled = false
 					for nm2, c2 in pairs(ctrl) do if c2.id == id and now - c2.t < 8000 then controlled = true end end
 					if not controlled then orph[#orph + 1] = id end
@@ -321,6 +366,31 @@ local function tick()
 				table.sort(orph)
 				jobs[nm] = { name = nm, new_id = c.id, orph = orph }
 				say(string.format("%s: playing body %d, old bodies %s", nm, c.id, table.concat(orph, ",")))
+			end
+		end
+	end
+
+	-- Spare body: after a load the engine may bind a player to his saved body AND still spawn a fresh start-kit body that nobody plays.
+	-- It is released once it has stood unused for SPARE_MS, holds nothing but the start kit and no money, and its owner (by flag or
+	-- name) is playing another body; a body with a generic name and no flag counts as unowned (any player pinging is enough).
+	local n_bodies, n_fresh = 0, 0
+	for _ in pairs(bodies) do n_bodies = n_bodies + 1 end
+	for nm2, c2 in pairs(ctrl) do if now - c2.t < 8000 and bodies[c2.id] ~= nil then n_fresh = n_fresh + 1 end end
+	for id, p in pairs(bodies) do
+		if n_bodies > n_fresh and now - (born[id] or now) >= SPARE_MS and spare_ok(p) and not jobs_busy() then
+			local used = false
+			for nm2, c2 in pairs(ctrl) do if c2.id == id and now - c2.t < 8000 then used = true end end
+			if not used then
+				local own = owner_of(id, p, id2name)
+				local other = false
+				for nm2, c2 in pairs(ctrl) do
+					if now - c2.t < 8000 and bodies[c2.id] ~= nil and (own == nil or own == nm2) then other = true end
+				end
+				if other then
+					say(string.format("spare start-kit body %d released (unused for %d s)", id, math.floor((now - (born[id] or now)) / 1000)))
+					release_body(id)
+					born[id] = nil
+				end
 			end
 		end
 	end
@@ -343,10 +413,18 @@ end
 
 -- Own 500 ms loop (the director does not poll while players stand in the lobby, which is where a new level starts).
 -- This file is only LOADED by the scene director's package discovery (patches/cutscenes_core).
-do
+-- A level.add_call loop dies with the level, but the Lua VM of a CLIENT survives a reconnect (a save load), so the file is not run again:
+-- the loop is re-armed from the actor binder's net_spawn (wrapped once), the same trick the QA harness uses. The server VM restarts on
+-- a load and simply runs this file again.
+local loop_gen = 0
+local function arm_loop()
+	loop_gen = loop_gen + 1
+	local my = loop_gen
 	local next_at = 0
+	started_at = nil
 	local ok, err = pcall(function()
 		level.add_call(function()
+			if my ~= loop_gen then return true end
 			local now = time_global()
 			if now >= next_at then
 				next_at = now + 500
@@ -358,3 +436,17 @@ do
 	end)
 	if not ok then say("could not start: " .. tostring(err)) end
 end
+
+arm_loop()
+pcall(function()
+	local bs = bind_stalker
+	if bs ~= nil and bs.mp_actor_binder ~= nil and not bs.inv_carry_wrapped then
+		bs.inv_carry_wrapped = true
+		local orig = bs.mp_actor_binder.net_spawn
+		bs.mp_actor_binder.net_spawn = function(self, data)
+			local r = orig(self, data)
+			pcall(arm_loop)
+			return r
+		end
+	end
+end)

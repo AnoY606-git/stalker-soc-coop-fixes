@@ -1,0 +1,61 @@
+[logic@esc_smart_terrain_7_walker_kuznetsov]
+suitable 											= {=check_npc_name(esc_smart_terrain_7_military_kuznetsov)} true
+active 												= walker@esc_smart_terrain_7_walker_kuznetsov
+prior 												= 300
+on_hit                                              = hit@esc_bridge_soldier
+on_death                                            = death@esc_bridge_soldier
+
+[walker@esc_smart_terrain_7_walker_kuznetsov]
+path_walk 											= walker_kuznetsov_walk
+path_look 											= walker_kuznetsov_look
+meet 												= meet@hello_players
+invulnerable 										= false
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= true
+combat_ignore_keep_when_attacked 					= true
+on_info 											= {+ESC_THE_ORDER_TO_ATTACK_THE_PLAYERS_INFO} 			walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info1 											= {+ESC_SMART_TERRAIN_7_MILITARY_1_SQUAD_DEAD} 			walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info2 											= {+ESC_SMART_TERRAIN_7_MILITARY_2_SQUAD_DEAD} 			walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info3 											= {+ESC_SMART_TERRAIN_7_MILITARY_3_SQUAD_DEAD} 			walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info4 											= {+ESC_SMART_TERRAIN_7_MILITARY_4_SQUAD_DEAD} 			walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info5 											= {+ESC_SMART_TERRAIN_7_MILITARY_KUZNETSOV_SQUAD_DEAD} 	walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+on_info6 											= {+ESC_SMART_TERRAIN_7_MILITARY_SHTIRTS_SQUAD_DEAD} 	walker@esc_smart_terrain_7_walker_kuznetsov_attack_players %=scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+
+[walker@esc_smart_terrain_7_walker_kuznetsov_attack_players]
+path_walk 											= walker_kuznetsov_walk
+path_look 											= walker_kuznetsov_look
+meet 												= no_meet
+invulnerable 										= false
+def_state_standing 									= guard
+gather_items_enabled 								= false
+help_wounded_enabled 								= false
+corpse_detection_enabled 							= false
+combat_ignore_cond 									= false
+combat_ignore_keep_when_attacked 					= false
+	
+[meet@hello_players]			
+close_snd_hello 									= bridge_soldier
+close_snd_bye   									= bridge_soldier
+close_anim 											= guard
+close_victim 										= actor
+far_anim 											= guard
+far_victim 											= actor
+close_distance  									= 2
+far_distance 										= 20
+close_snd_distance 									= 6
+use 												= true
+allow_break 										= false
+trade_enable 										= false
+meet_on_talking 									= true
+
+;================================================
+
+[hit@esc_bridge_soldier]
+on_info                                             = {=hit_by_actor -ESC_THE_ORDER_TO_ATTACK_THE_PLAYERS_INFO} %+ESC_THE_ORDER_TO_ATTACK_THE_PLAYERS_INFO =scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+
+[death@esc_bridge_soldier]
+on_info                                             = {=killed_by_actor -ESC_THE_ORDER_TO_ATTACK_THE_PLAYERS_INFO} %+ESC_THE_ORDER_TO_ATTACK_THE_PLAYERS_INFO =scenario_autosave(st_5_bottles_of_vodka_for_kuznetsov_fail)%
+

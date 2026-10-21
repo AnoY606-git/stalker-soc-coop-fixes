@@ -1,18 +1,28 @@
 New in v1.4
 
 Crashes and bugs
-- @rps_statistic: The game closing when one player wins the rock-paper-scissors gesture game against another (missing statistics function)
+- @soc_economy: Player damage: the v1.3 damage bonus healed NPCs after every hit, so bodies needed many shots. Fixed: a Makarov kills a bandit with 2 body shots or 1 headshot. Works for every weapon type, for every player (not only the host) and for mutants
+- @inventory_carry: After loading a save, players (mostly clients) no longer come back with only the start kit, and weapons no longer swap with backpack items: every item returns to its own slot, nothing is duplicated
+- @rps_statistic: The game closing when one player wins the rock-paper-scissors gesture game against another
 - @bandit_jacket: Crash when wearing the bandit jacket or the black trench coat (missing hands model)
-- @cordon: Cordon story start: the flash drive hand-in to Sidorovich can no longer get stuck when the dialog is cut off, and the helicopter flight and the next task now start reliably
+- @cordon: Cordon story start: the flash drive hand-in to Sidorovich can no longer get stuck when the dialog is cut off
+- @repeatable_quests: Repeatable quests: fully in Russian; targets spawn in open ground far from bases, safe zones and anomalies (bandits no longer appear next to Arnie in the Bar or inside the rookie village); the map marker shows the job name and description and disappears for every player when the job ends
+- @stash_loot: Boxes have loot again: the original SoC contents where the box exists in SoC, otherwise consumables or ammo with a 30% chance (wooden) and 50% (metal); one drop for the whole group, never refilled after a load
 - @bar_speaker: Bar loudspeaker no longer repeats a single phrase
-- @campfires: Cordon village: the stalkers around the campfire no longer take the seats of Sidorovich and the guide
-- @stash_loot: Breakable boxes (wooden boxes, metal cases) drop their contents again
 
 Restored from the original Shadow of Chernobyl
-- @soc_main_menu: The original main menu: brick wall artwork, animated Chernobyl sky and fire, the metal selector bar with gears
-- @cutscenes_pkg_opening,cordon: Cordon opening: all players start in Sidorovich's bunker, with the original start dialog and the opening scene
-- @marked_one: The Marked One looks like the Shadow of Chernobyl hero (model and every outfit)
-- @cordon_technician: A technician in the Cordon rookie village (repair and upgrades)
-- @soc_music: More of the original Bar radio music
-- @lobby_text: Lobby text without the beta wording
-- @soc_economy: Economy and balance settings updated (weapon zones, artifacts)
+- @cutscenes_pkg_opening,cordon: Cordon start: every player spawns in Sidorovich's bunker at once, with the original SoC opening dialog (only the "treat me as experienced" answer) and its voice, and every player gets the start tasks with descriptions
+- @marked_one: The Marked One looks like the SoC hero: in the lobby and in every outfit (14 original SoC suit models)
+- @soc_main_menu: Main menu: the UE4 remake of the SoC menu scene (video by Daniel Swahn / Ivan Sorce, used with permission) with light text buttons and the SoC selector bar
+- @soc_music: Bar music like SoC: the radio loops the SoC song, the extra radio and speakers the mod added are silent, the Duty loudspeaker plays in random order with the SoC megaphone music
+- @campfires: Rookie village: 7 extras as in SoC instead of 16, nobody sits on chairs or at the walls in the houses, 3 stalkers at the fire
+- @cordon_technician: The Cordon technician now works in Sidorovich's bunker
+- @cordon_bridge: Cordon railway bridge: 5 soldiers and Kuznetsov at the SoC posts; they stay neutral until a player shoots one of them or walks onto the bridge, then all of them attack (saved with the game)
+- @lobby_text: Lobby text without the old beta lines
+
+New
+- @host_settings: Host settings file coop_settings.ltx (see "Host settings" above): change damage, enemies per player, box loot and more without reinstalling
+- Smaller patch file (compressed) and install.bat accepts the coop.addon file or its folder and finds it on any drive
+
+Known issue
+- Rarely the server closes when several lethal hits land on a player in the same moment. This is a bug in the xrMPE engine (xrGame.dll); it has been reported to the xrMPE developers with the exact cause.

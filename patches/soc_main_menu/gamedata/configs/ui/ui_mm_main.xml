@@ -16,7 +16,7 @@
 		<buttons_region x="0" y="0" width="551" height="394"/>
 	</shniaga_wnd>
 
-	<socfx_bar x="0" y="0" width="276" height="52" stretch="1">
+	<socfx_bar x="0" y="0" width="420" height="52" stretch="1">
 		<texture>socfx_mm_move</texture>
 	</socfx_bar>
 	<socfx_roll_l x="0" y="0" width="38" height="38" stretch="1">

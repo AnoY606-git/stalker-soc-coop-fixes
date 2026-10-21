@@ -25,7 +25,16 @@ local function load()
 		values.corpse_limit, values.sarcophagus_corpse_limit, values.sarcophagus_wave_percent, from)
 end
 
+-- value of this package without the host's coop_settings.ltx (the defaults above, then sarcophagus_fps.txt)
+function base(key)
+	if values == nil then load() end
+	return values[key]
+end
+
+-- patch host_settings: the host's coop_settings.ltx, section [sarcophagus_fps], overrides sarcophagus_fps.txt (server only)
 function get(key)
 	if values == nil then load() end
+	local ok, h = pcall(function() return coop_host_cfg.num("sarcophagus_fps", key, values[key]) end)
+	if ok and h ~= nil then return h end
 	return values[key]
 end

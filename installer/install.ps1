@@ -16,21 +16,36 @@ $PatchName = "zzz_soc_coop_fixes.db"
 $BaseNames = @("gamedata.db0", "gamedata.db1", "icon.webp", "metadata.json")
 $Here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+# Accepts the coop.addon file itself, its addons folder, the game folder or the install folder (even a nested
+# "X-Ray Multiplayer Extension\X-Ray Multiplayer Extension"); returns the coop.addon file path or $null.
+function Resolve-AddonPath([string]$p) {
+    if (-not $p) { return $null }
+    $p = $p.Trim().Trim('"').Trim()
+    if (-not (Test-Path -LiteralPath $p)) { return $null }
+    if (Test-Path -LiteralPath $p -PathType Leaf) { return (Resolve-Path -LiteralPath $p).Path }
+    foreach ($rel in @("coop.addon", "addons\coop.addon", "game\addons\coop.addon",
+                       "X-Ray Multiplayer Extension\game\addons\coop.addon")) {
+        $c = Join-Path $p $rel
+        if (Test-Path -LiteralPath $c -PathType Leaf) { return (Resolve-Path -LiteralPath $c).Path }
+    }
+    return $null
+}
+
 function Find-Addon {
-    $candidates = @(
-        (Join-Path $Here "coop.addon"),
-        (Join-Path $Here "..\coop.addon"),
-        "C:\X-Ray Multiplayer Extension\game\addons\coop.addon",
-        "D:\X-Ray Multiplayer Extension\game\addons\coop.addon",
-        "D:\Games\X-Ray Multiplayer Extension\game\addons\coop.addon",
-        "C:\Games\X-Ray Multiplayer Extension\game\addons\coop.addon"
-    )
-    foreach ($c in $candidates) { if (Test-Path -LiteralPath $c) { return (Resolve-Path -LiteralPath $c).Path } }
+    $roots = @($Here, (Join-Path $Here ".."))
+    foreach ($d in [System.IO.DriveInfo]::GetDrives()) {
+        if ($d.DriveType -ne 'Fixed' -or -not $d.IsReady) { continue }
+        foreach ($sub in @("", "Games\", "Program Files\", "Program Files (x86)\")) {
+            $roots += ($d.RootDirectory.FullName + $sub + "X-Ray Multiplayer Extension")
+        }
+    }
+    foreach ($r in $roots) { $f = Resolve-AddonPath $r; if ($f) { return $f } }
     Write-Host "coop.addon not found automatically. / coop.addon не найден автоматически."
-    $p = Read-Host "Paste the full path to coop.addon / Вставьте полный путь к coop.addon"
-    $p = $p.Trim('"', ' ')
-    if (-not (Test-Path -LiteralPath $p)) { throw "File not found: $p" }
-    return (Resolve-Path -LiteralPath $p).Path
+    Write-Host "You can paste the coop.addon file or its folder. / Можно вставить путь к файлу coop.addon или к его папке."
+    $p = Read-Host "Path / Путь"
+    $f = Resolve-AddonPath $p
+    if (-not $f) { throw "coop.addon not found at: $p / coop.addon не найден по пути: $p" }
+    return $f
 }
 
 function Read-Octal([byte[]]$h, [int]$off, [int]$len) {
@@ -45,13 +60,25 @@ function Write-Field([byte[]]$h, [int]$off, [string]$s) {
 }
 
 if ($Addon -eq "") { $Addon = Find-Addon }
+else {
+    $f = Resolve-AddonPath $Addon
+    if (-not $f) { throw "coop.addon not found at: $Addon / coop.addon не найден по пути: $Addon" }
+    $Addon = $f
+}
 if (-not $Uninstall) {
     if ($Db -eq "") { $Db = Join-Path $Here $PatchName }
     if (-not (Test-Path -LiteralPath $Db)) { throw "$PatchName not found next to install.bat / не найден рядом с install.bat" }
 }
 Write-Host "coop.addon: $Addon"
 
-$fs = [System.IO.File]::Open($Addon, [System.IO.FileMode]::Open, [System.IO.FileAccess]::ReadWrite, [System.IO.FileShare]::None)
+try {
+    $fs = [System.IO.File]::Open($Addon, [System.IO.FileMode]::Open, [System.IO.FileAccess]::ReadWrite, [System.IO.FileShare]::None)
+} catch {
+    Write-Host "Cannot open coop.addon for writing. Close the game AND the xrMPE launcher, then run install.bat again." -ForegroundColor Red
+    Write-Host "Не удалось открыть coop.addon для записи. Закройте игру И лаунчер xrMPE, затем снова запустите install.bat." -ForegroundColor Red
+    Write-Host "If it still fails, right-click install.bat > Run as administrator. / Если не помогает: ПКМ по install.bat > Запуск от имени администратора."
+    throw
+}
 try {
     # Walk the tar headers. Keep the add-on's own entries; cut everything from the first extra entry on.
     $pos = [long]0

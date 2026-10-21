@@ -25,6 +25,9 @@ try:
         if os.path.isdir(src):
             shutil.copytree(src, stage, dirs_exist_ok=True)
     for fix in extra:
+        if not os.path.isdir(os.path.join(here, 'optional', fix, 'gamedata')):
+            print(fix, 'has no optional folder: that style is already the default of its patch')
+            continue
         shutil.copytree(os.path.join(here, 'optional', fix, 'gamedata'), stage, dirs_exist_ok=True)
     if keep:
         shutil.copytree(stage, os.path.join(keep[0], 'gamedata'), dirs_exist_ok=True)

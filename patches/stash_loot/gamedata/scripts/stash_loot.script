@@ -26,16 +26,36 @@ local function words(s)
 	return t
 end
 
+-- the host's coop_settings.ltx (patch host_settings, sections box_loot and box_loot_items) overrides box_loot.ltx; server only
+local function host_num(sec, key, v)
+	local ok, r = pcall(function() return coop_host_cfg.num(sec, key, v) end)
+	if ok and r ~= nil then return r end
+	return v
+end
+
+local function host_bool(sec, key, v)
+	local ok, r = pcall(function() return coop_host_cfg.bool(sec, key, v) end)
+	if ok and r ~= nil then return r end
+	return v
+end
+
+-- drops the cached settings (coop_host_cfg.reload, tests)
+function host_reload()
+	conf = nil
+end
+
 local function load_conf()
 	local ini = ini_file("misc\\box_loot.ltx")
 	local sys = system_ini()
 	local function num(sec, key, def)
-		if ini:section_exist(sec) and ini:line_exist(sec, key) then return ini:r_float(sec, key) end
-		return def
+		local v = def
+		if ini:section_exist(sec) and ini:line_exist(sec, key) then v = ini:r_float(sec, key) end
+		return host_num("box_loot", key, v)
 	end
 	local function flag(sec, key, def)
-		if ini:section_exist(sec) and ini:line_exist(sec, key) then return ini:r_bool(sec, key) end
-		return def
+		local v = def
+		if ini:section_exist(sec) and ini:line_exist(sec, key) then v = ini:r_bool(sec, key) end
+		return host_bool("box_loot", key, v)
 	end
 	local c = {
 		enabled   = flag("settings", "enabled", true),
@@ -53,6 +73,7 @@ local function load_conf()
 		for i = 0, ini:line_count("consumables") - 1 do
 			local ok, id, val = ini:r_line("consumables", i, "", "")
 			local w = tonumber(val)
+			if w then w = host_num("box_loot_items", id, w) end
 			if ok and w and w > 0 and (id == "ammo" or sys:section_exist(id)) then
 				table.insert(c.items, { id, w })
 				c.total = c.total + w

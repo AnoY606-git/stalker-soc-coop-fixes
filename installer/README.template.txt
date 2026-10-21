@@ -24,6 +24,15 @@ If players still see "Different Versions", use installer\install.bat on every PC
 
 Uninstall: run installer\install.bat -Uninstall, or open coop.addon with 7-Zip again and delete zzz_soc_coop_fixes.db.
 
+Host settings (only the HOST needs this; other players do nothing):
+The balance numbers (player damage, enemies per player, box loot, mutant parts, repeatable quests, roaming squads) can be changed WITHOUT reinstalling.
+The first time the host starts a game with this patch it creates the file coop_settings.ltx with every setting, its default and a short comment:
+- you host and play: X-Ray Multiplayer Extension\game\_appdata_\coop_settings.ltx
+- dedicated server:  X-Ray Multiplayer Extension\game\_appdata_server\coop_settings.ltx
+Open it with Notepad, change a number (for example player_damage_mult = 2.0), save, then change the level or restart the server.
+A line you delete or a wrong value simply uses the default; delete the whole file to get a fresh one. The log line "[HOSTCFG]" shows what is in effect.
+Other players never read this file and it does not change the add-on fingerprint.
+
 {CHANGES_EN}
 
 РУССКИЙ
@@ -48,5 +57,14 @@ Uninstall: run installer\install.bat -Uninstall, or open coop.addon with 7-Zip a
 Если игроки всё равно видят "Различные версии", запустите installer\install.bat на каждом ПК.
 
 Удаление: запустите installer\install.bat -Uninstall или снова откройте coop.addon через 7-Zip и удалите zzz_soc_coop_fixes.db.
+
+Настройки хоста (нужны только ХОСТУ, остальные ничего не делают):
+Числа баланса (урон игроков, враги на каждого игрока, добыча из ящиков, части мутантов, повторяемые задания, ходящие отряды) можно менять БЕЗ переустановки.
+При первом запуске игры с этим патчем хост получает файл coop_settings.ltx со всеми настройками, значениями по умолчанию и короткими комментариями:
+- вы создаёте игру и играете: X-Ray Multiplayer Extension\game\_appdata_\coop_settings.ltx
+- выделенный сервер:         X-Ray Multiplayer Extension\game\_appdata_server\coop_settings.ltx
+Откройте файл в Блокноте, измените число (например player_damage_mult = 2.0), сохраните и смените локацию или перезапустите сервер.
+Удалённая строка или неверное значение = значение по умолчанию; удалите файл целиком, чтобы получить новый. Строка "[HOSTCFG]" в логе показывает, что действует.
+Остальные игроки этот файл не читают, отпечаток аддона он не меняет.
 
 {CHANGES_RU}

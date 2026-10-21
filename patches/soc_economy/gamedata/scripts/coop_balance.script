@@ -24,10 +24,22 @@ function cfg()
 		rd("damage", "player_damage_mult"); rd("damage", "log")
 		rd("ammo", "ammo_per_extra_player"); rd("ammo", "max_players")
 	end)
+	-- the host's coop_settings.ltx (patch host_settings) overrides the db values; server only, a missing file changes nothing
+	pcall(function()
+		c.player_damage_mult = coop_host_cfg.num("damage", "player_damage_mult", c.player_damage_mult)
+		c.log = coop_host_cfg.bool("damage", "log", c.log)
+		c.ammo_per_extra_player = coop_host_cfg.num("ammo", "ammo_per_extra_player", c.ammo_per_extra_player)
+		c.max_players = coop_host_cfg.num("ammo", "max_players", c.max_players)
+	end)
 	cache = c
 	clog("coop_balance config: damage_mult=%.2f ammo_per_extra_player=%.2f max_players=%d",
 		c.player_damage_mult, c.ammo_per_extra_player, c.max_players)
 	return c
+end
+
+-- drops the cached settings (coop_host_cfg.reload, tests)
+function host_reload()
+	cache = nil
 end
 
 function clog(fmt, ...)
@@ -127,6 +139,7 @@ function on_npc_hit(obj, amount, who, bone_index)
 	if type(bone_index) ~= "number" then return end          -- fake hit from death_callback
 	if amount == nil or amount <= 0 or who == nil or obj == nil then return end
 	if db.mp_actors == nil or db.mp_actors[who:id()] == nil then return end   -- only players' hits
+	if not OnServer() then return end                         -- the multiplier is the host's setting: clients never apply it
 	local c = cfg()
 	if c.player_damage_mult <= 1.0 then return end
 	if who:id() == obj:id() then return end

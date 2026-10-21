@@ -377,7 +377,9 @@ def boot_command(level, stage, owner, result_dir, soak):
         ps += ["-Mode", "listen", "-SoakSeconds", str(max(soak, ROUTE_SOAK)), "-Cfg", "no_respawn=1",
                "-Hooks", os.path.join(HERE, "release_boot_travel.lua")]
     else:
-        ps += ["-SoakSeconds", str(soak)]
+        # one listen game (1 engine) instead of dedicated + client (2 engines): each xrEngine maps the 4 GB addon and counts against the
+        # Windows commit limit, and a level that boots as a listen host boots the same data as a dedicated server
+        ps += ["-Mode", "listen", "-SoakSeconds", str(soak)]
     return ps
 
 

@@ -23,6 +23,12 @@ local PARTS = {
 	{ "socfx_grating_l", 0, 6, 77, 94 },
 	{ "socfx_grating_r", 474, 6, 77, 94 },
 }
+-- ue4_b: the bar is cut in three pieces (left end, stretched middle, right end) so that the glass can be made as wide as the longest caption
+-- without squeezing the ends. Texel numbers of socfx_mm_move (392 x 73) in ui\socfx_mm_sheet.
+local BAR_TEX = { 7, 951, 399, 1024 }
+local BAR_CAP = 112         -- texels of each end piece (the glass starts at texel 77 and ends at 307)
+local BAR_U = 551 / 392     -- units per texel of the unscaled bar
+local GLASS_L, GLASS_R = 80, 87   -- texels from the bar ends to the inside of the glass frame (the frame hides the caption)
 local COUNTS = { menu_main = 4, menu_main_coop_mm = 7, menu_main_logout = 5, menu_main_mm = 5, menu_network_game = 3 }
 -- the 20 frames of the gears in ui\socfx_mm_sheet (SoC ui_menu_roll_L_01..20 / R_01..20, 55x55)
 local ROLL_L = { { 0, 768 }, { 55, 768 }, { 110, 768 }, { 165, 768 }, { 220, 768 }, { 275, 768 }, { 330, 768 }, { 385, 768 }, { 440, 768 }, { 495, 768 },
@@ -46,7 +52,7 @@ local function config()
 	local ok, t = pcall(function()
 		local ini = ini_file("misc\\socfx_mm.ltx")
 		local c = { style = ini:r_string("menu", "style") }
-		for _, key in ipairs({ "col_cx", "row0_y", "bar_f", "panel_cx", "panel_cy", "panel_w", "panel_h" }) do
+		for _, key in ipairs({ "col_cx", "row0_y", "bar_f", "bar_w", "panel_cx", "panel_cy", "panel_w", "panel_h" }) do
 			if ini:line_exist("menu", key) then
 				c[key] = ini:r_float("menu", key)
 			end
@@ -81,7 +87,7 @@ local function layout()
 		vl, vt = 0, (1080 - vh) / 2
 	end
 	local sv = vw / 1920
-	local L = { k = k, W = W, vl = vl, vt = vt, vw = vw, vh = vh, sv = sv, bar_f = c.bar_f or 0.65, bar_dx = 0 }
+	local L = { k = k, W = W, vl = vl, vt = vt, vw = vw, vh = vh, sv = sv, bar_f = c.bar_f or 0.65, bar_w = c.bar_w, bar_dx = 0 }
 	-- the xml anchors the button window to the RIGHT edge of the screen (fixed distance, fixed height): the buttons, the bar and the
 	-- panel are placed from there; only the video is fitted to the screen
 	L.col_left = W - (1920 - (c.col_cx or 1640)) - BTN_W / 2
@@ -163,10 +169,35 @@ local function place(menu)
 	local bar_cx = L.col_left + BTN_W / 2 + L.bar_dx
 	local bar_top = menu.socfx_y - GLASS_C * L.bar_f
 	local k = L.k
+	local f = L.bar_f
+	local bw = menu.socfx_bar_w or L.bar_w
 	for _, p in ipairs(menu.socfx_parts) do
 		-- every part keeps its place inside the bar, the whole bar is scaled by bar_f around its horizontal centre
-		local left = bar_cx + (p.dx + p.w / 2 - BAR_W / 2) * L.bar_f - p.w * L.bar_f / 2
-		p.wnd:SetWndPos(vector2():set(left * k, (bar_top + p.dy * L.bar_f) * k))
+		local left = bar_cx + (p.dx + p.w / 2 - BAR_W / 2) * f - p.w * f / 2
+		if p.seg then
+			-- three piece bar: the ends keep their size, the middle takes the rest
+			local capw = BAR_CAP * BAR_U * f
+			local x0 = bar_cx - bw / 2
+			local w = capw
+			if p.seg == "m" then
+				x0 = x0 + capw
+				w = bw - 2 * capw
+			elseif p.seg == "r" then
+				x0 = x0 + bw - capw
+			end
+			p.wnd:SetWndPos(vector2():set(x0 * k, (bar_top + p.dy * f) * k))
+			p.wnd:SetWndSize(vector2():set(w * k, p.h * f * k))
+		else
+			if bw then
+				-- stretched bar: the gears and gratings keep their distance from their own end of the bar
+				if p.dx + p.w / 2 < BAR_W / 2 then
+					left = bar_cx - bw / 2 + p.dx * f
+				else
+					left = bar_cx + bw / 2 - (BAR_W - p.dx) * f
+				end
+			end
+			p.wnd:SetWndPos(vector2():set(left * k, (bar_top + p.dy * f) * k))
+		end
 	end
 end
 
@@ -179,11 +210,22 @@ function init(menu, xml)
 	local ok, err = pcall(function()
 		menu.socfx_parts = {}
 		for _, p in ipairs(PARTS) do
-			local wnd = xml:InitStatic(p[1], menu)
-			wnd:Enable(false)
-			table.insert(menu.socfx_parts, { wnd = wnd, dx = p[2], dy = p[3], w = p[4], h = p[5] })
-			if p[1] == "socfx_roll_l" then menu.socfx_roll_l = wnd end
-			if p[1] == "socfx_roll_r" then menu.socfx_roll_r = wnd end
+			if p[1] == "socfx_bar" and config().bar_w then
+				for _, seg in ipairs({ "l", "m", "r" }) do
+					local wnd = xml:InitStatic(p[1], menu)
+					wnd:Enable(false)
+					local x1, x2 = BAR_TEX[1], BAR_TEX[3]
+					if seg == "l" then x2 = x1 + BAR_CAP elseif seg == "r" then x1 = x2 - BAR_CAP else x1, x2 = x1 + BAR_CAP, x2 - BAR_CAP end
+					wnd:SetTextureRect(Frect():set(x1, BAR_TEX[2], x2, BAR_TEX[4]))
+					table.insert(menu.socfx_parts, { wnd = wnd, dx = p[2], dy = p[3], w = p[4], h = p[5], seg = seg })
+				end
+			else
+				local wnd = xml:InitStatic(p[1], menu)
+				wnd:Enable(false)
+				table.insert(menu.socfx_parts, { wnd = wnd, dx = p[2], dy = p[3], w = p[4], h = p[5] })
+				if p[1] == "socfx_roll_l" then menu.socfx_roll_l = wnd end
+				if p[1] == "socfx_roll_r" then menu.socfx_roll_r = wnd end
+			end
 		end
 		place_picture(menu)
 		menu.socfx_row = 0

@@ -40,7 +40,8 @@ PANEL_COL = n(782 - 678) - PANEL_W / 2.0   # buttons column centre relative to t
 UE4 = {
     # col_cx / row0_y: centre of the button column and top of the first button; bar_f: size of the selector
     'ue4_a': dict(col_cx=1640 + PANEL_COL, row0_y=730 - PANEL_H / 2.0 + PANEL_ROW0, bar_f=0.65, panel_cx=1640, panel_cy=730),
-    'ue4_b': dict(col_cx=1700, row0_y=560, bar_f=0.5),
+    # bar_w: width of the selector bar in 1080 space (wider than 0.5 x the SoC bar so that the gears / gratings stay off the longest caption)
+    'ue4_b': dict(col_cx=1700, row0_y=560, bar_f=0.5, bar_w=420),
 }
 
 
@@ -114,7 +115,8 @@ def sel(name, w, h, tex):
             % (name, int(round(n(w) * BAR_F)), int(round(n(h) * BAR_F)), tex, name))
 
 
-out.append(sel('socfx_bar', 392, 73, 'socfx_mm_move'))
+bar_w = UE4.get(STYLE, {}).get('bar_w')
+out.append(sel('socfx_bar', (bar_w / S / BAR_F) if bar_w else 392, 73, 'socfx_mm_move'))
 out.append(sel('socfx_roll_l', 55, 55, 'socfx_mm_roll_L_01'))
 out.append(sel('socfx_roll_r', 55, 55, 'socfx_mm_roll_R_01'))
 out.append(sel('socfx_grating_l', 55, 67, 'socfx_mm_grating_l'))
@@ -158,7 +160,7 @@ ltx = ['; Main menu style of the SoC main menu patch (soc_main_menu). Written by
        '; the selector bar, centre of the shutter panel).', '[menu]', 'style = %s' % STYLE]
 if STYLE != 'soc':
     u = UE4[STYLE]
-    for key in ('col_cx', 'row0_y', 'bar_f', 'panel_cx', 'panel_cy'):
+    for key in ('col_cx', 'row0_y', 'bar_f', 'bar_w', 'panel_cx', 'panel_cy'):
         if key in u:
             ltx.append('%s = %s' % (key, ('%.2f' % u[key]).rstrip('0').rstrip('.')))
     if STYLE == 'ue4_a':

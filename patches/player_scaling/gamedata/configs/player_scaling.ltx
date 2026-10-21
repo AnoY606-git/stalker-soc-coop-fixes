@@ -1,5 +1,5 @@
-; Player-count enemy scaling (patches\player_scaling). Server only: the host's copy of this file is the one that counts,
-; but every player must have the same .db (the add-on is checksummed).
+; Player-count enemy scaling (patches\player_scaling). Server only. These are the DEFAULTS; the host can override the common ones
+; in coop_settings.ltx (section [enemy_scaling], patch host_settings) without a rebuild. Safety limits (slot_*, max_extra_squads_per_smart) stay here.
 ; 1 player = the original game. Every extra player raises the number of hostile enemies.
 ; Applies only to HOSTILE factions (hostile_factions). Friendly/neutral squads and squads with named (story) NPCs are never touched.
 

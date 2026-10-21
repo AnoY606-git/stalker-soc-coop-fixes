@@ -50,6 +50,16 @@ local defaults = {
 	log = true,
 }
 
+-- settings the host may change in coop_settings.ltx. Not listed on purpose: hostile_factions, skip_smarts and the job-slot limits
+-- (max_extra_squads_per_smart, slot_fraction, slot_margin): a wrong value there can overflow a smart terrain and crash the server.
+local HOST_KEYS = { "enabled", "human_extra_per_player", "mutant_extra_per_player", "max_factor", "max_extra_members", "extra_squads_per_player",
+	"reinforce_cooldown_s", "reinforce_first_delay_s", "reinforce_min_distance", "skip_levels", "log" }
+
+-- drops the cached settings (coop_host_cfg.reload, tests)
+function host_reload()
+	cfg_cache = nil
+end
+
 local function to_set(s)
 	local t = {}
 	for w in string.gmatch(s or "", "[^,%s]+") do t[w] = true end
@@ -69,6 +79,15 @@ function cfg()
 				elseif type(v) == "number" then c[k] = ini:r_float("scaling", k)
 				else c[k] = ini:r_string("scaling", k) end
 			end
+		end
+	end)
+	-- the host's coop_settings.ltx (patch host_settings) overrides the db values; only the keys listed in HOST_KEYS, server only
+	pcall(function()
+		for _, k in ipairs(HOST_KEYS) do
+			local v = defaults[k]
+			if type(v) == "boolean" then c[k] = coop_host_cfg.bool("enemy_scaling", k, c[k])
+			elseif type(v) == "number" then c[k] = coop_host_cfg.num("enemy_scaling", k, c[k])
+			else c[k] = coop_host_cfg.str("enemy_scaling", k, c[k]) end
 		end
 	end)
 	c.hostile = to_set(c.hostile_factions)

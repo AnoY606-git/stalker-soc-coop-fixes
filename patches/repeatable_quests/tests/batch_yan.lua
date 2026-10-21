@@ -1,14 +1,14 @@
 -- TEST ONLY (never shipped).  repeatable_quests batch test: accepts every generated job of one level one after another (what the dialog does:
 -- it gives the job's accept flag) and checks per job: targets / item spawned at the site, map spot, no other NPC within 80 m, no anomaly
 -- zone within 15 m, sane y; then 30 s later (player moved next to the site so the targets are online): alive, y sane. Then it removes the
--- targets and goes on with the next job.  Bar: start on Cordon and travel by party vote (the Bar's alife only comes online that way).
+-- targets and goes on with the next job.  Yantar: start on Cordon and travel by party vote (like the Bar).
 local JOBS = {
 	{id = "rq_sak_camp1", kind = "gen_camp", x = -131.6, y = -19.1, z = -98.0, nx = -146.3, ny = -19.0, nz = -56.7},
 	{id = "rq_sak_camp2", kind = "gen_camp", x = 285.6, y = 6.3, z = -291.9, nx = 266.0, ny = 6.3, nz = -287.7},
-	{id = "rq_sak_find", kind = "gen_find", x = 144.2, y = 6.4, z = 23.8, nx = 132.3, ny = 2.6, nz = 4.9},
+	{id = "rq_sak_find", kind = "gen_find", x = -252.0, y = -18.9, z = -42.7, nx = -228.9, ny = -19.0, nz = -42.7},
 }
 local LVL = "coop_l08_yantar"
-local TRAVEL = false
+local TRAVEL = true
 local function now() return os.time() end
 local function sf(f, ...) local ok, r = pcall(f, ...) if ok then return r end return nil end
 local function pth(n) return getFS():update_path("$logs$", n) end
@@ -125,6 +125,60 @@ local function cleanup(job)
 	end
 end
 
+-- first-look trackers (measured at the moment that matters, not seconds later when the targets have already walked):
+--  SPAWN: distance of the new members / item from the site on the first tick after the job spawned them (server positions)
+--  FIRST: per member / item, the first tick it exists as an online object: height vs the site, horizontal distance, height vs its own AI node
+local SPAWN, FIRST = nil, {}
+local function job_objects(job)
+	local key = "RQ_" .. string.upper(job.id)
+	local objs = {}
+	for _, sid in ipairs(ids_with(key .. "_S")) do
+		local sq = sf(function() return alife():object(sid) end)
+		if sq ~= nil then sf(function() for k in sq:squad_members() do objs[#objs + 1] = k.id end end) end
+	end
+	for _, iid in ipairs(ids_with(key .. "_I")) do objs[#objs + 1] = iid end
+	return objs
+end
+local function spawn_probe(job)
+	if SPAWN ~= nil then return end
+	local site = vector():set(job.x, job.y, job.z)
+	local objs = job_objects(job)
+	if #objs == 0 then return end
+	local n, maxd, maxdy = 0, 0, 0
+	for _, id in ipairs(objs) do
+		local o = sf(function() return alife():object(id) end)
+		if o ~= nil then
+			n = n + 1
+			local dd = d2(o.position, site); if dd > maxd then maxd = dd end
+			local dy = math.abs(o.position.y - job.y); if dy > maxdy then maxdy = dy end
+		end
+	end
+	if n > 0 then SPAWN = {n = n, maxd = maxd, maxdy = maxdy, t = now()} end
+end
+local function track_first(job)
+	local site = vector():set(job.x, job.y, job.z)
+	for _, id in ipairs(job_objects(job)) do
+		if FIRST[id] == nil then
+			local lo = sf(function() return level.object_by_id(id) end)
+			local p = lo ~= nil and sf(function() return lo:position() end) or nil
+			if p ~= nil then
+				local ny = sf(function() return level.vertex_position(lo:level_vertex_id()).y end)
+				FIRST[id] = {dy = math.abs(p.y - job.y), dxz = d2(p, site), dn = ny and math.abs(p.y - ny) or 0}
+			end
+		end
+	end
+end
+local function first_summary()
+	local n, maxdy, maxdxz, maxdn = 0, 0, 0, 0
+	for _, f in pairs(FIRST) do
+		n = n + 1
+		if f.dy > maxdy then maxdy = f.dy end
+		if f.dxz > maxdxz then maxdxz = f.dxz end
+		if f.dn > maxdn then maxdn = f.dn end
+	end
+	return n, maxdy, maxdxz, maxdn
+end
+
 local RESULTS = {}
 local function check(job, name, ok, detail)
 	qa.assert(job.id .. ": " .. name, ok, detail)
@@ -145,14 +199,14 @@ qa.hooks.rq_batch = function(t, lo)
 		if not TRAVEL then return end
 		if (st.travel_t or 0) == 0 then st.travel_t = now(); wst(st) end
 		if now() - st.travel_t > 14 and (st.vote_t or 0) == 0 then
-			story_flags.give_flag("ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_BAR_INFO"); st.vote_t = now(); wst(st); wr("guide flag given")
+			story_flags.give_flag("ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_YAN_INFO"); st.vote_t = now(); wst(st); wr("guide flag given")
 		elseif (st.vote_t or 0) > 0 and now() - st.vote_t > 3 and now() - (st.last_vote or 0) > 8 then
 			st.last_vote = now(); wst(st)
 			for _, v in ipairs(A) do pcall(function() coop_map_vote.on_yes(v:id()) end) end
 			wr("vote yes")
 			if now() - st.vote_t > 40 and (st.fb or 0) == 0 then
 				st.fb = 1; wst(st); wr("fallback teleport")
-				pcall(function() xr_effects.xrmpe_teleport_actors(nil, nil, { "esc_smart_terrain_1_guide_temp_6_walk", "esc_smart_terrain_1_guide_temp_6_look" }) end)
+				pcall(function() xr_effects.xrmpe_teleport_actors(nil, nil, { "esc_smart_terrain_1_guide_temp_8_walk", "esc_smart_terrain_1_guide_temp_8_look" }) end)
 			end
 		end
 		return
@@ -175,36 +229,42 @@ qa.hooks.rq_batch = function(t, lo)
 	local dt = now() - (st.job_t or now())
 	if (st.phase or "start") == "start" then
 		st.phase = "accepted"; st.job_t = now(); st.on1 = 0; wst(st)
+		SPAWN = nil; FIRST = {}
 		story_flags.give_flag(acc)
 		wr("JOB " .. job.id .. " accepted " .. acc)
+	elseif st.phase == "accepted" and dt < 6 then
+		spawn_probe(job)
 	elseif st.phase == "accepted" and dt >= 6 then
 		st.phase = "s1"; wst(st)
+		spawn_probe(job)
 		local i = survey(job)
 		wr(string.format("S1 %s squads=%d members=%d item=%s maxd=%.1f maxdy=%.1f other=%.0f (%s) zone=%.0f (%s) spot=%s", job.id, i.n_squads, i.members, tostring(i.item), i.maxd, i.maxdy, i.mind_other, i.other, i.zone, i.zname, tostring(i.spot)))
 		if job.kind == "gen_find" then
-			check(job, "item spawned at the site", i.item and i.maxd < 3, string.format("item %s dist %.1f", tostring(i.item), i.maxd))
+			check(job, "item spawned at the site", i.item and SPAWN ~= nil and SPAWN.maxd < 3, string.format("item %s dist %.1f at spawn (now %.1f)", tostring(i.item), SPAWN and SPAWN.maxd or -1, i.maxd))
 		else
-			check(job, "targets spawned at the site", i.n_squads >= 1 and i.members >= 1 and i.maxd < 5, string.format("squads %d members %d dist %.1f", i.n_squads, i.members, i.maxd))
+			check(job, "targets spawned at the site (measured on the tick they were created)", i.n_squads >= 1 and i.members >= 1 and SPAWN ~= nil and SPAWN.maxd < 5, string.format("squads %d members %d dist %.1f at spawn (%.1f 6 s later)", i.n_squads, i.members, SPAWN and SPAWN.maxd or -1, i.maxd))
 		end
 		check(job, "map spot on the target", i.spot, tostring(i.spot))
 		check(job, "no other NPC within 80 m", i.mind_other >= 80, string.format("%.0f (%s)", i.mind_other, i.other))
 		check(job, "no anomaly zone within 15 m", i.zone >= 15, string.format("%.0f (%s)", i.zone, i.zname))
-		check(job, "y sane vs the site (server)", i.maxdy < 3, string.format("max dy %.1f", i.maxdy))
+		check(job, "y sane vs the site (server, at spawn)", SPAWN ~= nil and SPAWN.maxdy < 3, string.format("max dy %.1f at spawn (%.1f 6 s later)", SPAWN and SPAWN.maxdy or -1, i.maxdy))
 	elseif st.phase == "s1" and dt >= 7 then
 		st.phase = "moved"; wst(st)
 		local ok = sf(function() lo:set_actor_position(vector():set(job.nx, job.ny + 0.3, job.nz)) return true end)
 		wr("player moved near " .. job.id .. " " .. tostring(ok))
-	elseif st.phase == "moved" and dt >= 12 and (st.on1 or 0) == 0 then
-		-- first look right after the player arrived: the targets came online at their spawn place (before they run at the player)
-		local i = survey(job)
-		if i.online >= 1 or i.item_on or dt >= 22 then
-			st.on1 = 1; wst(st)
-			wr(string.format("ON1 %s online=%d item_on=%s maxdy_on=%.1f", job.id, i.online, tostring(i.item_on), i.maxdy_on))
-			if job.kind == "gen_find" then
-				check(job, "item y sane when online (not below / inside geometry)", i.item_on and i.maxdy_on < 4, string.format("on %s dy %.1f", tostring(i.item_on), i.maxdy_on))
-			else
-				check(job, "targets y sane when they come online (not below / inside geometry)", i.online >= 1 and i.maxdy_on < 4, string.format("online %d max dy %.1f", i.online, i.maxdy_on))
-			end
+	elseif st.phase == "moved" and dt < 13 and (st.on1 or 0) == 0 then
+		track_first(job)
+	elseif st.phase == "moved" and dt >= 13 and (st.on1 or 0) == 0 then
+		-- every target / the item was looked at on the first tick it existed online (track_first); judged here, 5 s after the player arrived
+		track_first(job)
+		local n, maxdy, maxdxz, maxdn = first_summary()
+		st.on1 = 1; wst(st)
+		wr(string.format("ON1 %s first-online objects=%d max dy vs site=%.1f max horizontal=%.1f max dy vs own AI node=%.2f", job.id, n, maxdy, maxdxz, maxdn))
+		if job.kind == "gen_find" then
+			check(job, "item y sane when it comes online (not below / inside geometry)", n >= 1 and maxdy < 4, string.format("on %d dy %.1f", n, maxdy))
+		else
+			check(job, "targets y sane on their first online tick (not below / inside geometry)", n >= 1 and maxdy < 4, string.format("online %d max dy %.1f (horizontal %.1f)", n, maxdy, maxdxz))
+			check(job, "targets stand on the AI mesh on their first online tick", n >= 1 and maxdn < 1.5, string.format("max dy vs own node %.2f", maxdn))
 		end
 	elseif st.phase == "moved" and dt >= 38 then
 		st.phase = "s2"; wst(st)

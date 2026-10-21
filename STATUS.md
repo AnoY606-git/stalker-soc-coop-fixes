@@ -12,7 +12,7 @@ Owner decision 2026-10-18: to save usage, agents whose code was written were sto
 - task_guard (dedicated server: give_task with no spawned player no longer crashes; the held task reached the player after spawn).
   The released 8.1 dedicated server crashes this way on Cordon about 40 s after start when no player has spawned yet (2 of 2 runs).
 - soc_music (SoC Bar radio song and menu music restored; tracks load with SoC lengths; PASS) and bar_speaker sound paths repaired
-- soc_main_menu (original SoC main menu: brick wall art, animated Chernobyl sky and fire, metal selector bar with gears; 4:3 and 16:9 engine screenshots of every button page, no missing texture / script errors; the bar following a real mouse is not driven by the harness)
+- soc_main_menu (UE4 remake menu video by Daniel Swahn / Ivan Sorce as the full screen background, 3 styles: ue4_b default text buttons, ue4_a SoC shutter panel, soc original art, switch with build.py --mm-style; 4:3 and 16:9 engine screenshots of every button page, no missing texture / script errors; the bar following a real mouse is not driven by the harness)
 - no_mp_items (players spawn with the normal knife, torch and binoculars instead of mp_* versions; PASS)
 
 ## Written, not tested in game

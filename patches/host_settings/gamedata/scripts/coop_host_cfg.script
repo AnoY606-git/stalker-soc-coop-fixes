@@ -1,0 +1,471 @@
+-- Host settings for Shadow of COOP (patch host_settings). SERVER / HOST ONLY.
+--
+-- One plain-text file, coop_settings.ltx, in the HOST's app data folder ($app_data_root$: _appdata_ for a player who hosts,
+-- _appdata_server for a dedicated server). It is NOT part of the add-on, so editing it does not change the add-on checksum and
+-- the other players need nothing. Values in it override the defaults that ship in the db (the db ltx files stay the defaults).
+--
+--   coop_host_cfg.num(section, key, default)    number  (comma or dot as decimal mark)
+--   coop_host_cfg.bool(section, key, default)   true/false/yes/no/on/off/1/0
+--   coop_host_cfg.str(section, key, default)    raw text
+--
+-- Rules: a missing file, section, key or a value that does not parse gives `default` (a bad value is logged once, never an error).
+-- On a machine that is not the server (a joined client) every function just returns `default` and the file is never touched.
+-- First server start without the file: it is WRITTEN with every host-editable setting, its current db default and an EN + RU comment.
+-- At the first read of every level start one summary line with all effective values (and which came from the file) is logged:
+-- "[HOSTCFG] ..." in the engine log and in logs\host_cfg.log.
+
+local FILE_NAME = "coop_settings.ltx"
+local VER = 1
+
+local st = nil              -- { path, vals = { [sec] = { [key] = raw } }, found, created, nfile, write_err }
+local bad_seen = {}         -- "sec.key" -> true (already logged)
+local bad_count_n = 0
+local ini_cache = {}
+local loading = false
+
+last_line = ""              -- the last summary line (tests read it)
+
+-----------------------------------------------------------------------------------------------------------------
+-- helpers
+-----------------------------------------------------------------------------------------------------------------
+local function trim(s)
+	return (string.gsub(s or "", "^%s*(.-)%s*$", "%1"))
+end
+
+local function is_server()
+	local ok, r = pcall(function() return OnServer() end)
+	return ok and r == true
+end
+
+local function lg(s)
+	pcall(function()
+		local i = 1
+		local n = string.len(s)
+		while i <= n do
+			printf_msg("[HOSTCFG] %s", string.sub(s, i, i + 899))
+			i = i + 900
+		end
+	end)
+	pcall(function()
+		local f = io.open(getFS():update_path("$logs$", "host_cfg.log"), "a")
+		if f then
+			f:write(string.format("[%8.1f] %s\n", time_global() / 1000, s))
+			f:close()
+		end
+	end)
+end
+
+local function to_num(raw)
+	if raw == nil then return nil end
+	local v = tonumber((string.gsub(trim(raw), ",", ".")))
+	if v == nil or v ~= v or v == math.huge or v == -math.huge then return nil end
+	return v
+end
+
+local function to_bool(raw)
+	if raw == nil then return nil end
+	local s = string.lower(trim(raw))
+	if s == "true" or s == "yes" or s == "on" or s == "1" then return true end
+	if s == "false" or s == "no" or s == "off" or s == "0" then return false end
+	return nil
+end
+
+local function fmt_num(v)
+	return string.format("%.6g", v)
+end
+
+-- the value as text, or nil when `raw` is not valid for that kind
+local function norm(kind, raw)
+	if raw == nil then return nil end
+	if kind == "num" then
+		local v = to_num(raw)
+		if v == nil then return nil end
+		return fmt_num(v)
+	elseif kind == "bool" then
+		local b = to_bool(raw)
+		if b == nil then return nil end
+		return b and "true" or "false"
+	end
+	return trim(raw)
+end
+
+local function path_of()
+	return getFS():update_path("$app_data_root$", FILE_NAME)
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- the settings the file is created with: group(section, EN, RU), K(key, kind, default, EN, RU [, db ltx file, ltx section])
+-- The written value is read from the db ltx when `ltx` is given (so the file always starts equal to the shipped defaults).
+-----------------------------------------------------------------------------------------------------------------
+local groups = nil
+
+local function build_groups()
+	local g = {}
+	local cur = nil
+	local function G(sec, en, ru, avail)
+		cur = { sec = sec, en = en, ru = ru, avail = avail, knobs = {} }
+		table.insert(g, cur)
+	end
+	local function K(key, kind, def, en, ru, ltx, lsec)
+		table.insert(cur.knobs, { sec = cur.sec, key = key, kind = kind, def = def, en = en, ru = ru, ltx = ltx, lsec = lsec or cur.sec })
+	end
+	local BAL = "misc\\coop_balance.ltx"
+	local PS = "player_scaling.ltx"
+	local BOX = "misc\\box_loot.ltx"
+	local RQ = "misc\\coop_repeat_quests.ltx"
+	local ML = "misc\\mutant_loot.ltx"
+	local RM = "misc\\alife_roaming.ltx"
+
+	G("damage", "Player damage", "\208\163\209\128\208\190\208\189 \208\184\208\179\209\128\208\190\208\186\208\190\208\178")
+	K("player_damage_mult", "num", 1.5, "Damage multiplier of PLAYERS' weapons against NPCs and mutants. 1.0 = off, 1.5 = +50%, 2.0 = +100%.",
+		"\208\156\208\189\208\190\208\182\208\184\209\130\208\181\208\187\209\140 \209\131\209\128\208\190\208\189\208\176 \208\190\209\128\209\131\208\182\208\184\209\143 \208\152\208\147\208\160\208\158\208\154\208\158\208\146 \208\191\208\190 NPC \208\184 \208\188\209\131\209\130\208\176\208\189\209\130\208\176\208\188. 1.0 = \208\178\209\139\208\186\208\187, 1.5 = +50%, 2.0 = +100%.", BAL)
+	K("log", "bool", true, "Write logs\\cb.log (damage and ammo events).", "\208\159\208\184\209\129\208\176\209\130\209\140 logs\\cb.log (\209\131\209\128\208\190\208\189 \208\184 \208\191\208\176\209\130\209\128\208\190\208\189\209\139).", BAL)
+
+	G("ammo", "Trader ammo", "\208\159\208\176\209\130\209\128\208\190\208\189\209\139 \209\131 \209\130\208\190\209\128\208\179\208\190\208\178\209\134\208\181\208\178")
+	K("ammo_per_extra_player", "num", 1.0, "Trader ammo stock added per extra player (1.0 = double stock with 2 players, 0 = off).",
+		"\208\159\209\128\208\184\209\128\208\190\209\129\209\130 \208\183\208\176\208\191\208\176\209\129\208\176 \208\191\208\176\209\130\209\128\208\190\208\189\208\190\208\178 \209\131 \209\130\208\190\209\128\208\179\208\190\208\178\209\134\208\181\208\178 \208\189\208\176 \208\186\208\176\208\182\208\180\208\190\208\179\208\190 \208\187\208\184\209\136\208\189\208\181\208\179\208\190 \208\184\208\179\209\128\208\190\208\186\208\176 (1.0 = \208\178\208\180\208\178\208\190\208\181 \208\191\209\128\208\184 2 \208\184\208\179\209\128\208\190\208\186\208\176\209\133, 0 = \208\178\209\139\208\186\208\187).", BAL)
+	K("max_players", "num", 4, "Player count used for the ammo stock is capped here.", "\208\145\208\190\208\187\209\140\209\136\208\181 \209\141\209\130\208\190\208\179\208\190 \209\135\208\184\209\129\208\187\208\176 \208\184\208\179\209\128\208\190\208\186\208\190\208\178 \208\183\208\176\208\191\208\176\209\129 \208\191\208\176\209\130\209\128\208\190\208\189\208\190\208\178 \208\189\208\181 \209\128\208\176\209\129\209\130\209\145\209\130.", BAL)
+
+	G("enemy_scaling", "Enemies per player count (1 player = original game)", "\208\146\209\128\208\176\208\179\208\184 \208\184 \209\135\208\184\209\129\208\187\208\190 \208\184\208\179\209\128\208\190\208\186\208\190\208\178 (1 \208\184\208\179\209\128\208\190\208\186 = \208\190\209\128\208\184\208\179\208\184\208\189\208\176\208\187\209\140\208\189\208\176\209\143 \208\184\208\179\209\128\208\176)")
+	K("enabled", "bool", true, "false = original enemy numbers for any number of players.", "false = \208\190\209\128\208\184\208\179\208\184\208\189\208\176\208\187\209\140\208\189\208\190\208\181 \209\135\208\184\209\129\208\187\208\190 \208\178\209\128\208\176\208\179\208\190\208\178 \208\191\209\128\208\184 \208\187\209\142\208\177\208\190\208\188 \209\135\208\184\209\129\208\187\208\181 \208\184\208\179\209\128\208\190\208\186\208\190\208\178.", PS, "scaling")
+	K("human_extra_per_player", "num", 0.5, "Extra members of hostile STALKER squads per extra player, fraction of the squad size (0.5 = +50%, 0 = none).",
+		"\208\159\209\128\208\184\208\177\208\176\208\178\208\186\208\176 \208\178 \208\178\209\128\208\176\208\182\208\181\209\129\208\186\208\184\209\133 \208\190\209\130\209\128\209\143\208\180\208\176\209\133 \209\129\209\130\208\176\208\187\208\186\208\181\209\128\208\190\208\178 \208\189\208\176 \208\186\208\176\208\182\208\180\208\190\208\179\208\190 \208\187\208\184\209\136\208\189\208\181\208\179\208\190 \208\184\208\179\209\128\208\190\208\186\208\176, \208\180\208\190\208\187\209\143 \208\190\209\130 \209\128\208\176\208\183\208\188\208\181\209\128\208\176 \208\190\209\130\209\128\209\143\208\180\208\176 (0.5 = +50%, 0 = \208\189\208\181\209\130).", PS, "scaling")
+	K("mutant_extra_per_player", "num", 0.5, "Same for mutant packs.", "\208\162\208\190 \208\182\208\181 \208\180\208\187\209\143 \209\129\209\130\208\176\208\185 \208\188\209\131\209\130\208\176\208\189\209\130\208\190\208\178.", PS, "scaling")
+	K("max_factor", "num", 2.5, "A squad never grows beyond this multiple of its normal size.", "\208\158\209\130\209\128\209\143\208\180 \208\189\208\181 \208\178\209\139\209\128\208\176\209\129\209\130\208\176\208\181\209\130 \208\177\208\190\208\187\209\140\209\136\208\181, \209\135\208\181\208\188 \208\178 \209\129\209\130\208\190\208\187\209\140\208\186\208\190 \209\128\208\176\208\183 \208\190\209\130 \208\190\208\177\209\139\209\135\208\189\208\190\208\179\208\190.", PS, "scaling")
+	K("max_extra_members", "num", 6, "Never add more than this many members to one squad.", "\208\157\208\181 \208\180\208\190\208\177\208\176\208\178\208\187\209\143\209\130\209\140 \208\178 \208\190\208\180\208\184\208\189 \208\190\209\130\209\128\209\143\208\180 \208\177\208\190\208\187\209\140\209\136\208\181 \209\129\209\130\208\190\208\187\209\140\208\186\208\184\209\133 \208\177\208\190\208\185\209\134\208\190\208\178.", PS, "scaling")
+	K("extra_squads_per_player", "num", 0.34, "Chance per extra player that a hostile base gets a reinforcement squad (0.34 = about a third; 0 = none).",
+		"\208\168\208\176\208\189\209\129 \208\189\208\176 \208\186\208\176\208\182\208\180\208\190\208\179\208\190 \208\187\208\184\209\136\208\189\208\181\208\179\208\190 \208\184\208\179\209\128\208\190\208\186\208\176, \209\135\209\130\208\190 \209\131 \208\178\209\128\208\176\208\182\208\181\209\129\208\186\208\190\208\185 \208\177\208\176\208\183\209\139 \208\191\208\190\209\143\208\178\208\184\209\130\209\129\209\143 \208\190\209\130\209\128\209\143\208\180 \208\191\208\190\208\180\208\186\209\128\208\181\208\191\208\187\208\181\208\189\208\184\209\143 (0.34 = \208\190\208\186\208\190\208\187\208\190 \209\130\209\128\208\181\209\130\208\184; 0 = \208\189\208\181\209\130).", PS, "scaling")
+	K("reinforce_cooldown_s", "num", 300, "Seconds after a reinforcement squad died before the base gets a new one.", "\208\161\208\181\208\186\209\131\208\189\208\180 \208\180\208\190 \208\189\208\190\208\178\208\190\208\179\208\190 \208\191\208\190\208\180\208\186\209\128\208\181\208\191\208\187\208\181\208\189\208\184\209\143 \208\191\208\190\209\129\208\187\208\181 \208\179\208\184\208\177\208\181\208\187\208\184 \208\191\209\128\208\181\208\182\208\189\208\181\208\179\208\190.", PS, "scaling")
+	K("reinforce_first_delay_s", "num", 30, "Seconds to wait after the player count changed before reinforcements appear.", "\208\161\208\181\208\186\209\131\208\189\208\180 \208\190\208\182\208\184\208\180\208\176\208\189\208\184\209\143 \208\191\208\190\209\129\208\187\208\181 \209\129\208\188\208\181\208\189\209\139 \209\135\208\184\209\129\208\187\208\176 \208\184\208\179\209\128\208\190\208\186\208\190\208\178 \208\180\208\190 \208\191\208\190\209\143\208\178\208\187\208\181\208\189\208\184\209\143 \208\191\208\190\208\180\208\186\209\128\208\181\208\191\208\187\208\181\208\189\208\184\208\185.", PS, "scaling")
+	K("reinforce_min_distance", "num", 120, "Reinforcements only appear when every player is at least this many metres away.", "\208\159\208\190\208\180\208\186\209\128\208\181\208\191\208\187\208\181\208\189\208\184\209\143 \208\191\208\190\209\143\208\178\208\187\209\143\209\142\209\130\209\129\209\143, \209\130\208\190\208\187\209\140\208\186\208\190 \208\181\209\129\208\187\208\184 \208\178\209\129\208\181 \208\184\208\179\209\128\208\190\208\186\208\184 \208\180\208\176\208\187\209\140\209\136\208\181 \209\129\209\130\208\190\208\187\209\140\208\186\208\184\209\133 \208\188\208\181\209\130\209\128\208\190\208\178.", PS, "scaling")
+	K("skip_levels", "str", "coop_l11_sarcofag", "Levels that are never scaled, comma separated (empty = scale all).", "\208\155\208\190\208\186\208\176\209\134\208\184\208\184 \208\177\208\181\208\183 \208\188\208\176\209\129\209\136\209\130\208\176\208\177\208\184\209\128\208\190\208\178\208\176\208\189\208\184\209\143, \209\135\208\181\209\128\208\181\208\183 \208\183\208\176\208\191\209\143\209\130\209\131\209\142 (\208\191\209\131\209\129\209\130\208\190 = \208\188\208\176\209\129\209\136\209\130\208\176\208\177\208\184\209\128\208\190\208\178\208\176\209\130\209\140 \208\178\209\129\208\181).", PS, "scaling")
+	K("log", "bool", true, "Write logs\\pscale.log.", "\208\159\208\184\209\129\208\176\209\130\209\140 logs\\pscale.log.", PS, "scaling")
+
+	G("box_loot", "Loot of boxes that had no loot in original SoC", "\208\148\208\190\208\177\209\139\209\135\208\176 \208\184\208\183 \209\143\209\137\208\184\208\186\208\190\208\178, \208\178 \208\186\208\190\209\130\208\190\209\128\209\139\209\133 \208\178 \208\190\209\128\208\184\208\179\208\184\208\189\208\176\208\187\208\181 SoC \208\189\208\184\209\135\208\181\208\179\208\190 \208\189\208\181 \208\177\209\139\208\187\208\190")
+	K("enabled", "bool", true, "false = those boxes stay empty like in SoC.", "false = \209\130\208\176\208\186\208\184\208\181 \209\143\209\137\208\184\208\186\208\184 \208\191\209\131\209\129\209\130\209\139\208\181, \208\186\208\176\208\186 \208\178 SoC.", BOX, "settings")
+	K("fallback_breakable", "bool", true, "Wooden and metal breakable boxes roll loot.", "\208\148\208\181\209\128\208\181\208\178\209\143\208\189\208\189\209\139\208\181 \208\184 \208\188\208\181\209\130\208\176\208\187\208\187\208\184\209\135\208\181\209\129\208\186\208\184\208\181 \209\143\209\137\208\184\208\186\208\184, \208\186\208\190\209\130\208\190\209\128\209\139\208\181 \208\187\208\190\208\188\208\176\209\142\209\130\209\129\209\143, \208\180\208\176\209\142\209\130 \208\180\208\190\208\177\209\139\209\135\209\131.", BOX, "settings")
+	K("fallback_inventory", "bool", true, "Plain containers you open roll loot once.", "\208\158\208\177\209\139\209\135\208\189\209\139\208\181 \208\186\208\190\208\189\209\130\208\181\208\185\208\189\208\181\209\128\209\139, \208\186\208\190\209\130\208\190\209\128\209\139\208\181 \208\190\209\130\208\186\209\128\209\139\208\178\208\176\209\142\209\130, \208\190\208\180\208\184\208\189 \209\128\208\176\208\183 \208\191\208\190\208\187\209\131\209\135\208\176\209\142\209\130 \208\180\208\190\208\177\209\139\209\135\209\131.", BOX, "settings")
+	K("wood_chance", "num", 30, "Percent chance for a wooden box.", "\208\168\208\176\208\189\209\129 (\208\178 \208\191\209\128\208\190\209\134\208\181\208\189\209\130\208\176\209\133) \208\180\208\187\209\143 \208\180\208\181\209\128\208\181\208\178\209\143\208\189\208\189\208\190\208\179\208\190 \209\143\209\137\208\184\208\186\208\176.", BOX, "settings")
+	K("metal_chance", "num", 50, "Percent chance for a metal box.", "\208\168\208\176\208\189\209\129 (\208\178 \208\191\209\128\208\190\209\134\208\181\208\189\209\130\208\176\209\133) \208\180\208\187\209\143 \208\188\208\181\209\130\208\176\208\187\208\187\208\184\209\135\208\181\209\129\208\186\208\190\208\179\208\190 \209\143\209\137\208\184\208\186\208\176.", BOX, "settings")
+	K("inventory_chance", "num", 50, "Percent chance for a container.", "\208\168\208\176\208\189\209\129 (\208\178 \208\191\209\128\208\190\209\134\208\181\208\189\209\130\208\176\209\133) \208\180\208\187\209\143 \208\186\208\190\208\189\209\130\208\181\208\185\208\189\208\181\209\128\208\176.", BOX, "settings")
+	K("items_per_roll", "num", 1, "Items a successful roll gives.", "\208\159\209\128\208\181\208\180\208\188\208\181\209\130\208\190\208\178 \208\183\208\176 \209\131\208\180\208\176\209\135\208\189\209\139\208\185 \208\177\209\128\208\190\209\129\208\190\208\186.", BOX, "settings")
+	K("ammo_min", "num", 10, "Smallest ammo stack.", "\208\156\208\184\208\189\208\184\208\188\208\176\208\187\209\140\208\189\208\176\209\143 \208\191\208\176\209\135\208\186\208\176 \208\191\208\176\209\130\209\128\208\190\208\189\208\190\208\178.", BOX, "settings")
+	K("ammo_max", "num", 30, "Largest ammo stack.", "\208\156\208\176\208\186\209\129\208\184\208\188\208\176\208\187\209\140\208\189\208\176\209\143 \208\191\208\176\209\135\208\186\208\176 \208\191\208\176\209\130\209\128\208\190\208\189\208\190\208\178.", BOX, "settings")
+
+	G("box_loot_items", "What a box gives: weights (0 = never)", "\208\167\209\130\208\190 \208\180\208\176\209\145\209\130 \209\143\209\137\208\184\208\186: \208\178\208\181\209\129\208\176 (0 = \208\189\208\184\208\186\208\190\208\179\208\180\208\176)")
+	K("bread", "num", 20, "Weight of bread.", "\208\146\208\181\209\129: \209\133\208\187\208\181\208\177.", BOX, "consumables")
+	K("kolbasa", "num", 20, "Weight of sausage.", "\208\146\208\181\209\129: \208\186\208\190\208\187\208\177\208\176\209\129\208\176.", BOX, "consumables")
+	K("conserva", "num", 15, "Weight of canned food.", "\208\146\208\181\209\129: \209\130\209\131\209\136\209\145\208\189\208\186\208\176.", BOX, "consumables")
+	K("vodka", "num", 10, "Weight of vodka.", "\208\146\208\181\209\129: \208\178\208\190\208\180\208\186\208\176.", BOX, "consumables")
+	K("bandage", "num", 15, "Weight of bandages.", "\208\146\208\181\209\129: \208\177\208\184\208\189\209\130.", BOX, "consumables")
+	K("medkit", "num", 8, "Weight of medkits.", "\208\146\208\181\209\129: \208\176\208\191\209\130\208\181\209\135\208\186\208\176.", BOX, "consumables")
+	K("antirad", "num", 6, "Weight of anti-rad.", "\208\146\208\181\209\129: \208\176\208\189\209\130\208\184\209\128\208\176\208\180.", BOX, "consumables")
+	K("ammo", "num", 26, "Weight of ammo (type depends on the level).", "\208\146\208\181\209\129: \208\191\208\176\209\130\209\128\208\190\208\189\209\139 (\209\130\208\184\208\191 \208\183\208\176\208\178\208\184\209\129\208\184\209\130 \208\190\209\130 \208\187\208\190\208\186\208\176\209\134\208\184\208\184).", BOX, "consumables")
+
+	G("repeat_quests", "Repeatable side quests", "\208\159\208\190\208\178\209\130\208\190\209\128\209\143\208\181\208\188\209\139\208\181 \208\191\208\190\208\177\208\190\209\135\208\189\209\139\208\181 \208\183\208\176\208\180\208\176\208\189\208\184\209\143")
+	K("cooldown_min", "num", 1440, "Game minutes before a finished side quest can be given again (1440 = 24 game hours, as in SoC).",
+		"\208\152\208\179\209\128\208\190\208\178\209\139\209\133 \208\188\208\184\208\189\209\131\209\130 \208\180\208\190 \208\191\208\190\208\178\209\130\208\190\209\128\208\189\208\190\208\185 \208\178\209\139\208\180\208\176\209\135\208\184 \208\178\209\139\208\191\208\190\208\187\208\189\208\181\208\189\208\189\208\190\208\179\208\190 \208\183\208\176\208\180\208\176\208\189\208\184\209\143 (1440 = 24 \208\184\208\179\209\128\208\190\208\178\209\139\209\133 \209\135\208\176\209\129\208\176, \208\186\208\176\208\186 \208\178 SoC).", RQ, "defaults")
+	K("timeout_mult", "num", 1.0, "Multiplier of the time limit of the generated jobs (2 = twice as long).", "\208\156\208\189\208\190\208\182\208\184\209\130\208\181\208\187\209\140 \208\187\208\184\208\188\208\184\209\130\208\176 \208\178\209\128\208\181\208\188\208\181\208\189\208\184 \209\129\208\179\208\181\208\189\208\181\209\128\208\184\209\128\208\190\208\178\208\176\208\189\208\189\209\139\209\133 \208\183\208\176\208\180\208\176\208\189\208\184\208\185 (2 = \208\178\208\180\208\178\208\190\208\181 \208\180\208\190\208\187\209\140\209\136\208\181).")
+	K("item_rewards", "bool", true, "false = no item rewards (money rewards are not affected).", "false = \208\177\208\181\208\183 \208\189\208\176\208\179\209\128\208\176\208\180 \208\191\209\128\208\181\208\180\208\188\208\181\209\130\208\176\208\188\208\184 (\208\180\208\181\208\189\209\140\208\179\208\184 \208\189\208\181 \208\188\208\181\208\189\209\143\209\142\209\130\209\129\209\143).")
+
+	G("mutant_loot", "Mutant parts: chance a fresh corpse carries the part (0 = never, 1 = always)", "\208\167\208\176\209\129\209\130\208\184 \208\188\209\131\209\130\208\176\208\189\209\130\208\190\208\178: \209\136\208\176\208\189\209\129, \209\135\209\130\208\190 \208\189\208\176 \209\130\209\128\209\131\208\191\208\181 \208\181\209\129\209\130\209\140 \209\135\208\176\209\129\209\130\209\140 (0 = \208\189\208\184\208\186\208\190\208\179\208\180\208\176, 1 = \208\178\209\129\208\181\208\179\208\180\208\176)")
+	for _, part in ipairs({ "mutant_dog_part", "mutant_flesh_part", "mutant_boar_part", "mutant_snork_part", "mutant_burer_part", "mutant_krovosos_part",
+		"mutant_psevdodog_part", "mutant_zombie_part", "mutant_tushkano_part", "mutant_controller_part", "mutant_chimera_part", "mutant_gigant_part" }) do
+		K(part, "num", 0.2, "Chance for " .. part .. ".", "\208\168\208\176\208\189\209\129: " .. part .. ".", ML, "chance")
+	end
+	K("take_distance", "num", 6, "Metres a player may be from the corpse to take the part.", "\208\161 \208\186\208\176\208\186\208\190\208\179\208\190 \209\128\208\176\209\129\209\129\209\130\208\190\209\143\208\189\208\184\209\143 (\208\188) \208\184\208\179\209\128\208\190\208\186 \208\188\208\190\208\182\208\181\209\130 \208\178\208\183\209\143\209\130\209\140 \209\135\208\176\209\129\209\130\209\140 \209\129 \209\130\209\128\209\131\208\191\208\176.", ML, "settings")
+
+	G("roaming", "Squads walking between camps", "\208\158\209\130\209\128\209\143\208\180\209\139, \209\133\208\190\208\180\209\143\209\137\208\184\208\181 \208\188\208\181\208\182\208\180\209\131 \208\187\208\176\208\179\208\181\209\128\209\143\208\188\208\184")
+	K("enabled", "bool", true, "false = squads stay where they are.", "false = \208\190\209\130\209\128\209\143\208\180\209\139 \209\129\209\130\208\190\209\143\209\130 \208\189\208\176 \208\188\208\181\209\129\209\130\208\181.", RM, "roaming")
+	K("start_delay", "num", 90, "Seconds after the level starts before the first move.", "\208\161\208\181\208\186\209\131\208\189\208\180 \208\191\208\190\209\129\208\187\208\181 \209\129\209\130\208\176\209\128\209\130\208\176 \208\187\208\190\208\186\208\176\209\134\208\184\208\184 \208\180\208\190 \208\191\208\181\209\128\208\178\208\190\208\179\208\190 \208\191\208\181\209\128\208\181\209\133\208\190\208\180\208\176.", RM, "roaming")
+	K("stay_min", "num", 240, "A squad stays at least this many seconds.", "\208\158\209\130\209\128\209\143\208\180 \209\129\209\130\208\190\208\184\209\130 \208\189\208\181 \208\188\208\181\208\189\209\140\209\136\208\181 \209\129\209\130\208\190\208\187\209\140\208\186\208\184\209\133 \209\129\208\181\208\186\209\131\208\189\208\180.", RM, "roaming")
+	K("stay_max", "num", 720, "A squad stays at most this many seconds.", "\208\158\209\130\209\128\209\143\208\180 \209\129\209\130\208\190\208\184\209\130 \208\189\208\181 \208\177\208\190\208\187\209\140\209\136\208\181 \209\129\209\130\208\190\208\187\209\140\208\186\208\184\209\133 \209\129\208\181\208\186\209\131\208\189\208\180.", RM, "roaming")
+	K("max_moving", "num", 4, "Squads walking at the same time on a level.", "\208\161\208\186\208\190\208\187\209\140\208\186\208\190 \208\190\209\130\209\128\209\143\208\180\208\190\208\178 \208\184\208\180\209\145\209\130 \208\190\208\180\208\189\208\190\208\178\209\128\208\181\208\188\208\181\208\189\208\189\208\190 \208\189\208\176 \208\187\208\190\208\186\208\176\209\134\208\184\208\184.", RM, "roaming")
+	K("go_home_chance", "num", 35, "Percent chance that an away squad goes home.", "\208\168\208\176\208\189\209\129 (\208\178 \208\191\209\128\208\190\209\134\208\181\208\189\209\130\208\176\209\133), \209\135\209\130\208\190 \208\190\209\130\209\128\209\143\208\180 \208\184\208\180\209\145\209\130 \208\180\208\190\208\188\208\190\208\185.", RM, "roaming")
+	K("min_players_dist", "num", 60, "Never pick a destination closer than this to a player, metres (0 = off).", "\208\157\208\181 \208\178\209\139\208\177\208\184\209\128\208\176\209\130\209\140 \209\134\208\181\208\187\209\140 \208\177\208\187\208\184\208\182\208\181 \209\129\209\130\208\190\208\187\209\140\208\186\208\184\209\133 \208\188\208\181\209\130\209\128\208\190\208\178 \208\186 \208\184\208\179\209\128\208\190\208\186\209\131 (0 = \208\178\209\139\208\186\208\187).", RM, "roaming")
+	K("allow_online_move", "bool", true, "false = squads only move while no player is near.", "false = \208\190\209\130\209\128\209\143\208\180\209\139 \209\133\208\190\208\180\209\143\209\130, \209\130\208\190\208\187\209\140\208\186\208\190 \208\191\208\190\208\186\208\176 \209\128\209\143\208\180\208\190\208\188 \208\189\208\181\209\130 \208\184\208\179\209\128\208\190\208\186\208\190\208\178.", RM, "roaming")
+	K("mutants", "bool", true, "false = mutant packs never roam.", "false = \209\129\209\130\208\176\208\184 \208\188\209\131\209\130\208\176\208\189\209\130\208\190\208\178 \208\189\208\181 \209\133\208\190\208\180\209\143\209\130.", RM, "roaming")
+
+	-- only when the optional sarcophagus_fps package is installed; the defaults come from its own (old) sarcophagus_fps.txt
+	local function sar(key) return function() return sar_fps_cfg.base(key) end end
+	G("sarcophagus_fps", "Sarcophagus FPS package (optional)", "\208\159\208\176\208\186\208\181\209\130 FPS \208\180\208\187\209\143 \208\161\208\176\209\128\208\186\208\190\209\132\208\176\208\179\208\176 (\208\189\208\181\208\190\208\177\209\143\208\183\208\176\209\130\208\181\208\187\209\140\208\189\209\139\208\185)", function() return sar_fps_cfg.base ~= nil end)
+	K("corpse_limit", "num", sar("corpse_limit"), "Corpses kept on all other levels.", "\208\155\208\184\208\188\208\184\209\130 \209\130\209\128\209\131\208\191\208\190\208\178 \208\189\208\176 \208\190\209\129\209\130\208\176\208\187\209\140\208\189\209\139\209\133 \208\187\208\190\208\186\208\176\209\134\208\184\209\143\209\133.")
+	K("sarcophagus_corpse_limit", "num", sar("sarcophagus_corpse_limit"), "Corpses kept in the Sarcophagus.", "\208\155\208\184\208\188\208\184\209\130 \209\130\209\128\209\131\208\191\208\190\208\178 \208\178 \208\161\208\176\209\128\208\186\208\190\209\132\208\176\208\179\208\181.")
+	K("sarcophagus_wave_percent", "num", sar("sarcophagus_wave_percent"), "Monolith wave size in the Sarcophagus, percent (100 = original).", "\208\160\208\176\208\183\208\188\208\181\209\128 \208\178\208\190\208\187\208\189 \208\156\208\190\208\189\208\190\208\187\208\184\209\130\208\176 \208\178 \208\161\208\176\209\128\208\186\208\190\209\132\208\176\208\179\208\181, % (100 = \208\190\209\128\208\184\208\179\208\184\208\189\208\176\208\187).")
+	return g
+end
+
+local function get_groups()
+	if groups == nil then groups = build_groups() end
+	return groups
+end
+
+local function ini_of(name)
+	local i = ini_cache[name]
+	if i == nil then
+		local ok, r = pcall(function() return ini_file(name) end)
+		i = (ok and r) or false
+		ini_cache[name] = i
+	end
+	return i
+end
+
+-- the default that ships in the db (the ltx value when the knob has one), as text
+local function db_default(k)
+	if k.ltx ~= nil then
+		local ini = ini_of(k.ltx)
+		if ini then
+			local ok, v = pcall(function()
+				if ini:section_exist(k.lsec) and ini:line_exist(k.lsec, k.key) then return ini:r_string(k.lsec, k.key) end
+				return nil
+			end)
+			if ok and v ~= nil then
+				local n = norm(k.kind, v)
+				if n ~= nil then return n end
+			end
+		end
+	end
+	local d = k.def
+	if type(d) == "function" then
+		local ok, v = pcall(d)
+		d = ok and v or nil
+	end
+	if d == nil then return nil end
+	if k.kind == "num" then
+		local v = tonumber(d)
+		return v ~= nil and fmt_num(v) or nil
+	elseif k.kind == "bool" then
+		return d and "true" or "false"
+	end
+	return tostring(d)
+end
+
+local function group_ok(grp)
+	if grp.avail == nil then return true end
+	local ok, r = pcall(grp.avail)
+	return ok and r == true
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- the file
+-----------------------------------------------------------------------------------------------------------------
+local function build_text()
+	local o = {}
+	local function add(s) table.insert(o, s) end
+	add("; coop_settings.ltx - Shadow of COOP host settings (made by the fix patch, settings version " .. VER .. ")")
+	add("; ONLY THE HOST needs this file: the player who hosts the game, or the dedicated server. Other players do not read it and need nothing.")
+	add("; Change a value, save, then change the level or restart the server: the file is read again at every level start.")
+	add("; A line you delete or a value that is not a number/true/false uses the default. Delete the whole file to get a fresh one with the defaults.")
+	add("; Lines starting with ; are comments.")
+	add(";")
+	add("; \208\173\209\130\208\190\209\130 \209\132\208\176\208\185\208\187 \208\189\209\131\208\182\208\181\208\189 \208\162\208\158\208\155\208\172\208\154\208\158 \208\165\208\158\208\161\208\162\208\163: \208\184\208\179\209\128\208\190\208\186\209\131, \208\186\208\190\209\130\208\190\209\128\209\139\208\185 \209\129\208\190\208\183\208\180\208\176\209\145\209\130 \208\184\208\179\209\128\209\131, \208\184\208\187\208\184 \208\178\209\139\208\180\208\181\208\187\208\181\208\189\208\189\208\190\208\188\209\131 \209\129\208\181\209\128\208\178\208\181\209\128\209\131. \208\158\209\129\209\130\208\176\208\187\209\140\208\189\209\139\208\188 \208\184\208\179\209\128\208\190\208\186\208\176\208\188 \208\189\208\184\209\135\208\181\208\179\208\190 \208\189\208\181 \208\189\209\131\208\182\208\189\208\190.")
+	add("; \208\152\208\183\208\188\208\181\208\189\208\184\209\130\208\181 \208\183\208\189\208\176\209\135\208\181\208\189\208\184\208\181, \209\129\208\190\209\133\209\128\208\176\208\189\208\184\209\130\208\181 \209\132\208\176\208\185\208\187, \208\183\208\176\209\130\208\181\208\188 \209\129\208\188\208\181\208\189\208\184\209\130\208\181 \208\187\208\190\208\186\208\176\209\134\208\184\209\142 \208\184\208\187\208\184 \208\191\208\181\209\128\208\181\208\183\208\176\208\191\209\131\209\129\209\130\208\184\209\130\208\181 \209\129\208\181\209\128\208\178\208\181\209\128: \209\132\208\176\208\185\208\187 \209\135\208\184\209\130\208\176\208\181\209\130\209\129\209\143 \208\183\208\176\208\189\208\190\208\178\208\190 \208\191\209\128\208\184 \209\129\209\130\208\176\209\128\209\130\208\181 \208\186\208\176\208\182\208\180\208\190\208\185 \208\187\208\190\208\186\208\176\209\134\208\184\208\184.")
+	add("; \208\163\208\180\208\176\208\187\209\145\208\189\208\189\208\176\209\143 \209\129\209\130\209\128\208\190\208\186\208\176 \208\184\208\187\208\184 \208\189\208\181\208\178\208\181\209\128\208\189\208\190\208\181 \208\183\208\189\208\176\209\135\208\181\208\189\208\184\208\181 = \208\183\208\189\208\176\209\135\208\181\208\189\208\184\208\181 \208\191\208\190 \209\131\208\188\208\190\208\187\209\135\208\176\208\189\208\184\209\142. \208\163\208\180\208\176\208\187\208\184\209\130\208\181 \209\132\208\176\208\185\208\187 \209\134\208\181\208\187\208\184\208\186\208\190\208\188, \209\135\209\130\208\190\208\177\209\139 \208\191\208\190\208\187\209\131\209\135\208\184\209\130\209\140 \208\189\208\190\208\178\209\139\208\185 \209\129 \208\183\208\189\208\176\209\135\208\181\208\189\208\184\209\143\208\188\208\184 \208\191\208\190 \209\131\208\188\208\190\208\187\209\135\208\176\208\189\208\184\209\142.")
+	add("; \208\161\209\130\209\128\208\190\208\186\208\184, \208\189\208\176\209\135\208\184\208\189\208\176\209\142\209\137\208\184\208\181\209\129\209\143 \209\129 ;, - \208\186\208\190\208\188\208\188\208\181\208\189\209\130\208\176\209\128\208\184\208\184.")
+	for _, grp in ipairs(get_groups()) do
+		if group_ok(grp) then
+			add("")
+			add("; ---- " .. grp.en .. " / " .. grp.ru)
+			add("[" .. grp.sec .. "]")
+			for _, k in ipairs(grp.knobs) do
+				local v = db_default(k)
+				if v ~= nil then
+					add("; " .. k.en)
+					add("; " .. k.ru)
+					add(k.key .. " = " .. v)
+				end
+			end
+		end
+	end
+	return table.concat(o, "\n") .. "\n"
+end
+
+local function parse(text)
+	local vals, n, sec = {}, 0, ""
+	if string.sub(text, 1, 3) == "\239\187\191" then text = string.sub(text, 4) end
+	for line in string.gmatch(text .. "\n", "([^\n]*)\n") do
+		line = (string.gsub(line, "\r", ""))
+		local sc = string.find(line, ";", 1, true)
+		if sc then line = string.sub(line, 1, sc - 1) end
+		line = trim(line)
+		if line ~= "" then
+			local s = string.match(line, "^%[([^%]]*)%]$")
+			if s ~= nil then
+				sec = string.lower(trim(s))
+			else
+				local k, v = string.match(line, "^([^=]+)=(.*)$")
+				if k ~= nil then
+					k = string.lower(trim(k))
+					if k ~= "" then
+						if vals[sec] == nil then vals[sec] = {} end
+						vals[sec][k] = trim(v)
+						n = n + 1
+					end
+				end
+			end
+		end
+	end
+	return vals, n
+end
+
+local function value_text(sec, key)
+	if st == nil or st.vals == nil then return nil end
+	local s = st.vals[string.lower(sec)]
+	if s == nil then return nil end
+	return s[string.lower(key)]
+end
+
+-- every setting of the table with its effective value
+local function effective_list()
+	local out = {}
+	for _, grp in ipairs(get_groups()) do
+		if group_ok(grp) then
+			for _, k in ipairs(grp.knobs) do
+				local d = db_default(k)
+				local raw = value_text(k.sec, k.key)
+				local n = raw ~= nil and norm(k.kind, raw) or nil
+				table.insert(out, { sec = k.sec, key = k.key, value = n or d, from_file = (n ~= nil), db = d, bad = (raw ~= nil and n == nil), raw = raw })
+			end
+		end
+	end
+	return out
+end
+
+local function announce()
+	local parts, nf, nd, nbad = {}, 0, 0, 0
+	for _, e in ipairs(effective_list()) do
+		if e.value ~= nil then
+			local tag = ""
+			if e.from_file then
+				tag = "(file)"
+				nf = nf + 1
+			else
+				nd = nd + 1
+			end
+			if e.bad then
+				nbad = nbad + 1
+				tag = "(bad value '" .. tostring(e.raw) .. "', default used)"
+				if not bad_seen[e.sec .. "." .. e.key] then
+					bad_seen[e.sec .. "." .. e.key] = true
+					bad_count_n = bad_count_n + 1
+				end
+			end
+			table.insert(parts, e.sec .. "." .. e.key .. "=" .. e.value .. tag)
+		end
+	end
+	local how
+	if st.created then how = "file created with the defaults"
+	elseif st.found then how = "file read (" .. tostring(st.nfile) .. " settings in it)"
+	else how = "no file and it could not be created (" .. tostring(st.write_err) .. "), db defaults" end
+	last_line = string.format("host settings v%d %s [%s]: %d value(s) from the file, %d from the db defaults, %d bad; effective: %s",
+		VER, FILE_NAME, how, nf, nd, nbad, table.concat(parts, " "))
+	lg(string.format("path=%s", tostring(st.path)))
+	lg(last_line)
+end
+
+-- read (and create when missing) once per VM
+local function state()
+	if st ~= nil then return st end
+	if loading then return nil end
+	loading = true
+	local ok, err = pcall(function()
+		local s = { vals = {}, found = false, created = false, nfile = 0 }
+		s.path = path_of()
+		local f = io.open(s.path, "r")
+		if f ~= nil then
+			local text = f:read("*a") or ""
+			f:close()
+			s.found = true
+			s.vals, s.nfile = parse(text)
+		else
+			local okw, e2 = pcall(function()
+				local w = io.open(s.path, "w")
+				if w == nil then error("cannot open for writing") end
+				w:write(build_text())
+				w:close()
+			end)
+			s.created = okw
+			if not okw then s.write_err = tostring(e2) end
+		end
+		st = s
+		announce()
+	end)
+	loading = false
+	if not ok then
+		lg("error reading " .. FILE_NAME .. ": " .. tostring(err))
+		if st == nil then st = { vals = {}, found = false, created = false, nfile = 0, path = "?", write_err = tostring(err) } end
+	end
+	return st
+end
+
+-----------------------------------------------------------------------------------------------------------------
+-- public API
+-----------------------------------------------------------------------------------------------------------------
+local function bad(sec, key, raw, default)
+	local id = sec .. "." .. key
+	if bad_seen[id] then return end
+	bad_seen[id] = true
+	bad_count_n = bad_count_n + 1
+	lg(string.format("bad value for %s in %s: '%s' (using the default %s)", id, FILE_NAME, tostring(raw), tostring(default)))
+end
+
+local function raw_of(sec, key)
+	if not is_server() then return nil end
+	if state() == nil then return nil end
+	return value_text(sec, key)
+end
+
+function num(sec, key, default)
+	local raw = raw_of(sec, key)
+	if raw == nil then return default end
+	local v = to_num(raw)
+	if v == nil then bad(sec, key, raw, default) return default end
+	return v
+end
+
+function bool(sec, key, default)
+	local raw = raw_of(sec, key)
+	if raw == nil then return default end
+	local v = to_bool(raw)
+	if v == nil then bad(sec, key, raw, default) return default end
+	return v
+end
+
+function str(sec, key, default)
+	local raw = raw_of(sec, key)
+	if raw == nil then return default end
+	return raw
+end
+
+-- true when sec.key has a valid value in the file (tests / logs)
+function from_file(sec, key)
+	local raw = raw_of(sec, key)
+	return raw ~= nil
+end
+
+function bad_count() return bad_count_n end
+
+function path()
+	local ok, p = pcall(path_of)
+	return ok and p or nil
+end
+
+-- text of a fresh file with the db defaults (tests)
+function default_text() return build_text() end
+
+-- throw the parsed file away and read it again (tests, after they wrote a file); the consumers drop their caches too.
+-- Returns the new summary line.
+function reload()
+	st = nil
+	bad_seen = {}
+	bad_count_n = 0
+	ini_cache = {}
+	groups = nil
+	pcall(function() coop_balance.host_reload() end)
+	pcall(function() player_scaling.host_reload() end)
+	pcall(function() stash_loot.host_reload() end)
+	pcall(function() coop_repeat_quests.host_reload() end)
+	pcall(function() alife_roaming.host_reload() end)
+	if is_server() then state() end
+	return last_line
+end

@@ -40,7 +40,7 @@ Not reproduced, not tested; if the crash remains the guard is not enough and the
 * `character_desc_coop_l01_escape.xml` is shipped by `repeatable_quests`: one line added there (see above).
 * `squad_descr_pscale.ltx` (player_scaling) still has `x18_smart_terrain_4_m_poltergeist_tele_1_squad_ps`: regenerate with `gen_squads.py` after merging.
 * Needs `cutscenes_core` (its Scene Director loads every `coop_scn_*.script`, that is how `coop_scn_valley_restore.script` starts) and `x18` (document checks of the dialog).
-* `all.spawn` is a full copy (41 MB) of the addon file plus the two objects; no other patch may ship it.
+* `all.spawn` is a full copy (41 MB) of the addon file plus the two objects; no other patch may ship it. It also carries the Cordon bridge patrol paths of `patches\cordon_bridge` (chunk 3 only, 10 paths of `esc_smart_terrain_7_walker_*`): if this file is regenerated from the addon, run `patches\cordon_bridge	ools\make_paths.py` on the result again (see that NOTES.md).
 
 ## Tests (engine side, dedicated server + 1 real client, `tools/stalker_xrmpe/run_coop.ps1`)
 Hooks in `tests/`: `dv_hooks.lua` (Dark Valley), `x18_hooks.lua`, `esc_hooks.lua` (Cordon). Merged gamedata = this patch + `cutscenes_core` (without its `xr_conditions.dscript`) + `repeatable_quests` character file; the hook files start the Scene Director themselves.

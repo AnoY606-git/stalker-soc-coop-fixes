@@ -21,6 +21,18 @@ known_actors = nil            -- module level so tests can forget an actor
 local epoch = nil
 local SPOT = {gen_kill = "red_location", gen_camp = "red_location", gen_defend = "red_location", gen_find = "green_location"}
 
+-- The host's coop_settings.ltx (patch host_settings, section repeat_quests: cooldown_min, timeout_mult, item_rewards) overrides the db values; server only.
+local function host_num(key, v)
+	local ok, r = pcall(function() return coop_host_cfg.num("repeat_quests", key, v) end)
+	if ok and r ~= nil then return r end
+	return v
+end
+
+-- drops the cached settings (coop_host_cfg.reload, tests)
+function host_reload()
+	quests = nil
+end
+
 local function load_cfg()
 	if quests ~= nil then return end
 	quests = {}
@@ -29,6 +41,9 @@ local function load_cfg()
 	if ini:section_exist("defaults") and ini:line_exist("defaults", "cooldown_min") then
 		default_cd = ini:r_float("defaults", "cooldown_min")
 	end
+	default_cd = host_num("cooldown_min", default_cd)
+	local timeout_mult = host_num("timeout_mult", 1.0)
+	if timeout_mult <= 0 then timeout_mult = 1.0 end
 	local n = ini:line_count("list")
 	for i = 0, n - 1 do
 		local _, id, _ = ini:r_line("list", i, "", "")
@@ -49,6 +64,7 @@ local function load_cfg()
 		if ini:line_exist(id, "cooldown_min") then q.cd = ini:r_float(id, "cooldown_min") end
 		q.timeout = 2880
 		if ini:line_exist(id, "timeout_min") then q.timeout = ini:r_float(id, "timeout_min") end
+		q.timeout = q.timeout * timeout_mult
 		q.spawn = {}
 		local sp = str("spawn", "none")
 		if sp ~= "none" then
@@ -303,6 +319,8 @@ end
 -- item rewards go straight into every connected player's inventory (the task manager can only pay money without an NPC)
 local function grant_items(q)
 	if db.mp_actors == nil then return end
+	local okr, rewards = pcall(function() return coop_host_cfg.bool("repeat_quests", "item_rewards", true) end)
+	if okr and rewards == false then return end
 	for _, sec in ipairs(q.reward_items) do
 		for id, a in pairs(db.mp_actors) do
 			pcall(function()

@@ -46,11 +46,18 @@ function part_of(obj)
 	return nil
 end
 
+-- the host's coop_settings.ltx (patch host_settings, section mutant_loot) overrides the chances and take_distance; server only
+local function host_num(sec, key, v)
+	local ok, r = pcall(function() return coop_host_cfg.num(sec, key, v) end)
+	if ok and r ~= nil then return r end
+	return v
+end
+
 function chance_for(part)
 	if test.chance ~= nil then return test.chance end
 	local c = get_cfg()
 	if c:section_exist("chance") and c:line_exist("chance", part) then
-		return c:r_float("chance", part)
+		return host_num("mutant_loot", part, c:r_float("chance", part))
 	end
 	return 0
 end
@@ -125,6 +132,7 @@ function take(actor_id, id)
 	local c = get_cfg()
 	local maxd = 6
 	if c:section_exist("settings") and c:line_exist("settings", "take_distance") then maxd = c:r_float("settings", "take_distance") end
+	maxd = host_num("mutant_loot", "take_distance", maxd)
 	if test.take_distance ~= nil then maxd = test.take_distance end
 	-- measure with the live objects when they exist (the entity positions agree within a metre)
 	local d_se = se_a.position:distance_to(se_c.position)
