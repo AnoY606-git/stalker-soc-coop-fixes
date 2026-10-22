@@ -1,0 +1,160 @@
+-- TEST ONLY: full object/state census every 5 s, written to $logs$\coop_census_<side>.log
+-- (server -> _appdata_server\logs, client -> _appdata_\logs). One line per metric, full section histogram every pass.
+local INTERVAL = 5000
+local last = 0
+local n = 0
+local fh = nil
+
+local function open_file()
+	if fh ~= nil then return fh end
+	local side = OnServer() and "server" or "client"
+	local ok, path = pcall(function() return getFS():update_path("$logs$", "coop_census_" .. side .. ".log") end)
+	if ok and path and io and io.open then
+		fh = io.open(path, "a")
+	end
+	return fh
+end
+
+local function w(line)
+	local f = open_file()
+	if f then
+		f:write(line, "\n")
+	else
+		print_msg("[CENSUS] " .. line)
+	end
+end
+
+local function band(d)
+	if d < 30 then return "lt30" elseif d < 70 then return "30_70" elseif d < 150 then return "70_150" end
+	return "gt150"
+end
+
+local function ref_actor()
+	if OnClient() and LocalActor and LocalActor() and db.mp_actors and db.mp_actors[LocalActor()] then
+		return db.mp_actors[LocalActor()]
+	end
+	if db.mp_actors then
+		for k, v in pairs(db.mp_actors) do if v ~= nil then return v end end
+	end
+	return db.actor
+end
+
+local function tcount(t)
+	local c = 0
+	if type(t) == "table" then for _ in pairs(t) do c = c + 1 end end
+	return c
+end
+
+local function inc(t, k, v) t[k] = (t[k] or 0) + (v or 1) end
+
+function tick()
+	local now = time_global()
+	if now - last < INTERVAL then return end
+	last = now
+	n = n + 1
+	local side = OnServer() and "server" or "client"
+	local actor = ref_actor()
+	local apos = actor and actor:position() or nil
+	local P = string.format("#%d %s %s t=%d", n, side, level.name(), now)
+
+	local sections, kinds, bands = {}, {}, {}
+	local total = 0
+	for id = 1, 65534 do
+		local o = level.object_by_id(id)
+		if o ~= nil then
+			total = total + 1
+			local sec = o:section()
+			local k
+			if IsStalker(o) then
+				k = (o:alive() and "npc_alive:" or "npc_dead:") .. tostring(o:character_community())
+			elseif IsMonster(o) then
+				k = (o:alive() and "mon_alive:" or "mon_dead:") .. sec
+			elseif o:parent() ~= nil then
+				k = "item_carried"
+			elseif string.find(sec, "^wpn_") then k = "ground_weapon"
+			elseif string.find(sec, "^ammo_") then k = "ground_ammo"
+			elseif string.find(sec, "^af_") then k = "ground_artefact"
+			elseif string.find(sec, "outfit") then k = "ground_outfit"
+			else k = "other"
+			end
+			inc(kinds, k)
+			inc(sections, sec)
+			if apos ~= nil and o:parent() == nil then
+				local grp = string.match(k, "^([%a_]+)")
+				inc(bands, grp .. "@" .. band(o:position():distance_to(apos)))
+			end
+		end
+	end
+
+	w(P .. " TOTAL objects=" .. total .. " lua_kb=" .. string.format("%.0f", collectgarbage("count")))
+	if actor ~= nil then
+		local p = actor:position()
+		w(P .. string.format(" ACTOR pos=%.1f,%.1f,%.1f health=%.2f alive=%s", p.x, p.y, p.z, actor.health, tostring(actor:alive())))
+	end
+	local gt = game.get_game_time()
+	local y, mo, d, h, mi, s, ms = gt:get()
+	w(P .. string.format(" GAMETIME %02d:%02d:%02d day=%d", h, mi, s, d))
+
+	local kl = {}
+	for k, v in pairs(kinds) do table.insert(kl, k .. "=" .. v) end
+	table.sort(kl)
+	w(P .. " KINDS " .. table.concat(kl, " "))
+	local bl = {}
+	for k, v in pairs(bands) do table.insert(bl, k .. "=" .. v) end
+	table.sort(bl)
+	w(P .. " DIST " .. table.concat(bl, " "))
+
+	w(P .. " TABLES db.storage=" .. tcount(db.storage) .. " mp_actors=" .. tcount(db.mp_actors)
+		.. " zone_by_name=" .. tcount(db.zone_by_name) .. " sound_table=" .. tcount(xr_sound and xr_sound.sound_table)
+		.. " story_flags=" .. tcount(story_flags and story_flags.story_flags))
+	if OnServer() then
+		local ok, board = pcall(sim_board.get_sim_board)
+		if ok and board then
+			w(P .. " SIM squads=" .. tcount(board.squads) .. " smarts=" .. tcount(board.smarts))
+		end
+		local ok2, rb = pcall(release_body_manager.get_release_body_manager)
+		if ok2 and rb then
+			w(P .. " CORPSE_QUEUE size=" .. #rb.release_objects_table .. " cap=" .. tostring(rb.body_max_count))
+		end
+	end
+	local pa = sr_psy_antenna and sr_psy_antenna.psy_antenna
+	if pa then
+		w(P .. string.format(" PSY hit=%.3f snd=%.3f pp_count=%s phantoms=%s", pa.hit_intensity or 0, pa.sound_intensity or 0, tostring(pa.postprocess_count), tostring(pa.phantom_count)))
+	end
+
+	local sl = {}
+	for k, v in pairs(sections) do table.insert(sl, {k = k, v = v}) end
+	table.sort(sl, function(a, b) return a.v > b.v end)
+	local parts = {}
+	for i = 1, #sl do table.insert(parts, sl[i].k .. "=" .. sl[i].v) end
+	w(P .. " SECTIONS " .. table.concat(parts, " "))
+	w(P .. " EVENTS " .. event_summary())
+	if n % 6 == 1 then pcall(function() get_console():execute("stat_memory") end) end
+	local f = open_file()
+	if f then f:flush() end
+end
+
+-- binder hooks: count spawn/destroy/death per side and kind; log each event
+local ev_counts = {}
+function event(kind, obj)
+	if obj == nil then return end
+	local cat
+	if IsStalker(obj) then cat = "npc" elseif IsMonster(obj) then cat = "mon" else cat = "obj" end
+	local key = kind .. "_" .. cat
+	ev_counts[key] = (ev_counts[key] or 0) + 1
+	w(string.format("EVENT %s %s t=%d %s id=%d sec=%s alive=%s", OnServer() and "server" or "client", kind, time_global(), cat, obj:id(), obj:section(), tostring(obj:alive())))
+end
+
+function event_summary()
+	local l = {}
+	for k, v in pairs(ev_counts) do table.insert(l, k .. "=" .. v) end
+	table.sort(l)
+	return table.concat(l, " ")
+end
+
+function mark(msg)
+	w(string.format("MARK %s t=%d %s", OnServer() and "server" or "client", time_global(), msg))
+	print_msg("[MARK] " .. msg)
+	local f = open_file()
+	if f then f:flush() end
+end

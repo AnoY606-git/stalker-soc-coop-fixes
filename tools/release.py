@@ -44,9 +44,12 @@ from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 GAMES = os.path.dirname(REPO)
-QA_TOOLS = os.path.join(GAMES, "tools", "stalker_xrmpe")
+# the test harness ships in this repo (tools\stalker_xrmpe); an older checkout kept it next to the repo
+QA_TOOLS = os.path.join(HERE, "stalker_xrmpe")
+if not os.path.isdir(QA_TOOLS):
+    QA_TOOLS = os.path.join(GAMES, "tools", "stalker_xrmpe")
 RUN_COOP = os.path.join(QA_TOOLS, "run_coop.ps1")
-GAME_DIR = r"C:\X-Ray Multiplayer Extension\game"
+GAME_DIR = os.environ.get("XRMPE_GAME", r"C:\X-Ray Multiplayer Extension\game")
 
 # patches left out of the release by default (unfinished work), as in stalker.md section 3
 DEFAULT_SKIP = ["soc_levels", "weapon_upgrades", "npc_attachments", "arrival_facing", "inventory_carry"]

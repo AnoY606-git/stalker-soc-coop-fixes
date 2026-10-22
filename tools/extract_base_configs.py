@@ -1,5 +1,6 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'tools', 'stalker_xrmpe'))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stalker_xrmpe'))   # the copy in this repo wins
 import xdb
 out = sys.argv[1]   # usage: python extract_base_configs.py OUTDIR (writes OUTDIR/configs/**.ltx)
 roots = [r'C:\X-Ray Multiplayer Extension\game\resources', r'C:\X-Ray Multiplayer Extension\game\patches']

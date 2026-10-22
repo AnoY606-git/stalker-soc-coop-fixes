@@ -1,0 +1,49 @@
+-- TEST HELPER (not part of the release patch). Remove zzzz_auto_sarcophagus_god.db from coop.addon to disable.
+-- Cordon: ~10 s after the player spawns, starts Globus's trip to the Sarcophagus and votes "yes" for everyone.
+-- Sarcophagus: keeps every player at full health (god mode) and turns on the rs_stats overlay.
+
+local phase = "wait"
+local started_at = nil
+local stats_on = false
+
+local function first_actor()
+	if db.mp_actors == nil then return nil end
+	for id, v in pairs(db.mp_actors) do
+		if v ~= nil and v:alive() then return v, id end
+	end
+	return nil
+end
+
+local function cordon_server()
+	local now = time_global()
+	if phase == "wait" then
+		started_at = now
+		phase = "settle"
+	elseif phase == "settle" and now - started_at > 10000 then
+		print_msg("[AUTO_SAR] Travelling to the Sarcophagus via Globus")
+		story_flags.give_flag("ESC_SMART_TERRAIN_1_STALKER_GUIDE_TO_SAR_INFO")
+		started_at = now
+		phase = "vote"
+	elseif phase == "vote" and now - started_at > 2000 then
+		for id, v in pairs(db.mp_actors) do
+			if v ~= nil and v:alive() then coop_map_vote.on_yes(id) end
+		end
+		phase = "travel"
+	end
+end
+
+function tick(level_tag)
+	if OnServer() then
+		if first_actor() == nil then return end
+		if level_tag == "esc" then
+			cordon_server()
+		elseif level_tag == "sar" then
+			for id, v in pairs(db.mp_actors) do
+				if v ~= nil and v:alive() then v.health = 1 end
+			end
+		end
+	elseif level_tag == "sar" and not stats_on and db.mp_actors and LocalActor() and db.mp_actors[LocalActor()] then
+		stats_on = true
+		pcall(function() get_console():execute("rs_stats on") end)
+	end
+end

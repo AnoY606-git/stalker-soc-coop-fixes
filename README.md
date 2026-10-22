@@ -111,6 +111,14 @@ This is one of the projects in [coop-anything](https://github.com/cranebeaker/co
 
 ## License
 
+## Help fix things / Помочь с исправлениями
+
+[DEVELOPMENT_RU.md](DEVELOPMENT_RU.md) (Russian) explains how to build, check and test the patch, including with free AI models: the build
+(`tools/release.py`), the offline checks and tests, `tools/inspect_game.py` (search the installed game, find missing sections, unpack saves) and the
+in-game test harness `tools/stalker_xrmpe` (bots, Lua inside the running game).
+
+[DEVELOPMENT_RU.md](DEVELOPMENT_RU.md): как собрать, проверить и протестировать патч, в том числе с бесплатными ИИ-моделями.
+
 The tools and build scripts in `tools/`, `tests/` and `build.py` are MIT licensed (see
 `LICENSE`). The files under `patches/` and `optional/` are edited versions of Shadow of COOP and
 GSC Game World files and stay theirs; they are shared here only as a non-commercial fan fix.
