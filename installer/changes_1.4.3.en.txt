@@ -16,3 +16,4 @@
 - @cutscenes_core,cutscenes_pkg_yantar,cutscenes_pkg_monolith: Cut-scenes play the Full HD movies (intro, dreams, all endings) when the cutscene pack's HD file is installed; without it the normal movies play as before
 - @agroprom_soc,any_player_restrictors: Agroprom: the case with the military documents is there only once (with two or more players every player's game spawned its own case). Saves that already have two cases keep only one
 - @no_mp_items,marked_one: Flashlight and night vision work again: since v1.4 players got the single-player flashlight, which the keys did not switch; they get the mod's flashlight again, and players from older saves get theirs swapped automatically
+- @garbage_duty: Garbage: no more crash "Can't open section 'kombez_antigas_damage'" when the Duty checkpoint guards appear (their gas mask and mask models named a damage section that does not exist)

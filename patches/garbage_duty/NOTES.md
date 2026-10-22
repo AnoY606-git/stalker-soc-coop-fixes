@@ -73,3 +73,12 @@ Offline: `tests\zones_mock_test.py` (real script in a Lua VM, geometry, per-play
 Not run in the game (offline task); the first live check is `coop_scn_garbage_duty.status()` (`hostile=` count) and walking a player into the guard zone with the pass flag missing.
 Кратко (RU): как в SoC: без пропуска игрок в зоне предупреждения слышит окрик охраны Долга (оригинальный голос), в зоне охраны (6 x 13 м на дороге к Бару) весь караул Долга становится враждебным
 именно к этому игроку (остальные игроки не затронуты; командир остаётся нейтральным, он нужен для диалога). С пропуском (`GAR_FREE_PASS`) охрана снова нейтральна. Не проверено в игре.
+
+## 1.4.3 fix: crash on Garbage, "Can't open section 'kombez_antigas_damage'"
+The SoC Duty meshes of the checkpoint (`stalker_do_antigas`, `stalker_do_balon_4`, `stalker_do_balon_8`) name the capture files
+`models\capture\kombez_antigas_damage_low` / `kombez_mask_damage_low`, and those named the bone protection sections `kombez_antigas_damage` /
+`kombez_mask_damage`, which no config defines (not in the mod, not in xrMPE, not in CoP). An NPC reads that section when its model loads, so the
+game crashed as soon as the checkpoint guards came online. Now: `stalker_dolg_4` (gas mask) and `stalker_dolg_1` (balloon mask), the mod's
+own Duty protection sections. Checked for every .ogf of the release stage with a scan (capture file exists, its sections exist): the only other
+misses are player outfit meshes (`stalker_hero_captures` -> `gilet_mask_damage`, a CoP original file; `kombez_kupol_damage`), which players have
+worn since v1.4 without a crash (players do not use that section); left as they are.
