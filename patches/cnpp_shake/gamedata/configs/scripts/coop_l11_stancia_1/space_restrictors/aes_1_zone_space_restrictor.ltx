@@ -1,15 +1,18 @@
 [logic]
-active 												= sr_idle@start_surge_idle
+active 												= sr_idle@nil
 
+; CNPP-1 (coop_l11_stancia_1): NO camera shake. The mod called stc_surge when a player entered the zone (a looping shell-shock / earthquake
+; effect that never stopped); v1.4.2 made it waves (15 s shake, 45 s calm). The original Shadow of Chernobyl has no shaking on this level,
+; so nothing is started any more (v1.4.3, maintainer FOSTER: "remove the shaking at the NPP").
+; The old section names stay, because a save made with an earlier patch stores the active section by name: they end the effect once
+; (stc_stop_surge removes the camera and post-process effectors, it does nothing on a dedicated server) and go to the empty section.
 [sr_idle@start_surge_idle]
-on_player_inside  									= {-CON_TEST_1_INFO} sr_idle@surge_on %=stc_surge%
+on_player_inside  									= sr_idle@nil
 
-; CNPP tremors in waves like the original game: 15 s of shaking, then 45 s calm, repeated.
-; (The mod started the shake once and never called stc_stop_surge, so it never ended.)
 [sr_idle@surge_on]
-on_timer 											= 15000 | sr_idle@surge_off %=stc_stop_surge%
+on_info 											= sr_idle@nil %=stc_stop_surge%
 
 [sr_idle@surge_off]
-on_timer 											= 45000 | sr_idle@surge_on %=stc_surge%
+on_info 											= sr_idle@nil %=stc_stop_surge%
 
 [sr_idle@nil]

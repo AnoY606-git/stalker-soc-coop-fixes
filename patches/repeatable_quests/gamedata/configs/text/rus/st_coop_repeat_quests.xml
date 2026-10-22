@@ -9,6 +9,9 @@
 	<string id="rq_not_now">
 		<text>Не сейчас.</text>
 	</string>
+	<string id="rq_handin_ask">
+		<text>Ну, показывай.</text>
+	</string>
 	<string id="rq_handin">
 		<text>Я нашёл то, что ты просил.</text>
 	</string>

@@ -1,0 +1,2 @@
+-- loaded by the Scene Director like every coop_scn_*.script: starts the CNPP-1 war tick (coop_soc_aes_war.script: fighting helicopters, the army BTR)
+pcall(function() coop_soc_aes_war.install() end)

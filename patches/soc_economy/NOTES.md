@@ -34,7 +34,9 @@ Change (`patches\no_mp_items\...\misc\artefacts.ltx`, file already shipped by th
   Miser (Army Warehouses trader) only listed the plain ids, so the 26 `_soc` ids were added to his buy and sell lists (same 0.88 / 2,2 as his plain lines).
 - Checked offline: the flattened artefacts.ltx has no duplicate section and every parent is defined before its child; the set of section names is unchanged.
 
-Detectors (the CoP engine only shows artifacts to a player with a detector in hand):
+Detectors (correction 2026-10-22: the reason given here was wrong. A CoP artifact only hides until a detector finds it when its
+`af_rank` is not 0; the mod sets `af_rank = 0` on every artifact (52 world artifacts, CoP ids and SoC twins), the same value the
+engine's always-visible multiplayer and quest artifacts use, so artifacts are visible without a detector, as in SoC; the detectors below are extras):
 | Trader | Now sells |
 |---|---|
 | Sidorovich (esc) | detector_simple (cost 500) |
@@ -210,3 +212,16 @@ Encoding kept (cp1251), CRLF kept, no control characters other than tab/CR/LF.
 Зоны запрета оружия отключены.
 Нож (v1.4, просьба FOSTER): у игрока в слоте 1 на самом деле `wpn_knife` (не `mp_wpn_knife`), файл `configs\weapons\w_knife.ltx`: hit_power 1.0 -> 2.6 (ЛКМ), hit_power_2 1.5 -> 4.2 (ПКМ, сильный удар), тип обоих wound. Замер в игре 21.10 (хост, множитель x1.5, скриптовые удары от игрока): бандит rank 0 и rank 3 умирают от 2 ударов ЛКМ или 1 удара ПКМ; в броне среднего и тяжёлого класса нужно 3-4 удара ЛКМ (расчёт). Нож NPC: тот же раздел `wpn_knife`, поэтому NPC с ножом тоже бьёт сильнее. Настоящий удар ножом не проверялся (только скриптовые удары).
 Множитель урона (v1.4): раньше он ЛЕЧИЛ цель. Свойство `health` в этом движке относительное (obj.health = x прибавляет x), а скрипт писал obj.health = hp - extra, то есть лечил почти на всё здоровье при каждом попадании игрока и сводил попадание на нет (поэтому у FOSTER бандит держал 12 патронов ПМ в корпус и 2-3 в голову). Теперь лишний урон снимается отрицательным числом после урона движка и пропорционально реально снятому здоровью (голова, кость, броня учитываются). Замер в игре, бандит Кордона, патрон ПМ: x1.0: корпус 3 / голова 1; x1.5 до правки: корпус никогда (здоровье 100%) / голова 2; x1.5 после правки: корпус 2 / голова 1. Настройка hit_amount_scale убрана. player_scaling не делает NPC крепче (только больше NPC), с множителем они не гасят друг друга.
+
+## Task 3 (1.4.3): original SoC stock, `tools/add_soc_stock.py`
+- Adds the items each SoC trader stocked that the mod lacked (list in the script). Every section was checked to exist in the
+  game, the mod or this patch; SoC `killer_outfit` does not exist here (the mercenary suit is `merc_outfit`, already stocked by the Barman), so it is left out.
+- A stocked item is only sold when `[trade_generic_sell]` prices it; `ammo_9x18_pmm` (Sidorovich), `ammo_5.56x45_ss190` (Barman) were `;NO TRADE`
+  there and now have `= 2, 2`. A `;NO TRADE` buy line stays (Miser still does not buy exoskeletons).
+- Maintainer request (not SoC): Sidorovich sells `white_novice_outfit` (white leather jacket); his `black_coat_outfit` (leather coat) was stocked by the
+  mod but had no sell or buy line, so he never sold it; both now priced like the other outfits (`2, 3` / `0.6, 0.6`).
+
+## Task 4 (1.4.3): detectors off sale again
+Maintainer 2026-10-22: "убери из продажи". SoC traders did not sell detectors and artifacts are visible without one (see the correction in Task 1),
+so the four detector sales are undone: the `[trade_generic_sell]` lines are `;NO TRADE` again and the `[supplies_start]` lines are gone
+(Sidorovich, Barman, Petrenko here, Sakharov in `patches\yantar_restore`). Zombified stalkers still carry no detector (Task 1b).

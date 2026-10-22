@@ -15,9 +15,11 @@
 -- yantar_ghost_sleep, original SoC (yan/yan_sleep_restrictor.ltx:1-20, gulag_yantar.ltx scientist_wounded_1):
 --   +yan_spawn_ghost (the wounded-scientist research scene) -> yan_gluk -> 3 s agr_u_fade -> 2.5 s deadcity_wake.ppe,
 --   dream.anm looped (1002), dream voices, disable_ui -> 15 s -> 3 s: prison_0.anm looped (1003) -> 7 s: prison_1.anm,
---   enable_ui.  The mod has no yan_spawn_ghost flag or gulag scene (not in all.spawn logic), so the trigger is the
---   position of the scientists' research stop (way yan_scientist_wait_walk_3 of the SoC spawn: 174.65,-7.80,-99.65)
---   while the brain scene has not played yet (the ghost sleep comes before the X16 dream in the SoC story).
+--   enable_ui.  The mod has no yan_spawn_ghost flag or gulag scene (not in all.spawn logic), so the trigger is the end of
+--   the escort's last measurement (the bus, flags YAN_START_TAKE_MEASUREMENTS_1..3, patch soc_yan_x16_quests) + 3 s, as long
+--   as the results are not handed in and the lab has not been entered (the ghost sleep comes before the X16 dream in the
+--   SoC story). Fallback: two measurements done and a player at the scientists' research stop (way
+--   yan_scientist_wait_walk_3 of the SoC spawn: 174.65,-7.80,-99.65, 3 m from the bus).
 --   The original also teleported the sleeper to a hidden spot (yan_actor_sleep_1) and back; in co-op everybody
 --   sleeps where they stand, so the teleports are left out.
 -------------------------------------------------------------------------------------------------------
@@ -134,6 +136,15 @@ coop_scenes.register {
 -------------------------------------------------------------------------------------------------------
 local SLEEP_POS = { x = 174.65, y = -7.80, z = -99.65 }   -- SoC way yan_scientist_wait_walk_3 (research stop)
 local SLEEP_R   = 10.0
+-- the measurement flags of patch soc_yan_x16_quests (sites: tunnel entrance, tunnel exit, the bus) and the flags that close the chapter
+local SLEEP_MEAS = { "YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO" }
+local SLEEP_BLOCK = {
+	"YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO",   -- results already handed in
+	"YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO",        -- lab job started
+	"YAN_YAN_START_INFILTRATE_THE_X16_LAB_QUEST_TASK_INFO",                                   -- the party is in the lab level
+}
+local SLEEP_DELAY_MS = 3000
+local sleep_t0 = nil      -- server: since when the trigger condition holds (this VM only; a level change restarts the wait)
 
 local DREAM_DIR = "characters_voice\\scenario\\yantar\\"
 
@@ -190,10 +201,23 @@ coop_scenes.register {
 	length_ms = 33000,
 	grace_ms  = 20000,
 
-	-- SERVER: somebody reaches the research stop of the Yantar scientists, before the X16 brain scene
+	-- SERVER: the last radiation measurement is done (the bus, site 3 of the escort of patch soc_yan_x16_quests) + 3 s, while the results are
+	-- not delivered yet and the lab / brain part has not started. SoC: scientist_wounded_1 gives +yan_spawn_ghost 6 s after the third stop
+	-- (the mod's own 10 s measuring at the bus replaces that wait). Fallback for a broken measurement chain: two measurements done and a
+	-- player at the research stop (the old position rule), so the scene never depends on one flag alone.
 	trigger = function(ctx)
 		if ctx.flag("SCN_YANTAR_BRAIN_PLAYED") then return false end
-		return ctx.near(SLEEP_POS.x, SLEEP_POS.y, SLEEP_POS.z, SLEEP_R, "any")
+		for _, f in ipairs(SLEEP_BLOCK) do
+			if ctx.flag(f) then sleep_t0 = nil; return false end
+		end
+		local n = 0
+		for _, f in ipairs(SLEEP_MEAS) do
+			if ctx.flag(f) then n = n + 1 end
+		end
+		local ready = (n >= 3) or (n >= 2 and ctx.near(SLEEP_POS.x, SLEEP_POS.y, SLEEP_POS.z, SLEEP_R, "any"))
+		if not ready then sleep_t0 = nil; return false end
+		if sleep_t0 == nil then sleep_t0 = ctx.now end
+		return ctx.now - sleep_t0 >= SLEEP_DELAY_MS
 	end,
 
 	steps = function(var, env) return build_sleep(var, env) end,

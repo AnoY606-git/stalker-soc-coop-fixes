@@ -6,7 +6,7 @@
 defs = {}
 order = {}
 dbg = { no_ack = false, no_end = false }
-cfg = { lobby = { x = 105.0, y = -15.8, z = -9.8, r = 25.0 }, fs_settle_ms = 2500 }
+cfg = { lobby = { x = 105.0, y = -15.8, z = -9.8, r = 25.0 }, fs_settle_ms = 2500, hd = true }   -- hd: play the Full HD movies when they are installed (hd_tutorial)
 
 local PKGS = { "opening", "endings", "x18", "radar", "yantar", "monolith", "pripyat", "cats", "misc1", "misc2", "misc3" }
 local I = { gen = 0, installed = false, last_tick = 0, pkgs_loaded = false }
@@ -390,12 +390,59 @@ function send_skip()
 end
 skip_local = send_skip
 
+-------------------------------------------------------------------------------------------------------
+-- Full HD movies (optional, cutscene pack "hd": the SoC Enhanced Edition Cutscenes by neatodev, Nexus mod 1098).
+-- The files live under their own path textures\intro_hd\<movie>.ogm (video only, the sound stays the separate .ogg of the
+-- normal pack), so they never depend on which copy of textures\intro\* or textures\ui\* the engine finds first. A tutorial block
+-- "<name>_hd" (ui_soc_scenes.xml, coop_scn_yantar.xml, coop_scn_monolith.xml) is the same block pointing at the HD file.
+-- Every client decides for itself: without the files (or with cfg.hd = false) the old block plays, exactly as before.
+-------------------------------------------------------------------------------------------------------
+local HD_DIR = "intro_hd\\"
+local HD_MOVIES = {
+	intro_stalker = true, dream_rats = true, dream_sarcofag = true, dream_doctor = true, dream_doctor_2 = true,
+	final_blind = true, final_gold = true, final_to_monolith = true, final_apocal = true, final_immortal = true, final_peace = true,
+}
+-- tutorial block -> movie it plays
+local HD_TUTORIALS = {
+	soc_intro = "intro_stalker",
+	soc_dream_rats = "dream_rats", soc_dream_sarcofag = "dream_sarcofag", soc_dream_doctor = "dream_doctor", soc_dream_doctor_2 = "dream_doctor_2",
+	scn_yantar_dream = "dream_doctor", scn_monolith_join = "dream_doctor_2",
+	soc_end_blind = "final_blind", soc_end_gold = "final_gold", soc_end_to_monolith = "final_to_monolith",
+	soc_end_apocal = "final_apocal", soc_end_immortal = "final_immortal", soc_end_peace = "final_peace",
+}
+
+-- true when the HD file of this movie is installed on this PC
+function hd_exists(movie)
+	if not cfg.hd or not HD_MOVIES[movie] then return false end
+	local ok, r = pcall(function() return getFS():exist("$game_textures$", HD_DIR .. movie .. ".ogm") end)
+	if ok and r then return true end
+	return false
+end
+
+-- name of the tutorial block to start: "<name>_hd" when its HD movie is installed, else the name itself
+function hd_tutorial(name)
+	local movie = HD_TUTORIALS[name]
+	if movie ~= nil and hd_exists(movie) then return name .. "_hd" end
+	return name
+end
+
+-- a probe path of a scene `need` ("intro\\dream_rats.ogm", "ui\\final_blind.ogm") -> movie name when it has an HD copy
+local function hd_movie_of(p)
+	local m = string.match(p, "([%w_]+)%.ogm$")
+	if m ~= nil and HD_MOVIES[m] then return m end
+	return nil
+end
+
 local function missing_need(def)
 	local nd = def.need
 	if nd == nil then return nil end
 	local fs = getFS()
 	for _, p in ipairs(nd.tex or {}) do
-		if not fs:exist("$game_textures$", p) then return p end
+		if not fs:exist("$game_textures$", p) then
+			-- the normal movie is absent: the HD copy (own path) is as good
+			local m = hd_movie_of(p)
+			if not (m ~= nil and hd_exists(m)) then return p end
+		end
 	end
 	for _, p in ipairs(nd.snd or {}) do
 		if not fs:exist("$game_sounds$", p) then return p end
@@ -539,7 +586,14 @@ local function exec_step(R, st, now)
 		R.snds[#R.snds + 1] = s
 		if st.wait then R.block = { kind = "snd", s = s, min = now + 500, till = now + (st.cap_ms or (R.def.length_ms + 5000)) } end
 	elseif k == "tutorial" then
-		local ok, err = pcall(game.start_tutorial, st.name)
+		local tname = hd_tutorial(st.name)
+		if tname ~= st.name then slog("HD " .. tostring(st.name) .. " -> " .. tname) end
+		local ok, err = pcall(game.start_tutorial, tname)
+		if not ok and tname ~= st.name then
+			-- the HD block failed to start: the normal one
+			slog("TUTERR " .. tostring(err))
+			ok, err = pcall(game.start_tutorial, st.name)
+		end
 		if not ok then slog("TUTERR " .. tostring(err)); return end
 		R.tut = true
 		if st.wait ~= false then

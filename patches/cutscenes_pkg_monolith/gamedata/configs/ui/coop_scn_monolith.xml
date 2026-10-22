@@ -30,3 +30,21 @@
 			<main_wnd/>
 		</item>
 	</scn_monolith_join_card>
+
+	<!-- HD copies of the movie blocks above (Full HD movies of the SoC Enhanced Edition Cutscenes pack, textures\intro_hd\NAME.ogm). Same window, sound and timing; only the video file and the source rectangle (1919x1076 of the 1920x1080 frame) differ. coop_scenes.hd_tutorial() starts the block NAME_hd instead of NAME when the movie file exists. -->
+
+	<scn_monolith_join_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>characters_voice\scenario\video\dream_doctor_2</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\dream_doctor_2</texture>
+			</video_wnd>
+		</item>
+	</scn_monolith_join_hd>

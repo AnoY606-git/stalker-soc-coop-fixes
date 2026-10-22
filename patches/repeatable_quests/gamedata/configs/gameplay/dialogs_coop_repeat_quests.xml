@@ -50,7 +50,8 @@
   <dialog id="rq_wolf_handin">
     <precondition>coop_rq_dialogs.find_open_wolf</precondition>
     <phrase_list>
-      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="0"><text>rq_handin</text><next>5</next></phrase>
+      <phrase id="5"><text>rq_handin_ask</text><next>10</next><next>99</next></phrase>
       <phrase id="10"><text>rq_handin_rq_shu_find</text><precondition>coop_rq_dialogs.has_rq_wpn_fort</precondition><has_flag>RQG_RQ_SHU_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_SHU_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_SHU_FIND_FAIL</dont_has_flag><next>30</next></phrase>
       <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_wpn_fort</action><give_flag>RQG_RQ_SHU_FIND_DONE</give_flag></phrase>
       <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
@@ -127,7 +128,8 @@
   <dialog id="rq_vor_handin">
     <precondition>coop_rq_dialogs.find_open_vor</precondition>
     <phrase_list>
-      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="0"><text>rq_handin</text><next>5</next></phrase>
+      <phrase id="5"><text>rq_handin_ask</text><next>10</next><next>99</next></phrase>
       <phrase id="10"><text>rq_handin_rq_vor_find</text><precondition>coop_rq_dialogs.has_rq_wpn_ak74u</precondition><has_flag>RQG_RQ_VOR_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_VOR_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_VOR_FIND_FAIL</dont_has_flag><next>30</next></phrase>
       <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_wpn_ak74u</action><give_flag>RQG_RQ_VOR_FIND_DONE</give_flag></phrase>
       <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
@@ -175,7 +177,8 @@
   <dialog id="rq_inf_handin">
     <precondition>coop_rq_dialogs.find_open_inf</precondition>
     <phrase_list>
-      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="0"><text>rq_handin</text><next>5</next></phrase>
+      <phrase id="5"><text>rq_handin_ask</text><next>10</next><next>99</next></phrase>
       <phrase id="10"><text>rq_handin_rq_inf_find</text><precondition>coop_rq_dialogs.has_rq_wpn_desert_eagle</precondition><has_flag>RQG_RQ_INF_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_INF_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_INF_FIND_FAIL</dont_has_flag><next>30</next></phrase>
       <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_wpn_desert_eagle</action><give_flag>RQG_RQ_INF_FIND_DONE</give_flag></phrase>
       <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
@@ -194,7 +197,8 @@
   <dialog id="rq_zho_handin">
     <precondition>coop_rq_dialogs.find_open_zho</precondition>
     <phrase_list>
-      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="0"><text>rq_handin</text><next>5</next></phrase>
+      <phrase id="5"><text>rq_handin_ask</text><next>10</next><next>99</next></phrase>
       <phrase id="10"><text>rq_handin_rq_zho_find</text><precondition>coop_rq_dialogs.has_rq_vodka</precondition><has_flag>RQG_RQ_ZHO_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_ZHO_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_ZHO_FIND_FAIL</dont_has_flag><next>30</next></phrase>
       <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_vodka</action><give_flag>RQG_RQ_ZHO_FIND_DONE</give_flag></phrase>
       <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>
@@ -259,7 +263,8 @@
   <dialog id="rq_sak_handin">
     <precondition>coop_rq_dialogs.find_open_sak</precondition>
     <phrase_list>
-      <phrase id="0"><text>rq_handin</text><next>10</next><next>99</next></phrase>
+      <phrase id="0"><text>rq_handin</text><next>5</next></phrase>
+      <phrase id="5"><text>rq_handin_ask</text><next>10</next><next>99</next></phrase>
       <phrase id="10"><text>rq_handin_rq_sak_find</text><precondition>coop_rq_dialogs.has_rq_detector_simple</precondition><has_flag>RQG_RQ_SAK_FIND_ACC</has_flag><dont_has_flag>RQG_RQ_SAK_FIND_DONE</dont_has_flag><dont_has_flag>RQG_RQ_SAK_FIND_FAIL</dont_has_flag><next>30</next></phrase>
       <phrase id="30"><text>rq_handin_ok</text><action>coop_rq_dialogs.take_rq_detector_simple</action><give_flag>RQG_RQ_SAK_FIND_DONE</give_flag></phrase>
       <phrase id="99"><text>rq_not_now</text><action>dialogs.break_dialog</action></phrase>

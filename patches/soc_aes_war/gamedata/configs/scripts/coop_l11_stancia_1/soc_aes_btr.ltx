@@ -1,0 +1,9 @@
+; The army BTR of CNPP-1 (patch soc_aes_war): the SoC aes_btr_0002 that drives up the road to the Sarcophagus entrance.
+; Created by the server script coop_soc_aes_war (section soc_aes_btr, custom_data = this file). It follows the last part of the mod's army assault route
+; (smart terrain 5, point 9 = its start, the end 62 m before the entrance) and stops there. Its gun is run by the script (Monolith soldiers only).
+[logic]
+active = ph_car@drive
+
+[ph_car@drive]
+path_walk = aes_1_smart_terrain_5_walker_army_ordinary_7_walk
+headlights = off

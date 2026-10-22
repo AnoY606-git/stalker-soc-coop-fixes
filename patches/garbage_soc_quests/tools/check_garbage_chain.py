@@ -9,7 +9,9 @@ Builds the EFFECTIVE tree (the mod source, every patch of patches\\ copied over 
   3. character_desc: every start_dialog / actor_dialog of Seriy, Bes and the commander exists
   4. logic files: every walker@/kamp@/meet@ target an on_info line of Seriy, Bes and the commander names exists in the same file; Seriy and Bes wait for the arrival flag, not for the
      Yurik / Bes steps; the commander's walker is not no_meet
-  5. flag report: every flag this patch reads or gives, who else reads / sets it (all levels, all patches)
+  5. Seriy's radio call of mod 8.0 (scene gar_seriy_sos in coop_scn_garbage_soc.script): registered once for the Garbage, triggered by the 8.0 flags (Bes paid, Seriy not
+     talked to), its sound is the path of the section grey_grey_1 in script_sound.ltx, its news strings exist in eng and rus
+  6. flag report: every flag this patch reads or gives, who else reads / sets it (all levels, all patches)
 exit code 1 on any problem"""
 import os
 import re
@@ -233,6 +235,29 @@ for rel, expect in (('configs/scripts/coop_l02_garbage/gar_smart_terrain_7_walke
 fmap = dict(re.findall(r'^	(\w+)\s*=\s*"([A-Z0-9_]+)"', script, re.M))
 script_gives = set(fmap[k] for k in re.findall(r'give\(F\.(\w+)\)', script) if k in fmap)
 duty_gives = set(re.findall(r'give_flag\((?:PASS_FLAG|GRAY_FLAG)\)', duty_script)) and {'GAR_FREE_PASS', 'GAR_THE_ORDER_TO_KILL_GRAY_INFO'}
+
+# ---- Seriy's radio call of mod 8.0
+soc_script = read('scripts/coop_scn_garbage_soc.script')
+if 'id        = "gar_seriy_sos"' not in soc_script or 'coop_scenes.register' not in soc_script:
+    bad('coop_scn_garbage_soc.script does not register the scene gar_seriy_sos (the radio call of Seriy, mod 8.0)')
+else:
+    m = re.search(r'F\.DEVIL_DONE\) and not has\(F\.GRAY_DONE\)', soc_script)
+    if not m:
+        bad('gar_seriy_sos: the trigger is not "Bes paid and Seriy not talked to" (the 8.0 conditions of gar_smart_terrain_7_walker_gray.ltx)')
+    sm = re.search(r'local SOS_SND\s*=\s*"([^"]+)"', soc_script)
+    snd = sm.group(1).replace('\\\\', '\\') if sm else None
+    ss = read('configs/misc/script_sound.ltx')
+    mm = re.search(r'^\[grey_grey_1\][^\[]*?^path\s*=\s*(\S+)', ss, re.M | re.S)
+    if not (snd and mm and mm.group(1).lower() == snd.lower()):
+        bad('gar_seriy_sos: the sound %r is not the path of [grey_grey_1] in script_sound.ltx (%r)' % (snd, mm.group(1) if mm else None))
+    for sid in ('st_gar_seriy_sos_name', 'st_gar_seriy_sos_text'):
+        for lang in ('eng', 'rus'):
+            if sid not in text[lang]:
+                bad('gar_seriy_sos: string %s missing in %s' % (sid, lang))
+    if not any(('ui_ingame2_gar_start_help_the_gray_to_fight_off_the_bandits_quest_task' in read(r).lower()) for r in tree if r.endswith('ui_actor_newsmanager_icons.xml')):
+        bad('gar_seriy_sos: news icon texture is not defined')
+    if not any(problems):
+        ok('radio call of Seriy: scene gar_seriy_sos, 8.0 trigger, sound ' + str(snd) + ', strings, icon')
 
 # ---- flag report (informational, plus: every flag the script reads is set by something)
 set_by = {}

@@ -1,0 +1,464 @@
+-------------------------------------------------------------------------------------------------------
+-- CNPP-1, the war machines of the original Shadow of Chernobyl (patch soc_aes_war): the military helicopters that fight and the army BTR.
+-- SoC (level.spawn of l12_stancia): 10 helicopters (aes_helicopter*) fly along the road, drop the army "desant" and shoot at the Monolith and at the
+-- player (heli_set_enemy_actor when the player stands in the zones aes_actor_heli*), and the army APC (m_car aes_btr_0002, aes_btr_walk5) drives
+-- up the road to the Sarcophagus entrance and covers it with its machine gun.
+-- What the mod had: 8 helicopters (aes_1_heli_attack_1..8, all.spawn) that flew along their routes but never fired (nothing gave them an enemy; heli 1
+-- even pointed at a route that does not exist) and no BTR at all.
+--
+-- What is done here (all on the SERVER, nothing is added to all.spawn):
+--  * helicopters: the 8 existing helicopters get new logic files (configs\scripts\coop_l11_stancia_1\aes_1_heli_attack_<n>.ltx: patrol loops over the
+--    road, machine gun only). This script gives them enemies once a second: only helicopters within 350 m of a living player are awake, at most 3 are
+--    armed at the same time; a helicopter shoots the nearest visible Monolith soldier within 250 m, and a PLAYER only while he stands in one of the
+--    four SoC helicopter zones and at most 2 helicopters hunt players at once. A helicopter that is shot down is counted (story flags
+--    SOC_AESW_DOWN_1..3 -> the radio lines aes_choper_down_1..3 of patch soc_aes_military). Nothing is created, so a reload can never stack them.
+--  * BTR: ONE army APC (the SoC aes_btr_0002) is created once with alife():create (section soc_aes_btr = m_car with the script BTR model of Call of
+--    Pripyat, logic file scripts\coop_l11_stancia_1\soc_aes_btr.ltx), drives the last part of the army assault route to the Sarcophagus road and stops
+--    there. Its gun is run from here: it fires at Monolith soldiers it can see within 90 m and never at players or the army.
+--  * both can be switched off in configs\misc\coop_aes_war.ltx ([soc_aes_war] helicopters / btr).
+-- Everything is wrapped so that a missing object, path or section only skips that part. The radio of the helicopters is in patch soc_aes_military.
+-------------------------------------------------------------------------------------------------------
+
+local L = { CNPP = "coop_l11_stancia_1" }
+local CFG_FILE = "misc\\coop_aes_war.ltx"
+local cfg = { helicopters = true, btr = true }
+local cfg_done = false
+
+local F = {
+	GO       = "SOC_AESW_GO",        -- the helicopters may leave their yard (SoC aes_desant_go: the party stands on the SoC actor_ready line)
+	BTR_MADE = "SOC_AESW_BTR_MADE",  -- the BTR was created once (never again, a destroyed BTR stays destroyed like in SoC)
+	DOWN     = { "SOC_AESW_DOWN_1", "SOC_AESW_DOWN_2", "SOC_AESW_DOWN_3" },   -- the 1st, 2nd, 3rd helicopter shot down
+}
+
+-- SoC trigger zones where the helicopters hunt the player (aes_actor_heli, _heli1, _heli2, _heli3 of l12_stancia, same coordinates as the mod's level).
+-- sx / sy / sz = full box sizes, ox / oy / oz = shape offsets from the zone position. Tested in 2D (the SoC boxes are 1 m high at ground level).
+local HELI_ZONES = {
+	{ x = 781.8, y = 0.0, z = -162.2, shapes = {
+		{ sx = 42.3, sz = 42.3, ox = 0.0, oz = 0.0 }, { sx = 33.4, sz = 33.4, ox = 48.8, oz = 50.1 }, { sx = 45.9, sz = 45.9, ox = 135.8, oz = 137.7 },
+		{ sx = 35.4, sz = 35.4, ox = 139.5, oz = 63.6 }, { sx = 89.4, sz = 16.7, ox = 134.5, oz = 18.7 } } },
+	{ x = 730.8, y = 0.0, z = -46.2, shapes = {
+		{ sx = 49.3, sz = 99.8, ox = 0.0, oz = 0.0 }, { sx = 18.0, sz = 80.0, ox = -87.0, oz = -100.4 }, { sx = 34.7, sz = 65.1, ox = -178.0, oz = -154.8 } } },
+	{ x = 628.1, y = 0.0, z = -55.2, shapes = {
+		{ sx = 43.0, sz = 50.3, ox = 0.0, oz = 0.0 }, { sx = 38.4, sz = 38.4, ox = 185.0, oz = 8.5 }, { sx = 28.8, sz = 28.8, ox = 239.4, oz = 21.6 },
+		{ sx = 29.7, sz = 29.7, ox = 156.8, oz = -42.9 } } },
+	{ x = 470.6, y = 0.0, z = -14.9, shapes = {
+		{ sx = 70.0, sz = 70.0, ox = 0.0, oz = 0.0 }, { sx = 70.0, sz = 70.0, ox = 8.2, oz = -188.8 }, { sx = 50.0, sz = 50.0, ox = 98.3, oz = -67.5 },
+		{ sx = 50.0, sz = 50.0, ox = 210.3, oz = -38.9 }, { sx = 50.0, sz = 50.0, ox = 245.3, oz = -168.1 } } },
+}
+-- SoC actor_ready line (aes_desant_go): the party has arrived, the helicopters take off
+local READY = { x = 926.0, y = -0.1, z = -170.6, sx = 110.0, sz = 5.8 }
+local GO_X = 905.0           -- or any player already west of this x (a teleport, a late start)
+
+local HELI_PREFIX = "aes_1_heli_attack_"   -- the 8 helicopters of the mod
+local HELI_AWAKE_R = 350.0      -- a helicopter only works while a living player is this close (2D)
+local HELI_MAX_ARMED = 3        -- armed helicopters at the same time
+local HELI_MAX_HUNT = 2         -- helicopters that shoot at players at the same time
+local HELI_MONO_R = 250.0       -- range for Monolith soldiers
+local HELI_PLAYER_R = 300.0     -- range for players (inside a SoC zone)
+local HELI_REFRESH_MS = 4000    -- a target is set again after this long (a logic section switch clears the enemy)
+
+local BTR = {
+	SECTION = "soc_aes_btr",
+	STORY   = "soc_aes_btr",
+	-- the last part of the mod's army assault route (smart terrain 5): the road from the middle of the level to the Sarcophagus entrance.
+	-- The SoC APC (aes_btr_walk5) drives (366, -149) -> (367, -66); this route point 9 is (412, -128), its end (375, -62) is 9 m from the SoC end.
+	PATH    = "aes_1_smart_terrain_5_walker_army_ordinary_7_walk",
+	IDX     = 9,
+	CREATE_R = 450.0,           -- created when a player comes this close to the start (2D)
+	FIRE_R  = 90.0,
+}
+
+local t_srv = 0
+local gen = 0
+local created_try = 0
+local last_create_try = -100000
+local scanned = false
+local btr_id = nil
+local btr_fire = false
+local known = {}              -- helicopter id -> game_object seen online (to notice that one was shot down)
+local armed = {}              -- helicopter id -> { tid = target id, t = time }
+
+function has_flag(f)
+	local ok, r = pcall(story_flags.has_flag, f)
+	return ok and r and true or false
+end
+
+local function give(f)
+	if not has_flag(f) then pcall(story_flags.give_flag, f) end
+end
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "SOCAESW " .. tostring(s))
+	local bot = rawget(_G, "cs_bot")
+	if bot and bot.log then pcall(bot.log, "SOCAESW " .. tostring(s)) end
+end
+
+local function read_cfg()
+	if cfg_done then return end
+	cfg_done = true
+	pcall(function()
+		local ini = ini_file(CFG_FILE)
+		if ini ~= nil and ini:section_exist("soc_aes_war") then
+			if ini:line_exist("soc_aes_war", "helicopters") then cfg.helicopters = ini:r_bool("soc_aes_war", "helicopters") end
+			if ini:line_exist("soc_aes_war", "btr") then cfg.btr = ini:r_bool("soc_aes_war", "btr") end
+		end
+	end)
+end
+
+local function actors()
+	local t = {}
+	if db == nil or db.mp_actors == nil then return t end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil and a:alive() then t[#t + 1] = a end
+	end
+	return t
+end
+
+local function d2(a, b)
+	local dx, dz = a.x - b.x, a.z - b.z
+	return math.sqrt(dx * dx + dz * dz)
+end
+
+local function in_zone2d(z, p)
+	if math.abs(p.y - z.y) > 15 then return false end
+	for _, s in ipairs(z.shapes) do
+		if math.abs(p.x - (z.x + s.ox)) <= s.sx / 2 and math.abs(p.z - (z.z + s.oz)) <= s.sz / 2 then return true end
+	end
+	return false
+end
+
+local function in_heli_zone(p)
+	for _, z in ipairs(HELI_ZONES) do
+		if in_zone2d(z, p) then return true end
+	end
+	return false
+end
+
+-------------------------------------------------------------------------------------------------------
+-- the Monolith soldiers that are online (helicopters and the BTR shoot at them)
+-------------------------------------------------------------------------------------------------------
+local function monolith_list()
+	local t = {}
+	if db == nil or db.storage == nil then return t end
+	for id, st in pairs(db.storage) do
+		local o = nil
+		if st ~= nil then o = st.object end
+		if o ~= nil then
+			local ok, yes = pcall(function()
+				return o:clsid() == clsid.script_stalker and o:alive() and o:character_community() == "monolith"
+			end)
+			if ok and yes then t[#t + 1] = o end
+		end
+	end
+	return t
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 1. the start flag
+-------------------------------------------------------------------------------------------------------
+local function on_cnpp(acts)
+	return level.name() == L.CNPP and #acts > 0
+end
+
+function progress(acts)
+	if has_flag(F.GO) then return end
+	for _, a in ipairs(acts) do
+		local p = a:position()
+		if (math.abs(p.x - READY.x) <= READY.sx / 2 and math.abs(p.z - READY.z) <= READY.sz / 2 and math.abs(p.y - READY.y) <= 15) or p.x <= GO_X then
+			give(F.GO)
+			qlog("GO")
+			return
+		end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 2. helicopters
+-------------------------------------------------------------------------------------------------------
+local function heli_objects()
+	local t = {}
+	if db == nil or db.heli == nil then return t end
+	for id, o in pairs(db.heli) do
+		local ok, nm = pcall(function() return o:name() end)
+		if ok and type(nm) == "string" and string.sub(nm, 1, string.len(HELI_PREFIX)) == HELI_PREFIX then
+			t[#t + 1] = o
+			known[id] = o
+		end
+	end
+	return t
+end
+
+local function nearest_player_dist(pos, acts)
+	local best = nil
+	for _, a in ipairs(acts) do
+		local d = d2(pos, a:position())
+		if best == nil or d < best then best = d end
+	end
+	return best
+end
+
+local function clear_enemy(o, id)
+	if armed[id] ~= nil then
+		armed[id] = nil
+		pcall(function() o:get_helicopter():ClearEnemy() end)
+	end
+end
+
+local function set_enemy(o, id, target, now)
+	local cur = armed[id]
+	if cur ~= nil and cur.tid == target:id() and now - cur.t < HELI_REFRESH_MS then return end
+	local ok = pcall(function()
+		local h = o:get_helicopter()
+		h.m_use_mgun_on_attack = true
+		h.m_use_rocket_on_attack = false
+		h:SetEnemy(target)
+	end)
+	if ok then armed[id] = { tid = target:id(), t = now } end
+end
+
+-- count the helicopters that were shot down (they are removed from db.heli by bind_heli.heli_die while their object stays)
+local function count_deaths()
+	for id, o in pairs(known) do
+		if db.heli == nil or db.heli[id] == nil then
+			local ok, dead = pcall(function() return o:get_helicopter().m_dead end)
+			if ok and dead then
+				known[id] = nil
+				armed[id] = nil
+				for i = 1, #F.DOWN do
+					if not has_flag(F.DOWN[i]) then
+						give(F.DOWN[i])
+						qlog("HELI_DOWN " .. tostring(i) .. " id=" .. tostring(id))
+						break
+					end
+				end
+			elseif not ok then
+				known[id] = nil
+				armed[id] = nil
+			end
+		end
+	end
+end
+
+function heli_step(acts, mono, now)
+	local helis = heli_objects()
+	count_deaths()
+	if not has_flag(F.GO) then return 0 end
+	local order = {}
+	for _, o in ipairs(helis) do
+		local id = o:id()
+		local pos = o:position()
+		local d = nearest_player_dist(pos, acts)
+		if d ~= nil and d <= HELI_AWAKE_R then
+			order[#order + 1] = { o = o, id = id, pos = pos, d = d }
+		else
+			clear_enemy(o, id)
+		end
+	end
+	table.sort(order, function(a, b) return a.d < b.d end)
+	local hunting = 0
+	local n_armed = 0
+	for i, e in ipairs(order) do
+		if i > HELI_MAX_ARMED then
+			clear_enemy(e.o, e.id)
+		else
+			local target = nil
+			local ok, vis_target = pcall(function()
+				local h = e.o:get_helicopter()
+				-- a player in a SoC helicopter zone (at most HELI_MAX_HUNT helicopters hunt players)
+				if hunting < HELI_MAX_HUNT then
+					local best, bd = nil, nil
+					for _, a in ipairs(acts) do
+						local ap = a:position()
+						if in_heli_zone(ap) then
+							local d = d2(e.pos, ap)
+							if d <= HELI_PLAYER_R and (bd == nil or d < bd) and h:isVisible(a) then best, bd = a, d end
+						end
+					end
+					if best ~= nil then hunting = hunting + 1 return best end
+				end
+				-- else the nearest Monolith soldier the helicopter can see
+				local best, bd = nil, nil
+				for _, m in ipairs(mono) do
+					local d = d2(e.pos, m:position())
+					if d <= HELI_MONO_R and (bd == nil or d < bd) and h:isVisible(m) then best, bd = m, d end
+				end
+				return best
+			end)
+			if ok then target = vis_target end
+			if target ~= nil then
+				set_enemy(e.o, e.id, target, now)
+				n_armed = n_armed + 1
+			else
+				clear_enemy(e.o, e.id)
+			end
+		end
+	end
+	return n_armed
+end
+
+-------------------------------------------------------------------------------------------------------
+-- 3. the BTR
+-------------------------------------------------------------------------------------------------------
+local function btr_find()
+	local sim = alife()
+	if sim == nil then return nil end
+	local id = get_story_object_id(BTR.STORY)
+	if id ~= nil then
+		if sim:object(id) ~= nil then return id end
+		pcall(unregister_story_id, BTR.STORY)
+	end
+	return nil
+end
+
+-- the spot of the BTR: a point of the army route (position, level vertex, game vertex stored in the route)
+local function btr_spot()
+	if not level.patrol_path_exists(BTR.PATH) then return nil end
+	local pp = patrol(BTR.PATH)
+	if pp == nil or pp:count() <= BTR.IDX then return nil end
+	return pp:point(BTR.IDX), pp:level_vertex_id(BTR.IDX), pp:game_vertex_id(BTR.IDX)
+end
+
+function btr_create(acts, now)
+	local sim = alife()
+	-- an entity of the section that the story registry does not know (lost registry entry or lost flag): use it, never create a second one.
+	-- One scan per Lua VM.
+	if not scanned then
+		scanned = true
+		for i = 1, 65534 do
+			local o = sim:object(i)
+			if o ~= nil and o:section_name() == BTR.SECTION then
+				pcall(add_story_object, i, BTR.STORY)
+				give(F.BTR_MADE)
+				qlog("BTR already there id=" .. tostring(i))
+				return i
+			end
+		end
+	end
+	if has_flag(F.BTR_MADE) then return nil end
+	if created_try >= 3 then return nil end
+	if now - last_create_try < 5000 then return nil end
+	local pos, lv, gv = btr_spot()
+	if pos == nil then return nil end
+	local near = nearest_player_dist(pos, acts)
+	if near == nil or near > BTR.CREATE_R then return nil end
+	if not system_ini():section_exist(BTR.SECTION) then
+		qlog("no section " .. BTR.SECTION)
+		created_try = 3
+		return nil
+	end
+	last_create_try = now
+	created_try = created_try + 1
+	local ok, se = pcall(function() return sim:create(BTR.SECTION, pos, lv, gv) end)
+	if not ok or se == nil then
+		qlog("BTR create failed " .. tostring(se))
+		return nil
+	end
+	give(F.BTR_MADE)
+	pcall(function() db.spawned_vertex_by_id[se.id] = lv end)
+	qlog(string.format("BTR created id=%d at %.1f %.1f %.1f", se.id, pos.x, pos.y, pos.z))
+	return se.id
+end
+
+-- the gun: fire at the nearest visible Monolith soldier within FIRE_R, stop otherwise
+local function btr_gun(obj, mono)
+	local car = obj:get_car()
+	if car == nil or not car:HasWeapon() then return false end
+	local pos = obj:position()
+	local best, bd = nil, nil
+	for _, m in ipairs(mono) do
+		local mp = m:position()
+		local d = d2(pos, mp)
+		if d <= BTR.FIRE_R and math.abs(mp.y - pos.y) <= 25 and (bd == nil or d < bd) then
+			local seen = false
+			local ok, r = pcall(function() return car:IsObjectVisible(m) end)
+			if ok then seen = r and true or false else seen = d <= 50 end
+			if seen then best, bd = m, d end
+		end
+	end
+	if best ~= nil then
+		car:Action(CCar.eWpnActivate, 1)
+		car:SetParam(CCar.eWpnDesiredPos, best:position())
+		car:Action(CCar.eWpnFire, 1)
+		return true
+	end
+	car:Action(CCar.eWpnFire, 0)
+	return false
+end
+
+function btr_step(acts, mono, now)
+	if btr_id == nil or alife():object(btr_id) == nil then btr_id = btr_find() end
+	if btr_id == nil then
+		btr_id = btr_create(acts, now)
+		if btr_id == nil then return 0 end
+	end
+	local st = db.storage[btr_id]
+	local obj = nil
+	if st ~= nil then obj = st.object end
+	if obj == nil then return 1 end   -- created, not online yet
+	local ok, fired = pcall(btr_gun, obj, mono)
+	if ok then btr_fire = fired and true or false else qlog("BTR gun error " .. tostring(fired)) end
+	return 1
+end
+
+-------------------------------------------------------------------------------------------------------
+function step(now)
+	read_cfg()
+	if level.name() ~= L.CNPP then return end
+	local acts = actors()
+	if #acts == 0 then return end
+	local okp, errp = pcall(progress, acts)
+	if not okp then qlog("PROGRESSERR " .. tostring(errp)) end
+	local mono = {}
+	if cfg.helicopters or cfg.btr then mono = monolith_list() end
+	if cfg.helicopters then
+		local ok, err = pcall(heli_step, acts, mono, now or 0)
+		if not ok then qlog("HELIERR " .. tostring(err)) end
+	end
+	if cfg.btr then
+		local ok, err = pcall(btr_step, acts, mono, now or 0)
+		if not ok then qlog("BTRERR " .. tostring(err)) end
+	end
+end
+
+local function tick_server(now)
+	if now - t_srv < 1000 then return end
+	t_srv = now
+	step(now)
+end
+
+-- tests / logs
+function status()
+	local t = {}
+	t[#t + 1] = "GO=" .. tostring(has_flag(F.GO))
+	t[#t + 1] = "BTR_MADE=" .. tostring(has_flag(F.BTR_MADE))
+	t[#t + 1] = "BTR=" .. tostring(btr_id)
+	t[#t + 1] = "FIRE=" .. tostring(btr_fire)
+	for i = 1, #F.DOWN do t[#t + 1] = "DOWN" .. i .. "=" .. tostring(has_flag(F.DOWN[i])) end
+	return table.concat(t, " ")
+end
+
+function armed_count()
+	local n = 0
+	for _ in pairs(armed) do n = n + 1 end
+	return n
+end
+
+function btr_object_id()
+	return btr_id
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then
+				local ok, err = pcall(tick_server, time_global())
+				if not ok then qlog("TICKERR " .. tostring(err)) end
+			end
+			return false
+		end, function() end)
+	end)
+	qlog("INSTALL gen=" .. my)
+end

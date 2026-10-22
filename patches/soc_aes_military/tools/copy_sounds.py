@@ -5,6 +5,7 @@
 <steam soc extract dir> = xdb_soc.py extraction of the Steam SoC (English recordings, it has sounds\\characters_voice\\scenario\\aes\\...), made with
     python -I tools\\xdb_soc.py "characters_voice.scenario.aes" x <dir>
 <Russian SoC add-on file> = shadow_of_chernobyl.addon of the CoP port (the Russian recordings; default ~\\Downloads\\soc_ai_port\\extracted\\shadow_of_chernobyl.addon).
+    or a folder with the Russian files already extracted: <folder>\\sounds\\characters_voice\\scenario\\aes\\...
 The Steam and the Russian files are DIFFERENT recordings (the same names, other bytes), so each language gets its own copy.
 Files are copied byte for byte (original SoC ogg files with their comment header) to
   gamedata\\sounds\\characters_voice\\scenario\\aes\\eng\\<line>.ogg   (aes2\\ sub folder for the second half of the scenario)
@@ -38,18 +39,25 @@ import xdb  # noqa: E402
 
 wanted = {('sounds\\characters_voice\\scenario\\aes\\' + n.replace('/', '\\') + '.ogg').lower(): n for n in names}
 rus = {}
-with open(addon, 'rb') as f:
-    for member, (off, size) in xdb.tar_members(addon).items():
-        if '.db' not in member:
-            continue
-        for ename, rs, cs, ptr in xdb.index(f, off, size):
-            n = wanted.get(ename.lower())
-            if n is not None:
-                f.seek(off + ptr)
-                d = f.read(cs)
-                if rs != cs:
-                    d = xdb.lzo1x(d, rs)
-                rus[n] = d
+if os.path.isdir(addon):
+    # a folder with the Russian files already extracted (<dir>\sounds\characters_voice\scenario\aes\...)
+    for n in names:
+        a = os.path.join(addon, 'sounds', 'characters_voice', 'scenario', 'aes', *n.split('/')) + '.ogg'
+        if os.path.isfile(a):
+            rus[n] = open(a, 'rb').read()
+else:
+    with open(addon, 'rb') as f:
+        for member, (off, size) in xdb.tar_members(addon).items():
+            if '.db' not in member:
+                continue
+            for ename, rs, cs, ptr in xdb.index(f, off, size):
+                n = wanted.get(ename.lower())
+                if n is not None:
+                    f.seek(off + ptr)
+                    d = f.read(cs)
+                    if rs != cs:
+                        d = xdb.lzo1x(d, rs)
+                    rus[n] = d
 
 root_src = os.path.join(src, 'sounds', 'characters_voice', 'scenario', 'aes')
 root_dst = os.path.join(patch, 'gamedata', 'sounds', 'characters_voice', 'scenario', 'aes')

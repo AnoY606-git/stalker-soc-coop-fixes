@@ -1,0 +1,24 @@
+[con_smart_terrain_13_ecolog_representative_awareness]:stalker
+$spawn						= "respawn\con_smart_terrain_13_ecolog_representative_awareness"
+character_profile			= con_smart_terrain_13_ecolog_representative_awareness
+spec_rank 					= master
+community					= ecolog
+story_id					= con_smart_terrain_13_ecolog_representative_awareness
+
+; The army BTR of CNPP-1 (patch soc_aes_war): the script car of Call of Pripyat (class SCRPTCAR like m_car, script_binding bind_car.init) with the BTR
+; model and its machine gun (configs\models\vehicles\veh_btr_script_u_01.ltx). Created once by scripts\coop_soc_aes_war.script.
+; (m_car is defined later in system.ltx than this include, so its keys are repeated here instead of inheriting them.)
+[soc_aes_btr]
+GroupControlSection      = spawn_group
+discovery_dependency     =
+$spawn                   = "vehicles\car"
+cform                    = skeleton
+class                    = SCRPTCAR
+inv_weight               = 1000
+cost                     = 100000
+inv_grid_width           = 1
+inv_grid_height          = 1
+script_binding           = bind_car.init
+visual                   = dynamics\vehicles\btr\veh_btr_script_u_01.ogf
+story_id                 = soc_aes_btr
+custom_data              = scripts\coop_l11_stancia_1\soc_aes_btr.ltx

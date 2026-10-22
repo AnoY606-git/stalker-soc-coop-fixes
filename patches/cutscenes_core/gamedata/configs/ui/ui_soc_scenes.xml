@@ -213,3 +213,189 @@
 		</item>
 	</soc_end_peace>
 
+	<!-- HD copies of the movie blocks above (Full HD movies of the SoC Enhanced Edition Cutscenes pack, textures\intro_hd\NAME.ogm). Same window, sound and timing; only the video file and the source rectangle (1919x1076 of the 1920x1080 frame) differ. coop_scenes.hd_tutorial() starts the block NAME_hd instead of NAME when the movie file exists. -->
+
+	<soc_intro_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="200" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>characters_voice\scenario\video\intro_stalker</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\intro_stalker</texture>
+			</video_wnd>
+		</item>
+	</soc_intro_hd>
+
+	<soc_dream_rats_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="200" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>characters_voice\scenario\video\dream_rats</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\dream_rats</texture>
+			</video_wnd>
+		</item>
+	</soc_dream_rats_hd>
+
+	<soc_dream_sarcofag_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="200" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>characters_voice\scenario\video\dream_sarcofag</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\dream_sarcofag</texture>
+			</video_wnd>
+		</item>
+	</soc_dream_sarcofag_hd>
+
+	<soc_dream_doctor_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="200" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\dream_doctor</texture>
+			</video_wnd>
+		</item>
+	</soc_dream_doctor_hd>
+
+	<soc_dream_doctor_2_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="200" g="200" b="200" a="200" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\dream_doctor_2</texture>
+			</video_wnd>
+		</item>
+	</soc_dream_doctor_2_hd>
+
+	<soc_end_blind_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="0" g="0" b="0" a="0" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>intro\final_blind</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\final_blind</texture>
+			</video_wnd>
+		</item>
+	</soc_end_blind_hd>
+
+	<soc_end_gold_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="0" g="0" b="0" a="0" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>intro\final_gold</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\final_gold</texture>
+			</video_wnd>
+		</item>
+	</soc_end_gold_hd>
+
+	<soc_end_to_monolith_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="0" g="0" b="0" a="0" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>intro\final_to_monolith</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\final_to_monolith</texture>
+			</video_wnd>
+		</item>
+	</soc_end_to_monolith_hd>
+
+	<soc_end_apocal_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="0" g="0" b="0" a="0" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>intro\final_apocal</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\final_apocal</texture>
+			</video_wnd>
+		</item>
+	</soc_end_apocal_hd>
+
+	<soc_end_immortal_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="0" g="0" b="0" a="0" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>intro\final_immortal</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\final_immortal</texture>
+			</video_wnd>
+		</item>
+	</soc_end_immortal_hd>
+
+	<soc_end_peace_hd>
+		<play_each_item>1</play_each_item>
+		<global_wnd x="0" y="0" width="1024" height="768">
+			<auto_static x="0" y="0" width="1024" height="768" stretch="1"><texture>intro\intro_back</texture></auto_static>
+			<auto_static start_time="0" length_sec="6" x="512" y="740" width="500" height="24" alignment="c" stretch="1"><text font="letterica18" r="0" g="0" b="0" a="0" align="c">scn_core_skip_hint</text></auto_static>
+		</global_wnd>
+		<item type="video">
+			<sound>intro\final_peace</sound>
+			<pause_state>off</pause_state>
+			<can_be_stopped>off</can_be_stopped>
+			<function_on_stop>coop_scenes.client_movie_stopped</function_on_stop>
+			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
+				<texture x="0" y="1" width="1919" height="1076">intro_hd\final_peace</texture>
+			</video_wnd>
+		</item>
+	</soc_end_peace_hd>

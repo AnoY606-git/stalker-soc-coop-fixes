@@ -12,3 +12,11 @@ patches/soc_levels/
 patches/yantar_restore/wip_heli/from_working_tree_*/
 # python-lzo venv made by tools/pack.py on first --compress
 tools/.lzovenv/
+
+# cutscene pack: original SoC media (extracted from the player's own SoC install) and the built archives are not published
+cutscene_pack/media/
+cutscene_pack/stage/
+cutscene_pack/out/
+
+# local archive index caches (tools/extract.py)
+tools/idx_*.pkl

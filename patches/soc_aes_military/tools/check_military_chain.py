@@ -8,7 +8,7 @@ Builds the EFFECTIVE tree (the mod source, every patch copied over it in sorted 
   3. every marker has a carrier that exists: smart terrains and the named object are objects of all.spawn, army squads are squads of the effective
      squad_descr_coop_l11_stancia_1.ltx with an army faction that a spawn restrictor of the level really creates; hint texts exist in eng + rus
   4. the radio: every line of the RADIO table ships in this patch in BOTH languages (eng\\ = Steam SoC, rus\\ = Russian SoC, different recordings), nothing else
-     ships, no other patch or the mod ships the same sound, the whole patch folder <= 3 MB (3,000,000 bytes)
+     ships, no other patch or the mod ships the same sound, the whole patch folder <= 6.5 MB (6,500,000 bytes; v1.4.3 has 37 lines)
   5. the map spot type exists in the base map_spots.xml, the news texts exist
   6. the mod's own tasks of tm_coop_l11_stancia_1.ltx are still there byte for byte, the task ids of soc_aes_quests are untouched
   --verify-zones <level.spawn>: every ZONE of the script equals the SoC space_restrictor (position and shapes), the body spot is the SoC soldier
@@ -222,7 +222,7 @@ patch_total = 0
 for dp, _, fs in os.walk(os.path.join(patch_dir, 'gamedata')):
     for f in fs:
         patch_total += os.path.getsize(os.path.join(dp, f))
-(ok if patch_total <= 3000000 else bad)('patch size %.2f MB, radio %.2f MB (limit 3 MB for the whole patch)' % (patch_total / 1e6, total / 1e6))
+(ok if patch_total <= 6500000 else bad)('patch size %.2f MB, radio %.2f MB (limit 6.5 MB for the whole patch)' % (patch_total / 1e6, total / 1e6))
 ok('%d radio lines x 2 languages, all shipped' % len(set(lines)))
 triggers = re.findall(r'\{ key = "(\w+)",\s*zone = (nil|"\w+")', block)
 zones = set(re.findall(r'^\t(\w+)\s*= \{ x = ', script[script.index('local ZONE = {'):script.index('-- the radio:')], re.M))

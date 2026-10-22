@@ -56,29 +56,35 @@ local ZONE = {
 
 -- the radio: trigger -> SoC voice lines (characters_voice\scenario\aes\<eng|rus>\<line>, aes2\ in a sub folder), in the order of the SoC sound
 -- restrictors (sound_0000 .. sound_0052). The SoC infos that NPCs set (waves, helicopters) are mapped to the nearest zone of the road. "arrive" = the
--- first moment on the level (SoC aes_first_sound). Every line ships twice (English from the Steam SoC, Russian from the Russian SoC), so the patch
--- keeps the lines that fit its 3 MB: the SoC lines that are not here (and the triggers that would have only them: "road", "road_sound2") are listed
--- in NOTES.md.
+-- first moment on the level (SoC aes_first_sound). Every line ships twice (English from the Steam SoC, Russian from the Russian SoC).
+-- v1.4.3 (FOSTER: "return the military dialogs at the NPP"): 37 of the 52 SoC lines are here now (21 before). Left out (size): aes_road_battle (the
+-- long one), road_battle_8, sniper_desant, sniper_talk, six_desant_wave, unknown_weapon, bridge_ambush_2, rpg_2, rpg_3, choper_patrol, choper_crush,
+-- desant_proceed3 and the three blowout warnings (the SoC timed emission is not in the mod).
+-- A trigger with `flag` instead of `zone` plays when that story flag is set (the helicopter radio: patch soc_aes_war gives SOC_AESW_DOWN_<n> when
+-- the n-th helicopter of the level is shot down, SoC aes_choper_down_<n>).
 RADIO = {
 	{ key = "ARR",  zone = nil,           lines = { "aes_chopers_begin_1" } },
-	{ key = "RDY",  zone = "actor_ready", lines = { "aes_chopers_begin_2" } },
-	{ key = "BTR",  zone = "btr",         lines = { "aes_choper_hunt_1", "aes_third_desant_wave" } },
-	{ key = "ZAB",  zone = "zabor",       lines = { "aes_desant_proceed_part_2", "aes_desant_proceed_part_3", "aes_desant_proceed_part_4" } },
+	{ key = "RDY",  zone = "actor_ready", lines = { "aes_chopers_begin_2", "aes_choper_anomaly", "aes_2chopers_attack" } },
+	{ key = "BTR",  zone = "btr",         lines = { "aes_first_desant_wave", "aes_choper_hunt_1", "aes_third_desant_wave", "aes_second_desant_wave" } },
+	{ key = "ZAB",  zone = "zabor",       lines = { "aes_desant_proceed_part_1", "aes_desant_proceed_part_2", "aes_desant_proceed_part_3", "aes_desant_proceed_part_4" } },
 	{ key = "MON",  zone = "momsters",    lines = { "aes_monsters", "aes_desant_more_1" } },
-	{ key = "HE1",  zone = "heli1",       lines = { "aes_chopers_begin_3" } },
-	{ key = "GAT",  zone = "gate",        lines = { "aes_desant_gate" } },
-	{ key = "AM5",  zone = "ambush5",     lines = { "aes2\\aes_seven_desant_wave" } },
+	{ key = "HE1",  zone = "heli1",       lines = { "aes_chopers_begin_3", "aes_choper_hunt_2", "aes_desant_proceed2" } },
+	{ key = "GAT",  zone = "gate",        lines = { "aes_forth_desant_wave", "aes_desant_gate", "aes_desant_gate2" } },
+	{ key = "AM5",  zone = "ambush5",     lines = { "aes2\\aes_seven_desant_wave", "aes_blockpost_battle" } },
 	{ key = "BRG",  zone = "bridge",      lines = { "aes2\\aes_bridge_ambush_1", "aes2\\aes_rpg_1" } },
 	{ key = "AM1",  zone = "ambush1",     lines = { "aes2\\aes_road_battle_2" } },
 	{ key = "RD2",  zone = "road2",       lines = { "aes2\\aes_road_battle_3" } },
 	{ key = "AM2",  zone = "ambush2",     lines = { "aes2\\aes_road_battle_5" } },
-	{ key = "BAM",  zone = "btr_ambush",  lines = { "aes2\\aes_road_battle_4" } },
+	{ key = "BAM",  zone = "btr_ambush",  lines = { "aes2\\aes_road_battle_4", "aes2\\aes_road_battle_6" } },
 	{ key = "RS1",  zone = "road_sound1", lines = { "aes2\\aes_road_battle_7" } },
-	{ key = "HNT",  zone = "actor_sound", lines = { "aes2\\aes_actor_hunt", "aes2\\aes_enter_battle_1" } },
+	{ key = "HNT",  zone = "actor_sound", lines = { "aes2\\aes_actor_hunt", "aes2\\aes_enter_battle_1", "aes2\\aes_snipers_out", "aes2\\aes_commander_out" } },
+	{ key = "DN1",  flag = "SOC_AESW_DOWN_1", lines = { "aes2\\aes_choper_down_1" } },
+	{ key = "DN2",  flag = "SOC_AESW_DOWN_2", lines = { "aes2\\aes_choper_down_2" } },
+	{ key = "DN3",  flag = "SOC_AESW_DOWN_3", lines = { "aes2\\aes_choper_down_3" } },
 }
 local RADIO_DIR = "characters_voice\\scenario\\aes\\"   -- + eng\\ or rus\\ + the line
 local RADIO_GAP_MS = 2500      -- silence between two lines
-local RADIO_QUEUE_MAX = 6      -- older lines are dropped when the player runs ahead of the radio
+local RADIO_QUEUE_MAX = 8      -- older lines are dropped when the player runs ahead of the radio
 
 -- the markers: SoC objective texts (hints), carriers are server objects of the mod. group = story id of the army squad whose first living soldier carries it
 local SPOT = "green_location"
@@ -323,6 +329,11 @@ local idle_since = nil
 played = ""                    -- tests / logs: the last path handed to the sound engine
 played_n = 0
 
+local function has_local_actor()
+	local ok, a = pcall(function() return getLocalActor() end)
+	return ok and a ~= nil
+end
+
 local function pname()
 	local a = getLocalActor()
 	if a == nil then return nil end
@@ -392,7 +403,9 @@ local function radio_triggers(now)
 	for _, tr in ipairs(RADIO) do
 		if not fired[tr.key] then
 			local hit = false
-			if tr.zone == nil then hit = true else hit = in_zone(tr.zone, p) end
+			if tr.flag ~= nil then hit = has_flag(tr.flag)
+			elseif tr.zone == nil then hit = true
+			else hit = in_zone(tr.zone, p) end
 			if hit then
 				fired[tr.key] = true
 				local f = radio_flag(tr.key)
@@ -469,7 +482,9 @@ function install()
 				local ok, err = pcall(tick_server, now)
 				if not ok then qlog("TICKERR " .. tostring(err)) end
 			end
-			if OnClient() then
+			-- OnClient() is false for the player who hosts a listen server, so his own radio and news would never run: a machine with a
+			-- local actor is a client too (a dedicated server has none)
+			if OnClient() or has_local_actor() then
 				local ok, err = pcall(tick_client, now)
 				if not ok then qlog("CLIENTTICKERR " .. tostring(err)) end
 			end

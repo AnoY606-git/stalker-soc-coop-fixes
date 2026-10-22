@@ -22,6 +22,15 @@ sec2 = re.sub(rb'(?m)^(title\s*=\s*)\S+', rb'\1coop_soc_task_pass_name', sec)
 sec2 = re.sub(rb'(?m)^(descr\s*=\s*)\S+', rb'\1coop_soc_task_pass_descr', sec2)
 d = d[:m.start()] + sec2 + d[m.end():]
 
+# "We don't leave our own behind" (talk to Petruha): Petruha's logic leaves the talk state for good as soon as the ATP bandits are dead, so a
+# group that cleared the ATP before talking to him could never finish the task (soft-lock reported 2026-10-21). Done also when the bandits are
+# dead, with the same follow-up as the dialog (the ATP task, which completes at once and hands out "return to Wolf").
+PETRUHA_EXTRA = b'condlist_1 \t\t\t\t\t\t\t\t\t\t\t= {+ESC_SMART_TERRAIN_3_BANDIT_1_SQUAD_DEAD} complete %=give_task(esc_start_kill_bandits_on_the_atp_quest_task)%'
+m = re.search(rb'\[esc_start_talk_to_petruha_quest_task\].*?(?=\r?\n\r?\n|\r?\n;|\r?\n\[|\Z)', d, re.S)
+assert m, 'petruha section'
+if b'condlist_1' not in m.group(0):
+    d = d[:m.end()] + NL + PETRUHA_EXTRA + d[m.end():]
+
 new = '''
 ;--------------------------------------------------------------------------------------------------------------------------------------
 ;-- Original SoC after the flash drive (patch cordon, see NOTES.md). Titles and texts are SoC's (st_cordon_soc_chain.xml).

@@ -363,5 +363,58 @@ function status()
 		tostring(has(F.DUTY_START)), tostring(boars_dead()), kills(), tostring(has(F.REPORT)), tostring(has(F.PASS)))
 end
 
+-------------------------------------------------------------------------------------------------------
+-- 4. Seriy's radio call (restored from Shadow of COOP 8.0)
+-------------------------------------------------------------------------------------------------------
+-- The mod's logic (gar_smart_terrain_7_walker_gray.ltx, section ..._grey_grey_1) played the SOS of Seriy ("the bandits have gone completely
+-- wild", sound grey_grey_1 of the mod, a radio voice for the actor) once Bes's job was paid and Seriy had not been talked to yet:
+--   on_info = {-GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO +GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO}
+--   on_game_timer = 20 | %=play_sound(grey_grey_1)%   (20 game seconds, about 2 s of real time)
+-- and showed the task text "Total Lawlessness" with it. Phase 2 moved Seriy to the arrival state and dropped the call. Seriy's state is
+-- unchanged; the call is played by the Scene Director with the same trigger (same flags, same delay), once, on EVERY player's machine (the
+-- logic version ran on one machine only). The level maker's task of that call stays hidden (no task, the Seriy task of this patch is the quest).
+local SOS_SND   = "characters_voice\\scenario\\coop_l02_garbage\\grey_grey_1"
+local SOS_ICON  = "ui_inGame2_gar_start_help_the_gray_to_fight_off_the_bandits_quest_task"
+local SOS_DELAY_MS = 2000
+local sos_since = nil
+
+local function sos_news()
+	local a = db.actor
+	if a == nil then return end
+	pcall(function()
+		a:give_game_news(game.translate_string("st_gar_seriy_sos_name"), game.translate_string("st_gar_seriy_sos_text"), SOS_ICON, 0, 15000, 0)
+	end)
+end
+
+-- the Scene Director is a separate script: a failed registration must not stop this one
+pcall(function()
+	coop_scenes.register {
+		id        = "gar_seriy_sos",
+		kind      = "sequence",
+		level     = MAP,
+		once      = true,
+		skip      = "none",
+		length_ms = 18000,
+		grace_ms  = 12000,
+		settle_ms = 3000,
+		-- SERVER: Bes's job is paid and nobody has talked to Seriy yet (the 8.0 conditions), after the delay
+		trigger = function(ctx)
+			if has(F.DEVIL_DONE) and not has(F.GRAY_DONE) then
+				sos_since = sos_since or ctx.now
+				return ctx.now - sos_since >= SOS_DELAY_MS
+			end
+			sos_since = nil
+			return false
+		end,
+		steps = function(var, env)
+			return {
+				{ ["do"] = "fn", fn = function(e) sos_news() end },
+				{ ["do"] = "snd2d", path = SOS_SND, wait = false, vol = 1 },
+				{ ["do"] = "wait", ms = 17500 },
+			}
+		end,
+	}
+end)
+
 -- loaded by the Scene Director on every level (once per Lua VM)
 pcall(function() install() end)

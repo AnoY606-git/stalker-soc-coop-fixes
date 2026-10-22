@@ -69,6 +69,10 @@ E.__money = {}
 E.__local = nil
 E.dialogs = { relocate_money_to_actor = function(a, b, n) E.__money[E.__local:name()] = (E.__money[E.__local:name()] or 0) + n end }
 function E.getLocalActor() return E.__local end
+E.__scenes = {}
+E.coop_scenes = { register = function(def) E.__scenes[def.id] = def; return true end }
+E.__news = {}
+E.game = { translate_string = function(id) return "T:" .. id end }
 E.coop_pda_phrases = { phrase_speaker = {} }
 E.__emitted = {}
 E.coop_pda_archive_sync = { emit_phrase = function(a, b, tid) E.__emitted[#E.__emitted + 1] = tid end }
@@ -421,6 +425,43 @@ def main():
     st["env"].install()
     tick()
     check("two installs: the task is given once", all_once(TASKS["T1"], (1,)))
+
+    # ---- Seriy's radio call of mod 8.0 (scene gar_seriy_sos of the Scene Director): same trigger as the mod's logic, once, every player
+    reset()
+    E = st["E"]
+    sc = E["__scenes"]["gar_seriy_sos"]
+    check("SOS: the scene is registered for the Garbage, once, no skip", sc is not None and sc["level"] == "coop_l02_garbage" and sc["once"] is True and sc["skip"] == "none")
+
+    def trig(now):
+        return bool(sc["trigger"](lua.table_from({"now": now})))
+
+    check("SOS: not before Bes's job is paid", not trig(1000) and not trig(9000))
+    give("GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_STOP_DIALOG_INFO")
+    give("GAR_WAITING_FOR_THE_ORDER_TO_KILL_YURIK_INFO")
+    check("SOS: not at the arrival or with Bes's answer only", not trig(20000))
+    give("GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO")
+    check("SOS: Bes paid: the delay starts (20 game seconds of the mod = 2 s)", not trig(30000))
+    check("SOS: 1 s later still waiting", not trig(31000))
+    check("SOS: after the delay it fires", trig(32100))
+    steps = sc["steps"](None, None)
+    kinds = [steps[i]["do"] for i in range(1, len(steps) + 1)]
+    snd = [steps[i] for i in range(1, len(steps) + 1) if steps[i]["do"] == "snd2d"]
+    check("SOS: steps = PDA news, the mod's sound grey_grey_1, wait", kinds == ["fn", "snd2d", "wait"], kinds)
+    check("SOS: the sound is the mod's own file (script_sound.ltx path of grey_grey_1)",
+          len(snd) == 1 and snd[0]["path"] == "characters_voice\scenario\coop_l02_garbage\grey_grey_1")
+    # the PDA news (client side)
+    act = lua.eval("function(log) return { give_game_news = function(self, ...) log[#log + 1] = table.concat({...}, '|') end } end")(E["__news"])
+    E["db"]["actor"] = act
+    steps[1]["fn"](None)
+    news = [E["__news"][i] for i in range(1, len(E["__news"]) + 1)]
+    check("SOS: the news shows the 8.0 task name and text of the call", len(news) == 1 and "st_gar_seriy_sos_name" in news[0] and "st_gar_seriy_sos_text" in news[0], news)
+    # Seriy already talked to (as the mod: the section needs -GRAY_HELP_STOP): nothing
+    reset()
+    E = st["E"]
+    sc = E["__scenes"]["gar_seriy_sos"]
+    give("GAR_SMART_TERRAIN_4_STALKER_DEVIL_HELP_THE_AND_STOP_DIALOG_INFO")
+    give("GAR_SMART_TERRAIN_2_STALKER_GRAY_HELP_STOP_DIALOG_INFO")
+    check("SOS: Seriy was talked to already: no call", not trig(50000) and not trig(60000))
 
     print("%d checks, %d failed" % (n_checks, fails))
     return 1 if fails else 0

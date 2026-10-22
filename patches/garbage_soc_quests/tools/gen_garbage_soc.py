@@ -60,6 +60,12 @@ with open(os.path.join(HERE, 'soc_texts.json'), encoding='utf-8') as f:
     SOC = json.load(f)
 EXTRA = {
     'st_gar_soc_duty_report_task_descr': {'eng': 'Talk with the Duty commander', 'rus': 'Поговорить с командиром заставы'},
+    # Seriy's radio call of mod 8.0 (coop_scn_garbage_soc.script, scene gar_seriy_sos): the task name and text the mod showed with it
+    # (st_gar_start_help_the_gray_to_fight_off_the_bandits_quest_task_name / _descr of Shadow of COOP 8.0, kept word for word)
+    'st_gar_seriy_sos_name': {'eng': 'Total Lawlessness', 'rus': 'Полный беспредел'},
+    'st_gar_seriy_sos_text': {
+        'eng': "Another SOS signal, this time from the direction of the hangar. Looks like it's Seriy, Fox's brother. The bandits, those animals, have gone completely wild. We can't leave free stalkers in trouble, we need to help the guys. And have a chat with Seriy.",
+        'rus': 'Еще один сигнал SOS, на этот раз - со стороны ангара. Похоже, это Серый, брат Лиса. Бандиты, эти скоты, совсем озверели. Вольных бродяг в беде оставлять нельзя, нужно помочь парням. И с Серым пообщаться.'},
 }
 
 
