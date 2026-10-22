@@ -14,3 +14,5 @@
 - @soc_economy: Detectors are no longer sold, as in the original SoC (traders did not sell them there). They are not needed to see artifacts: every artifact in the mod is visible without a detector, as in SoC
 - @soc_savepack: Chapter save pack support: when a save of the save pack is loaded, every player (any name, also players who join later) gets the chapter's weapons, suit, ammo, medkits and money once
 - @cutscenes_core,cutscenes_pkg_yantar,cutscenes_pkg_monolith: Cut-scenes play the Full HD movies (intro, dreams, all endings) when the cutscene pack's HD file is installed; without it the normal movies play as before
+- @agroprom_soc,any_player_restrictors: Agroprom: the case with the military documents is there only once (with two or more players every player's game spawned its own case). Saves that already have two cases keep only one
+- @no_mp_items,marked_one: Flashlight and night vision work again: since v1.4 players got the single-player flashlight, which the keys did not switch; they get the mod's flashlight again, and players from older saves get theirs swapped automatically

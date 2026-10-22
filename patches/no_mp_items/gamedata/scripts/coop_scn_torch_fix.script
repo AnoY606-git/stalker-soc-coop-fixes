@@ -1,0 +1,62 @@
+-- Flashlight and night vision (patch no_mp_items, 1.4.3 fix; see its NOTES.md).
+-- 1.4 gave every player the single-player flashlight device_torch instead of the mod's mp_device_torch (default_items in
+-- configs\mp\cooperative_game.ltx, patch marked_one). With it the flashlight and the night vision (both are this one item) did not work.
+-- default_items is back to mp_device_torch; this server tick swaps the device_torch of players restored from saves made with 1.4 to 1.4.3.
+-- The file name starts with coop_scn_ so that the Scene Director (cutscenes_core) loads it on every level.
+
+local OLD, NEW = "device_torch", "mp_device_torch"
+local next_t = 0
+local gen = 0
+
+local function qlog(s)
+	pcall(printf_msg, "%s", "[torch_fix] " .. tostring(s))
+end
+
+local pending = {}       -- actor id -> true: the old flashlight was released, the new one comes on the next tick (once the slot is free)
+
+local function swap(a)
+	local id = a:id()
+	if pending[id] then
+		pending[id] = nil
+		if a:object(NEW) == nil then
+			alife():create(NEW, a:position(), a:level_vertex_id(), a:game_vertex_id(), id)
+			qlog("player " .. tostring(a:name()) .. ": " .. NEW .. " given")
+		end
+		return
+	end
+	local old = a:object(OLD)
+	if old == nil then return end
+	local se = alife():object(old:id())
+	if se ~= nil then alife():release(se, true) end
+	pending[id] = true
+	qlog("player " .. tostring(a:name()) .. ": " .. OLD .. " released")
+end
+
+local function tick(now)
+	if now < next_t then return end
+	next_t = now + 3000
+	if db == nil or db.mp_actors == nil then return end
+	for pid, a in pairs(db.mp_actors) do
+		if a ~= nil then
+			local ok, alive = pcall(function() return a:alive() end)
+			if ok and alive then
+				local ok2, err = pcall(swap, a)
+				if not ok2 then qlog("ERR " .. tostring(err)) end
+			end
+		end
+	end
+end
+
+function install()
+	gen = gen + 1
+	local my = gen
+	pcall(function()
+		level.add_call(function()
+			if my ~= gen then return true end
+			if OnServer() then pcall(tick, time_global()) end
+			return false
+		end, function() end)
+	end)
+end
+
+pcall(function() install() end)

@@ -65,3 +65,12 @@ bony, star-shaped lump).
 а не из секции. Секции и значки уже совпадали с SoC. Теперь файлы `meshes\dynamics\artefacts\af_<id>.ogf` для 19 id подменены моделями SoC
 (all.spawn не тронут, сохранения работают). Заодно: у Батарейки модель и текстура SoC (`artefact_battery`, `artifact_magnit`), у Огненного шара
 оригинальная тёмная текстура лавы. Размер +4.1 МБ в сжатом db.
+
+## 1.4.3 fix: flashlight and night vision
+Report (2026-10-22): flashlights and night vision did not work. The flashlight and the night vision are one item (`device_torch`, `night_vision = on`).
+Since 1.4 players got `device_torch` instead of the mod's `mp_device_torch` (the two sections are the same, `mp_device_torch` only has an empty `$spawn`).
+Checked in the game (live session, Cordon): `device_torch` sits in slot 10 and `enable_torch(true)` from a script works, so the item is fine, but the
+keys go through the engine, and the mod's own scene effects (`xr_effects.disable_actor_torch` etc.) also look for `mp_device_torch` by name.
+Fix: `default_items` gives `mp_device_torch` again (knife and binoculars stay the normal items), and `gamedata\scripts\coop_scn_torch_fix.script`
+(server tick, every level) swaps the `device_torch` of players restored from 1.4 to 1.4.3 saves: release first, the new one on the next tick so it
+goes into the free flashlight slot.

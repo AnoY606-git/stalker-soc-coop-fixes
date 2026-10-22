@@ -87,3 +87,13 @@ The underground part: the same command with `-Map coop_l03_agroprom_underground 
 Крот говорит оригинальными репликами (диалог "agr_factory_krot_start") и называет дорогу к тайнику. Тайник - одно задание (найти тайник, найти информацию о Стрелке, выбраться), флешка запускает
 "Узнать о судьбе Призрака" (заканчивается на Янтаре у тела Призрака). Военные документы - одно задание от Сидоровича (метка на кейсе, затем на Бармене), кейс лежит на Агропроме с самого входа.
 Все задания получает каждый игрок (сервер), поздние игроки получают текущий этап; если Крот погиб, цепочка идёт дальше. Проверено офлайн (проверка цепочки, мок-тест 39 проверок); в игре не запускалось.
+
+## 1.4.3 fix: two document cases with two players
+Report (2026-10-22): the case with the military documents was there twice (a player picked up x2). Cause: the case was spawned by the
+`spawn_object` effect of two space restrictors (`agr_stalker_help`, `agr_start_return_to_the_surface_task_end`, patch any_player_restrictors).
+Restrictor logic runs on every player's game (the mod's `on_player_inside` tests the local player), and `spawn_object` on a client sends a spawn
+request to the server, so each player's game spawned its own case before the `AGR_SOC_DOCS_SPAWNED` flag of the other one arrived.
+Now the server tick spawns it once (`spawn_case`, same patrol point `agr_spawn_safe_container_1_spawn_point`, same conditions: a player arrived on
+Agroprom or came back from the underground, flag `AGR_SOC_DOCS_SPAWNED`); the restrictors only give their story flags. Old saves: extra cases
+are released by the server (two in one inventory at once; a full alife scan 10 s after each level load and 3 s after the case is first picked up
+keeps one: the carried one before the hand-in, the Barkeep's after it). Test: `tests\docs_case_mock_test.py` (12 checks).

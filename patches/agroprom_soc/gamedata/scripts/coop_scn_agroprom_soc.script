@@ -33,7 +33,10 @@ local F = {
 	SURFACE   = "AGRU_START_RETURN_TO_THE_SURFACE_TASK_END_INFO",                                   -- back on the Agroprom surface
 	GHOST     = "X16_GHOST_DOCS_TAKEN",                                                             -- Yantar: the Ghost documents were taken (patch yantar_restore)
 	SAHAROV   = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_INSTALLATION_IS_DISABLED_STOP_DIALOG_INFO",     -- Yantar main chain done (fallback)
+	DOCS_SPAWNED = "AGR_SOC_DOCS_SPAWNED",                                                          -- the case was spawned (once)
+	HANDED    = "BAR_SMART_TERRAIN_1_TRADER_BARMEN_HAS_DOCUMENTS_AGROPROM_STOP_DIALOG_INFO",        -- the case was given to the Barkeep
 }
+local CASE_POINT = "agr_spawn_safe_container_1_spawn_point"
 
 local CASE_SECTION  = "agr_safe_container_1"
 local FLASH_SECTION = "dev_flash_agru"
@@ -109,17 +112,89 @@ local function agr_side()
 	end
 end
 
+-- the case is spawned here, once, by the server. It used to be spawned by two space restrictors, but restrictor logic runs on every player's
+-- game and each one sent its own spawn request to the server before the AGR_SOC_DOCS_SPAWNED flag of the other arrived: one case per player.
+local case_scan_at = 0      -- time_global of the next full alife scan for extra cases (0 = none planned)
+
+local function actor_ids()
+	local ids = {}
+	each_player(function(pid, a)
+		local ok, id = pcall(function() return a:id() end)
+		if ok and id then ids[id] = true end
+	end)
+	return ids
+end
+
+local function case_objects()
+	local list = {}
+	local sim = alife()
+	if sim == nil then return list end
+	for id = 1, 65534 do
+		local se = sim:object(id)
+		if se ~= nil and se:section_name() == CASE_SECTION then list[#list + 1] = se end
+	end
+	return list
+end
+
+-- keep one case in the whole game: before the hand-in the one a player carries, after it the Barkeep's
+local function remove_extra_cases()
+	local list = case_objects()
+	if #list < 2 then return #list end
+	local players = actor_ids()
+	local handed = has(F.HANDED)
+	local keep = list[1]
+	for _, se in ipairs(list) do
+		local held = players[se.parent_id] == true
+		if (handed and not held) or (not handed and held) then keep = se break end
+	end
+	for _, se in ipairs(list) do
+		if se.id ~= keep.id then
+			qlog("EXTRA CASE released id=" .. se.id .. " parent=" .. tostring(se.parent_id))
+			pcall(function() alife():release(se, true) end)
+		end
+	end
+	return 1
+end
+
+local function spawn_case()
+	if has(F.DOCS_SPAWNED) or has(F.DOCS) or has(F.HANDED) then return end
+	if not (has(F.HELP1) or has(F.SURFACE)) then return end
+	give(F.DOCS_SPAWNED)
+	if #case_objects() > 0 then qlog("case already in the game, not spawned") return end
+	local ok, err = pcall(function()
+		local p = patrol(CASE_POINT)
+		alife():create(CASE_SECTION, p:point(0), p:level_vertex_id(0), p:game_vertex_id(0))
+	end)
+	qlog("CASE SPAWNED at " .. CASE_POINT .. " " .. (ok and "ok" or tostring(err)))
+end
+
 -- the case with the documents (any level: the old task checked the inventory on whatever level the player was; Garbage Duty and the repeatable
 -- jobs read the flag too)
 local function docs_side()
-	if not has(F.DOCS) then
-		each_player(function(pid, a)
-			if player_has(a, CASE_SECTION) then
-				qlog("case with the documents in the inventory of player " .. tostring(pid))
-				give(F.DOCS)
-			end
+	each_player(function(pid, a)
+		-- two cases in one inventory (saves made with the old restrictor spawn): drop the extra ones
+		local n, extra = 0, {}
+		pcall(function()
+			a:iterate_inventory(function(owner, item)
+				if item:section() == CASE_SECTION then
+					n = n + 1
+					if n > 1 then extra[#extra + 1] = item:id() end
+				end
+			end, a)
 		end)
-	end
+		for _, id in ipairs(extra) do
+			local se = alife():object(id)
+			if se ~= nil then
+				qlog("EXTRA CASE in the inventory of player " .. tostring(pid) .. " released id=" .. id)
+				pcall(function() alife():release(se, true) end)
+			end
+		end
+		if (n > 0 or player_has(a, CASE_SECTION)) and not has(F.DOCS) then
+			qlog("case with the documents in the inventory of player " .. tostring(pid))
+			give(F.DOCS)
+			case_scan_at = time_global() + 3000      -- the old spawn may have left a second case on the table or with the other player
+		end
+	end)
 end
 
 -- fallbacks of the underground
@@ -150,8 +225,14 @@ local function tick_server(now)
 	t_srv = now
 	if db == nil or db.mp_actors == nil then return end
 	local lvl = level.name()
-	if lvl == MAP_AGR then pcall(agr_side) elseif lvl == MAP_AGRU then pcall(agru_side) end
+	if lvl == MAP_AGR then pcall(agr_side) pcall(spawn_case) elseif lvl == MAP_AGRU then pcall(agru_side) end
 	pcall(docs_side)
+	if case_scan_at == 0 then case_scan_at = now + 10000 end            -- one full scan per level load (old saves can hold two cases)
+	if case_scan_at > 0 and now >= case_scan_at then
+		case_scan_at = -1
+		local ok, err = pcall(remove_extra_cases)
+		if not ok then qlog("CASESCAN ERR " .. tostring(err)) end
+	end
 	for _, st in ipairs(CHAIN) do
 		if st.map == nil or st.map == lvl then
 			local ok, isopen = pcall(st.open)
