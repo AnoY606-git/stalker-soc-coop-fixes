@@ -557,7 +557,7 @@ function motivator_binder:help_wounded_callback(who_id)
 	xr_wounded.help_callback(self.object)
 	
 	local actor = db.mp_actors[who_id]
-	if self.object:relation(actor) ~= game_object.enemy then
+	if actor ~= nil and self.object:relation(actor) ~= game_object.enemy then
 		self.object:set_relation(game_object.friend, actor)
 	end
 	--first_speaker:change_character_reputation(10);

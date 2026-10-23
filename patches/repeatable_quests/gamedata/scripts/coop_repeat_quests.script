@@ -214,16 +214,44 @@ end
 
 -- like sim_board:create_squad, but the squad is created at a bare position and assigned to NO smart terrain: it stays where it was
 -- created (a smart terrain would send the members to its jobs, i.e. into the base that lives there, and overflow its job slots)
+-- The members would all stand on the one level vertex of the site (a crowd, all facing the same way). Put them on a loose ring of 4 to 7 m
+-- around it, each facing outwards, on nodes of the AI map (pcall: on any problem a member keeps the site position).
+local function spread_members(squad, site)
+	local list = {}
+	for k in squad:squad_members() do table.insert(list, k.id) end
+	local n = #list
+	if n < 2 then return end
+	local a0 = math.random() * 6.2832
+	for i, mid in ipairs(list) do
+		pcall(function()
+			local se = alife():object(mid)
+			if se == nil then return end
+			local a = a0 + (i - 1) * 6.2832 / n + (math.random() - 0.5) * 0.5
+			local r = 4 + math.random() * 3
+			local dir = vector():set(math.sin(a), 0, math.cos(a))
+			local v = level.vertex_in_direction(site.m_level_vertex_id, dir, r)
+			if v == nil or v == 4294967295 or v == site.m_level_vertex_id then return end
+			local p = level.vertex_position(v)
+			if p:distance_to(site.position) > r + 3 or math.abs(p.y - site.position.y) > 3 then return end
+			se.position = p
+			se.m_level_vertex_id = v
+			se.angle = vector():set(0, a, 0)
+			if db.spawned_vertex_by_id[mid] ~= nil then db.spawned_vertex_by_id[mid] = v end
+		end)
+	end
+end
+
 local function create_squad_at(board, site, sec, id)
 	local squad = alife():create(sec, site.position, site.m_level_vertex_id, site.m_game_vertex_id)
+	squad.rq_stay = true
 	site.name = function() return id .. "_site" end
 	squad:create_npc(site)
+	spread_members(squad, site)
 	squad:set_squad_relation()
 	for k in squad:squad_members() do
 		squad.board:setup_squad_and_group(k.object)
 	end
 	sim_squad_scripted_cl_manager.get_squad_manager():add_squad_sv(squad)
-	squad.rq_stay = true
 	return squad
 end
 
@@ -244,6 +272,64 @@ local function install_stay()
 		end
 	end)
 	printf_msg("[RQ] stay-put hook installed=%s %s", tostring(ok), tostring(err))
+
+	-- A squad without a smart terrain has no job, so its members got no logic section at all (initialize_obj reads an empty custom data and
+	-- activates "nil"): no scheme, no state, they stand where they were put. Give the human members of a job squad the stock "remark"
+	-- scheme with the SoC "guard" stance (misc\rq_job_logic.ltx); danger, combat and combat_ignore stay the stock generic schemes.
+	local ok2, err2 = pcall(function()
+		local orig = xr_logic.initialize_obj
+		if orig == nil then return end
+		xr_logic.initialize_obj = function(obj, st, loaded, actor, stype)
+			if not loaded and stype == modules.stype_stalker then
+				local mine = false
+				pcall(function()
+					local se = alife():object(obj:id())
+					local sq = se ~= nil and se.group_id ~= nil and se.group_id ~= 65535 and alife():object(se.group_id) or nil
+					mine = sq ~= nil and sq.rq_stay == true
+				end)
+				if mine then
+					local fname = "misc\\rq_job_logic.ltx"
+					local done = pcall(function()
+						local ini = ini_file(fname)
+						ini = xr_logic.configure_schemes(obj, ini, fname, stype, "logic", "")
+						local sect = xr_logic.determine_section_to_activate(obj, ini, "logic", actor)
+						xr_logic.activate_by_section(obj, ini, sect, st.gulag_name, false)
+					end)
+					if done then return end
+				end
+			end
+			return orig(obj, st, loaded, actor, stype)
+		end
+	end)
+	printf_msg("[RQ] job logic hook installed=%s %s", tostring(ok2), tostring(err2))
+end
+
+-- The "remark" scheme sets its state once and never looks about, so a guard would stand like a statue. SoC's camper and kamp schemes call
+-- state_mgr.set_state(npc, state, nil, nil, {look_position = point}) to scan the area; do the same for the members of a job squad: every 6 to 14 s
+-- a new point 14 m away within 100 degrees of the way the member faces. Only members that still run remark@rq_guard and have no enemy; every
+-- call is guarded (any failure leaves the plain remark behaviour).
+local look_due = {}
+local look_base = {}
+local function look_around(squad)
+	local now = time_global()
+	for k in squad:squad_members() do
+		pcall(function()
+			local id = k.id
+			if look_due[id] ~= nil and now < look_due[id] then return end
+			look_due[id] = now + 6000 + math.random() * 8000
+			local obj = level.object_by_id(id)
+			local st = db.storage[id]
+			if obj == nil or st == nil or st.active_section ~= "remark@rq_guard" or not obj:alive() then return end
+			if obj:best_enemy() ~= nil or obj:best_danger() ~= nil then return end
+			if look_base[id] == nil then
+				local d = obj:direction()
+				look_base[id] = math.atan2(d.x, d.z)
+			end
+			local a = look_base[id] + (math.random() - 0.5) * 3.5
+			local p = obj:position()
+			state_mgr.set_state(obj, "guard", nil, nil, {look_position = vector():set(p.x + math.sin(a) * 14, p.y, p.z + math.cos(a) * 14)})
+		end)
+	end
 end
 
 -- spawn the targets of a generated job; returns true when something exists to hunt / find
@@ -330,7 +416,10 @@ local function monitor(q)
 			local all_dead = true
 			for _, sid in ipairs(sids) do
 				local so = alife():object(sid)
-				if so ~= nil then so.rq_stay = true end   -- also after a load (the flag is not saved)
+				if so ~= nil then
+					so.rq_stay = true   -- also after a load (the flag is not saved)
+					pcall(look_around, so)
+				end
 				if not squad_dead(sid) then all_dead = false break end
 			end
 			if all_dead then

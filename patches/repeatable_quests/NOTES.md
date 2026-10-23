@@ -553,3 +553,26 @@ this mod) unless an actor is within 10 m, but predatory mutant squads can hunt v
 monitor now flag the squads `rq_stay`, and `coop_repeat_quests.script` wraps `sim_board.get_squad_target` (once per level, pcall) to answer the squad itself for
 flagged squads. Not shown in a game run (offline only): test `tests/rq_stay_hooks.lua` (Cordon, listen, accept `rq_wolf_camp1`, 180 s at time factor 60,
 members within 40 m of the site, map spot on the squad); the command is in the hook's header.
+
+## Job squads on a site: guard logic and loose ring (Forest35, v1.4.3: "bandits stand in a crowd in an open field and do not see you until point blank")
+Cause: a squad made by `create_squad_at` has no smart terrain, so its members never got a job. `xr_logic.initialize_obj` read the empty custom data and
+activated section `nil`: no scheme, no state manager stance, no facing. All members also stood on the one level vertex of the site (`db.spawned_vertex_by_id`
+is set to it by `add_squad_member` and moves them there on every online switch), all facing the same way, so a player coming from the side or behind was only
+noticed when close. Vision itself was never touched (no combat_ignore, no danger override; stock `xr_combat_ignore` is the same as SoC).
+Fix: `spread_members` puts each member on a loose ring 4 to 7 m around the site (AI map nodes, each facing outwards), and `install_stay` also wraps
+`xr_logic.initialize_obj` once per level: human members of a squad flagged `rq_stay` get `misc\rq_job_logic.ltx` (stock `remark` scheme, SoC `guard` stance).
+Danger, combat, hit and combat_ignore stay the stock generic schemes. Server side, per squad, pcall guarded (any failure keeps the old behaviour).
+Not shown in a game run (offline only).
+
+## Guards look about (tester: "they just stand kind of still, it is weird")
+Cause: `remark` (xrMPE xr_remark.script) calls `state_mgr.set_state(npc, anim, cb, 0)` ONCE (no `target` is given, so no look point) and then does nothing
+(state_animation, `execute` only runs `update`). The stance is `guard` (rifle up, `idle` animation) and the look stays the engine default `look.danger`
+(straight along the body). Nothing ever turns the head: a statue ring. SoC schemes that look alive call `state_mgr.set_state(npc, state, nil, nil,
+{look_position = p})` again and again: `camper` scans the points of its `path_look` flags, `kamp` looks at its fire / the performer, `walker` at its `path_look`
+points. All of them need patrol paths of the level (`patrol(name)`), and a job squad has none (only a site position), so none can be used as is.
+Fix: `look_around` in `coop_repeat_quests.script` (called from `monitor` for every squad of an active job, pcall guarded): every 6 to 14 s each member that still
+runs `remark@rq_guard`, has no enemy and no danger gets `state_mgr.set_state(obj, "guard", nil, nil, {look_position = p})`, p = 14 m away within 100 degrees of
+his first facing (the outward direction `spread_members` gave him). Same call and same stance as camper/kamp, no new scheme, `rq_job_logic.ltx` unchanged.
+Not used: `kamp` at a fire (no campfire object within 15 m of a Cordon or Bar site, checked against all.spawn; `xr_kamp` of `patches\campfires` does take
+`center_pos`, so it would work where a fire exists); `camper` (needs `path_walk` AND `path_look` that exist in all.spawn).
+Not shown in a game run (offline only). A member that is offline (no player near) is not simulated, so nobody looks anywhere then.

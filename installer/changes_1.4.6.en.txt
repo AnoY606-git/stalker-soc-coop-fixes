@@ -1,0 +1,6 @@
+New in v1.4.6
+
+- @npc_see_players: NPCs notice and fight players from normal range again. A rule copied from Call of Pripyat (the original SoC does not have it) made an NPC ignore any player farther than about 30 m, so the bandits of the side jobs stood idle until you came close and the soldiers on Agroprom walked past firefights. Players are no longer covered by that rule
+- @repeatable_quests: the bandits of the side jobs no longer stand in one clump: they stand spread on a ring around their camp, face outwards and look around from time to time
+- @soc_economy: a guard against a missing player in the "help the wounded" callback of NPCs (a possible cause of the reported server crash near the wounded Tolik on Cordon)
+- Saves of v1.4.5 and earlier 1.4.x keep working
