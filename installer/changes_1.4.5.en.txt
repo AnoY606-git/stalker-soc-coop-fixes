@@ -1,0 +1,5 @@
+New in v1.4.5
+
+- @yantar_restore: Yantar: the server no longer crashes after you talk to Sakharov about the measurements. The mod created the corpse of Vasiliev (the dead ecologist whose PDA names the X16 lab) from a character profile that does not exist, and the server died about half a minute after the talk. He lies in the swamp where the secret tunnel comes out again, with his PDA next to him
+- @yantar_restore: Yantar: the door of Sakharov's bunker room is open without any dialog, as in the original game (there is no "door" talk with Sakharov any more)
+- Saves of v1.4.4 and earlier 1.4.x keep working
