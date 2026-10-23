@@ -181,3 +181,16 @@ function give_task(actor, obj, p)
 	return task_guard_orig_give_task(actor, obj, p)
 end
 coop_task_guard.install()
+
+
+-------------------------------------------------------------------------------------------------------
+-- Hunter's family rifle (patch hunter_shotgun): SoC l06_rostok all.spawn item "hunters_toz" (story id
+-- bar_hunter_toz, id 502), position taken unchanged from the original level.spawn. The node and game
+-- vertex are those of the nearest object of the level (ros_surprise_box_001_0002), the original has none.
+-------------------------------------------------------------------------------------------------------
+function spawn_hunter_rifle(actor, npc)
+	if OnClient() then
+		return
+	end
+	alife():create("wpn_toz34_m2", vector():set(-256.500000, -4.800000, 90.100000), 64680, 1257)
+end

@@ -1,0 +1,8 @@
+New in v1.4.4
+
+- @soc_bar_duty_line: Bar: you can talk to Petrenko again. His greeting used to close the talk window at once, so "Talk" seemed to do nothing and his trade window never opened; now the window stays open and you can trade
+- @hunter_shotgun,cnpp_shake: Wild Territory: the Hunter's family rifle now lies where the original game put it, on the floor of the shipping container. It was never created before, so the quest could not be finished. It appears once, after the Hunter's quest is accepted, and every player can pick it up
+- @darkvalley_restore: Lab X18: the poltergeists match the original game, 5 electric and 1 fire one (the electric ones used to show the fire effect and the fire one was missing). The grey, blurred screen when a poltergeist notices you is gone, the original game does not have it. The three squads of the fire poltergeist's room appear when a player steps into its entrance
+- @darkvalley_restore: Dark Valley: after you leave through the south gate, Sidorovich's message on Cordon now arrives (its 20 second timer used game time, which does not run on a server), and his talk about the documents opens after it
+- @garbage_duty: Garbage: the Duty guards with the gas mask suit no longer carry a flat dark blue backpack (the backpack texture of that model is missing); they wear the same suit as their comrades
+- Saves of v1.4.3 and later 1.4.x keep working. The rifle and the fire poltergeist appear in saves where they have not been created yet

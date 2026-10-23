@@ -106,7 +106,8 @@ DIALOGS = {
         P('0', A, ['1']), P('1', N),
     ]),
     # ---- Petrenko (SoC bar_dolg_petrenko_start) ----
-    'pe': dict(id='bar_soc_pe_dialog', src='bar_dolg_petrenko_start_', npc='petrenko', phrases=[
+    # Petrenko is a trader: no break_dialog on his greeting (stop_talk would close the window at once, no Trade button), like the mod's own start dialogs
+    'pe': dict(id='bar_soc_pe_dialog', src='bar_dolg_petrenko_start_', npc='petrenko', keep_open=True, phrases=[
         P('0', H, ['90001', '90002', '90003']),
         P('90001', H, ['31'], ['gc_st_member']),
         P('90002', H, ['21'], ['gc_st_pass']),

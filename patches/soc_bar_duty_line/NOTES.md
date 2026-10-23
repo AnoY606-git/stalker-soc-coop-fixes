@@ -93,3 +93,6 @@ python tools\stalker_xrmpe\qa_verdict.py <dir> --prefix SD
 - Каждое задание получает каждый игрок; смерть НПС или потеря КПК/РГ-6 цепочку не блокируют.
 - Невозможно: зоны территории Долга, цепочка с Поваром и водкой, папка Иванцова (в ТЧ её нет), награды завсклада (функций нет в ТЧ), озвучка (записей нет). Часть диалогов Иванцова и награды Бармена написаны для патча (в ТЧ эти ветки вырезаны), см. раздел "Cut content".
 - Размер 0,11 МБ, моделей и звуков не добавлено. Проверки: мок-тест 107 PASS, статическая проверка цепочки 0 проблем, сборка копии BUDGET OK. `tools\apply_shared.py` запускать после zip.
+
+## Petrenko fix
+Petrenko is a trader. His three greetings ended with dialogs.break_dialog (stop_talk), so the talk window closed at once and the Trade button was never reachable (Talk did nothing). The greetings now end without break_dialog, like the mod's own start dialogs (model flag keep_open in tools\duty_model.py).

@@ -30,7 +30,7 @@ def phrase_xml(key, d, ph):
         s.append('                <action>coop_soc_duty.%s</action>' % a)
     for f in flags:
         s.append('                <give_flag>%s</give_flag>' % f)
-    if not nxt and spk != M.H:
+    if not nxt and spk != M.H and not d.get('keep_open'):
         s.append('                <action>dialogs.break_dialog</action>')
     for n in nxt:
         s.append('                <next>%s</next>' % n)

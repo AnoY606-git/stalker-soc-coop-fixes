@@ -2,15 +2,15 @@
 active 												= sr_idle@start_quest_idle
 
 [sr_idle@start_quest_idle]
-;Hunter's family rifle: spawn once (server only) after the hunter quest is accepted, in either order with the Yantar task
-on_info = {=isServer +BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO} sr_idle@gun_spawned %=spawn_object(wpn_toz34_m2:ros_smart_terrain_1_yes_temp_1_walk)%
+;Hunter's family rifle: spawn once (server only) at the SoC position after the hunter quest is accepted, in either order with the Yantar task
+on_info = {=isServer +BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO} sr_idle@gun_spawned %=spawn_hunter_rifle%
 on_info2 = {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} sr_idle@yantar_given %+BAR_START_GO_TO_YANTAR_QUEST_TASK_INFO%
 
 [sr_idle@gun_spawned]
 on_info = {+BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} sr_idle@nil %+BAR_START_GO_TO_YANTAR_QUEST_TASK_INFO%
 
 [sr_idle@yantar_given]
-on_info = {=isServer +BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO} sr_idle@nil %=spawn_object(wpn_toz34_m2:ros_smart_terrain_1_yes_temp_1_walk)%
+on_info = {=isServer +BAR_SMART_TERRAIN_1_STALKER_BAD_HUNTER_FIND_THE_FAMILY_GUN_STOP_DIALOG_INFO} sr_idle@nil %=spawn_hunter_rifle%
 on_info2 = {!isServer} sr_idle@nil
 ;on_info 											= {-BAR_SMART_TERRAIN_1_STALKER_BARMEN_1_HAS_DOCUMENTS_DARKVALLEY_STOP_DIALOG_INFO} sr_idle@nil %+BAR_START_GO_TO_YANTAR_QUEST_TASK_INFO%
 

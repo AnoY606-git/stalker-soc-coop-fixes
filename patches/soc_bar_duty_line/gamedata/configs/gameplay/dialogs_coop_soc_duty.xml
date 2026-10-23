@@ -269,17 +269,14 @@
             <phrase id="31">
                 <action>coop_soc_duty_say.say_pe_31</action>
                 <text>coop_soc_duty_pe_31</text>
-                <action>dialogs.break_dialog</action>
             </phrase>
             <phrase id="21">
                 <action>coop_soc_duty_say.say_pe_21</action>
                 <text>coop_soc_duty_pe_21</text>
-                <action>dialogs.break_dialog</action>
             </phrase>
             <phrase id="11">
                 <action>coop_soc_duty_say.say_pe_11</action>
                 <text>coop_soc_duty_pe_11</text>
-                <action>dialogs.break_dialog</action>
             </phrase>
         </phrase_list>
     </dialog>

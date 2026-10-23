@@ -82,3 +82,6 @@ game crashed as soon as the checkpoint guards came online. Now: `stalker_dolg_4`
 own Duty protection sections. Checked for every .ogf of the release stage with a scan (capture file exists, its sections exist): the only other
 misses are player outfit meshes (`stalker_hero_captures` -> `gilet_mask_damage`, a CoP original file; `kombez_kupol_damage`), which players have
 worn since v1.4 without a crash (players do not use that section); left as they are.
+
+## Backpack texture fix (2026-10-23, checked by hand in game)
+Tester report: a Duty guard's backpack was a flat dark blue box. It was Sergeant Zozo, skin stalker_do_antigas, whose mesh names the backpack texture asc\act_ryukzak_black. No patch ships that texture and it was not found in the game files we can read. The antigas guards (gar_dolg_blokpost_antigas) now use stalker_do_balon_8, a skin that looked correct in game.

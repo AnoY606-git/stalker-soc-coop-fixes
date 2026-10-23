@@ -4,9 +4,9 @@
 active = sr_idle@esc_return_from_dv
 
 [sr_idle@esc_return_from_dv]
-on_actor_inside = {+VAL_RAID_START -ESC_RETURN_FROM_DV_INFO} sr_idle@esc_return_from_dv_flag %=send_tip(st_esc_return_dv:all_players_message_from_sidorovich)%
+on_any_player_inside = {+VAL_RAID_START -ESC_RETURN_FROM_DV_INFO} sr_idle@esc_return_from_dv_flag %=send_tip(st_esc_return_dv:all_players_message_from_sidorovich)%
 
 [sr_idle@esc_return_from_dv_flag]
-on_game_timer = 20 | sr_idle@nil %+ESC_RETURN_FROM_DV_INFO%
+on_timer = 20000 | sr_idle@nil %+ESC_RETURN_FROM_DV_INFO%
 
 [sr_idle@nil]
