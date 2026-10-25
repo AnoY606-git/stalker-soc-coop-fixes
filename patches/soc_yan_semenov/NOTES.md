@@ -36,6 +36,21 @@ The bunker Semenov is also watched: if he dies (he is invulnerable, but a logic 
 
 All flags are shared story flags (saved, synced). No soft-lock: the wounded scientist is optional, his death only changes Sakharov's branch, a lost entity is re-created / re-registered, a failed create is retried after 5 s, nothing waits for an NPC.
 
+## One scientist at the bunker (SoC: Semenov only when the professor is dead, otherwise Kruglov only)
+- Kruglov variant (professor rescued): the tick creates no Semenov (an older save that has him gets him released once). Kruglov is untouched.
+- Semenov variant: once Semenov stands there (or the scientist died / the trip started), the tick releases the mod's own Yantar Kruglov (`yan_smart_terrain_1_ecolog_kruglov`, story id 900) through his squad `yan_smart_terrain_1_ecolog_kruglov_squad` (`sim_board:remove_squad`, the call the mod's Rostok Kruglov logic uses), else the entity itself; never both in one frame. Flag `YAN_SOC_KRUGLOV_GONE` (saved) makes it once, saves that already have both are fixed on the next Yantar visit.
+- Nothing needs Kruglov in this variant: Semenov's dialog sets the preparation flag, the task text and marker use `yan_soc_semenov` / `yan_semenov_help`, the Kruglov dialogs only said "no time". Not run in the game.
+
+## Name, talk and door (report from v1.4.5: "stands by the door, does nothing, no dialogs, generic name, door blocked again")
+- Spot: the SoC point (32.78, -11.72, -276.72) is 1.6 m from the door `yan_door_trader_2_1` (31.2, -11.6, -277.5) and 0.7 m from Kruglov's look point; a standing NPC in the swing of the (always open) door blocks it. Semenov now stands on the
+  middle of a segment of Kruglov's own path `yan_smart_terrain_1_walker_kruglov_3_1_walk`: (36.95, -11.72, -274.93), 2.8 m from Kruglov, 6.3 m from that door, 9.8 m from the locked one.
+  A game that was saved with the old position keeps him there (the registry finds the old entity).
+- Name and talk: both come from the specific character `yan_soc_semenov`. The two spawn sections said `spec_rank = veteran` while the character has rank 2071 (master); every named NPC of the mod (Sakharov, Kruglov, the whole Bar) has the
+  matching spec_rank. The likely result was a generic scientist with the same model (green suit), another name and another start dialog (no talk). Both sections are `master` now (file of `yantar_restore`; `apply_shared.py` text updated).
+  The server logs `SOCSEM IDENTITY id=.. name=.. profile=.. pos=..` once per NPC so a live run shows what the engine gave him (name must be "Assistant Semenov", the SoC string `yan_semenov_name`, Russian "Помощник Семёнов").
+- Before Sakharov's offer Semenov only says the SoC phrase 61 "I'm sorry, I have no time for this right now." (SoC branch 6, same as the original); the escort talk opens after Sakharov's offer 21113.
+- Visual: SoC `actors\ecolog\stalker_ecolog` is a green scientist suit; the mod ships `stalker_ecolog_1` (same suit), no new mesh.
+
 ## What is still impossible or not done, and why
 - **Semenov walking with the player and walking home through the bunker doors** (SoC `help_walk_*`, `return_walk`, `door_*_walk`): NPC following was not proven in the mod (`yantar_restore` item 3: Kruglov did not move), so the measurements stay with the device in the three spheres; the hand-over (removed here, back at the bunker) replaces the walk home.
 - **The Wild Territory heli scene that kills the professor**: the mod has no such scene (Kruglov of Rostok is invulnerable), so "professor dead" is derived the way the SoC restrictor does it (not rescued when on Yantar).

@@ -316,9 +316,77 @@ function status()
 		tostring(has(F.KEY)), tostring(has(F.LD)), tostring(has(F.FEE)))
 end
 
+-- The Duty assault (SoC xr_effects.mil_bomb_explode): the case of dynamite at the broken west wall gets a chemical_burn hit of
+-- power 1000000 and blows up.  SoC's blast is chemical_burn and the wall objects (military_wall_brick, _in) only take
+-- chemical_burn (models\objects\military_wall_brick_in.ltx: chemical_burn_immunity 10, all others 0).  This mod's weapons.ltx
+-- has hit_type_blast = explosion and dinamit_immunities_sect wound_immunity 0, so the level maker's hit_obj (hit.wound) never
+-- exploded the bomb and the wall stayed.  The wall objects are hit a moment after the bomb, as the blast would do in SoC.
+local BOMB_SID = "mil_explosive_dinamit_1"
+local WALL_SID = { "mil_military_wall_brick", "mil_military_wall_brick_in" }
+local WALL_DELAY = 400
+local bombed_at = nil
+
+local function sid_object(sid)
+	local o = nil
+	pcall(function() o = get_story_object(sid) end)
+	if not o then
+		pcall(function()
+			local se = alife() and alife():object(sid)
+			if se then o = level.object_by_id(se.id) end
+		end)
+	end
+	return o
+end
+
+local function chem_hit(target, src, power, impulse)
+	local h = hit()
+	pcall(function() h:bone("link") end)
+	h.power = power
+	h.impulse = impulse
+	h.direction = vector():set(1, 0, 0)
+	pcall(function()
+		if src and src ~= target then h.direction = vector():sub(target:position(), src:position()) end
+	end)
+	h.draftsman = src or target
+	h.type = hit.chemical_burn
+	target:hit(h)
+end
+
+function bomb_explode(actor, npc, p)
+	local now = 0
+	pcall(function() now = time_global() end)
+	if bombed_at and now - bombed_at < 20000 then return end
+	bombed_at = now
+	local bomb = sid_object(BOMB_SID)
+	if bomb then
+		local ok, err = pcall(chem_hit, bomb, bomb, 1000000, 1)
+		qlog("BOMB hit ok=" .. tostring(ok) .. (ok and "" or (" " .. tostring(err))))
+	else
+		qlog("BOMB not found " .. BOMB_SID)
+	end
+	local t_hit = now + WALL_DELAY
+	local added = pcall(function()
+		level.add_call(function() return time_global() >= t_hit end, function()
+			for _, sid in ipairs(WALL_SID) do
+				local w = sid_object(sid)
+				if w then
+					local ok, err = pcall(chem_hit, w, bomb, 10000, 250)
+					qlog("WALL " .. sid .. " hit ok=" .. tostring(ok) .. (ok and "" or (" " .. tostring(err))))
+				else
+					qlog("WALL not found " .. sid)
+				end
+			end
+		end)
+	end)
+	if not added then qlog("BOMB add_call failed") end
+end
+
 function install()
 	gen = gen + 1
 	local my = gen
+	pcall(function()
+		xr_effects.mil_bomb_explode = function(a, n, p) coop_soc_mil.bomb_explode(a, n, p) end
+	end)
 	pcall(function()
 		level.add_call(function()
 			if my ~= gen then return true end

@@ -1,0 +1,5 @@
+New in v1.4.7
+
+- @soc_mil_quests: Army Warehouses: the Duty assault on the Freedom base blows the wall up again. Skull's squad planted the dynamite, but the bomb never took the hit that makes it explode, so the wall stayed whole while Duty walked up to it. The bomb and the wall pieces now get the same hit as in the original game, and the squad goes in through the breach
+- @soc_yan_semenov,yantar_restore: Yantar: Semenov, Sakharov's assistant, now has his own name and his talk works. He takes Kruglov's place when the professor from the Wild Territory was not rescued, as in the original game. He no longer stands in the doorway of Sakharov's room, which could block the door, and the bunker Kruglov is taken out in that case, so only one scientist stands there like in SoC
+- Saves of v1.4.6 and earlier 1.4.x keep working. In a save that has both scientists, Kruglov leaves on the next visit to Yantar

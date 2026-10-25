@@ -408,10 +408,20 @@ wp = re.search(r'local WND = \{[^}]*pos = \{ x = ([-0-9.]+), y = ([-0-9.]+), z =
 semp = [float(x) for x in sp.groups()]
 wndp = [float(x) for x in wp.groups()]
 dist = lambda a, c: sum((x - y) ** 2 for x, y in zip(a, c)) ** 0.5
+door2 = (31.2, -11.6, -277.5)                # yan_door_trader_2_1 (the door that is kept open)
+door1 = (27.2, -11.6, -277.5)                # yan_door_trader
+kruglov = (37.41, -11.72, -277.63)           # walker_kruglov_1_walk (where the mod's Kruglov stands)
+seg_a, seg_b = (37.35, -11.72, -272.9), (36.54, -11.72, -276.96)   # walker_kruglov_3_1_walk of the mod level
+check('Semenov spot is 4 m or more from both bunker doors (the SoC point is in the doorway of yan_door_trader_2_1)',
+      dist(semp, door2) >= 4 and dist(semp, door1) >= 4, (dist(semp, door2), dist(semp, door1)))
+check('Semenov spot is 2 to 4 m from Kruglov', 2 <= dist(semp, kruglov) <= 4, dist(semp, kruglov))
+check('Semenov spot lies on the segment of Kruglov path walker_kruglov_3_1_walk (an AI path, within 0.1 m)',
+      dist(semp, seg_a) + dist(semp, seg_b) - dist(seg_a, seg_b) < 0.1, dist(semp, seg_a) + dist(semp, seg_b) - dist(seg_a, seg_b))
 if sem_soc:
-    check('Semenov spot is the SoC spawn point of yantar_semenov (within 0.1 m)', dist(semp, sem_soc) < 0.1, (semp, sem_soc))
-else:
-    print('  (SoC alife dump not found: Semenov position not compared)')
+    check('the SoC point was in the doorway (less than 2 m from the door; why the spot moved)', dist(sem_soc, door2) < 2, dist(sem_soc, door2))
+sec = rd(P('yantar_restore', 'gamedata', 'configs', 'creatures', 'spawn_sections_coop_l08_yantar.ltx'))
+check('both Semenov spawn sections use spec_rank = master like the character rank 2071 and Kruglov (a mismatch can make the engine pick another scientist)',
+      len(re.findall(r'\[yan_soc_semenov(?:_wounded)?\]:stalker[^\[]*?spec_rank\s*=\s*master', sec)) == 2)
 wounded_walk = (171.98, -7.69, -99.49)       # SoC level.game, patrol yan_scientist_wounded_walk wp00 (read with the chunk parser of the notes)
 check('wounded spot is the first point of the SoC path yan_scientist_wounded_walk (within 0.05 m)', dist(wndp, wounded_walk) < 0.05, wndp)
 site3 = (177.9, -4.6, -99.5)

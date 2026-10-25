@@ -51,7 +51,21 @@ E.story_flags = { has_flag = function(n) return flags[string.upper(n)] == true e
 	give_flag = function(n) flags[string.upper(n)] = true end,
 	disable_flag = function(n) flags[string.upper(n)] = nil end }
 function E.__reset_flags() for k in pairs(flags) do flags[k] = nil end end
-E.level = { name = function() return "coop_l07_military" end, add_call = function(f, g) E.__calls[#E.__calls + 1] = f end }
+E.__calls2 = {}
+E.level = { name = function() return "coop_l07_military" end, add_call = function(f, g) E.__calls[#E.__calls + 1] = f; E.__calls2[#E.__calls2 + 1] = { f, g } end }
+E.__hits = {}
+E.__objs = {}
+E.hit = setmetatable({ chemical_burn = 7, wound = 1 }, { __call = function() return { bone = function() end } end })
+E.vector = function() local v = {}; function v:set(x, y, z) return self end; function v:sub(a, b) return self end; return v end
+E.get_story_object = function(sid) return E.__objs[sid] end
+E.xr_effects = {}
+function E.__mkobj(name)
+	local o = { __name = name }
+	function o:position() return {} end
+	function o:hit(h) E.__hits[#E.__hits + 1] = { name = name, power = h.power, type = h.type } end
+	E.__objs[name] = o
+	return o
+end
 E.db = { mp_actors = {} }
 function E.__player(id, name)
 	local o = { __id = id, __name = name, __alive = true }
@@ -455,6 +469,37 @@ def main():
     stage_ids = re.findall(r'\{ id = "([^"]+)"', open(os.path.join(scripts, "coop_soc_mil.script"), encoding="utf-8").read())
     missing = [s for s in stage_ids if s not in sections and not s.startswith("rad_")]
     check("every stage task has a section in tm_coop_l07_military.ltx", not missing, missing)
+
+    # Duty assault: the SoC effect mil_bomb_explode (chemical_burn hit on the bomb, then on the wall objects)
+    sr = open(os.path.join(PATCH, "gamedata", "configs", "scripts", "coop_l07_military", "space_restrictors",
+                           "mil_explosive_dinamit_space_restrictor.ltx"), "rb").read().decode("latin1")
+    check("restrictor calls =mil_bomb_explode before the BOOM flag, no hit_obj", "=mil_bomb_explode +MIL_EXPLOSIVE_DINAMIT_BOOM_SPACE_RESTRICTOR_INFO" in sr and "hit_obj" not in sr)
+    mil["install"]()
+    check("install registers xr_effects.mil_bomb_explode", E["xr_effects"]["mil_bomb_explode"] is not None)
+    for n in ("mil_explosive_dinamit_1", "mil_military_wall_brick", "mil_military_wall_brick_in"):
+        E["__mkobj"](n)
+    E["__time"] = 1000
+    E["xr_effects"]["mil_bomb_explode"](None, None, None)
+    hits = [(h["name"], h["power"], h["type"]) for h in E["__hits"].values()]
+    check("bomb gets one chemical_burn hit of power 1000000", hits == [("mil_explosive_dinamit_1", 1000000, 7)], hits)
+    c2 = list(E["__calls2"].values())[-1]
+    check("walls wait for the delay", not c2[1]())
+    E["__time"] = 1500
+    check("walls hit after the delay", c2[1]())
+    c2[2]()
+    hits = [(h["name"], h["type"]) for h in E["__hits"].values()]
+    check("both wall objects get chemical_burn", hits[1:] == [("mil_military_wall_brick", 7), ("mil_military_wall_brick_in", 7)], hits)
+    E["xr_effects"]["mil_bomb_explode"](None, None, None)
+    check("second call within 20 s does nothing", len(list(E["__hits"].values())) == 3)
+    E["__time"] = 30000
+    E["__hits"] = lua.table_from({})
+    E["__objs"]["mil_explosive_dinamit_1"] = None
+    E["xr_effects"]["mil_bomb_explode"](None, None, None)
+    c3 = list(E["__calls2"].values())[-1]
+    E["__time"] = 31000
+    c3[2]()
+    hits = [h["name"] for h in E["__hits"].values()]
+    check("bomb missing: the walls are still hit, nothing crashes", hits == ["mil_military_wall_brick", "mil_military_wall_brick_in"], hits)
 
     print()
     print("ALL PASS" if fails == 0 else "FAILED: %d" % fails)

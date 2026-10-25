@@ -250,7 +250,7 @@ SPAWN = ''';--- soc_yan_semenov: Semenov (SoC yan_Semenov, spawn yantar_semenov)
 [yan_soc_semenov]:stalker
 $spawn						= "respawn\\yan_soc_semenov"
 character_profile			= yan_soc_semenov
-spec_rank					= veteran
+spec_rank					= master
 community					= ecolog
 story_id					= yan_soc_semenov
 custom_data					= scripts\\coop_l08_yantar\\yan_soc_semenov.ltx
@@ -259,7 +259,7 @@ custom_data					= scripts\\coop_l08_yantar\\yan_soc_semenov.ltx
 [yan_soc_semenov_wounded]:stalker
 $spawn						= "respawn\\yan_soc_semenov_wounded"
 character_profile			= yan_soc_semenov
-spec_rank					= veteran
+spec_rank					= master
 community					= ecolog
 story_id					= yan_semenov_help
 custom_data					= scripts\\coop_l08_yantar\\yan_soc_semenov_wounded.ltx

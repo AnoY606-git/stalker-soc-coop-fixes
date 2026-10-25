@@ -20,7 +20,7 @@ local PREP = "YAN_SMART_TERRAIN_1_ECOLOG_KRUGLOV_X16_PREPARATION_STOP_DIALOG_INF
 local REPORTED = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_TALK_TO_THE_SAHAROV_MEASUREMENTS_STOP_DIALOG_INFO"
 local HELMET = "YAN_SMART_TERRAIN_1_ECOLOG_SAHAROV_GIVE_PSI_PROTECTION_HELMET_STOP_DIALOG_INFO"
 local SITES = { { 108.5, -8.9, -209.3 }, { 144.2, -8.9, -121.8 }, { 177.9, -4.6, -99.5 } }
-local SEM_SPOT = { 32.78, -11.72, -276.72 }            -- SoC yantar_semenov
+local SEM_SPOT = { 36.95, -11.72, -274.93 }            -- bunker spot (SoC yantar_semenov was in the door yan_door_trader_2_1)
 local WND_SPOT = { 171.98, -7.69, -99.49 }             -- SoC path yan_scientist_wounded_walk
 
 local function tr(id) return safe(function() return game.translate_string(id) end) end

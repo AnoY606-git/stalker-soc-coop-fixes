@@ -33,16 +33,22 @@ local F = {
 	RET       = "YAN_SCIENTIST_RETURN_TASK",                                                             -- SoC yan_scientist_return_task
 	TIP1      = "YAN_SOC_SEM_TIP_1",                                                                     -- SoC yantar_professor_spam_1 (PDA tip, shown once by the scene)
 	TIP2      = "YAN_SOC_SEM_TIP_2",                                                                     -- SoC yantar_professor_spam_2
+	KRU_GONE  = "YAN_SOC_KRUGLOV_GONE",                                                                  -- the mod's own Yantar Kruglov was taken out (SoC has one scientist at the bunker)
 }
 local MEAS = { "YAN_START_TAKE_MEASUREMENTS_1_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_2_QUEST_TASK_INFO", "YAN_START_TAKE_MEASUREMENTS_3_QUEST_TASK_INFO" }
 
--- the two NPCs. SoC: yantar_semenov (story id 905) stands at (32.78, -11.72, -276.72) next to the bunker; the wounded scientist lies at the
--- start of the path yan_scientist_wounded_walk (171.98, -7.69, -99.49), 6 m from the third measurement site (the bus). The wounded one
--- carries the story id yan_semenov_help of the SoC task markers.
-local SEM = { section = "yan_soc_semenov", story = "yan_soc_semenov", pos = { x = 32.78, y = -11.72, z = -276.72 }, name = "bunker",
+-- the two NPCs. SoC: yantar_semenov (story id 905) stands at (32.78, -11.72, -276.72) next to the bunker, but there it is in the doorway of
+-- the door yan_door_trader_2_1 (31.2, -11.6, -277.5) and blocked it in the mod. The mod stands him on the middle of the segment of Kruglov's own
+-- path yan_smart_terrain_1_walker_kruglov_3_1_walk ((37.35, -272.9) - (36.54, -276.96)): an AI path, 2.8 m from Kruglov, 6 m from the door.
+-- The wounded scientist lies at the start of the path yan_scientist_wounded_walk (171.98, -7.69, -99.49), 6 m from the third measurement site
+-- (the bus). The wounded one carries the story id yan_semenov_help of the SoC task markers.
+local SEM = { section = "yan_soc_semenov", story = "yan_soc_semenov", pos = { x = 36.95, y = -11.72, z = -274.93 }, name = "bunker",
 	logic = "scripts\\coop_l08_yantar\\yan_soc_semenov.ltx" }
 local WND = { section = "yan_soc_semenov_wounded", story = "yan_semenov_help", pos = { x = 171.98, y = -7.69, z = -99.49 }, name = "wounded",
 	logic = "scripts\\coop_l08_yantar\\yan_soc_semenov_wounded.ltx" }
+
+-- the mod's own Kruglov of the bunker (spawn section = story id = character; his squad releases him the way the Rostok Kruglov logic does)
+local KRU = { section = "yan_smart_terrain_1_ecolog_kruglov", story = "yan_smart_terrain_1_ecolog_kruglov", squad = "yan_smart_terrain_1_ecolog_kruglov_squad", name = "Kruglov" }
 
 local HOME_MS = 20000          -- the wounded one stays this long after the talk, then "walks home"
 local DIE_MS = 4000            -- SoC sr_idle@1 on_timer: the PDA tip and the return task come 4 s after his death
@@ -227,6 +233,22 @@ function ensure_logic(spec, id)
 	qlog("logic of " .. spec.name .. " started by script, section " .. tostring(sect))
 end
 
+-- once per entity: log the name and profile the engine really gave him (a generic scientist here means the specific character was not
+-- picked from character_profile, see NOTES "Name and talk")
+local idlogged = {}
+local function log_identity(id)
+	if idlogged[id] then return end
+	local o = nil
+	pcall(function() o = level.object_by_id(id) end)
+	if o == nil then return end
+	idlogged[id] = true
+	local nm, prof, p = "?", "?", "?"
+	pcall(function() nm = tostring(o:character_name()) end)
+	pcall(function() prof = tostring(o:profile_name()) end)
+	pcall(function() local v = o:position(); p = string.format("%.2f %.2f %.2f", v.x, v.y, v.z) end)
+	qlog("IDENTITY id=" .. tostring(id) .. " name=" .. nm .. " profile=" .. prof .. " pos=" .. p)
+end
+
 -- true / false when known, nil when the entity is unknown
 local function npc_alive(id)
 	local alive = nil
@@ -248,6 +270,50 @@ end
 -------------------------------------------------------------------------------------------------------
 local talked_t = nil
 local die_t = nil
+local kru_t = -COOLDOWN_MS
+local kru_scanned = false
+local kru_first = nil
+
+-- SoC has ONE scientist at the bunker: Semenov when the professor is dead, Kruglov otherwise. The mod keeps its own Kruglov there, so in the
+-- Semenov variant he is taken out once (flag KRU_GONE, saved; also for saves that already have both). Only when Semenov (or his death / the trip)
+-- is already there, so the bunker never stands empty. One release per attempt: the squad when it exists (it releases its member), otherwise the
+-- entity; never both in one frame.
+local function remove_kruglov(now)
+	if has(F.KRU_GONE) or not professor_dead() then return end
+	if find(SEM) == nil and not has(F.DIE) and not has(F.WOUNDED) then return end
+	if now - kru_t < COOLDOWN_MS then return end
+	kru_t = now
+	local id = nil
+	pcall(function() id = get_story_object_id(KRU.story) end)
+	local sim = alife()
+	if sim == nil then return end
+	if id ~= nil and sim:object(id) == nil then id = nil end
+	if id == nil then
+		local ids = scan(KRU)
+		id = ids[1]
+	end
+	if id == nil then
+		-- the mod's Kruglov may not exist yet right after the level loaded: look again for 45 s before giving up
+		kru_first = kru_first or now
+		if now - kru_first < 45000 then return end
+		give(F.KRU_GONE)
+		qlog("Kruglov of the bunker not found (nothing to remove)")
+		return
+	end
+	local done = false
+	pcall(function()
+		local sq = get_story_squad(KRU.squad)
+		if sq ~= nil then sim_board.get_sim_board():remove_squad(sq); done = true end
+	end)
+	if not done then
+		pcall(function()
+			local se = sim:object(id)
+			if se ~= nil then sim:release(se, true); done = true end
+		end)
+	end
+	if done then give(F.KRU_GONE) end
+	qlog("Kruglov of the bunker released id=" .. tostring(id) .. " " .. (done and "ok" or "FAILED"))
+end
 
 -- the professor is dead = the party reached Yantar without having rescued him (SoC: the restrictor yan_ecolog_spam_space_restrictor sets
 -- bar_heli_scene_professor_die + bar_rescue_research_fail when bar_rescue_research_done is not set)
@@ -264,6 +330,8 @@ local function progress(now)
 	if lvl ~= YAN then return end
 	if not has(F.RESCUE) then give(F.PROF_DIE) end
 	if first_player() == nil then return end
+
+	pcall(remove_kruglov, now)
 
 	-- the wounded one died (zombies, a stray bullet): SoC death@scientist (his logic sets the same flag)
 	if has(F.WOUNDED) and not has(F.WGONE) and not has(F.DIE) then
@@ -290,6 +358,7 @@ local function progress(now)
 		if id ~= nil then
 			wnd_id = id
 			pcall(ensure_logic, WND, id)
+			pcall(log_identity, id)
 			if not has(F.WOUNDED) then give(F.WOUNDED) end
 			release(SEM, now)                                   -- SoC: he is away with the player
 		end
@@ -306,9 +375,12 @@ local function progress(now)
 	end
 
 	-- the bunker Semenov stands next to Sakharov except while the wounded one is out there or after his death
-	if not wounded_active() and not has(F.DIE) then
+	-- SoC: he appears only when the professor is dead; with Kruglov rescued there is no Semenov (a bunker Semenov of an older save is removed)
+	if not professor_dead() then
+		if not has(F.SEM_START) then release(SEM, now) end
+	elseif not wounded_active() and not has(F.DIE) then
 		local sid = ensure(SEM, now)
-		if sid ~= nil then pcall(ensure_logic, SEM, sid) end
+		if sid ~= nil then pcall(ensure_logic, SEM, sid); pcall(log_identity, sid) end
 	end
 
 	-- SoC sr_idle@1 / @2: 4 s after his death, while the lab job has not started: the PDA tip; without the talk also the return task
@@ -383,6 +455,9 @@ function reset_given()
 	given = {}
 	talked_t = nil
 	die_t = nil
+	kru_t = -COOLDOWN_MS
+	kru_scanned = false
+	kru_first = nil
 	made[SEM.section] = { id = nil, t = -COOLDOWN_MS, scanned = false }
 	made[WND.section] = { id = nil, t = -COOLDOWN_MS, scanned = false }
 	wnd_id = nil

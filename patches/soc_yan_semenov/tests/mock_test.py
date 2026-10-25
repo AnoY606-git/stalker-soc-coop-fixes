@@ -93,6 +93,22 @@ E.alife = function() return {
 			for k, v in pairs(E.__story) do if v == se.id then E.__story[k] = nil end end
 		end
 	end } end
+E.__squad = nil                -- story id of the squad -> member entity id (the mod's squad of the Yantar Kruglov)
+E.__squad_removed = 0
+E.get_story_squad = function(s)
+	if E.__squad and E.__squad.story == s then return E.__squad end
+	return nil
+end
+E.sim_board = { get_sim_board = function() return { remove_squad = function(self, sq)
+	E.__squad_removed = E.__squad_removed + 1
+	local e = E.__ents[sq.member]
+	if e then
+		E.__released[#E.__released + 1] = e.section
+		E.__ents[sq.member] = nil
+		for k, v in pairs(E.__story) do if v == sq.member then E.__story[k] = nil end end
+	end
+	E.__squad = nil
+end } end }
 E.db = { mp_actors = {}, spawned_vertex_by_id = {}, storage = {} }
 E.__logic = {}
 E.ini_file = function(f) return { file = f } end
@@ -158,6 +174,8 @@ MEAS = ["YAN_START_TAKE_MEASUREMENTS_%d_QUEST_TASK_INFO" % i for i in (1, 2, 3)]
 SEM_START = "YAN_FIND_SCIENTIST_SEMENOV_START"
 YAN, X16 = "coop_l08_yantar", "coop_l08_x16"
 SEM, WND = "yan_soc_semenov", "yan_soc_semenov_wounded"
+KRU = "yan_smart_terrain_1_ecolog_kruglov"
+KGONE = "YAN_SOC_KRUGLOV_GONE"
 
 
 def main():
@@ -184,6 +202,8 @@ def main():
         E["__logic"] = lua.table_from({})
         E["db"]["storage"] = lua.table_from({})
         E["__fail_create"] = False
+        E["__squad"] = None
+        E["__squad_removed"] = 0
         E["__level"] = level
         E["__time"] = 0
         E["__client"] = False
@@ -221,16 +241,64 @@ def main():
         v = E["__story"][sid]
         return int(v) if v else None
 
+    def add_kru(squad=True):
+        E["__ents"][500] = lua.table_from({"id": 500, "section": KRU, "alive": True, "online": True})
+        E["__story"][KRU] = 500
+        if squad:
+            E["__squad"] = lua.table_from({"story": KRU + "_squad", "member": 500})
+
     # ---------------------------------------------------------------- the professor is dead (not rescued): the Semenov variant
     reset()
     player(1, 30, -11, -272)
+    add_kru()
     check("not rescued: the professor is dead", S["professor_dead"]())
     step()
     check("on Yantar without the rescue: PROFESSOR_DIE is set (SoC yan_ecolog_spam_space_restrictor)", flag("YAN_SOC_PROFESSOR_DIE"))
-    check("Semenov is created ONCE at the SoC spot next to the bunker", n_created(SEM) == 1 and created()[0].startswith(SEM + "|32.78,-11.72,-276.72"), created())
+    check("Semenov is created ONCE at the SoC spot next to the bunker", n_created(SEM) == 1 and created()[0].startswith(SEM + "|36.95,-11.72,-274.93"), created())
     check("his story id is registered (a loaded game finds him again)", story("yan_soc_semenov") is not None)
     step(); step(); step()
     check("no second Semenov on later ticks", n_created(SEM) == 1, created())
+    check("Semenov variant: the mod's bunker Kruglov is taken out once (squad release), Semenov stays", ent(KRU) is None and ent(SEM) is not None
+          and flag(KGONE) and int(E["__squad_removed"]) == 1 and released() == [KRU], (released(), E["__squad_removed"]))
+
+    # no Kruglov squad: the entity is released directly; no Kruglov at all: only the flag; the order: Semenov first
+    reset(); player(1, 30, -11, -272); add_kru(False)
+    step()
+    check("Semenov is created in the first tick, Kruglov is not touched in the same tick (no same-frame release)", ent(SEM) is not None and ent(KRU) is not None and not flag(KGONE))
+    step()
+    check("no squad: Kruglov is released directly, once", ent(KRU) is None and released() == [KRU] and flag(KGONE), released())
+    for i in range(5):
+        step()
+    check("... and never again", released() == [KRU])
+    reset(); player(1, 30, -11, -272)
+    step(); step()
+    check("no Kruglov yet: it keeps looking for 45 s (he may not exist right after the level load), no flag yet", not flag(KGONE) and released() == [])
+    for i in range(5):
+        step(10000)
+    check("no Kruglov in the save: after 45 s only the flag is set, nothing released", flag(KGONE) and released() == [])
+    reset(); player(1, 30, -11, -272); add_kru(); give(KGONE)
+    step(); step()
+    check("flag set (Kruglov of another entity id would stay): no second release attempt", ent(KRU) is not None and released() == [])
+    reset(); player(1, 30, -11, -272); add_kru()
+    E["__fail_create"] = True
+    step(); step(); step()
+    check("no Semenov yet (create fails): Kruglov stays, the bunker is never empty", ent(KRU) is not None and not flag(KGONE))
+    E["__fail_create"] = False
+    reset(X16); player(1, 0, 0, 0); add_kru()
+    for i in range(3):
+        step()
+    check("other level: Kruglov untouched", ent(KRU) is not None and not flag(KGONE))
+    reset(); player(1, 30, -11, -272); add_kru()
+    give(OFFERED); give(SEM_START); give(PREP)
+    for m in MEAS:
+        give(m)
+    step(); step(); step()
+    check("save that already had both and is mid-trip (wounded one out, bunker Semenov gone): Kruglov taken out after Semenov was first created", ent(KRU) is None or flag(KGONE))
+    reset(); player(1, 30, -11, -272); add_kru()
+    give(SEM_START); give("YAN_SCIENTIST_DIE"); give(OFFERED)
+    step(); step()
+    check("Semenov dead (variant) and the bunker empty of him: Kruglov is still removed (SoC: only the scientist who died was there)", ent(KRU) is None and flag(KGONE))
+    reset(); player(1, 30, -11, -272)
     check("Sakharov: the Kruglov offer is hidden, the Semenov offer shows", not S["st_prof_alive"]() and S["st_prof_die"]())
     check("Kruglov: every state yields, only 'no time' (SoC branch 6)", not S["st_k_meet"]() and not S["st_k_talk"]() and not S["st_k_busy"]() and not S["st_k_after"]()
           and not S["st_k_meet_r"]() and S["st_k_other"]())
@@ -240,11 +308,12 @@ def main():
     reset()
     player(1, 30, -11, -272)
     give(RESCUE)
+    add_kru()
     step()
     check("rescued: no PROFESSOR_DIE, the professor lives", not flag("YAN_SOC_PROFESSOR_DIE") and not S["professor_dead"]())
     check("rescued: Kruglov states are the stock ones", S["st_k_meet_r"]() == Y["st_k_meet_r"]() and S["st_k_meet"]() == Y["st_k_meet"]() and not S["st_k_other"]()
           and S["st_prof_alive"]() and not S["st_prof_die"]())
-    check("rescued: Semenov stands at the bunker anyway (SoC spawns both)", n_created(SEM) == 1)
+    check("rescued: exactly one scientist, Kruglov: no Semenov, Kruglov stays (SoC)", n_created(SEM) == 0 and ent(KRU) is not None and released() == [] and not flag(KGONE))
     give(OFFERED)
     check("rescued + offered: Kruglov gives the escort talk", S["st_k_talk"]() and Y["st_k_talk"]())
     for m in MEAS:
@@ -253,6 +322,15 @@ def main():
     for i in range(30):
         step()
     check("rescued: no wounded scientist (Kruglov variant has none)", n_created(WND) == 0 and not flag("YAN_SOC_SEM_WOUNDED"), created())
+    check("rescued: after the whole chain Kruglov is still the only scientist", ent(KRU) is not None and n_created(SEM) == 0 and released() == [], (created(), released()))
+    # a save of an older version that already has Semenov in the Kruglov variant: he is removed once
+    reset(); player(1, 30, -11, -272); give(RESCUE); add_kru()
+    al = E["alife"]()
+    vec = E["vector"]()
+    vec["set"](vec, 36.95, -11.72, -274.93)
+    al["create"](al, SEM, vec, 77, 1)
+    step(); step()
+    check("rescued, old save with Semenov: Semenov released, Kruglov kept", SEM in released() and ent(SEM) is None and ent(KRU) is not None, released())
     check("PROFESSOR_DIE is not set later either", not flag("YAN_SOC_PROFESSOR_DIE"))
 
     # ---------------------------------------------------------------- the Semenov variant: offer, talk, three measurements, wounded
