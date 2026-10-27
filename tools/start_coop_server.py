@@ -7,17 +7,24 @@ Python 3.10+, только стандартная библиотека.
 
 import argparse
 from dataclasses import dataclass
+import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
+import tarfile
 
 
 # Снять только после интеграционной проверки совместимого комплекта DLL/config/data.
 # Генерация аргументов сама по себе не доказывает готовность к подключению клиентов.
 LOBBY_DATA_VERIFIED = False
+EXPECTED_ENGINE_SHA256 = "de8e7b892203abc0e7a667b1a56ad0844140f02a82461e8432edc6a3150f2860"
+PATCH_DB_NAME = "zzz_coop_player_limit_1_8.db"
+EXPECTED_PATCH_DB_SIZE = 471602
+EXPECTED_PATCH_DB_SHA256 = "6840f273c8cbad7babfe13cd243c920db7bc8992090f8f377332f169fdbfa12f"
 LAUNCH_BLOCK_REASON = (
     "Реальный запуск отключён: комплект lobby data ещё не проверен. "
     "Используйте --dry-run; cap8/config8 без обязательного патча данных лобби "
@@ -124,6 +131,91 @@ def validate_prefix(prefix: Path) -> None:
         raise LaunchError(f"Нужен существующий инициализированный Wine prefix: {prefix}")
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for block in iter(lambda: source.read(64 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _casefold_directories(parents: list[Path], name: str) -> list[Path]:
+    return [child for parent in parents for child in parent.iterdir()
+            if child.name.casefold() == name and child.is_dir()]
+
+
+def _check_no_loose_overrides(game: Path) -> None:
+    # Wine ищет имена без учёта регистра. Проходим только два фиксированных
+    # пути; is_dir/iterdir следуют symlink каталогов без рекурсивного обхода.
+    roots = _casefold_directories([game], "gamedata")
+    configs = _casefold_directories(roots, "configs")
+    configs = _casefold_directories(configs, "mp")
+    for directory in configs:
+        for path in directory.iterdir():
+            if path.name.casefold() == "cooperative_game.ltx":
+                raise LaunchError(f"Loose override делает комплект неоднозначным: {path}")
+    levels = _casefold_directories(roots, "levels")
+    for directory in levels:
+        for level in directory.iterdir():
+            if not level.is_dir():
+                continue
+            for path in level.iterdir():
+                if path.name.casefold() == "level.game":
+                    raise LaunchError(f"Loose override делает комплект неоднозначным: {path}")
+
+
+def check_patch_installation(game: Path) -> None:
+    """Только чтение: сверить конкретный candidate DLL/DB и исключить overrides."""
+    try:
+        _check_no_loose_overrides(game)
+        dll = game / "bin" / "xrGame.dll"
+        dedicated = game / "bin" / "dedicated" / "xrGame.dll"
+        dlls = [dll]
+        if dedicated.exists() or dedicated.is_symlink():
+            dlls.append(dedicated)
+        for path in dlls:
+            if not path.is_file() or _file_sha256(path) != EXPECTED_ENGINE_SHA256:
+                raise LaunchError(f"Неизвестный или отсутствующий cap8 xrGame.dll (SHA256): {path}")
+        allowed = {"gamedata.db0", "gamedata.db1", PATCH_DB_NAME}
+        seen = set()
+        db_order = []
+        addon = game / "addons" / "coop.addon"
+        # r: допускает только обычный tar. Переходы между members используют
+        # seek; многогигабайтные base/metadata payload не читаются в память.
+        with addon.open("rb") as source, tarfile.open(fileobj=source, mode="r:") as archive:
+            for member in archive:
+                if not re.search(r"\.db[0-9]*$", member.name.rstrip("/"), re.IGNORECASE):
+                    continue
+                if member.name not in allowed:
+                    raise LaunchError(f"Неожиданный DB member в coop.addon: {member.name}")
+                if member.name in seen:
+                    raise LaunchError(f"Повтор DB member в coop.addon: {member.name}")
+                seen.add(member.name)
+                if not member.isfile():
+                    raise LaunchError(f"DB member должен быть обычным файлом: {member.name}")
+                db_order.append(member.name)
+                if member.name != PATCH_DB_NAME:
+                    continue
+                if member.size != EXPECTED_PATCH_DB_SIZE or not 0 < member.size < 1024 ** 2:
+                    raise LaunchError(f"Неожиданный размер {PATCH_DB_NAME}: {member.size}")
+                payload = archive.extractfile(member)
+                if payload is None:
+                    raise LaunchError(f"Нельзя прочитать {PATCH_DB_NAME} из coop.addon")
+                with payload:
+                    data = payload.read(member.size + 1)
+                if len(data) != member.size or hashlib.sha256(data).hexdigest() != EXPECTED_PATCH_DB_SHA256:
+                    raise LaunchError(f"Неизвестный SHA256 {PATCH_DB_NAME} в coop.addon")
+        if PATCH_DB_NAME not in seen:
+            raise LaunchError(f"В coop.addon отсутствует обязательный {PATCH_DB_NAME}")
+        if db_order != ["gamedata.db0", "gamedata.db1", PATCH_DB_NAME]:
+            raise LaunchError(
+                "Порядок DB в coop.addon должен быть ровно "
+                f"[gamedata.db0, gamedata.db1, {PATCH_DB_NAME}]"
+            )
+    except (OSError, tarfile.TarError) as error:
+        raise LaunchError(f"Не удалось проверить DLL/coop.addon: {error}") from error
+
+
 def launch(plan: LaunchPlan) -> int:
     """Граница будущего запуска; текущий gate блокирует также вызов из Python."""
     if not LOBBY_DATA_VERIFIED:
@@ -133,6 +225,8 @@ def launch(plan: LaunchPlan) -> int:
         if prefix is None:
             raise LaunchError("Для реального запуска Linux обязателен явный --wine-prefix.")
         validate_prefix(Path(prefix))
+    check_patch_installation(plan.cwd.parent)
+    print(f"Ёмкость режима 8; выбранный лимит сессии {plan.players}", flush=True)
     environment = os.environ.copy()
     environment.update(plan.env_overrides)
     result = subprocess.run(list(plan.argv), cwd=plan.cwd, env=environment, shell=False)

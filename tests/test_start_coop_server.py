@@ -1,6 +1,7 @@
 """Контракты выбора лимита и безопасного плана без запуска игры или Wine."""
 
 import contextlib
+import hashlib
 import importlib
 import io
 import json
@@ -8,6 +9,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tarfile
 import tempfile
 import unittest
 from unittest import mock
@@ -16,6 +18,33 @@ from unittest import mock
 TOOLS = Path(__file__).resolve().parents[1] / "tools"
 SCRIPT = TOOLS / "start_coop_server.py"
 sys.path.insert(0, str(TOOLS))
+PATCH_NAME = "zzz_coop_player_limit_1_8.db"
+FIXTURE_DLL = b"cap8 DLL test profile; not an executable"
+FIXTURE_DB = b"known config and lobby DB test profile"
+
+
+def write_addon(path, members):
+    with tarfile.open(path, "w", format=tarfile.USTAR_FORMAT) as archive:
+        for name, payload in members:
+            member = tarfile.TarInfo(name)
+            member.size = len(payload)
+            archive.addfile(member, io.BytesIO(payload))
+
+
+def install_patch_fixture(test, starter, game):
+    (game / "bin" / "xrGame.dll").write_bytes(FIXTURE_DLL)
+    write_addon(game / "addons" / "coop.addon", [
+        ("gamedata.db0", b"base0"), ("gamedata.db1", b"base1"),
+        (PATCH_NAME, FIXTURE_DB), ("icon.png", b"metadata"),
+    ])
+    profile = mock.patch.multiple(
+        starter,
+        EXPECTED_ENGINE_SHA256=hashlib.sha256(FIXTURE_DLL).hexdigest(),
+        EXPECTED_PATCH_DB_SHA256=hashlib.sha256(FIXTURE_DB).hexdigest(),
+        EXPECTED_PATCH_DB_SIZE=len(FIXTURE_DB),
+    )
+    profile.start()
+    test.addCleanup(profile.stop)
 
 
 class ServerSelectionTests(unittest.TestCase):
@@ -251,9 +280,12 @@ class ServerSelectionTests(unittest.TestCase):
             run.assert_not_called()
 
     def test_future_launch_keeps_paths_literal_uses_copied_environment_and_returns_status(self):
+        install_patch_fixture(self, self.starter, self.game)
         plan = self.plan(wine_prefix=self.prefix)
         before_environment = dict(os.environ)
+        output = io.StringIO()
         with (
+            contextlib.redirect_stdout(output),
             mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", True),
             mock.patch.object(subprocess, "run", return_value=subprocess.CompletedProcess([], 7)) as run,
         ):
@@ -266,10 +298,13 @@ class ServerSelectionTests(unittest.TestCase):
         self.assertIsNot(kwargs["env"], os.environ)
         self.assertEqual(dict(os.environ), before_environment)
         self.assertFalse((self.root / "injected").exists())
+        self.assertEqual(output.getvalue(), "Ёмкость режима 8; выбранный лимит сессии 5\n")
 
     def test_future_native_launch_does_not_require_wine_prefix(self):
+        install_patch_fixture(self, self.starter, self.game)
         plan = self.starter.build_launch_plan(self.game, 1, platform="win32")
         with (
+            contextlib.redirect_stdout(io.StringIO()),
             mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", True),
             mock.patch.object(subprocess, "run", return_value=subprocess.CompletedProcess([], 0)),
         ):
@@ -317,6 +352,248 @@ class ServerSelectionTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr.decode("utf-8", errors="replace"))
         self.assertEqual(result.stdout, b"import leaves stdio unchanged\n")
+
+
+class PatchReadinessTests(unittest.TestCase):
+    def setUp(self):
+        self.starter = importlib.import_module("start_coop_server")
+        self.assertTrue(hasattr(self.starter, "check_patch_installation"),
+                        "Отсутствует проверка установленного комплекта")
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.game = Path(self.directory.name)
+        (self.game / "bin" / "dedicated").mkdir(parents=True)
+        (self.game / "addons").mkdir()
+        self.addon = self.game / "addons" / "coop.addon"
+        install_patch_fixture(self, self.starter, self.game)
+
+    def check(self):
+        self.starter.check_patch_installation(self.game)
+
+    def test_known_profile_passes_and_does_not_change_files_or_empty_runtime_dirs(self):
+        (self.game / "gamedata" / "levels").mkdir(parents=True)
+        before = {p.relative_to(self.game): p.read_bytes() if p.is_file() else None
+                  for p in self.game.rglob("*")}
+        self.check()
+        self.assertEqual({p.relative_to(self.game): p.read_bytes() if p.is_file() else None
+                          for p in self.game.rglob("*")}, before)
+        dedicated = self.game / "bin" / "dedicated" / "xrGame.dll"
+        dedicated.write_bytes(FIXTURE_DLL)
+        self.check()
+
+    def test_missing_or_wrong_main_dll_is_rejected(self):
+        dll = self.game / "bin" / "xrGame.dll"
+        for payload in (None, b"wrong DLL"):
+            with self.subTest(payload=payload):
+                dll.unlink(missing_ok=True)
+                if payload is not None:
+                    dll.write_bytes(payload)
+                with self.assertRaisesRegex(self.starter.LaunchError, "xrGame.dll"):
+                    self.check()
+
+    def test_optional_dedicated_dll_must_match_when_present(self):
+        dll = self.game / "bin" / "dedicated" / "xrGame.dll"
+        dll.write_bytes(b"unpatched dedicated DLL")
+        with self.assertRaisesRegex(self.starter.LaunchError, "xrGame.dll"):
+            self.check()
+
+    def test_missing_patch_member_is_rejected(self):
+        write_addon(self.addon, [("gamedata.db0", b"base")])
+        with self.assertRaisesRegex(self.starter.LaunchError, PATCH_NAME):
+            self.check()
+
+    def test_wrong_patch_size_is_rejected(self):
+        write_addon(self.addon, [(PATCH_NAME, FIXTURE_DB + b"extra")])
+        with self.assertRaisesRegex(self.starter.LaunchError, "размер"):
+            self.check()
+
+    def test_wrong_patch_hash_is_rejected(self):
+        write_addon(self.addon, [(PATCH_NAME, b"x" * len(FIXTURE_DB))])
+        with self.assertRaisesRegex(self.starter.LaunchError, "SHA256"):
+            self.check()
+
+    def test_duplicate_db_names_are_rejected_including_base_members(self):
+        for name, payload in ((PATCH_NAME, FIXTURE_DB), ("gamedata.db0", b"base")):
+            with self.subTest(name=name):
+                write_addon(self.addon, [(PATCH_NAME, FIXTURE_DB), (name, payload), (name, payload)])
+                with self.assertRaisesRegex(self.starter.LaunchError, "[Пп]овтор"):
+                    self.check()
+
+    def test_unexpected_db_names_and_noncanonical_paths_are_rejected(self):
+        for name in ("other.db", "gamedata.db2", "dir/gamedata.db0", "./gamedata.db0", "GAMEDATA.DB0"):
+            with self.subTest(name=name):
+                write_addon(self.addon, [(PATCH_NAME, FIXTURE_DB), (name, b"unknown")])
+                with self.assertRaisesRegex(self.starter.LaunchError, "DB"):
+                    self.check()
+
+    def test_patch_must_be_a_regular_tar_member(self):
+        with tarfile.open(self.addon, "w") as archive:
+            target = tarfile.TarInfo(PATCH_NAME)
+            target.type = tarfile.SYMTYPE
+            target.linkname = "gamedata.db0"
+            archive.addfile(target)
+        with self.assertRaises(self.starter.LaunchError):
+            self.check()
+
+    def test_invalid_tar_is_reported_as_launch_error(self):
+        self.addon.write_bytes(b"not a tar")
+        with self.assertRaisesRegex(self.starter.LaunchError, "coop.addon"):
+            self.check()
+
+    def test_loose_config_and_level_overrides_are_rejected(self):
+        for relative in ("gamedata/configs/mp/cooperative_game.ltx", "gamedata/levels/l01_escape/level.game"):
+            with self.subTest(relative=relative):
+                loose = self.game / relative
+                loose.parent.mkdir(parents=True, exist_ok=True)
+                loose.write_bytes(b"override")
+                try:
+                    with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+                        self.check()
+                finally:
+                    loose.unlink()
+
+    def test_review_requires_complete_canonical_db_sequence(self):
+        entries = {"gamedata.db0": b"base0", "gamedata.db1": b"base1", PATCH_NAME: FIXTURE_DB}
+        orders = (
+            [PATCH_NAME, "gamedata.db0", "gamedata.db1"],
+            ["gamedata.db1", "gamedata.db0", PATCH_NAME],
+            ["gamedata.db0", PATCH_NAME],
+            [PATCH_NAME],
+        )
+        for names in orders:
+            with self.subTest(names=names):
+                write_addon(self.addon, [(name, entries[name]) for name in names])
+                with self.assertRaisesRegex(self.starter.LaunchError, "[Пп]орядок"):
+                    self.check()
+        write_addon(self.addon, [(name, entries[name]) for name in ("gamedata.db0", "gamedata.db1", PATCH_NAME)])
+        self.check()
+
+    def test_review_casefold_config_paths_are_rejected(self):
+        for relative in ("gamedata/configs/mp/Cooperative_Game.ltx",
+                         "GameData/Configs/MP/cooperative_game.ltx",
+                         "GAMEDATA/CONFIGS/MP/COOPERATIVE_GAME.LTX"):
+            with self.subTest(relative=relative):
+                loose = self.game / relative
+                loose.parent.mkdir(parents=True, exist_ok=True)
+                loose.write_bytes(b"override")
+                try:
+                    with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+                        self.check()
+                finally:
+                    loose.unlink()
+
+    def test_review_casefold_level_paths_are_rejected(self):
+        for relative in ("gamedata/levels/l01_escape/Level.Game", "GameData/Levels/L01_ESCAPE/LEVEL.GAME"):
+            with self.subTest(relative=relative):
+                loose = self.game / relative
+                loose.parent.mkdir(parents=True, exist_ok=True)
+                loose.write_bytes(b"override")
+                try:
+                    with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+                        self.check()
+                finally:
+                    loose.unlink()
+
+    def test_review_casefold_config_search_follows_symlink_directories(self):
+        external = self.game / "external-configs"
+        (external / "MP").mkdir(parents=True)
+        (external / "MP" / "Cooperative_Game.ltx").write_bytes(b"override")
+        (self.game / "gamedata").mkdir()
+        (self.game / "gamedata" / "configs").symlink_to(external, target_is_directory=True)
+        with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+            self.check()
+
+    def test_review_casefold_level_search_follows_map_symlink(self):
+        external = self.game / "external-map"
+        external.mkdir()
+        (external / "Level.Game").write_bytes(b"override")
+        levels = self.game / "gamedata" / "levels"
+        levels.mkdir(parents=True)
+        (levels / "l01_escape").symlink_to(external, target_is_directory=True)
+        with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+            self.check()
+
+    def test_review_casefold_level_search_follows_levels_symlink(self):
+        external = self.game / "external-levels"
+        (external / "L01_ESCAPE").mkdir(parents=True)
+        (external / "L01_ESCAPE" / "Level.Game").write_bytes(b"override")
+        (self.game / "GameData").mkdir()
+        (self.game / "GameData" / "Levels").symlink_to(external, target_is_directory=True)
+        with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+            self.check()
+
+    def test_review_empty_casefold_runtime_dirs_are_allowed(self):
+        (self.game / "GameData" / "Levels" / "L01_ESCAPE").mkdir(parents=True)
+        (self.game / "GameData" / "Configs" / "MP").mkdir(parents=True)
+        self.check()
+
+    def test_future_launch_checks_profile_before_process_or_capacity_message(self):
+        (self.game / "bin" / "xrGame.dll").write_bytes(b"unrecognized DLL")
+        plan = self.starter.build_launch_plan(self.game, 5, platform="win32")
+        output = io.StringIO()
+        with (
+            mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", True),
+            mock.patch.object(subprocess, "run") as run,
+            contextlib.redirect_stdout(output),
+        ):
+            with self.assertRaises(self.starter.LaunchError):
+                self.starter.launch(plan)
+            run.assert_not_called()
+        self.assertEqual(output.getvalue(), "")
+
+    def test_tar_metadata_is_skipped_by_seek_and_target_read_is_bounded(self):
+        # Sparse tar >4 GiB: место занимает только header/маленький target.
+        large_size = 4 * 1024 ** 3
+        metadata = tarfile.TarInfo("metadata.bin")
+        metadata.size = large_size
+        target = tarfile.TarInfo(PATCH_NAME)
+        target.size = len(FIXTURE_DB)
+        with self.addon.open("wb") as output:
+            for name in ("gamedata.db0", "gamedata.db1"):
+                base = tarfile.TarInfo(name)
+                output.write(base.tobuf(format=tarfile.USTAR_FORMAT))
+            output.write(metadata.tobuf(format=tarfile.USTAR_FORMAT))
+            output.seek(output.tell() + large_size)
+            output.write(target.tobuf(format=tarfile.USTAR_FORMAT))
+            output.write(FIXTURE_DB)
+            output.write(b"\0" * ((-len(FIXTURE_DB)) % 512 + 1024))
+        real_open = Path.open
+        reads, seeks = [], []
+
+        class AuditedReader:
+            def __init__(self, source):
+                self.source = source
+
+            def __getattr__(self, name):
+                return getattr(self.source, name)
+
+            def read(self, count=-1):
+                if not 0 <= count < 1024 ** 2:
+                    raise AssertionError(f"Неограниченное чтение tar: {count}")
+                reads.append(count)
+                return self.source.read(count)
+
+            def seek(self, offset, whence=0):
+                seeks.append((offset, whence))
+                return self.source.seek(offset, whence)
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                self.source.close()
+
+        def audited_open(path, *args, **kwargs):
+            source = real_open(path, *args, **kwargs)
+            return AuditedReader(source) if path == self.addon else source
+
+        with (
+            mock.patch.object(Path, "open", audited_open),
+            mock.patch.object(Path, "read_bytes", side_effect=AssertionError("read_bytes запрещён")),
+        ):
+            self.check()
+        self.assertLess(sum(reads), 64 * 1024)
+        self.assertTrue(any(offset >= large_size for offset, _ in seeks))
 
 
 if __name__ == "__main__":
