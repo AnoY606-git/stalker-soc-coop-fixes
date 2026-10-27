@@ -1,7 +1,7 @@
-"""Экспериментальный выбор 1–8 игроков; сейчас доступен только dry-run.
+"""Экспериментальный выбор 1–8 игроков для конкретного проверенного профиля.
 
-План команды отделён от запуска. Gate нельзя отключить параметром CLI:
-сначала требуется интеграционная проверка полного комплекта lobby data.
+План команды отделён от запуска. Перед subprocess обязательна проверка
+конкретных DLL/config/lobby data; dry-run не подтверждает их установку.
 Python 3.10+, только стандартная библиотека.
 """
 
@@ -18,10 +18,17 @@ import sys
 import tarfile
 
 
-# Снять только после интеграционной проверки совместимого комплекта DLL/config/data.
-# Генерация аргументов сама по себе не доказывает готовность к подключению клиентов.
-LOBBY_DATA_VERIFIED = False
+# Root подтвердил лобби с восемью клиентами для этого exact DLL/DB профиля.
+# Это не проверка полной кампании; конкретная установка проверяется при запуске.
+LOBBY_DATA_VERIFIED = True
 EXPECTED_ENGINE_SHA256 = "de8e7b892203abc0e7a667b1a56ad0844140f02a82461e8432edc6a3150f2860"
+EXPECTED_ENGINE_SIZE = 7915520
+PROFILE_NAME = "coop_player_limit_profile.json"
+ENGINE_PROFILE = {
+    "size": 7915520,
+    "original_sha256": "ef430b5f39628dcd03a4dd6e44b114559549660dd06d3f3218296d1eee1c462e",
+    "patched_sha256": "de8e7b892203abc0e7a667b1a56ad0844140f02a82461e8432edc6a3150f2860",
+}
 PATCH_DB_NAME = "zzz_coop_player_limit_1_8.db"
 EXPECTED_PATCH_DB_SIZE = 471602
 EXPECTED_PATCH_DB_SHA256 = "6840f273c8cbad7babfe13cd243c920db7bc8992090f8f377332f169fdbfa12f"
@@ -43,6 +50,7 @@ class LaunchPlan:
     env_overrides: dict[str, str]
     platform: str
     players: int
+    profile: Path | None = None
 
 
 def parse_players(value: str) -> int:
@@ -64,6 +72,7 @@ def build_launch_plan(
     wine: str | None = None,
     wine_prefix: Path | None = None,
     nosound: bool = False,
+    profile: Path | None = None,
 ) -> LaunchPlan:
     """Чисто построить argv для явно выбранной платформы, без файловых операций."""
     if type(players) is not int or not 1 <= players <= 8:
@@ -98,7 +107,7 @@ def build_launch_plan(
         "server(coop_l01_escape/coop/hname=ShadowCoop/maxplayers="
         f"{players}/public=0/minplayers=1/portsv=5495) client(localhost)",
     ])
-    return LaunchPlan(game / "bin", tuple(command), environment, platform, players)
+    return LaunchPlan(game / "bin", tuple(command), environment, platform, players, profile)
 
 
 def validate_installation(game: Path) -> None:
@@ -145,15 +154,15 @@ def _casefold_directories(parents: list[Path], name: str) -> list[Path]:
 
 
 def _check_no_loose_overrides(game: Path) -> None:
-    # Wine ищет имена без учёта регистра. Проходим только два фиксированных
+    # Wine ищет имена без учёта регистра. Проходим только фиксированные
     # пути; is_dir/iterdir следуют symlink каталогов без рекурсивного обхода.
     roots = _casefold_directories([game], "gamedata")
     configs = _casefold_directories(roots, "configs")
-    configs = _casefold_directories(configs, "mp")
-    for directory in configs:
-        for path in directory.iterdir():
-            if path.name.casefold() == "cooperative_game.ltx":
-                raise LaunchError(f"Loose override делает комплект неоднозначным: {path}")
+    for folder, filename in (("mp", "cooperative_game.ltx"), ("ui", "coop_lobby_wnd.xml")):
+        for directory in _casefold_directories(configs, folder):
+            for path in directory.iterdir():
+                if path.name.casefold() == filename:
+                    raise LaunchError(f"Loose override делает комплект неоднозначным: {path}")
     levels = _casefold_directories(roots, "levels")
     for directory in levels:
         for level in directory.iterdir():
@@ -164,9 +173,40 @@ def _check_no_loose_overrides(game: Path) -> None:
                     raise LaunchError(f"Loose override делает комплект неоднозначным: {path}")
 
 
-def check_patch_installation(game: Path) -> None:
+def load_profile(path: Path) -> dict:
+    """Принять профиль сборщика, но не доверять заявленным fingerprints движка."""
+    try:
+        if path.stat().st_size > 16384:
+            raise LaunchError("Слишком большой JSON профиль")
+        with path.open("r", encoding="utf-8-sig") as source:
+            profile = json.load(source)
+        if (not isinstance(profile, dict) or type(profile.get("schema_version")) is not int
+                or profile["schema_version"] != 1 or type(profile.get("capacity")) is not int
+                or profile["capacity"] != 8 or profile.get("addon_version") != "8.1"
+                or profile.get("engine") != ENGINE_PROFILE
+                or type(profile["engine"].get("size")) is not int):
+            raise LaunchError("Неподдерживаемый профиль capacity/engine/addon")
+        db = profile.get("patch_db")
+        if (not isinstance(db, dict) or db.get("name") != "zzz_soc_coop_fixes.db"
+                or type(db.get("size")) is not int or not 0 < db["size"] < 2 ** 32
+                or not isinstance(db.get("sha256"), str)
+                or not re.fullmatch(r"[0-9a-f]{64}", db["sha256"])):
+            raise LaunchError("Неподдерживаемый профиль patch_db")
+        return profile
+    except (OSError, ValueError, TypeError) as error:
+        raise LaunchError(f"Не удалось прочитать профиль {path}: {error}") from error
+
+
+def check_patch_installation(game: Path, profile: Path | None = None) -> None:
     """Только чтение: сверить конкретный candidate DLL/DB и исключить overrides."""
     try:
+        automatic = game / PROFILE_NAME
+        profile_path = profile if profile is not None else (automatic if automatic.exists() or automatic.is_symlink() else None)
+        selected = load_profile(profile_path) if profile_path is not None else None
+        db = selected["patch_db"] if selected is not None else {
+            "name": PATCH_DB_NAME, "size": EXPECTED_PATCH_DB_SIZE, "sha256": EXPECTED_PATCH_DB_SHA256,
+        }
+        patch_name = db["name"]
         _check_no_loose_overrides(game)
         dll = game / "bin" / "xrGame.dll"
         dedicated = game / "bin" / "dedicated" / "xrGame.dll"
@@ -174,9 +214,10 @@ def check_patch_installation(game: Path) -> None:
         if dedicated.exists() or dedicated.is_symlink():
             dlls.append(dedicated)
         for path in dlls:
-            if not path.is_file() or _file_sha256(path) != EXPECTED_ENGINE_SHA256:
+            if (not path.is_file() or (selected is not None and path.stat().st_size != EXPECTED_ENGINE_SIZE)
+                    or _file_sha256(path) != EXPECTED_ENGINE_SHA256):
                 raise LaunchError(f"Неизвестный или отсутствующий cap8 xrGame.dll (SHA256): {path}")
-        allowed = {"gamedata.db0", "gamedata.db1", PATCH_DB_NAME}
+        allowed = {"gamedata.db0", "gamedata.db1", patch_name}
         seen = set()
         db_order = []
         addon = game / "addons" / "coop.addon"
@@ -194,30 +235,33 @@ def check_patch_installation(game: Path) -> None:
                 if not member.isfile():
                     raise LaunchError(f"DB member должен быть обычным файлом: {member.name}")
                 db_order.append(member.name)
-                if member.name != PATCH_DB_NAME:
+                if member.name != patch_name:
                     continue
-                if member.size != EXPECTED_PATCH_DB_SIZE or not 0 < member.size < 1024 ** 2:
-                    raise LaunchError(f"Неожиданный размер {PATCH_DB_NAME}: {member.size}")
+                if member.size != db["size"]:
+                    raise LaunchError(f"Неожиданный размер {patch_name}: {member.size}")
                 payload = archive.extractfile(member)
                 if payload is None:
-                    raise LaunchError(f"Нельзя прочитать {PATCH_DB_NAME} из coop.addon")
+                    raise LaunchError(f"Нельзя прочитать {patch_name} из coop.addon")
                 with payload:
-                    data = payload.read(member.size + 1)
-                if len(data) != member.size or hashlib.sha256(data).hexdigest() != EXPECTED_PATCH_DB_SHA256:
-                    raise LaunchError(f"Неизвестный SHA256 {PATCH_DB_NAME} в coop.addon")
-        if PATCH_DB_NAME not in seen:
-            raise LaunchError(f"В coop.addon отсутствует обязательный {PATCH_DB_NAME}")
-        if db_order != ["gamedata.db0", "gamedata.db1", PATCH_DB_NAME]:
+                    digest, length = hashlib.sha256(), 0
+                    for block in iter(lambda: payload.read(64 * 1024), b""):
+                        digest.update(block)
+                        length += len(block)
+                if length != member.size or digest.hexdigest() != db["sha256"]:
+                    raise LaunchError(f"Неизвестный SHA256 {patch_name} в coop.addon")
+        if patch_name not in seen:
+            raise LaunchError(f"В coop.addon отсутствует обязательный {patch_name}")
+        if db_order != ["gamedata.db0", "gamedata.db1", patch_name]:
             raise LaunchError(
                 "Порядок DB в coop.addon должен быть ровно "
-                f"[gamedata.db0, gamedata.db1, {PATCH_DB_NAME}]"
+                f"[gamedata.db0, gamedata.db1, {patch_name}]"
             )
     except (OSError, tarfile.TarError) as error:
         raise LaunchError(f"Не удалось проверить DLL/coop.addon: {error}") from error
 
 
 def launch(plan: LaunchPlan) -> int:
-    """Граница будущего запуска; текущий gate блокирует также вызов из Python."""
+    """Проверить gate/prefix/профиль и запустить сервер без shell."""
     if not LOBBY_DATA_VERIFIED:
         raise LaunchError(LAUNCH_BLOCK_REASON)
     if plan.platform.startswith("linux"):
@@ -225,7 +269,10 @@ def launch(plan: LaunchPlan) -> int:
         if prefix is None:
             raise LaunchError("Для реального запуска Linux обязателен явный --wine-prefix.")
         validate_prefix(Path(prefix))
-    check_patch_installation(plan.cwd.parent)
+    if plan.profile is None:
+        check_patch_installation(plan.cwd.parent)
+    else:
+        check_patch_installation(plan.cwd.parent, profile=plan.profile)
     print(f"Ёмкость режима 8; выбранный лимит сессии {plan.players}", flush=True)
     environment = os.environ.copy()
     environment.update(plan.env_overrides)
@@ -236,11 +283,13 @@ def launch(plan: LaunchPlan) -> int:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Экспериментальный выбор 1–8 игроков. Сейчас доступен только --dry-run: "
-            "комплект lobby data ещё не проверен. Карта coop_l01_escape; public=0."
+            "Экспериментальный выбор 1–8 игроков. Запуск требует точного проверенного "
+            "DLL/DB профиля. --dry-run показывает команду без проверки профиля. "
+            "Карта coop_l01_escape; public=0."
         )
     )
     parser.add_argument("--game", required=True, type=Path, help="корневой каталог игры")
+    parser.add_argument("--profile", type=Path, help="профиль сборки; по умолчанию JSON в корне игры, затем standalone")
     parser.add_argument("--players", help="целое 1–8; без параметра — ввод, Enter выбирает 5")
     parser.add_argument("--dry-run", action="store_true", help="JSON команды без запуска и записи файлов")
     parser.add_argument("--wine", help="исполняемый файл Wine; по умолчанию поиск wine в PATH")
@@ -267,7 +316,8 @@ def main(argv=None) -> int:
             validate_prefix(prefix)
         wine = resolve_wine(args.wine) if sys.platform.startswith("linux") else args.wine
         plan = build_launch_plan(
-            game, players, platform=sys.platform, wine=wine, wine_prefix=prefix, nosound=args.nosound
+            game, players, platform=sys.platform, wine=wine, wine_prefix=prefix, nosound=args.nosound,
+            profile=args.profile.expanduser().resolve() if args.profile is not None else None,
         )
         if args.dry_run:
             print(json.dumps({
@@ -276,8 +326,10 @@ def main(argv=None) -> int:
                 "environment": {"inherit": True, "overrides": plan.env_overrides},
                 "players": players,
                 "map": "coop_l01_escape",
-                "launch_allowed": False,
-                "launch_block_reason": LAUNCH_BLOCK_REASON,
+                "launch_gate_open": LOBBY_DATA_VERIFIED,
+                "installation_check": "required_before_launch",
+                "launch_allowed": None if LOBBY_DATA_VERIFIED else False,
+                "launch_block_reason": None if LOBBY_DATA_VERIFIED else LAUNCH_BLOCK_REASON,
             }, ensure_ascii=False, indent=2))
             return 0
         return launch(plan)

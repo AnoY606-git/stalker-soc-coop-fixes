@@ -109,7 +109,16 @@ class ServerSelectionTests(unittest.TestCase):
                 ])
                 self.assertEqual(plan["cwd"], str(self.game / "bin"))
                 self.assertEqual(plan["players"], players)
-                self.assertFalse(plan["launch_allowed"])
+                self.assertTrue(plan.get("launch_gate_open"))
+                self.assertIsNone(plan["launch_allowed"])
+                self.assertIsNone(plan["launch_block_reason"])
+                self.assertEqual(plan["installation_check"], "required_before_launch")
+
+    def test_explicit_profile_is_carried_in_plan_without_changing_argv(self):
+        profile = self.root / "profile.json"
+        plan = self.starter.build_launch_plan(self.game, 5, platform="win32", profile=profile)
+        self.assertEqual(plan.profile, profile)
+        self.assertEqual(plan.argv[-1], "server(coop_l01_escape/coop/hname=ShadowCoop/maxplayers=5/public=0/minplayers=1/portsv=5495) client(localhost)")
 
     def test_windows_plan_uses_native_executable_without_wine(self):
         plan = self.starter.build_launch_plan(self.game, 8, platform="win32")
@@ -226,7 +235,10 @@ class ServerSelectionTests(unittest.TestCase):
         self.assertIn("-nosound", json.loads(output)["argv"])
 
     def test_real_cli_launch_is_blocked_while_lobby_data_is_unverified(self):
-        with mock.patch.object(subprocess, "run") as run:
+        with (
+            mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", False),
+            mock.patch.object(subprocess, "run") as run,
+        ):
             code, output, errors = self.cli(
                 "--players", "5", "--wine-prefix", str(self.prefix)
             )
@@ -237,7 +249,10 @@ class ServerSelectionTests(unittest.TestCase):
             run.assert_not_called()
 
     def test_launch_boundary_also_enforces_the_lobby_gate(self):
-        with mock.patch.object(subprocess, "run") as run:
+        with (
+            mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", False),
+            mock.patch.object(subprocess, "run") as run,
+        ):
             with self.assertRaisesRegex(self.starter.LaunchError, "lobby data"):
                 self.starter.launch(self.plan(wine_prefix=self.prefix))
             run.assert_not_called()
@@ -245,13 +260,63 @@ class ServerSelectionTests(unittest.TestCase):
     def test_real_cli_reports_known_blocker_before_prompt_or_setup_checks(self):
         self.engine.unlink()
         for args in ((), ("--players", "5")):
-            with self.subTest(args=args), mock.patch.object(subprocess, "run") as run:
+            with (
+                self.subTest(args=args),
+                mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", False),
+                mock.patch.object(subprocess, "run") as run,
+            ):
                 code, output, errors = self.cli(*args, answers=[EOFError])
                 self.assertNotEqual(code, 0)
                 self.assertEqual(output, "")
                 self.assertIn("lobby data", errors)
                 self.assertNotIn("Количество игроков", errors)
                 run.assert_not_called()
+
+    def test_closed_gate_dry_run_reports_closed_without_claiming_installation_readiness(self):
+        with mock.patch.object(self.starter, "LOBBY_DATA_VERIFIED", False):
+            code, output, errors = self.cli("--players", "5", "--dry-run")
+        self.assertEqual(code, 0, errors)
+        plan = json.loads(output)
+        self.assertFalse(plan.get("launch_gate_open", True))
+        self.assertFalse(plan["launch_allowed"])
+        self.assertIn("lobby data", plan["launch_block_reason"])
+        self.assertEqual(plan["installation_check"], "required_before_launch")
+
+    def test_default_main_launches_only_after_real_fixture_checks(self):
+        install_patch_fixture(self, self.starter, self.game)
+        args = ["--game", str(self.game), "--players", "5"]
+        if sys.platform.startswith("linux"):
+            args += ["--wine", str(self.wine), "--wine-prefix", str(self.prefix)]
+        output, errors = io.StringIO(), io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+            mock.patch.object(subprocess, "run", return_value=subprocess.CompletedProcess([], 7)) as run,
+        ):
+            code = self.starter.main(args)
+        self.assertEqual(code, 7, errors.getvalue())
+        self.assertEqual(output.getvalue(), "Ёмкость режима 8; выбранный лимит сессии 5\n")
+        self.assertEqual(errors.getvalue(), "")
+        self.assertIn("maxplayers=5/public=0", run.call_args.args[0][-1])
+        self.assertFalse(run.call_args.kwargs["shell"])
+
+    def test_default_main_rejects_unknown_profile_before_process(self):
+        install_patch_fixture(self, self.starter, self.game)
+        (self.game / "bin" / "xrGame.dll").write_bytes(b"unknown DLL")
+        args = ["--game", str(self.game), "--players", "5"]
+        if sys.platform.startswith("linux"):
+            args += ["--wine", str(self.wine), "--wine-prefix", str(self.prefix)]
+        output, errors = io.StringIO(), io.StringIO()
+        with (
+            contextlib.redirect_stdout(output),
+            contextlib.redirect_stderr(errors),
+            mock.patch.object(subprocess, "run") as run,
+        ):
+            code = self.starter.main(args)
+            run.assert_not_called()
+        self.assertEqual(code, 1)
+        self.assertIn("SHA256", errors.getvalue())
+        self.assertEqual(output.getvalue(), "")
 
     def test_future_linux_launch_requires_existing_explicit_prefix(self):
         empty = self.root / "empty prefix"
@@ -327,8 +392,10 @@ class ServerSelectionTests(unittest.TestCase):
         self.assertEqual(plan["cwd"], str(self.game / "bin"))
         self.assertEqual(plan["argv"][:2], [str(self.wine), str(self.engine)])
         self.assertEqual(plan["players"], 5)
-        self.assertFalse(plan["launch_allowed"])
-        self.assertIn("ещё не проверен", plan["launch_block_reason"])
+        self.assertTrue(plan.get("launch_gate_open"))
+        self.assertIsNone(plan["launch_allowed"])
+        self.assertIsNone(plan["launch_block_reason"])
+        self.assertEqual(plan["installation_check"], "required_before_launch")
 
     def test_cli_help_emits_utf8_under_ascii_stdio(self):
         result = self.encoded_cli("--help")
@@ -369,6 +436,72 @@ class PatchReadinessTests(unittest.TestCase):
 
     def check(self):
         self.starter.check_patch_installation(self.game)
+
+    def repo_profile(self, payload=FIXTURE_DB):
+        profile = {
+            "schema_version": 1, "capacity": 8, "addon_version": "8.1",
+            "engine": {"size": 7915520,
+                       "original_sha256": "ef430b5f39628dcd03a4dd6e44b114559549660dd06d3f3218296d1eee1c462e",
+                       "patched_sha256": "de8e7b892203abc0e7a667b1a56ad0844140f02a82461e8432edc6a3150f2860"},
+            "patch_db": {"name": "zzz_soc_coop_fixes.db", "size": len(payload),
+                         "sha256": hashlib.sha256(payload).hexdigest()},
+        }
+        path = self.game / "coop_player_limit_profile.json"
+        path.write_text(json.dumps(profile), encoding="utf-8")
+        write_addon(self.addon, [("gamedata.db0", b"base0"), ("icon.webp", b"icon"),
+                                 ("gamedata.db1", b"base1"), ("zzz_soc_coop_fixes.db", payload)])
+        return profile, path
+
+    def test_generated_profile_accepts_large_db_with_bounded_streaming_reads(self):
+        payload = b"verified DB" * 150000
+        self.repo_profile(payload)
+        with mock.patch.object(self.starter, "EXPECTED_ENGINE_SIZE", len(FIXTURE_DLL), create=True):
+            real_open = Path.open
+            class Reader:
+                def __init__(self, stream): self.stream = stream
+                def __getattr__(self, name): return getattr(self.stream, name)
+                def read(self, size=-1):
+                    self.assert_bound(size)
+                    return self.stream.read(size)
+                @staticmethod
+                def assert_bound(size):
+                    if not 0 <= size <= 256 * 1024: raise AssertionError(f"unbounded read {size}")
+                def __enter__(self): return self
+                def __exit__(self, *args): self.stream.close()
+            def checked_open(path, *args, **kwargs):
+                stream = real_open(path, *args, **kwargs)
+                return Reader(stream) if path == self.addon else stream
+            with mock.patch.object(Path, "open", checked_open):
+                self.check()
+
+    def test_generated_profile_rejects_unknown_engine_schema_and_db_fingerprint(self):
+        profile, path = self.repo_profile()
+        changes = (("capacity", 4), ("schema_version", True), ("addon_version", "9"),
+                   ("engine", dict(profile["engine"], patched_sha256="0" * 64)),
+                   ("patch_db", dict(profile["patch_db"], size=True)),
+                   ("patch_db", dict(profile["patch_db"], name="../evil.db")),
+                   ("patch_db", dict(profile["patch_db"], sha256="0" * 64)))
+        for key, value in changes:
+            with self.subTest(key=key, value=value):
+                path.write_text(json.dumps(dict(profile, **{key: value})), encoding="utf-8")
+                with mock.patch.object(self.starter, "EXPECTED_ENGINE_SIZE", len(FIXTURE_DLL), create=True):
+                    with self.assertRaises(self.starter.LaunchError): self.check()
+
+    def test_explicit_missing_or_invalid_profile_never_falls_back(self):
+        missing = self.game / "missing.json"
+        with self.assertRaises(self.starter.LaunchError):
+            self.starter.check_patch_installation(self.game, profile=missing)
+        missing.write_text("not JSON", encoding="utf-8")
+        with self.assertRaises(self.starter.LaunchError):
+            self.starter.check_patch_installation(self.game, profile=missing)
+
+    def test_generated_profile_still_rejects_db_order_and_casefold_duplicates(self):
+        self.repo_profile()
+        for entries in (("gamedata.db1", "gamedata.db0", "zzz_soc_coop_fixes.db"),
+                        ("gamedata.db0", "gamedata.db1", "zzz_soc_coop_fixes.db", "GAMEDATA.DB0")):
+            write_addon(self.addon, [(name, FIXTURE_DB) for name in entries])
+            with mock.patch.object(self.starter, "EXPECTED_ENGINE_SIZE", len(FIXTURE_DLL), create=True):
+                with self.assertRaises(self.starter.LaunchError): self.check()
 
     def test_known_profile_passes_and_does_not_change_files_or_empty_runtime_dirs(self):
         (self.game / "gamedata" / "levels").mkdir(parents=True)
@@ -526,6 +659,29 @@ class PatchReadinessTests(unittest.TestCase):
         (self.game / "GameData" / "Levels" / "L01_ESCAPE").mkdir(parents=True)
         (self.game / "GameData" / "Configs" / "MP").mkdir(parents=True)
         self.check()
+
+    def test_loose_ui_xml_is_rejected_with_casefold_paths(self):
+        for relative in ("gamedata/configs/ui/coop_lobby_wnd.xml",
+                         "GameData/Configs/UI/COOP_LOBBY_WND.XML"):
+            with self.subTest(relative=relative):
+                loose = self.game / relative
+                loose.parent.mkdir(parents=True, exist_ok=True)
+                loose.write_bytes(b"UI override")
+                try:
+                    with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+                        self.check()
+                finally:
+                    loose.unlink()
+
+    def test_loose_ui_xml_is_rejected_through_symlink_directory(self):
+        external = self.game / "external-ui"
+        external.mkdir()
+        (external / "Coop_Lobby_Wnd.xml").write_bytes(b"UI override")
+        configs = self.game / "gamedata" / "configs"
+        configs.mkdir(parents=True)
+        (configs / "ui").symlink_to(external, target_is_directory=True)
+        with self.assertRaisesRegex(self.starter.LaunchError, "[Ll]oose"):
+            self.check()
 
     def test_future_launch_checks_profile_before_process_or_capacity_message(self):
         (self.game / "bin" / "xrGame.dll").write_bytes(b"unrecognized DLL")
